@@ -86,6 +86,8 @@ const getMaxQuantity = (item: CartItem) => {
   return item.cartLineType === 'INVENTORY' || item.cartLineType === 'SUPPLIER' ? Math.max(1, item.quantity) : 999;
 };
 
+const hasSearchText = (query: string) => query.trim().length > 0;
+
 export const POSModal: React.FC<POSModalProps> = ({
   isOpen,
   onClose,
@@ -132,7 +134,7 @@ export const POSModal: React.FC<POSModalProps> = ({
   const supplierSearchResults = useMemo(() => {
     const cleanedQuery = query.trim();
     if (cleanedQuery.length < 2) return [];
-    return searchInventory(availableSupplierItems, cleanedQuery).slice(0, 18);
+    return searchInventory(availableSupplierItems, cleanedQuery).slice(0, 24);
   }, [availableSupplierItems, query]);
 
   const totals = useMemo(() => {
@@ -178,6 +180,26 @@ export const POSModal: React.FC<POSModalProps> = ({
     setManualQuantity(1);
     setManualUnitPrice(0);
     setMessage('');
+  };
+
+  const handleAddSearchAsQuoteLine = () => {
+    const title = query.trim();
+    if (title.length < 2) {
+      setMessage('Search for the item first, then add it as a custom quote line.');
+      return;
+    }
+
+    onAddManualLine({
+      title,
+      description: 'Custom quote line',
+      quantity: 1,
+      unitPrice: 0
+    });
+    setManualTitle('');
+    setManualDescription('');
+    setManualQuantity(1);
+    setManualUnitPrice(0);
+    setMessage('Custom quote line added. Edit the line total in the register before generating the quote.');
   };
 
   const handleCompleteSale = async () => {
@@ -327,7 +349,10 @@ export const POSModal: React.FC<POSModalProps> = ({
               </div>
 
               <div className="rounded-md border border-gp-border bg-gp-black/40 p-4">
-                <label className="mb-2 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Find Existing Stock</label>
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Find Stock for Sale or Quote</label>
+                  <span className="text-[10px] font-bold uppercase text-gp-text-muted">GP stock first, suppliers second</span>
+                </div>
                 <div className="relative">
                   <svg className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gp-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
@@ -336,55 +361,72 @@ export const POSModal: React.FC<POSModalProps> = ({
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     autoFocus
-                    placeholder="Search size, brand, pattern, wheel PCD..."
+                    placeholder="Search current stock and supplier stock..."
                     className="h-12 w-full rounded-md border border-gp-border bg-gp-input py-3 pl-10 pr-3 text-sm text-gp-text-main outline-none transition-colors placeholder:text-gp-text-muted focus:border-gp-red"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
-                {searchResults.map(item => {
-                  const inCart = cart.find(cartItem => cartItem.inventoryItemId === item.id);
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => onAddItem(item)}
-                      className="group flex min-h-[94px] w-full items-stretch overflow-hidden rounded-md border border-gp-border bg-gp-black text-left transition-colors hover:border-gp-red/60 hover:bg-gp-input"
-                    >
-                      <div className="flex w-14 shrink-0 flex-col items-center justify-center border-r border-gp-border bg-gp-panel">
-                        <span className="text-[9px] font-black uppercase text-gp-text-muted">{item.type.slice(0, 1)}</span>
-                        <span className="font-display text-2xl font-black text-gp-text-main">{item.quantity}</span>
-                      </div>
-                      <div className="min-w-0 flex-1 p-3">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="truncate font-display text-base font-black uppercase text-gp-text-main">{getInventoryTitle(item)}</p>
-                            <p className="mt-1 line-clamp-2 text-xs text-gp-text-muted">{getInventoryMeta(item)}</p>
+              <div>
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <h3 className="font-display text-xs font-black uppercase tracking-wider text-gp-text-main">Current Available Stock</h3>
+                  <span className="text-[10px] font-bold uppercase text-gp-text-muted">Main stock source</span>
+                </div>
+                <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
+                  {searchResults.map(item => {
+                    const inCart = cart.find(cartItem => cartItem.cartLineType === 'INVENTORY' && cartItem.inventoryItemId === item.id);
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => onAddItem(item)}
+                        className="group flex min-h-[94px] w-full items-stretch overflow-hidden rounded-md border border-gp-border bg-gp-black text-left transition-colors hover:border-gp-red/60 hover:bg-gp-input"
+                      >
+                        <div className="flex w-14 shrink-0 flex-col items-center justify-center border-r border-gp-border bg-gp-panel">
+                          <span className="text-[9px] font-black uppercase text-gp-text-muted">{item.type.slice(0, 1)}</span>
+                          <span className="font-display text-2xl font-black text-gp-text-main">{item.quantity}</span>
+                        </div>
+                        <div className="min-w-0 flex-1 p-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <p className="truncate font-display text-base font-black uppercase text-gp-text-main">{getInventoryTitle(item)}</p>
+                              <p className="mt-1 line-clamp-2 text-xs text-gp-text-muted">{getInventoryMeta(item)}</p>
+                            </div>
+                            <span className="shrink-0 rounded bg-gp-overlay px-2 py-1 font-mono text-xs font-bold text-gp-text-main">
+                              {formatCurrency(item.sellingPrice)}
+                            </span>
                           </div>
-                          <span className="shrink-0 rounded bg-gp-overlay px-2 py-1 font-mono text-xs font-bold text-gp-text-main">
-                            {formatCurrency(item.sellingPrice)}
-                          </span>
+                          <div className="mt-3 flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
+                              {inCart ? `${inCart.cartQuantity} in cart` : 'Tap to add'}
+                            </span>
+                            <span className="rounded-full bg-gp-red px-2 py-1 text-[10px] font-black uppercase text-white opacity-0 transition-opacity group-hover:opacity-100">
+                              Add
+                            </span>
+                          </div>
                         </div>
-                        <div className="mt-3 flex items-center justify-between">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
-                            {inCart ? `${inCart.cartQuantity} in cart` : 'Tap to add'}
-                          </span>
-                          <span className="rounded-full bg-gp-red px-2 py-1 text-[10px] font-black uppercase text-white opacity-0 transition-opacity group-hover:opacity-100">
-                            Add
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {hasSearchText(query) && searchResults.length === 0 && (
+                  <div className="rounded-md border border-dashed border-gp-border bg-gp-black/40 p-4 text-sm text-gp-text-muted">
+                    No current GP stock matched this search. Check supplier stock below or add it as a custom quote line.
+                  </div>
+                )}
               </div>
 
-              {supplierSearchResults.length > 0 && (
-                <div className="mt-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <h3 className="font-display text-xs font-black uppercase tracking-wider text-gp-text-main">Supplier Stock</h3>
-                    <span className="text-[10px] font-bold uppercase text-gp-text-muted">Added as non-local stock</span>
+              <div className="mt-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="font-display text-xs font-black uppercase tracking-wider text-gp-text-main">Supplier Stock</h3>
+                  <span className="text-[10px] font-bold uppercase text-gp-text-muted">Secondary stock source</span>
+                </div>
+
+                {query.trim().length < 2 ? (
+                  <div className="rounded-md border border-blue-900/40 bg-blue-950/10 p-4 text-xs font-bold uppercase tracking-wide text-gp-text-muted">
+                    Enter at least 2 characters to search all supplier catalogues.
                   </div>
+                ) : supplierSearchResults.length > 0 ? (
                   <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
                     {supplierSearchResults.map(item => {
                       const inCart = cart.find(cartItem => cartItem.cartLineType === 'SUPPLIER' && cartItem.inventoryItemId === item.id);
@@ -421,8 +463,33 @@ export const POSModal: React.FC<POSModalProps> = ({
                       );
                     })}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="rounded-md border border-blue-900/50 bg-blue-950/10 p-4">
+                    <p className="text-sm font-bold text-gp-text-main">No supplier stock matched this search.</p>
+                    <p className="mt-1 text-xs text-gp-text-muted">Add the searched item as a custom quote line, then edit the price in the register.</p>
+                    <button
+                      onClick={handleAddSearchAsQuoteLine}
+                      className="mt-3 rounded bg-blue-600 px-4 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-blue-500"
+                    >
+                      Add to Quote
+                    </button>
+                  </div>
+                )}
+
+                {query.trim().length >= 2 && supplierSearchResults.length > 0 && (
+                  <div className="mt-3 rounded-md border border-gp-border bg-gp-black/40 p-3">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="text-xs text-gp-text-muted">Still cannot find the exact supplier item?</p>
+                      <button
+                        onClick={handleAddSearchAsQuoteLine}
+                        className="rounded border border-blue-700 px-3 py-2 text-xs font-black uppercase tracking-wider text-blue-300 transition-colors hover:bg-blue-950/40"
+                      >
+                        Add Search as Quote Line
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </section>
 
