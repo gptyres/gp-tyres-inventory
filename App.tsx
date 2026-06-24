@@ -22,8 +22,18 @@ import { POSModal } from './components/POSModal';
 import { InvoiceModal } from './components/InvoiceModal';
 import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
-import { supabase, isSupabaseConfigured, SalesLogInsert, SalesLogRow, SystemLogInsert, SystemLogRow } from './supabaseClient';
-import { flushPendingSupabaseWrites, insertSalesLogEntries, insertSystemLogEntries } from './supabaseSync';
+import { supabase, isSupabaseConfigured, InventoryItemRow, SalesLogInsert, SalesLogRow, SystemLogInsert, SystemLogRow } from './supabaseClient';
+import { flushPendingSupabaseWrites, insertSystemLogEntries } from './supabaseSync';
+import {
+  deleteGlobalInventoryItem,
+  fetchGlobalInventory,
+  mapInventoryRowToItem,
+  mergeInventoryItems,
+  processInventoryTransaction,
+  seedGlobalInventoryIfEmpty,
+  StockAdjustment,
+  upsertGlobalInventoryItem
+} from './inventorySync';
 import { SAILUN_RAW_DATA } from './supplier_data/sailunData';
 import { EXCLUSIVE_TYRES_RAW_DATA } from './supplier_data/exclusiveTyresData';
 import { TYRE_WAREHOUSE_RAW_DATA } from './supplier_data/tyreWarehouseData';
@@ -308,22 +318,47 @@ const App: React.FC = () => {
 
   // --- INITIAL LOAD & SYNC ---
   useEffect(() => {
-    // 1. Load Local Inventory (Fast Load)
-    const storedItems = localStorage.getItem('gp-inventory');
-    const appliedSeedVersion = localStorage.getItem('gp-inventory-seed-version');
-    if (storedItems && appliedSeedVersion === INVENTORY_DATA_VERSION) {
-      try {
-        setItems(JSON.parse(storedItems));
-      } catch (error) {
-        console.warn('Ignoring invalid saved inventory data', error);
-        setItems(MOCK_INVENTORY);
-        localStorage.setItem('gp-inventory', JSON.stringify(MOCK_INVENTORY));
+    const loadCachedInventory = (): InventoryItem[] => {
+      const storedItems = localStorage.getItem('gp-inventory');
+      const appliedSeedVersion = localStorage.getItem('gp-inventory-seed-version');
+      if (storedItems && appliedSeedVersion === INVENTORY_DATA_VERSION) {
+        try {
+          return JSON.parse(storedItems);
+        } catch (error) {
+          console.warn('Ignoring invalid saved inventory data', error);
+        }
       }
-    } else {
-      setItems(MOCK_INVENTORY);
-      localStorage.setItem('gp-inventory', JSON.stringify(MOCK_INVENTORY));
-      localStorage.setItem('gp-inventory-seed-version', INVENTORY_DATA_VERSION);
-    }
+      return MOCK_INVENTORY;
+    };
+
+    // 1. Load cached inventory immediately, then replace with Supabase source of truth.
+    const cachedInventory = loadCachedInventory();
+    setItems(cachedInventory);
+    localStorage.setItem('gp-inventory', JSON.stringify(cachedInventory));
+    localStorage.setItem('gp-inventory-seed-version', INVENTORY_DATA_VERSION);
+
+    const fetchInventory = async () => {
+      if (!isSupabaseConfigured()) return;
+
+      try {
+        let globalInventory = await fetchGlobalInventory();
+
+        if (globalInventory.length === 0) {
+          const seededCount = await seedGlobalInventoryIfEmpty(cachedInventory.length ? cachedInventory : MOCK_INVENTORY);
+          if (seededCount > 0) {
+            console.info(`[SUPABASE] Seeded ${seededCount} inventory item(s) into global stock.`);
+          }
+          globalInventory = await fetchGlobalInventory();
+        }
+
+        if (globalInventory.length > 0) {
+          setItems(globalInventory);
+        }
+      } catch (error) {
+        console.error('[SUPABASE] Inventory Fetch Error:', error);
+      }
+    };
+    fetchInventory();
 
     // 2. Load Local Backorders
     const storedBackorders = readStoredArray<Backorder>('gp-backorders');
@@ -396,6 +431,25 @@ const App: React.FC = () => {
 
     // 5. Real-time Subscriptions
     if (isSupabaseConfigured()) {
+        const inventoryChannel = supabase
+            .channel('public:inventory_items')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'inventory_items' }, (payload: any) => {
+                if (payload.eventType === 'DELETE') {
+                  const deletedId = (payload.old as InventoryItemRow | undefined)?.id;
+                  if (deletedId) setItems(prev => prev.filter(item => item.id !== deletedId));
+                  return;
+                }
+
+                if (payload.new) {
+                  const changedItem = mapInventoryRowToItem(payload.new as InventoryItemRow);
+                  setItems(prev => mergeInventoryItems(prev, [changedItem]));
+                }
+            })
+            .subscribe((status, error) => {
+                if (error) console.error('[SUPABASE] Inventory realtime subscription error:', error);
+                if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') console.warn(`[SUPABASE] Inventory realtime status: ${status}`);
+            });
+
         // Sales Log Subscription
         const salesChannel = supabase
             .channel('public:sales_log')
@@ -422,6 +476,7 @@ const App: React.FC = () => {
 
         return () => {
             window.removeEventListener('online', flushQueuedWrites);
+            supabase.removeChannel(inventoryChannel);
             supabase.removeChannel(salesChannel);
             supabase.removeChannel(logsChannel);
         };
@@ -887,16 +942,6 @@ const App: React.FC = () => {
     const invoice = buildPOSDocument('INVOICE', soldCart, referenceId, staffName, createdAt);
 
     try {
-      setItems(prev => prev.map(item => {
-        const soldItem = soldCart.find(cartItem => cartItem.cartLineType === 'INVENTORY' && cartItem.inventoryItemId === item.id);
-        if (!soldItem) return item;
-        return {
-          ...item,
-          quantity: Math.max(0, item.quantity - soldItem.cartQuantity),
-          lastUpdated: createdAt.split('T')[0]
-        };
-      }));
-
       const salesLogEntries: SalesLogInsert[] = soldCart.map((item, index) => {
         const unitPrice = Math.max(0, item.sellingPrice - item.appliedDiscount);
         return {
@@ -912,9 +957,16 @@ const App: React.FC = () => {
         };
       });
 
-      const syncResult = await insertSalesLogEntries(salesLogEntries);
-      if (!syncResult.ok) {
-        console.warn('[SUPABASE] POS sales log queued for retry:', syncResult.error);
+      const stockAdjustments: StockAdjustment[] = soldCart
+        .filter(item => item.cartLineType === 'INVENTORY' && Boolean(item.inventoryItemId))
+        .map(item => ({
+          item_id: item.inventoryItemId as string,
+          delta: -item.cartQuantity
+        }));
+
+      const updatedInventory = await processInventoryTransaction(stockAdjustments, salesLogEntries);
+      if (updatedInventory.length > 0) {
+        setItems(prev => mergeInventoryItems(prev, updatedInventory));
       }
 
       const newOrders: Order[] = soldCart.map((item, index) => {
@@ -942,34 +994,34 @@ const App: React.FC = () => {
       setIsPOSOpen(false);
       setPOSCart([]);
       setPOSCustomerInfo({ fullName: '', contactDetail: '', vehicleDetails: '' });
+    } catch (error) {
+      console.error('[SUPABASE] POS transaction failed:', error);
+      alert(`Sale could not be completed because global stock could not be updated. ${error instanceof Error ? error.message : ''}`.trim());
     } finally {
       setIsCompletingPOS(false);
     }
   };
 
   // STOCK HANDLERS
-  const handleStockAction = (item: InventoryItem, action: 'ADD' | 'EDIT' | 'DELETE', staffName: StaffName) => {
+  const handleStockAction = async (item: InventoryItem, action: 'ADD' | 'EDIT' | 'DELETE', staffName: StaffName) => {
     console.info(`[AUDIT] ${action} by ${staffName} on ${item.id} (Terminal: ${currentUser})`);
-    
-    if (action === 'ADD') {
-      setItems(prev => [item, ...prev]);
-    } else if (action === 'EDIT') {
-      setItems(prev => prev.map(i => i.id === item.id ? item : i));
-    } else if (action === 'DELETE') {
-      setItems(prev => prev.filter(i => i.id !== item.id));
+
+    try {
+      if (action === 'DELETE') {
+        await deleteGlobalInventoryItem(item.id);
+        setItems(prev => prev.filter(i => i.id !== item.id));
+        return;
+      }
+
+      const savedItem = await upsertGlobalInventoryItem(item);
+      setItems(prev => mergeInventoryItems(prev, [savedItem]));
+    } catch (error) {
+      console.error('[SUPABASE] Stock action failed:', error);
+      alert(`Stock change was not saved globally. ${error instanceof Error ? error.message : ''}`.trim());
     }
   };
 
   const handleSell = async (item: InventoryItem, quantity: number, staffName: StaffName, finalUnitPrice: number) => {
-    // 1. Reduce Stock locally
-    setItems(prev => prev.map(i => {
-      if (i.id === item.id) {
-        return { ...i, quantity: i.quantity - quantity };
-      }
-      return i;
-    }));
-
-    // 2. Prepare Data for Supabase
     let desc = '';
     if (item.type === ProductType.TYRE) desc = `${(item as TyreProduct).size} ${(item as TyreProduct).brand}`;
     else if (item.type === ProductType.WHEEL) desc = `${(item as WheelProduct).code} ${(item as WheelProduct).size}`;
@@ -990,12 +1042,20 @@ const App: React.FC = () => {
         // timestamp auto-generated
     };
 
-    const syncResult = await insertSalesLogEntries([salesLogEntry]);
-    if (!syncResult.ok) {
-      console.warn('[SUPABASE] Sale log queued for retry:', syncResult.error);
+    try {
+      const updatedInventory = await processInventoryTransaction(
+        [{ item_id: item.id, delta: -quantity }],
+        [salesLogEntry]
+      );
+      if (updatedInventory.length > 0) {
+        setItems(prev => mergeInventoryItems(prev, updatedInventory));
+      }
+    } catch (error) {
+      console.error('[SUPABASE] Sale transaction failed:', error);
+      alert(`Sale could not be completed because global stock could not be updated. ${error instanceof Error ? error.message : ''}`.trim());
+      return;
     }
 
-    // 3. Local State Update
     const newOrder: Order = {
       id: uniqueRefId,
       terminalId: currentUser || 'UNKNOWN',
@@ -1014,14 +1074,6 @@ const App: React.FC = () => {
   };
 
   const handleReserveConfirm = async (item: InventoryItem, quantity: number, customerName: string, staffName: StaffName) => {
-    // 1. Reduce Stock
-    setItems(prev => prev.map(i => {
-      if (i.id === item.id) {
-        return { ...i, quantity: i.quantity - quantity };
-      }
-      return i;
-    }));
-
     let desc = '';
     if (item.type === ProductType.TYRE) desc = `${(item as TyreProduct).size} ${(item as TyreProduct).brand}`;
     else if (item.type === ProductType.WHEEL) desc = `${(item as WheelProduct).code} ${(item as WheelProduct).size}`;
@@ -1042,9 +1094,18 @@ const App: React.FC = () => {
         reference_id: uniqueRefId
     };
 
-    const syncResult = await insertSalesLogEntries([salesLogEntry]);
-    if (!syncResult.ok) {
-      console.warn('[SUPABASE] Reserve log queued for retry:', syncResult.error);
+    try {
+      const updatedInventory = await processInventoryTransaction(
+        [{ item_id: item.id, delta: -quantity }],
+        [salesLogEntry]
+      );
+      if (updatedInventory.length > 0) {
+        setItems(prev => mergeInventoryItems(prev, updatedInventory));
+      }
+    } catch (error) {
+      console.error('[SUPABASE] Reserve transaction failed:', error);
+      alert(`Reserve could not be completed because global stock could not be updated. ${error instanceof Error ? error.message : ''}`.trim());
+      return;
     }
 
     const newOrder: Order = {
@@ -1070,14 +1131,6 @@ const App: React.FC = () => {
     if (order.type === 'REFUND') return;
     
     if (window.confirm(`Are you sure you want to refund order ${order.referenceId || order.id}? Stock will be returned.`)) {
-        // Return Stock
-        setItems(prev => prev.map(i => {
-            if (i.id === order.productId) {
-                return { ...i, quantity: i.quantity + order.quantity };
-            }
-            return i;
-        }));
-
         const uniqueRefId = `${currentUser}-ref-${Date.now()}`;
 
         // Supabase Insert (Negative Value)
@@ -1092,9 +1145,19 @@ const App: React.FC = () => {
             reference_id: uniqueRefId
         };
 
-        const syncResult = await insertSalesLogEntries([salesLogEntry]);
-        if (!syncResult.ok) {
-            console.warn('[SUPABASE] Refund log queued for retry:', syncResult.error);
+        try {
+            const shouldReturnStock = items.some(item => item.id === order.productId);
+            const updatedInventory = await processInventoryTransaction(
+                shouldReturnStock ? [{ item_id: order.productId, delta: order.quantity }] : [],
+                [salesLogEntry]
+            );
+            if (updatedInventory.length > 0) {
+                setItems(prev => mergeInventoryItems(prev, updatedInventory));
+            }
+        } catch (error) {
+            console.error('[SUPABASE] Refund transaction failed:', error);
+            alert(`Refund could not be completed because global stock could not be updated. ${error instanceof Error ? error.message : ''}`.trim());
+            return;
         }
 
         // Create Refund Record Locally
@@ -1111,10 +1174,16 @@ const App: React.FC = () => {
   };
 
   // Bulk Delete Handler
-  const handleBulkDelete = (ids: string[]) => {
+  const handleBulkDelete = async (ids: string[]) => {
     if (!isAdmin) return;
     if (window.confirm(`Are you sure you want to delete ${ids.length} items? This cannot be undone.`)) {
+      try {
+        await Promise.all(ids.map(id => deleteGlobalInventoryItem(id)));
         setItems(prev => prev.filter(item => !ids.includes(item.id)));
+      } catch (error) {
+        console.error('[SUPABASE] Bulk delete failed:', error);
+        alert(`Some stock could not be deleted globally. ${error instanceof Error ? error.message : ''}`.trim());
+      }
     }
   };
 

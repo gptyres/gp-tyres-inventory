@@ -61,7 +61,10 @@ const queueWrite = <T,>(storageKey: string, table: QueueTable, rows: T[], error?
 };
 
 const insertSalesRows = async (rows: SalesLogInsert[]) => {
-  const { error } = await (supabase.from('sales_log') as any).insert(rows);
+  const { error } = await (supabase.from('sales_log') as any).upsert(rows, {
+    onConflict: 'reference_id',
+    ignoreDuplicates: true
+  });
   if (error) throw error;
 };
 
