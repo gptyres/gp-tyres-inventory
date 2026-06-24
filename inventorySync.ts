@@ -37,15 +37,38 @@ export const mergeInventoryItems = (existingItems: InventoryItem[], incomingItem
   return Array.from(byId.values());
 };
 
-export const fetchGlobalInventory = async () => {
-  const { data, error } = await supabase
-    .from('inventory_items')
-    .select('*')
-    .order('type', { ascending: true })
-    .order('id', { ascending: true });
+const INVENTORY_PAGE_SIZE = 1000;
 
-  if (error) throw new Error(error.message);
-  return (data || []).map(row => mapInventoryRowToItem(row as InventoryItemRow));
+const getNumericId = (id: string) => {
+  const numericPart = id.replace(/^[a-z]+-/, '');
+  const numericValue = Number(numericPart);
+  return Number.isFinite(numericValue) ? numericValue : Number.MAX_SAFE_INTEGER;
+};
+
+export const fetchGlobalInventory = async () => {
+  const rows: InventoryItemRow[] = [];
+
+  for (let from = 0; ; from += INVENTORY_PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from('inventory_items')
+      .select('*')
+      .order('type', { ascending: true })
+      .order('id', { ascending: true })
+      .range(from, from + INVENTORY_PAGE_SIZE - 1);
+
+    if (error) throw new Error(error.message);
+
+    rows.push(...((data || []) as InventoryItemRow[]));
+
+    if (!data || data.length < INVENTORY_PAGE_SIZE) break;
+  }
+
+  return rows
+    .sort((a, b) => {
+      if (a.type !== b.type) return a.type.localeCompare(b.type);
+      return getNumericId(a.id) - getNumericId(b.id);
+    })
+    .map(row => mapInventoryRowToItem(row));
 };
 
 export const seedGlobalInventoryIfEmpty = async (items: InventoryItem[]) => {
