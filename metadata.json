@@ -1,0 +1,7 @@
+{
+  "name": "GP Tyres & Mags Inventory Tracker",
+  "description": "High-performance inventory tracker for automotive retail. Features unified fuzzy search, role-based access, and specific schemas for Tyres, Wheels, and Coilovers.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

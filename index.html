@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <title>GP Tyres & Mags Inventory Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        /* Light Mode Defaults */
+        --color-gp-black: #f3f4f6; /* Gray 100 */
+        --color-gp-dark: #ffffff; /* White */
+        --color-gp-panel: #ffffff; /* White */
+        --color-gp-border: #e5e7eb; /* Gray 200 */
+        --color-gp-text-main: #111827; /* Gray 900 */
+        --color-gp-text-muted: #6b7280; /* Gray 500 */
+        --color-gp-input: #f9fafb; /* Gray 50 */
+        --color-gp-overlay: rgba(255, 255, 255, 0.5);
+      }
+      
+      .dark {
+        /* Dark Mode Overrides */
+        --color-gp-black: #050505;
+        --color-gp-dark: #121212;
+        --color-gp-panel: #1E1E1E;
+        --color-gp-border: #1f2937; /* Gray 800 */
+        --color-gp-text-main: #f3f4f6; /* Gray 100 */
+        --color-gp-text-muted: #9ca3af; /* Gray 400 */
+        --color-gp-input: #000000;
+        --color-gp-overlay: rgba(0, 0, 0, 0.4);
+      }
+
+      body {
+        background-color: var(--color-gp-black);
+        color: var(--color-gp-text-main);
+        -webkit-font-smoothing: antialiased;
+        transition: background-color 0.3s, color 0.3s;
+      }
+      
+      /* Custom Scrollbar for Industrial Look */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--color-gp-dark); 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #FF0000; 
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              gp: {
+                black: 'var(--color-gp-black)',
+                dark: 'var(--color-gp-dark)',
+                panel: 'var(--color-gp-panel)',
+                border: 'var(--color-gp-border)',
+                text: {
+                    main: 'var(--color-gp-text-main)',
+                    muted: 'var(--color-gp-text-muted)',
+                },
+                input: 'var(--color-gp-input)',
+                overlay: 'var(--color-gp-overlay)',
+                silver: '#A0A0A0',
+                red: '#FF0000',
+                redHover: '#CC0000',
+              }
+            },
+            fontFamily: {
+              sans: ['Roboto', 'sans-serif'],
+              display: ['Montserrat', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.93.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

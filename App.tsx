@@ -1,0 +1,1444 @@
+
+import React, { useState, useMemo, useEffect } from 'react';
+import { Sidebar } from './components/Sidebar';
+import { Navbar } from './components/Navbar';
+import { InventoryView } from './components/InventoryView';
+import { StatsDashboard } from './components/StatsDashboard';
+import { DashboardView } from './components/DashboardView';
+import { OrdersView } from './components/OrdersView';
+import { BackordersView } from './components/BackordersView';
+import { SystemLogsView } from './components/SystemLogsView';
+import { StockActionModal } from './components/StockActionModal';
+import { SellModal } from './components/SellModal';
+import { AdminAuthModal } from './components/AdminAuthModal';
+import { BackorderModal } from './components/BackorderModal';
+import { DataSyncModal } from './components/DataSyncModal';
+import { ReserveModal } from './components/ReserveModal';
+import { ShiftReconciliationModal } from './components/ShiftReconciliationModal';
+import { LoginScreen } from './components/LoginScreen';
+import { ChatBot } from './components/ChatBot';
+import { WheelCatalogView } from './components/WheelCatalogView';
+import { POSModal } from './components/POSModal';
+import { InvoiceModal } from './components/InvoiceModal';
+import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
+import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
+import { supabase, isSupabaseConfigured, SalesLogInsert, SalesLogRow, SystemLogInsert, SystemLogRow } from './supabaseClient';
+import { flushPendingSupabaseWrites, insertSalesLogEntries, insertSystemLogEntries } from './supabaseSync';
+import { SAILUN_RAW_DATA } from './supplier_data/sailunData';
+import { EXCLUSIVE_TYRES_RAW_DATA } from './supplier_data/exclusiveTyresData';
+import { TYRE_WAREHOUSE_RAW_DATA } from './supplier_data/tyreWarehouseData';
+import { ATT_RAW_DATA } from './supplier_data/attData';
+import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
+import { TYRE_LIFE_RAW_DATA } from './supplier_data/tyreLifeData';
+import { APEX_RAW_DATA } from './supplier_data/apexData';
+
+import {
+  searchInventory,
+  searchOrders,
+  searchBackorders,
+  parseSailunData,
+  parseExclusiveTyresData,
+  parseTyreWarehouseData,
+  parseAttData,
+  parseApexData,
+  parseTreadsUnlimitedData,
+  parseTyreLifeData
+} from './utils';
+
+const POS_REFERENCE_COUNTERS: Record<InvoiceDocument['documentType'], { storageKey: string; startAt: number }> = {
+  INVOICE: {
+    storageKey: 'gp-pos-next-invoice-number',
+    startAt: 3177
+  },
+  QUOTE: {
+    storageKey: 'gp-pos-next-quote-number',
+    startAt: 5122
+  }
+};
+
+const formatPOSReferenceNumber = (value: number) => String(value).padStart(6, '0');
+
+const tagSupplierPOSItems = (supplierKey: string, supplierItems: InventoryItem[]): InventoryItem[] => {
+  return supplierItems.map((item) => ({
+    ...item,
+    id: `supplier-${supplierKey}-${item.id}`
+  } as InventoryItem));
+};
+
+const getAllSupplierPOSItems = (): InventoryItem[] => [
+  ...tagSupplierPOSItems('sailun', parseSailunData(SAILUN_RAW_DATA)),
+  ...tagSupplierPOSItems('exclusive', parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA)),
+  ...tagSupplierPOSItems('tyrewarehouse', parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA)),
+  ...tagSupplierPOSItems('att', parseAttData(ATT_RAW_DATA)),
+  ...tagSupplierPOSItems('apex', parseApexData(APEX_RAW_DATA)),
+  ...tagSupplierPOSItems('treads', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
+  ...tagSupplierPOSItems('tyrelife', parseTyreLifeData(TYRE_LIFE_RAW_DATA))
+];
+
+const App: React.FC = () => {
+  // --- AUTH STATE ---
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
+
+  // --- DATA STATE (with Persistence) ---
+  const [items, setItems] = useState<InventoryItem[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [backorders, setBackorders] = useState<Backorder[]>([]);
+  const [loginLogs, setLoginLogs] = useState<LoginLog[]>([]);
+  
+  // --- UI STATE ---
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  
+  // Portal State
+  const [currentPortal, setCurrentPortal] = useState<{name: string, url: string} | null>(null);
+  const [activeSupplierCatalog, setActiveSupplierCatalog] = useState<SupplierCatalog>('SAILUN');
+  
+  // Theme State
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    const saved = localStorage.getItem('gp-theme');
+    if (saved) return saved === 'dark';
+    return true; // Default to dark
+  });
+  
+  // Navigation State
+  const [currentView, setCurrentView] = useState<AppView>('DASHBOARD');
+  const [activeFilter, setActiveFilter] = useState<ProductType | 'ALL'>('ALL');
+  
+  // Mobile Sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // Desktop Sidebar
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
+  // Search Visibility
+  const [isSearchVisible, setIsSearchVisible] = useState(true);
+  
+  // Chat State
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
+  
+  // Modal States
+  const [isStockModalOpen, setIsStockModalOpen] = useState(false);
+  const [isSellModalOpen, setIsSellModalOpen] = useState(false);
+  const [isBackorderModalOpen, setIsBackorderModalOpen] = useState(false);
+  const [isDataSyncModalOpen, setIsDataSyncModalOpen] = useState(false);
+  const [isReserveModalOpen, setIsReserveModalOpen] = useState(false);
+  const [isCashUpModalOpen, setIsCashUpModalOpen] = useState(false);
+  const [isPOSOpen, setIsPOSOpen] = useState(false);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [posCart, setPOSCart] = useState<CartItem[]>([]);
+  const [invoiceDocument, setInvoiceDocument] = useState<InvoiceDocument | null>(null);
+  const [isCompletingPOS, setIsCompletingPOS] = useState(false);
+  const [posCustomerInfo, setPOSCustomerInfo] = useState<CustomerInfo>({
+    fullName: '',
+    contactDetail: '',
+    vehicleDetails: ''
+  });
+  
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | undefined>(undefined);
+  const [selectedBackorder, setSelectedBackorder] = useState<Backorder | undefined>(undefined);
+
+  // --- SUPPLIER DATA MEMO ---
+  const allSupplierPOSItems = useMemo(() => getAllSupplierPOSItems(), []);
+
+  const supplierItems = useMemo(() => {
+    const tagSupplierItems = (supplierName: string, supplierItems: InventoryItem[]): InventoryItem[] => {
+      return supplierItems.map((item) => {
+        if (item.type !== ProductType.TYRE) return { ...item, id: `${supplierName}-${item.id}` };
+
+        const tyre = item as TyreProduct;
+        return {
+          ...tyre,
+          id: `${supplierName}-${tyre.id}`,
+          location: `${supplierName}: ${tyre.location || 'Supplier'}`
+        };
+      });
+    };
+
+    if (currentView === 'SUPPLIER_INVENTORY') {
+      switch (activeSupplierCatalog) {
+        case 'ALL_SUPPLIERS':
+          return [
+            ...tagSupplierItems('SAILUN', parseSailunData(SAILUN_RAW_DATA)),
+            ...tagSupplierItems('EXCLUSIVE TYRES', parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA)),
+            ...tagSupplierItems('TYREWAREHOUSE', parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA)),
+            ...tagSupplierItems('ATT', parseAttData(ATT_RAW_DATA)),
+            ...tagSupplierItems('APEX', parseApexData(APEX_RAW_DATA)),
+            ...tagSupplierItems('TREADS UNLIMITED', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
+            ...tagSupplierItems('TYRE LIFE', parseTyreLifeData(TYRE_LIFE_RAW_DATA))
+          ];
+        case 'EXCLUSIVE_TYRES':
+          return parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA);
+        case 'TYREWAREHOUSE':
+          return parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA);
+        case 'ATT':
+          return parseAttData(ATT_RAW_DATA);
+        case 'APEX':
+          return parseApexData(APEX_RAW_DATA);
+        case 'TREADS_UNLIMITED':
+          return parseTreadsUnlimitedData(TREADS_RAW_DATA);
+        case 'TYRE_LIFE':
+          return parseTyreLifeData(TYRE_LIFE_RAW_DATA);
+        case 'SAILUN':
+        default:
+          return parseSailunData(SAILUN_RAW_DATA);
+      }
+    }
+    return [];
+  }, [currentView, activeSupplierCatalog]);
+
+  const supplierCatalogMeta: Record<SupplierCatalog, { label: string; note: string }> = {
+    ALL_SUPPLIERS: {
+      label: 'All Supplier Stock',
+      note: 'Search every supplier catalogue at once. Enter at least 2 characters to show results; supplier names appear in the location field.'
+    },
+    SAILUN: {
+      label: 'Sailun (Inc. VAT)',
+      note: 'Viewing External Supplier Data. Prices calculated with 15% VAT added to Nett Price.'
+    },
+    EXCLUSIVE_TYRES: {
+      label: 'EXCLUSIVE TYRES',
+      note: 'Viewing External Supplier Data. Prices use the Cost + VAT values from Exclusive Tyres.'
+    },
+    TYREWAREHOUSE: {
+      label: 'TYREWAREHOUSE',
+      note: 'Viewing External Supplier Data. Prices use the Cost + VAT values from TyreWarehouse.'
+    },
+    ATT: {
+      label: 'ATT',
+      note: 'Viewing External Supplier Data. Prices use ATT selling prices.'
+    },
+    APEX: {
+      label: 'APEX',
+      note: 'Viewing External Supplier Data. Prices use APEX Cost + VAT values, with lead time shown in the location field.'
+    },
+    TREADS_UNLIMITED: {
+      label: 'TREADS UNLIMITED',
+      note: 'Viewing External Supplier Data. Quantity uses national stock, with regional stock shown in the location field.'
+    },
+    TYRE_LIFE: {
+      label: 'TYRE LIFE',
+      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.'
+    }
+  };
+
+  const supplierCatalogLabel = supplierCatalogMeta[activeSupplierCatalog].label;
+  const supplierCatalogNote = supplierCatalogMeta[activeSupplierCatalog].note;
+
+  // Helper to determine transaction type based on amount and fields
+  const inferTransactionType = (row: any): 'SALE' | 'RESERVE' | 'REFUND' => {
+    const amount = Number(row.total_amount);
+    if (amount < 0) return 'REFUND';
+    if (amount === 0 && row.customer_name) return 'RESERVE';
+    return 'SALE';
+  };
+
+  const readStoredArray = <T,>(storageKey: string): T[] => {
+    try {
+      const storedValue = localStorage.getItem(storageKey);
+      if (!storedValue) return [];
+      const parsedValue = JSON.parse(storedValue);
+      return Array.isArray(parsedValue) ? parsedValue : [];
+    } catch (error) {
+      console.warn(`Ignoring invalid saved ${storageKey} data`, error);
+      return [];
+    }
+  };
+
+  const mapSalesLogRowToOrder = (row: SalesLogRow): Order => ({
+    id: row.reference_id || row.id?.toString() || `db-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    terminalId: row.terminal_id,
+    productId: row.product_id,
+    productDescription: row.product_description,
+    quantity: Number(row.quantity) || 0,
+    unitPrice: Number(row.unit_price) || 0,
+    totalPrice: Number(row.total_amount) || 0,
+    staffName: row.user_id,
+    customerName: row.customer_name || undefined,
+    timestamp: row.created_at || new Date().toISOString(),
+    type: inferTransactionType(row),
+    referenceId: row.reference_id
+  });
+
+  const mapSystemLogRowToLoginLog = (row: SystemLogRow): LoginLog => ({
+    id: row.id?.toString() || `db-log-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    username: row.terminal_id,
+    timestamp: row.created_at || new Date().toISOString(),
+    status: row.status as LoginLog['status'],
+    event: row.event_type
+  });
+
+  const mergeOrdersUnique = (incomingOrders: Order[], existingOrders: Order[]) => {
+    const seen = new Set(existingOrders.map(order => order.referenceId || order.id));
+    const uniqueIncoming = incomingOrders.filter(order => {
+      const key = order.referenceId || order.id;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    return [...uniqueIncoming, ...existingOrders];
+  };
+
+  const mergeLoginLogsUnique = (incomingLogs: LoginLog[], existingLogs: LoginLog[]) => {
+    const merged = [...existingLogs];
+
+    incomingLogs.forEach(incomingLog => {
+      const incomingTime = new Date(incomingLog.timestamp).getTime();
+      const duplicateIndex = merged.findIndex(existingLog => {
+        if (existingLog.id === incomingLog.id) return true;
+        const existingTime = new Date(existingLog.timestamp).getTime();
+        return (
+          existingLog.username === incomingLog.username &&
+          existingLog.event === incomingLog.event &&
+          existingLog.status === incomingLog.status &&
+          Number.isFinite(incomingTime) &&
+          Number.isFinite(existingTime) &&
+          Math.abs(existingTime - incomingTime) < 15000
+        );
+      });
+
+      if (duplicateIndex >= 0) {
+        merged.splice(duplicateIndex, 1);
+      }
+      merged.unshift(incomingLog);
+    });
+
+    return merged;
+  };
+
+  // --- INITIAL LOAD & SYNC ---
+  useEffect(() => {
+    // 1. Load Local Inventory (Fast Load)
+    const storedItems = localStorage.getItem('gp-inventory');
+    const appliedSeedVersion = localStorage.getItem('gp-inventory-seed-version');
+    if (storedItems && appliedSeedVersion === INVENTORY_DATA_VERSION) {
+      try {
+        setItems(JSON.parse(storedItems));
+      } catch (error) {
+        console.warn('Ignoring invalid saved inventory data', error);
+        setItems(MOCK_INVENTORY);
+        localStorage.setItem('gp-inventory', JSON.stringify(MOCK_INVENTORY));
+      }
+    } else {
+      setItems(MOCK_INVENTORY);
+      localStorage.setItem('gp-inventory', JSON.stringify(MOCK_INVENTORY));
+      localStorage.setItem('gp-inventory-seed-version', INVENTORY_DATA_VERSION);
+    }
+
+    // 2. Load Local Backorders
+    const storedBackorders = readStoredArray<Backorder>('gp-backorders');
+    setBackorders(storedBackorders.length ? storedBackorders : MOCK_BACKORDERS);
+
+    const storedOrders = readStoredArray<Order>('gp-orders');
+    if (storedOrders.length) setOrders(storedOrders);
+
+    const storedLogs = readStoredArray<LoginLog>('gp-login-logs');
+    if (storedLogs.length) setLoginLogs(storedLogs);
+
+    const flushQueuedWrites = async () => {
+      const result = await flushPendingSupabaseWrites();
+      if (result.salesSynced || result.systemSynced) {
+        console.info(`[SUPABASE] Synced ${result.salesSynced} queued sales log(s) and ${result.systemSynced} queued system log(s).`);
+      }
+    };
+
+    flushQueuedWrites();
+    window.addEventListener('online', flushQueuedWrites);
+
+    // 3. Supabase: Fetch Sales Log (Financial History)
+    const fetchOrders = async () => {
+      if (isSupabaseConfigured()) {
+        const { data, error } = await supabase
+          .from('sales_log')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(500);
+
+        if (error) {
+          console.error('[SUPABASE] Sales Log Fetch Error:', error);
+          const storedOrders = localStorage.getItem('gp-orders');
+          if (storedOrders) setOrders(JSON.parse(storedOrders));
+        } else if (data) {
+          const mappedOrders: Order[] = data.map(mapSalesLogRowToOrder);
+          setOrders(prev => mergeOrdersUnique(mappedOrders, prev));
+        }
+      } else {
+         const fallbackOrders = readStoredArray<Order>('gp-orders');
+         if (fallbackOrders.length) setOrders(fallbackOrders);
+      }
+    };
+    fetchOrders();
+
+    // 4. Supabase: Fetch System Logs (Security)
+    const fetchLogs = async () => {
+        if (!isSupabaseConfigured()) {
+            const fallbackLogs = readStoredArray<LoginLog>('gp-login-logs');
+            if (fallbackLogs.length) setLoginLogs(fallbackLogs);
+            return;
+        }
+
+        const { data, error } = await supabase
+            .from('system_logs')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(200);
+
+        if (error) {
+            console.error('[SUPABASE] System Logs Fetch Error:', error);
+            const fallbackLogs = readStoredArray<LoginLog>('gp-login-logs');
+            if (fallbackLogs.length) setLoginLogs(fallbackLogs);
+        } else if (data) {
+            const mappedLogs: LoginLog[] = data.map(mapSystemLogRowToLoginLog);
+            setLoginLogs(prev => mergeLoginLogsUnique(mappedLogs.reverse(), prev));
+        }
+    };
+    fetchLogs();
+
+    // 5. Real-time Subscriptions
+    if (isSupabaseConfigured()) {
+        // Sales Log Subscription
+        const salesChannel = supabase
+            .channel('public:sales_log')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'sales_log' }, (payload) => {
+                const newOrder = mapSalesLogRowToOrder(payload.new as SalesLogRow);
+                setOrders(prev => mergeOrdersUnique([newOrder], prev));
+            })
+            .subscribe((status, error) => {
+                if (error) console.error('[SUPABASE] Sales realtime subscription error:', error);
+                if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') console.warn(`[SUPABASE] Sales realtime status: ${status}`);
+            });
+
+        // System Log Subscription
+        const logsChannel = supabase
+            .channel('public:system_logs')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'system_logs' }, (payload) => {
+                const newLog = mapSystemLogRowToLoginLog(payload.new as SystemLogRow);
+                setLoginLogs(prev => mergeLoginLogsUnique([newLog], prev));
+            })
+            .subscribe((status, error) => {
+                if (error) console.error('[SUPABASE] System log realtime subscription error:', error);
+                if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') console.warn(`[SUPABASE] System log realtime status: ${status}`);
+            });
+
+        return () => {
+            window.removeEventListener('online', flushQueuedWrites);
+            supabase.removeChannel(salesChannel);
+            supabase.removeChannel(logsChannel);
+        };
+    }
+
+    return () => {
+      window.removeEventListener('online', flushQueuedWrites);
+    };
+  }, []);
+
+  // --- PERSISTENCE EFFECTS ---
+  useEffect(() => {
+    if (items.length > 0) {
+      localStorage.setItem('gp-inventory', JSON.stringify(items));
+    }
+  }, [items]);
+
+  useEffect(() => {
+    localStorage.setItem('gp-orders', JSON.stringify(orders));
+  }, [orders]);
+
+  useEffect(() => {
+    if (backorders.length > 0) localStorage.setItem('gp-backorders', JSON.stringify(backorders));
+  }, [backorders]);
+
+  useEffect(() => {
+    if (loginLogs.length > 0) localStorage.setItem('gp-login-logs', JSON.stringify(loginLogs));
+  }, [loginLogs]);
+
+  // Viewport resize handler
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setViewMode(ViewMode.LIST);
+      } else {
+        setViewMode(prev => prev === ViewMode.LIST ? ViewMode.GRID : prev);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Apply Theme Class
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('gp-theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('gp-theme', 'light');
+    }
+  }, [isDarkMode]);
+
+  // --- FILTERING ---
+  const filteredItems = useMemo(() => {
+    // If viewing supplier inventory, filter that list instead of main inventory
+    let sourceList = currentView === 'SUPPLIER_INVENTORY' ? supplierItems : items;
+    
+    let result = sourceList;
+    if (
+      currentView === 'SUPPLIER_INVENTORY' &&
+      activeSupplierCatalog === 'ALL_SUPPLIERS' &&
+      searchQuery.trim().length < 2
+    ) {
+      return [];
+    }
+    if (activeFilter !== 'ALL' && currentView !== 'SUPPLIER_INVENTORY') {
+      result = result.filter(item => item.type === activeFilter);
+    }
+    result = searchInventory(result, searchQuery);
+    return result;
+  }, [items, supplierItems, activeFilter, searchQuery, currentView, activeSupplierCatalog]);
+
+  const filteredOrders = useMemo(() => {
+    return searchOrders(orders, searchQuery);
+  }, [orders, searchQuery]);
+
+  const filteredBackorders = useMemo(() => {
+    return searchBackorders(backorders, searchQuery);
+  }, [backorders, searchQuery]);
+
+  // --- STATS ---
+  const stats: InventoryStats = useMemo(() => {
+    return items.reduce(
+      (acc, item) => ({
+        totalItems: acc.totalItems + item.quantity,
+        totalValueRetail: acc.totalValueRetail + (item.quantity * item.sellingPrice),
+        totalValueCost: acc.totalValueCost + (item.quantity * item.costPrice),
+        lowStockCount: acc.lowStockCount + (item.quantity < 4 ? 1 : 0),
+      }),
+      { totalItems: 0, totalValueRetail: 0, totalValueCost: 0, lowStockCount: 0 }
+    );
+  }, [items]);
+
+  // --- HANDLERS ---
+
+  const handleLoginAttempt = async (username: string, success: boolean) => {
+    const logData: SystemLogInsert = {
+        terminal_id: username, // "Terminal / User ID"
+        event_type: 'SYSTEM_LOGIN', // "Event Type"
+        status: success ? 'SUCCESS' : 'FAILURE', // "Status"
+        // Date/Time is auto-handled by Supabase created_at
+    };
+
+    // 1. Sync to Supabase
+    const syncResult = await insertSystemLogEntries([logData]);
+    if (!syncResult.ok) {
+      console.warn('[SUPABASE] System login log queued for retry:', syncResult.error);
+    }
+
+    // 2. Local State (Optimistic)
+    const newLog: LoginLog = {
+      id: `log-${Date.now()}`,
+      username: username,
+      timestamp: new Date().toISOString(),
+      status: success ? 'SUCCESS' : 'FAILURE',
+      event: 'SYSTEM_LOGIN'
+    };
+    setLoginLogs(prev => mergeLoginLogsUnique([newLog], prev));
+  };
+
+  const handleAdminAccess = async (staffName: string) => {
+    const fullUsername = `${currentUser} (${staffName})`;
+    
+    // 1. Sync to Supabase
+    const syncResult = await insertSystemLogEntries([{
+        terminal_id: fullUsername,
+        event_type: 'ADMIN_ACCESS',
+        status: 'SUCCESS'
+    }]);
+    if (!syncResult.ok) {
+      console.warn('[SUPABASE] Admin access log queued for retry:', syncResult.error);
+    }
+
+    // 2. Local State
+    const newLog: LoginLog = {
+        id: `log-${Date.now()}`,
+        username: fullUsername,
+        timestamp: new Date().toISOString(),
+        status: 'SUCCESS',
+        event: 'ADMIN_ACCESS'
+    };
+    setLoginLogs(prev => mergeLoginLogsUnique([newLog], prev));
+    setIsAdmin(true);
+  };
+
+  const handleLoginSuccess = (username: string) => {
+    setCurrentUser(username);
+  };
+
+  const handleAdminToggle = () => {
+    if (isAdmin) {
+      setIsAdmin(false);
+      if (currentView === 'SYSTEM_LOGS') {
+        setCurrentView('INVENTORY');
+      }
+    } else {
+      setShowAuthModal(true);
+    }
+  };
+
+  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+
+  // POS HELPERS
+  const getInventoryCartTitle = (item: InventoryItem): string => {
+    if (item.type === ProductType.TYRE) return `${(item as TyreProduct).size} ${(item as TyreProduct).brand}`.trim();
+    if (item.type === ProductType.WHEEL) return `${(item as WheelProduct).code} ${(item as WheelProduct).size}`.trim();
+    return `${(item as CoiloverProduct).brand} ${(item as CoiloverProduct).vehicleCompatibility}`.trim();
+  };
+
+  const getInventoryCartDescription = (item: InventoryItem): string => {
+    if (item.type === ProductType.TYRE) {
+      const tyre = item as TyreProduct;
+      return [tyre.pattern, tyre.loadSpeedIndex, tyre.location].filter(Boolean).join(' | ');
+    }
+    if (item.type === ProductType.WHEEL) {
+      const wheel = item as WheelProduct;
+      return [wheel.pcd, wheel.offset ? `ET${wheel.offset}` : '', wheel.colour].filter(Boolean).join(' | ');
+    }
+    return (item as CoiloverProduct).series;
+  };
+
+  const getSupplierCartDescription = (item: InventoryItem): string => {
+    if (item.type === ProductType.TYRE) {
+      const tyre = item as TyreProduct;
+      return [tyre.pattern, tyre.loadSpeedIndex].filter(Boolean).join(' | ');
+    }
+    if (item.type === ProductType.WHEEL) {
+      const wheel = item as WheelProduct;
+      return [wheel.pcd, wheel.offset ? `ET${wheel.offset}` : '', wheel.colour].filter(Boolean).join(' | ');
+    }
+    return (item as CoiloverProduct).series;
+  };
+
+  const createInventoryCartItem = (item: InventoryItem, cartQuantity = 1, appliedDiscount = 0): CartItem => ({
+    id: `inv-${item.id}`,
+    cartLineType: 'INVENTORY',
+    inventoryItemId: item.id,
+    productType: item.type,
+    activityCode: item.id,
+    title: getInventoryCartTitle(item),
+    description: getInventoryCartDescription(item),
+    quantity: item.quantity,
+    sellingPrice: item.sellingPrice,
+    costPrice: item.costPrice,
+    lastUpdated: item.lastUpdated,
+    cartQuantity: Math.min(item.quantity, Math.max(1, cartQuantity)),
+    appliedDiscount: Math.min(item.sellingPrice, Math.max(0, appliedDiscount))
+  });
+
+  const createSupplierCartItem = (item: InventoryItem, cartQuantity = 1, appliedDiscount = 0): CartItem => ({
+    id: `sup-${item.id}`,
+    cartLineType: 'SUPPLIER',
+    inventoryItemId: item.id,
+    productType: item.type,
+    activityCode: item.type,
+    title: getInventoryCartTitle(item),
+    description: getSupplierCartDescription(item),
+    quantity: item.quantity,
+    sellingPrice: item.sellingPrice,
+    costPrice: item.costPrice,
+    lastUpdated: item.lastUpdated,
+    cartQuantity: Math.min(item.quantity, Math.max(1, cartQuantity)),
+    appliedDiscount: Math.min(item.sellingPrice, Math.max(0, appliedDiscount))
+  });
+
+  const getPOSLineDescription = (item: CartItem): string => item.title;
+
+  const calculatePOSTotals = (cart: CartItem[]) => {
+    return cart.reduce(
+      (acc, item) => {
+        const unitPrice = Math.max(0, item.sellingPrice - item.appliedDiscount);
+        return {
+          subtotal: acc.subtotal + item.sellingPrice * item.cartQuantity,
+          totalDiscount: acc.totalDiscount + item.appliedDiscount * item.cartQuantity,
+          grandTotal: acc.grandTotal + unitPrice * item.cartQuantity
+        };
+      },
+      { subtotal: 0, totalDiscount: 0, grandTotal: 0 }
+    );
+  };
+
+  const buildPOSDocument = (
+    documentType: InvoiceDocument['documentType'],
+    cart: CartItem[],
+    referenceId: string,
+    staffName?: StaffName,
+    createdAt = new Date().toISOString()
+  ): InvoiceDocument => {
+    const totals = calculatePOSTotals(cart);
+    return {
+      id: referenceId,
+      referenceId,
+      documentType,
+      terminalId: currentUser || 'UNKNOWN',
+      staffName,
+      customer: {
+        fullName: posCustomerInfo.fullName.trim(),
+        contactDetail: posCustomerInfo.contactDetail.trim(),
+        vehicleDetails: posCustomerInfo.vehicleDetails.trim()
+      },
+      createdAt,
+      items: cart.map(item => ({ ...item })),
+      ...totals
+    };
+  };
+
+  const getHighestKnownInvoiceNumber = () => {
+    return orders.reduce((highest, order) => {
+      const possibleReference = order.referenceId || order.id;
+      const match = possibleReference?.match(/^(\d{6})(?:-\d+)?$/);
+      if (!match) return highest;
+      return Math.max(highest, Number.parseInt(match[1], 10));
+    }, 0);
+  };
+
+  const getNextPOSReference = (documentType: InvoiceDocument['documentType']) => {
+    const counter = POS_REFERENCE_COUNTERS[documentType];
+    const storedValue = Number.parseInt(localStorage.getItem(counter.storageKey) || '', 10);
+    const knownNextInvoiceValue = documentType === 'INVOICE' ? getHighestKnownInvoiceNumber() + 1 : counter.startAt;
+    const nextValue = Math.max(
+      Number.isFinite(storedValue) ? storedValue : counter.startAt,
+      knownNextInvoiceValue,
+      counter.startAt
+    );
+    localStorage.setItem(counter.storageKey, String(nextValue + 1));
+    return formatPOSReferenceNumber(nextValue);
+  };
+
+  const handlePOSAddItem = (item: InventoryItem) => {
+    if (item.quantity <= 0) return;
+
+    setPOSCart(prev => {
+      const existing = prev.find(cartItem => cartItem.cartLineType === 'INVENTORY' && cartItem.inventoryItemId === item.id);
+      if (existing) {
+        return prev.map(cartItem => {
+          if (cartItem.cartLineType !== 'INVENTORY' || cartItem.inventoryItemId !== item.id) return cartItem;
+          return {
+            ...createInventoryCartItem(item, cartItem.cartQuantity + 1, cartItem.appliedDiscount),
+            cartQuantity: Math.min(item.quantity, cartItem.cartQuantity + 1),
+            appliedDiscount: Math.min(cartItem.appliedDiscount, item.sellingPrice)
+          };
+        });
+      }
+
+      return [
+        ...prev,
+        createInventoryCartItem(item)
+      ];
+    });
+  };
+
+  const handlePOSAddSupplierItem = (item: InventoryItem) => {
+    if (item.quantity <= 0) return;
+
+    setPOSCart(prev => {
+      const existing = prev.find(cartItem => cartItem.cartLineType === 'SUPPLIER' && cartItem.inventoryItemId === item.id);
+      if (existing) {
+        return prev.map(cartItem => {
+          if (cartItem.cartLineType !== 'SUPPLIER' || cartItem.inventoryItemId !== item.id) return cartItem;
+          return {
+            ...createSupplierCartItem(item, cartItem.cartQuantity + 1, cartItem.appliedDiscount),
+            cartQuantity: Math.min(item.quantity, cartItem.cartQuantity + 1),
+            appliedDiscount: Math.min(cartItem.appliedDiscount, item.sellingPrice)
+          };
+        });
+      }
+
+      return [
+        ...prev,
+        createSupplierCartItem(item)
+      ];
+    });
+  };
+
+  const handlePOSAddService = (service: { title: string; price: number }) => {
+    const serviceId = `service-${service.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+    setPOSCart(prev => {
+      const existing = prev.find(item => item.id === serviceId);
+      if (existing) {
+        return prev.map(item => (
+          item.id === serviceId
+            ? { ...item, cartQuantity: Math.min(999, item.cartQuantity + 1) }
+            : item
+        ));
+      }
+
+      return [
+        ...prev,
+        {
+          id: serviceId,
+          cartLineType: 'SERVICE',
+          activityCode: 'SERVICE',
+          title: service.title,
+          description: 'GP Tyres & Mags service',
+          quantity: 999,
+          sellingPrice: service.price,
+          costPrice: 0,
+          lastUpdated: new Date().toISOString().split('T')[0],
+          cartQuantity: 1,
+          appliedDiscount: 0
+        }
+      ];
+    });
+  };
+
+  const handlePOSAddManualLine = (line: { title: string; description: string; quantity: number; unitPrice: number }) => {
+    setPOSCart(prev => [
+      ...prev,
+      {
+        id: `custom-${Date.now()}`,
+        cartLineType: 'CUSTOM',
+        activityCode: 'CUSTOM',
+        title: line.title,
+        description: line.description,
+        quantity: 999,
+        sellingPrice: Math.max(0, line.unitPrice),
+        costPrice: 0,
+        lastUpdated: new Date().toISOString().split('T')[0],
+        cartQuantity: Math.max(1, line.quantity),
+        appliedDiscount: 0
+      }
+    ]);
+  };
+
+  const handlePOSRemoveItem = (itemId: string) => {
+    setPOSCart(prev => prev.filter(item => item.id !== itemId));
+  };
+
+  const handlePOSUpdateQuantity = (itemId: string, quantity: number) => {
+    setPOSCart(prev => prev.flatMap(item => {
+      if (item.id !== itemId) return [item];
+
+      if (item.cartLineType === 'SUPPLIER') {
+        return [{ ...item, cartQuantity: Math.min(item.quantity, Math.max(1, quantity)) }];
+      }
+
+      if (item.cartLineType !== 'INVENTORY') {
+        return [{ ...item, cartQuantity: Math.min(999, Math.max(1, quantity)) }];
+      }
+
+      const currentStock = items.find(stockItem => stockItem.id === item.inventoryItemId)?.quantity ?? 0;
+      if (currentStock <= 0) return [];
+      return [{ ...item, quantity: currentStock, cartQuantity: Math.min(currentStock, Math.max(1, quantity)) }];
+    }));
+  };
+
+  const handlePOSUpdateDiscount = (itemId: string, discount: number) => {
+    setPOSCart(prev => prev.map(item => (
+      item.id === itemId
+        ? { ...item, appliedDiscount: Math.min(item.sellingPrice, Math.max(0, discount)) }
+        : item
+    )));
+  };
+
+  const handlePOSUpdateLineTotal = (itemId: string, lineTotal: number) => {
+    setPOSCart(prev => prev.map(item => {
+      if (item.id !== itemId) return item;
+      const cartQuantity = Math.max(1, item.cartQuantity);
+      return {
+        ...item,
+        sellingPrice: Math.max(0, lineTotal) / cartQuantity,
+        appliedDiscount: 0
+      };
+    }));
+  };
+
+  const handlePOSGenerateQuote = (staffName?: StaffName) => {
+    if (posCart.length === 0) return;
+    const quoteDocument = buildPOSDocument('QUOTE', posCart, getNextPOSReference('QUOTE'), staffName);
+    setInvoiceDocument(quoteDocument);
+    setIsInvoiceModalOpen(true);
+    setIsPOSOpen(false);
+  };
+
+  const handlePOSCompleteSale = async (staffName: StaffName) => {
+    if (posCart.length === 0 || isCompletingPOS) return;
+
+    const stockById = new Map<string, InventoryItem>(items.map(item => [item.id, item] as const));
+    const stockIssues = posCart.filter(cartItem => {
+      if (cartItem.cartLineType !== 'INVENTORY' || !cartItem.inventoryItemId) return false;
+      const currentStock = stockById.get(cartItem.inventoryItemId)?.quantity ?? 0;
+      return currentStock < cartItem.cartQuantity;
+    });
+
+    if (stockIssues.length > 0) {
+      alert(`Stock changed for ${stockIssues.map(getPOSLineDescription).join(', ')}. Please review the cart before completing the sale.`);
+      return;
+    }
+
+    setIsCompletingPOS(true);
+
+    const referenceId = getNextPOSReference('INVOICE');
+    const createdAt = new Date().toISOString();
+    const soldCart: CartItem[] = posCart.map(cartItem => {
+      if (cartItem.cartLineType !== 'INVENTORY' || !cartItem.inventoryItemId) return { ...cartItem };
+      const liveItem = stockById.get(cartItem.inventoryItemId);
+      if (!liveItem) return { ...cartItem };
+      return createInventoryCartItem(liveItem, cartItem.cartQuantity, cartItem.appliedDiscount);
+    });
+    const invoice = buildPOSDocument('INVOICE', soldCart, referenceId, staffName, createdAt);
+
+    try {
+      setItems(prev => prev.map(item => {
+        const soldItem = soldCart.find(cartItem => cartItem.cartLineType === 'INVENTORY' && cartItem.inventoryItemId === item.id);
+        if (!soldItem) return item;
+        return {
+          ...item,
+          quantity: Math.max(0, item.quantity - soldItem.cartQuantity),
+          lastUpdated: createdAt.split('T')[0]
+        };
+      }));
+
+      const salesLogEntries: SalesLogInsert[] = soldCart.map((item, index) => {
+        const unitPrice = Math.max(0, item.sellingPrice - item.appliedDiscount);
+        return {
+          terminal_id: currentUser || 'UNKNOWN',
+          product_id: item.inventoryItemId || item.id,
+          product_description: getPOSLineDescription(item),
+          quantity: item.cartQuantity,
+          unit_price: unitPrice,
+          total_amount: unitPrice * item.cartQuantity,
+          user_id: staffName,
+          customer_name: posCustomerInfo.fullName.trim(),
+          reference_id: `${referenceId}-${String(index + 1).padStart(2, '0')}`
+        };
+      });
+
+      const syncResult = await insertSalesLogEntries(salesLogEntries);
+      if (!syncResult.ok) {
+        console.warn('[SUPABASE] POS sales log queued for retry:', syncResult.error);
+      }
+
+      const newOrders: Order[] = soldCart.map((item, index) => {
+        const unitPrice = Math.max(0, item.sellingPrice - item.appliedDiscount);
+        const lineReferenceId = `${referenceId}-${String(index + 1).padStart(2, '0')}`;
+        return {
+          id: lineReferenceId,
+          terminalId: currentUser || 'UNKNOWN',
+          productId: item.inventoryItemId || item.id,
+          productDescription: getPOSLineDescription(item),
+          quantity: item.cartQuantity,
+          unitPrice,
+          totalPrice: unitPrice * item.cartQuantity,
+          staffName,
+          customerName: posCustomerInfo.fullName.trim(),
+          timestamp: createdAt,
+          type: 'SALE',
+          referenceId: lineReferenceId
+        };
+      });
+
+      setOrders(prev => mergeOrdersUnique(newOrders, prev));
+      setInvoiceDocument(invoice);
+      setIsInvoiceModalOpen(true);
+      setIsPOSOpen(false);
+      setPOSCart([]);
+      setPOSCustomerInfo({ fullName: '', contactDetail: '', vehicleDetails: '' });
+    } finally {
+      setIsCompletingPOS(false);
+    }
+  };
+
+  // STOCK HANDLERS
+  const handleStockAction = (item: InventoryItem, action: 'ADD' | 'EDIT' | 'DELETE', staffName: StaffName) => {
+    console.info(`[AUDIT] ${action} by ${staffName} on ${item.id} (Terminal: ${currentUser})`);
+    
+    if (action === 'ADD') {
+      setItems(prev => [item, ...prev]);
+    } else if (action === 'EDIT') {
+      setItems(prev => prev.map(i => i.id === item.id ? item : i));
+    } else if (action === 'DELETE') {
+      setItems(prev => prev.filter(i => i.id !== item.id));
+    }
+  };
+
+  const handleSell = async (item: InventoryItem, quantity: number, staffName: StaffName, finalUnitPrice: number) => {
+    // 1. Reduce Stock locally
+    setItems(prev => prev.map(i => {
+      if (i.id === item.id) {
+        return { ...i, quantity: i.quantity - quantity };
+      }
+      return i;
+    }));
+
+    // 2. Prepare Data for Supabase
+    let desc = '';
+    if (item.type === ProductType.TYRE) desc = `${(item as TyreProduct).size} ${(item as TyreProduct).brand}`;
+    else if (item.type === ProductType.WHEEL) desc = `${(item as WheelProduct).code} ${(item as WheelProduct).size}`;
+    else desc = `${(item as CoiloverProduct).brand} ${(item as CoiloverProduct).vehicleCompatibility}`;
+
+    const uniqueRefId = `${currentUser}-ord-${Date.now()}`;
+    
+    // Supabase Insert Data (Schema: sales_log)
+    const salesLogEntry: SalesLogInsert = {
+        terminal_id: currentUser || 'UNKNOWN',
+        product_id: item.id,
+        product_description: desc,
+        quantity: quantity,
+        unit_price: finalUnitPrice,
+        total_amount: quantity * finalUnitPrice,
+        user_id: staffName,
+        reference_id: uniqueRefId
+        // timestamp auto-generated
+    };
+
+    const syncResult = await insertSalesLogEntries([salesLogEntry]);
+    if (!syncResult.ok) {
+      console.warn('[SUPABASE] Sale log queued for retry:', syncResult.error);
+    }
+
+    // 3. Local State Update
+    const newOrder: Order = {
+      id: uniqueRefId,
+      terminalId: currentUser || 'UNKNOWN',
+      productId: item.id,
+      productDescription: desc,
+      quantity: quantity,
+      unitPrice: finalUnitPrice,
+      totalPrice: quantity * finalUnitPrice,
+      staffName: staffName,
+      timestamp: new Date().toISOString(),
+      type: 'SALE',
+      referenceId: uniqueRefId
+    };
+
+    setOrders(prev => mergeOrdersUnique([newOrder], prev));
+  };
+
+  const handleReserveConfirm = async (item: InventoryItem, quantity: number, customerName: string, staffName: StaffName) => {
+    // 1. Reduce Stock
+    setItems(prev => prev.map(i => {
+      if (i.id === item.id) {
+        return { ...i, quantity: i.quantity - quantity };
+      }
+      return i;
+    }));
+
+    let desc = '';
+    if (item.type === ProductType.TYRE) desc = `${(item as TyreProduct).size} ${(item as TyreProduct).brand}`;
+    else if (item.type === ProductType.WHEEL) desc = `${(item as WheelProduct).code} ${(item as WheelProduct).size}`;
+    else desc = `${(item as CoiloverProduct).brand} ${(item as CoiloverProduct).vehicleCompatibility}`;
+
+    const uniqueRefId = `${currentUser}-res-${Date.now()}`;
+
+    // Supabase Insert
+    const salesLogEntry: SalesLogInsert = {
+        terminal_id: currentUser || 'UNKNOWN',
+        product_id: item.id,
+        product_description: desc,
+        quantity: quantity,
+        unit_price: 0,
+        total_amount: 0, // Reserve signaled by 0 amount + customer_name
+        user_id: staffName,
+        customer_name: customerName,
+        reference_id: uniqueRefId
+    };
+
+    const syncResult = await insertSalesLogEntries([salesLogEntry]);
+    if (!syncResult.ok) {
+      console.warn('[SUPABASE] Reserve log queued for retry:', syncResult.error);
+    }
+
+    const newOrder: Order = {
+      id: uniqueRefId,
+      terminalId: currentUser || 'UNKNOWN',
+      productId: item.id,
+      productDescription: desc,
+      quantity: quantity,
+      unitPrice: 0,
+      totalPrice: 0,
+      staffName: staffName,
+      customerName: customerName,
+      timestamp: new Date().toISOString(),
+      type: 'RESERVE',
+      referenceId: uniqueRefId
+    };
+
+    setOrders(prev => mergeOrdersUnique([newOrder], prev));
+  };
+
+  const handleRefund = async (order: Order) => {
+    if (!isAdmin) return alert("Admin privileges required for refund.");
+    if (order.type === 'REFUND') return;
+    
+    if (window.confirm(`Are you sure you want to refund order ${order.referenceId || order.id}? Stock will be returned.`)) {
+        // Return Stock
+        setItems(prev => prev.map(i => {
+            if (i.id === order.productId) {
+                return { ...i, quantity: i.quantity + order.quantity };
+            }
+            return i;
+        }));
+
+        const uniqueRefId = `${currentUser}-ref-${Date.now()}`;
+
+        // Supabase Insert (Negative Value)
+        const salesLogEntry: SalesLogInsert = {
+            terminal_id: currentUser || 'UNKNOWN',
+            product_id: order.productId,
+            product_description: order.productDescription,
+            quantity: order.quantity,
+            unit_price: order.unitPrice,
+            total_amount: -Math.abs(order.totalPrice), // Negative indicates refund
+            user_id: currentUser || 'ADMIN', 
+            reference_id: uniqueRefId
+        };
+
+        const syncResult = await insertSalesLogEntries([salesLogEntry]);
+        if (!syncResult.ok) {
+            console.warn('[SUPABASE] Refund log queued for retry:', syncResult.error);
+        }
+
+        // Create Refund Record Locally
+        const refundOrder: Order = {
+            ...order,
+            id: uniqueRefId,
+            totalPrice: -order.totalPrice,
+            timestamp: new Date().toISOString(),
+            type: 'REFUND',
+            referenceId: uniqueRefId
+        };
+        setOrders(prev => mergeOrdersUnique([refundOrder], prev));
+    }
+  };
+
+  // Bulk Delete Handler
+  const handleBulkDelete = (ids: string[]) => {
+    if (!isAdmin) return;
+    if (window.confirm(`Are you sure you want to delete ${ids.length} items? This cannot be undone.`)) {
+        setItems(prev => prev.filter(item => !ids.includes(item.id)));
+    }
+  };
+
+  // BACKORDER HANDLERS
+  const handleBackorderSave = (backorder: Backorder) => {
+    if (selectedBackorder) {
+       setBackorders(prev => prev.map(bo => bo.id === backorder.id ? backorder : bo));
+    } else {
+       setBackorders(prev => [backorder, ...prev]);
+    }
+  };
+
+  const handleBackorderDelete = (id: string) => {
+    setBackorders(prev => prev.filter(bo => bo.id !== id));
+  };
+
+  const handleBackorderReceived = (id: string) => {
+    setBackorders(prev => prev.map(bo => bo.id === id ? { ...bo, status: 'RECEIVED' } : bo));
+  };
+
+  // PORTAL HANDLER
+  const handlePortalSelect = (name: string, url: string, view: AppView) => {
+    setCurrentPortal({ name, url });
+    setCurrentView(view);
+  };
+
+  const handleDashboardNavigate = (view: AppView, filter?: ProductType | 'ALL') => {
+    setCurrentView(view);
+    if (filter) {
+      setActiveFilter(filter);
+    }
+  };
+
+  // SYNC HANDLERS (Manual Backup)
+  const handleExportData = () => {
+    const data = {
+        sourceTerminal: currentUser,
+        exportDate: new Date().toISOString(),
+        orders,
+        loginLogs,
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `GP_SYNC_${currentUser}_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportData = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const json = JSON.parse(e.target?.result as string);
+            
+            if (json.orders && Array.isArray(json.orders)) {
+                setOrders(prev => {
+                    return mergeOrdersUnique(json.orders as Order[], prev)
+                      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+                });
+            }
+
+            if (json.loginLogs && Array.isArray(json.loginLogs)) {
+                setLoginLogs(prev => {
+                    return mergeLoginLogsUnique(json.loginLogs as LoginLog[], prev)
+                      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+                });
+            }
+
+            alert(`Sync Complete! Merged data from ${json.sourceTerminal || 'Unknown Terminal'}.`);
+            setIsDataSyncModalOpen(false);
+
+        } catch (err) {
+            console.error("Import failed", err);
+            alert("Failed to import data. Invalid file format.");
+        }
+    };
+    reader.readAsText(file);
+  };
+
+  // MODAL OPENERS
+  const openAddModal = () => {
+    if (currentView === 'BACKORDERS') {
+      setSelectedBackorder(undefined);
+      setIsBackorderModalOpen(true);
+    } else {
+      setSelectedItem(undefined);
+      setIsStockModalOpen(true);
+    }
+  };
+
+  const openEditModal = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setIsStockModalOpen(true);
+  };
+
+  const openDeleteModal = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setIsStockModalOpen(true);
+  };
+
+  const openSellModal = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setIsSellModalOpen(true);
+  };
+
+  const openReserveModal = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setIsReserveModalOpen(true);
+  };
+
+  const handleSidebarToggle = () => {
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(true);
+    } else {
+      setIsDesktopSidebarOpen(!isDesktopSidebarOpen);
+    }
+  };
+
+  if (!currentUser) {
+    return <LoginScreen onLogin={handleLoginSuccess} onAttempt={handleLoginAttempt} />;
+  }
+
+  let searchPlaceholder = "Search inventory (e.g. 195 40 17, Dunlop...)";
+  if (currentView === 'ORDERS') {
+      searchPlaceholder = "Search order history...";
+  } else if (currentView === 'BACKORDERS') {
+      searchPlaceholder = "Search backorders...";
+  } else if (currentView === 'WHEEL_CATALOG') {
+      searchPlaceholder = "Search Wheel Catalog (Name, Size, PCD...)";
+  } else if (currentView === 'SUPPLIER_INVENTORY') {
+      searchPlaceholder = `Search ${supplierCatalogLabel} Catalog...`;
+  }
+
+  return (
+    <div className="flex h-screen bg-gp-black font-sans text-gp-text-main overflow-hidden transition-colors duration-300 relative">
+      <Sidebar 
+        currentView={currentView}
+        activeFilter={activeFilter}
+        onChangeView={setCurrentView}
+        onFilterChange={setActiveFilter}
+        isOpen={isSidebarOpen}
+        setIsOpen={setIsSidebarOpen}
+        currentUser={currentUser}
+        isAdmin={isAdmin}
+        onPortalSelect={handlePortalSelect}
+        isDesktopOpen={isDesktopSidebarOpen}
+        onOpenDataSync={() => setIsDataSyncModalOpen(true)}
+        onOpenCashUp={() => setIsCashUpModalOpen(true)}
+        activeSupplierCatalog={activeSupplierCatalog}
+        onSupplierCatalogChange={setActiveSupplierCatalog}
+      />
+
+      <div className="flex-1 flex flex-col overflow-hidden relative">
+        <Navbar 
+          isAdmin={isAdmin}
+          toggleAdmin={handleAdminToggle}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onMenuClick={handleSidebarToggle}
+          isDarkMode={isDarkMode}
+          toggleTheme={toggleTheme}
+          isSearchVisible={isSearchVisible || currentView === 'WHEEL_CATALOG'}
+          toggleSearch={() => setIsSearchVisible(!isSearchVisible)}
+          toggleChat={() => setIsChatOpen(prev => !prev)}
+          isChatOpen={isChatOpen}
+          placeholder={searchPlaceholder}
+        />
+
+        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHEEL_CATALOG' || currentView === 'WHATSAPP_PORTAL') ? '' : 'pb-20'}`}>
+          {currentView === 'DASHBOARD' && (
+            <DashboardView 
+              currentUser={currentUser}
+              stats={stats}
+              isAdmin={isAdmin}
+              onNavigate={handleDashboardNavigate}
+              onPortalSelect={handlePortalSelect}
+            />
+          )}
+
+          {(currentView === 'INVENTORY' || currentView === 'SUPPLIER_INVENTORY') && (
+            <>
+              {currentView === 'INVENTORY' && <StatsDashboard stats={stats} visible={isAdmin} />}
+              
+              <div className="max-w-7xl mx-auto px-4 mt-6 flex flex-col md:flex-row justify-between items-center border-b border-gp-border pb-4 gap-4">
+                <h2 className="text-gp-text-muted text-xs uppercase tracking-widest font-bold flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full animate-pulse ${currentView === 'SUPPLIER_INVENTORY' ? 'bg-blue-500' : 'bg-gp-red'}`}></span>
+                  {currentView === 'SUPPLIER_INVENTORY' 
+                    ? `${supplierCatalogLabel} Catalog (${filteredItems.length})` 
+                    : activeFilter === 'ALL' ? 'Full Inventory' : `${activeFilter} Inventory (${filteredItems.length})`}
+                </h2>
+                <div className="flex bg-gp-input border border-gp-border rounded-lg p-1 gap-1 shadow-inner">
+                  <button onClick={() => setViewMode(ViewMode.TABLE)} className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${viewMode === ViewMode.TABLE ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}>
+                    <span className="hidden md:inline">Sheet</span>
+                  </button>
+                  <button onClick={() => setViewMode(ViewMode.GRID)} className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${viewMode === ViewMode.GRID ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}>
+                    <span className="hidden md:inline">Card</span>
+                  </button>
+                  <button onClick={() => setViewMode(ViewMode.LIST)} className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${viewMode === ViewMode.LIST ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}>
+                     <span className="hidden md:inline">List</span>
+                  </button>
+                </div>
+              </div>
+              <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
+                {currentView === 'SUPPLIER_INVENTORY' && (
+                    <div className="bg-blue-900/10 border border-blue-900/30 p-3 mb-4 rounded flex items-center gap-3">
+                        <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <p className="text-xs text-blue-400"><strong>READ ONLY MODE:</strong> {supplierCatalogNote}</p>
+                    </div>
+                )}
+                <InventoryView 
+                  items={filteredItems} 
+                  viewMode={viewMode} 
+                  isAdmin={isAdmin} 
+                  onEdit={openEditModal}
+                  onDelete={openDeleteModal}
+                  onSell={openSellModal}
+                  onReserve={openReserveModal}
+                  onBulkDelete={handleBulkDelete}
+                  isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
+                />
+              </div>
+            </>
+          )}
+
+          {currentView === 'ORDERS' && (
+            <OrdersView orders={filteredOrders} onRefund={handleRefund} />
+          )}
+
+          {currentView === 'BACKORDERS' && (
+            <BackordersView 
+              backorders={filteredBackorders} 
+              onMarkReceived={handleBackorderReceived}
+              onDelete={handleBackorderDelete}
+              onEdit={(bo) => { setSelectedBackorder(bo); setIsBackorderModalOpen(true); }}
+            />
+          )}
+
+          {currentView === 'WHEEL_CATALOG' && (
+            <div className="h-full">
+                <WheelCatalogView searchQuery={searchQuery} />
+            </div>
+          )}
+
+          {currentView === 'SYSTEM_LOGS' && isAdmin && (
+            <SystemLogsView logs={loginLogs} />
+          )}
+
+          {(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHEEL_CATALOG' || currentView === 'WHATSAPP_PORTAL') && currentPortal && (
+            <div className="w-full h-full flex flex-col bg-gp-black relative">
+              <div className="bg-gp-input border-b border-gp-border p-2 flex items-center gap-2 sticky top-0 z-10 shadow-sm">
+                <div className="flex-1 bg-gp-panel border border-gp-border rounded flex items-center px-3 py-1.5 gap-2 overflow-hidden mx-2">
+                    <span className="text-xs text-gp-text-muted truncate font-mono flex-1">{currentPortal.url}</span>
+                </div>
+                <a href={currentPortal.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-gp-red hover:bg-red-700 text-white px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-all">
+                    <span>Open External</span>
+                </a>
+              </div>
+              <div className="flex-1 relative w-full h-full bg-white">
+                 <iframe id="supplier-frame" src={currentPortal.url} className="absolute inset-0 w-full h-full border-none" title={`Portal: ${currentPortal.name}`} sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals" />
+              </div>
+            </div>
+          )}
+        </main>
+
+        <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} onMinimize={() => setIsChatOpen(false)} />
+
+        <button
+          onClick={() => setIsPOSOpen(true)}
+          className="fixed bottom-6 right-6 z-50 flex items-center justify-center rounded-full bg-gp-red p-4 text-white shadow-[0_0_20px_rgba(255,0,0,0.6)] transition-transform hover:scale-105 hover:bg-red-700 active:scale-95"
+          title="Open Quick POS"
+          aria-label="Open Quick POS"
+        >
+          <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+
+        {(currentView === 'INVENTORY' || currentView === 'BACKORDERS') && (
+          <button onClick={openAddModal} className="fixed bottom-24 right-6 z-30 rounded-full border border-gp-border bg-gp-panel p-3 text-gp-text-main shadow-lg transition-transform hover:scale-105 hover:bg-gp-border active:scale-95" title={currentView === 'BACKORDERS' ? "Add Backorder" : "Add New Stock"} aria-label={currentView === 'BACKORDERS' ? "Add Backorder" : "Add New Stock"}>
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+          </button>
+        )}
+      </div>
+
+      <StockActionModal isOpen={isStockModalOpen} onClose={() => setIsStockModalOpen(false)} onSave={handleStockAction} initialItem={selectedItem} isAdmin={isAdmin} />
+      <SellModal isOpen={isSellModalOpen} onClose={() => setIsSellModalOpen(false)} onSell={handleSell} item={selectedItem} />
+      <BackorderModal isOpen={isBackorderModalOpen} onClose={() => setIsBackorderModalOpen(false)} onSave={handleBackorderSave} initialData={selectedBackorder} />
+      <AdminAuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} onLogin={handleAdminAccess} />
+      <DataSyncModal isOpen={isDataSyncModalOpen} onClose={() => setIsDataSyncModalOpen(false)} onExport={handleExportData} onImport={handleImportData} />
+      <ReserveModal isOpen={isReserveModalOpen} onClose={() => setIsReserveModalOpen(false)} onReserve={handleReserveConfirm} item={selectedItem} />
+      <ShiftReconciliationModal isOpen={isCashUpModalOpen} onClose={() => setIsCashUpModalOpen(false)} orders={orders} />
+      <POSModal
+        isOpen={isPOSOpen}
+        onClose={() => setIsPOSOpen(false)}
+        items={items}
+        supplierItems={allSupplierPOSItems}
+        cart={posCart}
+        customerInfo={posCustomerInfo}
+        onCustomerInfoChange={setPOSCustomerInfo}
+        onAddItem={handlePOSAddItem}
+        onAddSupplierItem={handlePOSAddSupplierItem}
+        onAddService={handlePOSAddService}
+        onAddManualLine={handlePOSAddManualLine}
+        onRemoveItem={handlePOSRemoveItem}
+        onUpdateQuantity={handlePOSUpdateQuantity}
+        onUpdateDiscount={handlePOSUpdateDiscount}
+        onUpdateLineTotal={handlePOSUpdateLineTotal}
+        onCompleteSale={handlePOSCompleteSale}
+        onGenerateQuote={handlePOSGenerateQuote}
+        isCompletingSale={isCompletingPOS}
+      />
+      <InvoiceModal
+        isOpen={isInvoiceModalOpen}
+        document={invoiceDocument}
+        onClose={() => setIsInvoiceModalOpen(false)}
+      />
+    </div>
+  );
+};
+
+export default App;
