@@ -316,6 +316,29 @@ const App: React.FC = () => {
     return merged;
   };
 
+  const fetchAllRows = async <T,>(
+    tableName: 'sales_log' | 'system_logs',
+    orderColumn = 'created_at',
+    pageSize = 1000
+  ): Promise<T[]> => {
+    const rows: T[] = [];
+
+    for (let from = 0; ; from += pageSize) {
+      const { data, error } = await (supabase.from(tableName) as any)
+        .select('*')
+        .order(orderColumn, { ascending: false })
+        .range(from, from + pageSize - 1);
+
+      if (error) throw error;
+
+      rows.push(...((data || []) as T[]));
+
+      if (!data || data.length < pageSize) break;
+    }
+
+    return rows;
+  };
+
   // --- INITIAL LOAD & SYNC ---
   useEffect(() => {
     const loadCachedInventory = (): InventoryItem[] => {
@@ -383,19 +406,14 @@ const App: React.FC = () => {
     // 3. Supabase: Fetch Sales Log (Financial History)
     const fetchOrders = async () => {
       if (isSupabaseConfigured()) {
-        const { data, error } = await supabase
-          .from('sales_log')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(500);
-
-        if (error) {
+        try {
+          const data = await fetchAllRows<SalesLogRow>('sales_log');
+          const mappedOrders: Order[] = data.map(mapSalesLogRowToOrder);
+          setOrders(prev => mergeOrdersUnique(mappedOrders, prev));
+        } catch (error) {
           console.error('[SUPABASE] Sales Log Fetch Error:', error);
           const storedOrders = localStorage.getItem('gp-orders');
           if (storedOrders) setOrders(JSON.parse(storedOrders));
-        } else if (data) {
-          const mappedOrders: Order[] = data.map(mapSalesLogRowToOrder);
-          setOrders(prev => mergeOrdersUnique(mappedOrders, prev));
         }
       } else {
          const fallbackOrders = readStoredArray<Order>('gp-orders');
@@ -412,19 +430,14 @@ const App: React.FC = () => {
             return;
         }
 
-        const { data, error } = await supabase
-            .from('system_logs')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(200);
-
-        if (error) {
+        try {
+            const data = await fetchAllRows<SystemLogRow>('system_logs');
+            const mappedLogs: LoginLog[] = data.map(mapSystemLogRowToLoginLog);
+            setLoginLogs(prev => mergeLoginLogsUnique(mappedLogs.reverse(), prev));
+        } catch (error) {
             console.error('[SUPABASE] System Logs Fetch Error:', error);
             const fallbackLogs = readStoredArray<LoginLog>('gp-login-logs');
             if (fallbackLogs.length) setLoginLogs(fallbackLogs);
-        } else if (data) {
-            const mappedLogs: LoginLog[] = data.map(mapSystemLogRowToLoginLog);
-            setLoginLogs(prev => mergeLoginLogsUnique(mappedLogs.reverse(), prev));
         }
     };
     fetchLogs();
@@ -622,6 +635,28 @@ const App: React.FC = () => {
     };
     setLoginLogs(prev => mergeLoginLogsUnique([newLog], prev));
     setIsAdmin(true);
+  };
+
+  const logAdminControlEvent = async (eventType: string, staffName: StaffName, status = 'SUCCESS') => {
+    const terminalName = `${currentUser || 'UNKNOWN'} (${staffName})`;
+    const syncResult = await insertSystemLogEntries([{
+      terminal_id: terminalName,
+      event_type: eventType,
+      status
+    }]);
+
+    if (!syncResult.ok) {
+      console.warn(`[SUPABASE] Admin control log queued for retry: ${eventType}`, syncResult.error);
+    }
+
+    const newLog: LoginLog = {
+      id: `log-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      username: terminalName,
+      timestamp: new Date().toISOString(),
+      status: status as LoginLog['status'],
+      event: eventType
+    };
+    setLoginLogs(prev => mergeLoginLogsUnique([newLog], prev));
   };
 
   const handleLoginSuccess = (username: string) => {
@@ -1010,13 +1045,16 @@ const App: React.FC = () => {
       if (action === 'DELETE') {
         await deleteGlobalInventoryItem(item.id);
         setItems(prev => prev.filter(i => i.id !== item.id));
+        await logAdminControlEvent(`STOCK_${action}_${item.id}`, staffName);
         return;
       }
 
       const savedItem = await upsertGlobalInventoryItem(item);
       setItems(prev => mergeInventoryItems(prev, [savedItem]));
+      await logAdminControlEvent(`STOCK_${action}_${item.id}`, staffName);
     } catch (error) {
       console.error('[SUPABASE] Stock action failed:', error);
+      await logAdminControlEvent(`STOCK_${action}_${item.id}`, staffName, 'FAILURE');
       alert(`Stock change was not saved globally. ${error instanceof Error ? error.message : ''}`.trim());
     }
   };
@@ -1180,8 +1218,10 @@ const App: React.FC = () => {
       try {
         await Promise.all(ids.map(id => deleteGlobalInventoryItem(id)));
         setItems(prev => prev.filter(item => !ids.includes(item.id)));
+        await logAdminControlEvent(`BULK_STOCK_DELETE_${ids.length}`, currentUser || 'ADMIN');
       } catch (error) {
         console.error('[SUPABASE] Bulk delete failed:', error);
+        await logAdminControlEvent(`BULK_STOCK_DELETE_${ids.length}`, currentUser || 'ADMIN', 'FAILURE');
         alert(`Some stock could not be deleted globally. ${error instanceof Error ? error.message : ''}`.trim());
       }
     }
