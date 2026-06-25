@@ -20,7 +20,9 @@ import { ChatBot } from './components/ChatBot';
 import { WheelCatalogView } from './components/WheelCatalogView';
 import { POSModal } from './components/POSModal';
 import { InvoiceModal } from './components/InvoiceModal';
+import { QuoteModuleView } from './components/QuoteModuleView';
 import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
+import { PricingPOSQuoteLine } from './pricing-processor/types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
 import { supabase, isSupabaseConfigured, InventoryItemRow, SalesLogInsert, SalesLogRow, SystemLogInsert, SystemLogRow } from './supabaseClient';
 import { flushPendingSupabaseWrites, insertSystemLogEntries } from './supabaseSync';
@@ -884,7 +886,7 @@ const App: React.FC = () => {
     setPOSCart(prev => [
       ...prev,
       {
-        id: `custom-${Date.now()}`,
+        id: `custom-${Date.now()}-${prev.length}`,
         cartLineType: 'CUSTOM',
         activityCode: 'CUSTOM',
         title: line.title,
@@ -897,6 +899,30 @@ const App: React.FC = () => {
         appliedDiscount: 0
       }
     ]);
+  };
+
+  const handleQuoteModulePushToPOS = (lines: PricingPOSQuoteLine[]) => {
+    if (!lines.length) return;
+    const timestamp = Date.now();
+    const today = new Date().toISOString().split('T')[0];
+
+    setPOSCart(prev => [
+      ...prev,
+      ...lines.map((line, index): CartItem => ({
+        id: `quote-module-${timestamp}-${index}-${line.sourceRecordId}`,
+        cartLineType: 'CUSTOM',
+        activityCode: 'TYRE',
+        title: line.title,
+        description: line.description,
+        quantity: 999,
+        sellingPrice: Math.max(0, line.unitPrice),
+        costPrice: 0,
+        lastUpdated: today,
+        cartQuantity: Math.max(1, line.quantity),
+        appliedDiscount: 0
+      }))
+    ]);
+    setIsPOSOpen(true);
   };
 
   const handlePOSRemoveItem = (itemId: string) => {
@@ -1359,6 +1385,8 @@ const App: React.FC = () => {
       searchPlaceholder = "Search Wheel Catalog (Name, Size, PCD...)";
   } else if (currentView === 'SUPPLIER_INVENTORY') {
       searchPlaceholder = `Search ${supplierCatalogLabel} Catalog...`;
+  } else if (currentView === 'QUOTE_MODULE') {
+      searchPlaceholder = "Quote Module uses the paste box below...";
   }
 
   return (
@@ -1396,7 +1424,7 @@ const App: React.FC = () => {
           placeholder={searchPlaceholder}
         />
 
-        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHEEL_CATALOG' || currentView === 'WHATSAPP_PORTAL') ? '' : 'pb-20'}`}>
+        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHEEL_CATALOG' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE') ? '' : 'pb-20'}`}>
           {currentView === 'DASHBOARD' && (
             <DashboardView 
               currentUser={currentUser}
@@ -1473,6 +1501,10 @@ const App: React.FC = () => {
 
           {currentView === 'SYSTEM_LOGS' && isAdmin && (
             <SystemLogsView logs={loginLogs} />
+          )}
+
+          {currentView === 'QUOTE_MODULE' && (
+            <QuoteModuleView onPushToPOSQuote={handleQuoteModulePushToPOS} />
           )}
 
           {(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHEEL_CATALOG' || currentView === 'WHATSAPP_PORTAL') && currentPortal && (

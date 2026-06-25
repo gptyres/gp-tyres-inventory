@@ -409,6 +409,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             {toolsOpen && (
               <div className="mt-2 space-y-1 pl-4">
+                <button
+                  onClick={() => handleOrderClick('QUOTE_MODULE')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-bold rounded transition-colors ${currentView === 'QUOTE_MODULE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-main bg-gp-input/60 hover:bg-gp-border'}`}
+                >
+                  Quote Module
+                </button>
                 <button 
                   onClick={() => handlePortalClick('Virtual Garage', 'https://gp-tyres-mags-virtual-garage-195826084752.us-west1.run.app/', 'TOOLS_PORTAL')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'TOOLS_PORTAL' && selectedPortalName === 'Virtual Garage' ? 'text-gp-text-main hover:bg-gp-border border-l-2 border-gp-red bg-gp-input' : 'text-gp-text-muted hover:text-gp-text-main'}`}
