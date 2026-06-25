@@ -133,8 +133,7 @@ export const POSModal: React.FC<POSModalProps> = ({
 
   const supplierSearchResults = useMemo(() => {
     const cleanedQuery = query.trim();
-    if (cleanedQuery.length < 2) return [];
-    return searchInventory(availableSupplierItems, cleanedQuery).slice(0, 24);
+    return cleanedQuery ? searchInventory(availableSupplierItems, cleanedQuery) : availableSupplierItems;
   }, [availableSupplierItems, query]);
 
   const totals = useMemo(() => {
@@ -151,6 +150,9 @@ export const POSModal: React.FC<POSModalProps> = ({
   if (!isOpen) return null;
 
   const customerMissing = !customerInfo.fullName.trim() || !customerInfo.contactDetail.trim();
+  const supplierResultLabel = query.trim()
+    ? `${supplierSearchResults.length} supplier match${supplierSearchResults.length === 1 ? '' : 'es'}`
+    : `${supplierSearchResults.length} supplier stock line${supplierSearchResults.length === 1 ? '' : 's'}`;
 
   const updateCustomerField = (field: keyof CustomerInfo, value: string) => {
     onCustomerInfoChange({
@@ -419,14 +421,10 @@ export const POSModal: React.FC<POSModalProps> = ({
               <div className="mt-4">
                 <div className="mb-2 flex items-center justify-between">
                   <h3 className="font-display text-xs font-black uppercase tracking-wider text-gp-text-main">Supplier Stock</h3>
-                  <span className="text-[10px] font-bold uppercase text-gp-text-muted">Secondary stock source</span>
+                  <span className="text-[10px] font-bold uppercase text-gp-text-muted">{supplierResultLabel}</span>
                 </div>
 
-                {query.trim().length < 2 ? (
-                  <div className="rounded-md border border-blue-900/40 bg-blue-950/10 p-4 text-xs font-bold uppercase tracking-wide text-gp-text-muted">
-                    Enter at least 2 characters to search all supplier catalogues.
-                  </div>
-                ) : supplierSearchResults.length > 0 ? (
+                {supplierSearchResults.length > 0 ? (
                   <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
                     {supplierSearchResults.map(item => {
                       const inCart = cart.find(cartItem => cartItem.cartLineType === 'SUPPLIER' && cartItem.inventoryItemId === item.id);
@@ -466,17 +464,23 @@ export const POSModal: React.FC<POSModalProps> = ({
                 ) : (
                   <div className="rounded-md border border-blue-900/50 bg-blue-950/10 p-4">
                     <p className="text-sm font-bold text-gp-text-main">No supplier stock matched this search.</p>
-                    <p className="mt-1 text-xs text-gp-text-muted">Add the searched item as a custom quote line, then edit the price in the register.</p>
-                    <button
-                      onClick={handleAddSearchAsQuoteLine}
-                      className="mt-3 rounded bg-blue-600 px-4 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-blue-500"
-                    >
-                      Add to Quote
-                    </button>
+                    {query.trim().length > 0 ? (
+                      <>
+                        <p className="mt-1 text-xs text-gp-text-muted">Add the searched item as a custom quote line, then edit the price in the register.</p>
+                        <button
+                          onClick={handleAddSearchAsQuoteLine}
+                          className="mt-3 rounded bg-blue-600 px-4 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-blue-500"
+                        >
+                          Add to Quote
+                        </button>
+                      </>
+                    ) : (
+                      <p className="mt-1 text-xs text-gp-text-muted">No supplier catalogue items are currently available in the POS feed.</p>
+                    )}
                   </div>
                 )}
 
-                {query.trim().length >= 2 && supplierSearchResults.length > 0 && (
+                {query.trim().length > 0 && supplierSearchResults.length > 0 && (
                   <div className="mt-3 rounded-md border border-gp-border bg-gp-black/40 p-3">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <p className="text-xs text-gp-text-muted">Still cannot find the exact supplier item?</p>
