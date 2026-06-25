@@ -43,6 +43,7 @@ import { ATT_RAW_DATA } from './supplier_data/attData';
 import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
 import { TYRE_LIFE_RAW_DATA } from './supplier_data/tyreLifeData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
+import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
 
 import {
   searchInventory,
@@ -53,6 +54,7 @@ import {
   parseTyreWarehouseData,
   parseAttData,
   parseApexData,
+  parseTubestoneData,
   parseTreadsUnlimitedData,
   parseTyreLifeData
 } from './utils';
@@ -83,6 +85,7 @@ const getAllSupplierPOSItems = (): InventoryItem[] => [
   ...tagSupplierPOSItems('tyrewarehouse', parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA)),
   ...tagSupplierPOSItems('att', parseAttData(ATT_RAW_DATA)),
   ...tagSupplierPOSItems('apex', parseApexData(APEX_RAW_DATA)),
+  ...tagSupplierPOSItems('tubestone', parseTubestoneData(TUBESTONE_RAW_DATA)),
   ...tagSupplierPOSItems('treads', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
   ...tagSupplierPOSItems('tyrelife', parseTyreLifeData(TYRE_LIFE_RAW_DATA))
 ];
@@ -176,6 +179,7 @@ const App: React.FC = () => {
             ...tagSupplierItems('TYREWAREHOUSE', parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA)),
             ...tagSupplierItems('ATT', parseAttData(ATT_RAW_DATA)),
             ...tagSupplierItems('APEX', parseApexData(APEX_RAW_DATA)),
+            ...tagSupplierItems('TUBESTONE', parseTubestoneData(TUBESTONE_RAW_DATA)),
             ...tagSupplierItems('TREADS UNLIMITED', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
             ...tagSupplierItems('TYRE LIFE', parseTyreLifeData(TYRE_LIFE_RAW_DATA))
           ];
@@ -187,6 +191,8 @@ const App: React.FC = () => {
           return parseAttData(ATT_RAW_DATA);
         case 'APEX':
           return parseApexData(APEX_RAW_DATA);
+        case 'TUBESTONE':
+          return parseTubestoneData(TUBESTONE_RAW_DATA);
         case 'TREADS_UNLIMITED':
           return parseTreadsUnlimitedData(TREADS_RAW_DATA);
         case 'TYRE_LIFE':
@@ -223,6 +229,10 @@ const App: React.FC = () => {
     APEX: {
       label: 'APEX',
       note: 'Viewing External Supplier Data. Prices use APEX Cost + VAT values, with lead time shown in the location field.'
+    },
+    TUBESTONE: {
+      label: 'TUBESTONE',
+      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.'
     },
     TREADS_UNLIMITED: {
       label: 'TREADS UNLIMITED',

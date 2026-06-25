@@ -1,4 +1,5 @@
 import { BRAND_ALIASES } from './constants';
+import { extractPriceCandidates } from './extract-price';
 import { findTyreSizeMatches } from './extract-size';
 import { normalizeInput, normalizeTokenText } from './normalize';
 import { PricingSegment } from './types';
@@ -41,6 +42,11 @@ const splitConcatenated = (text: string): string[] => {
   const brandPattern = knownBrandBoundaryPattern();
   const starts = matches.map((match, index) => {
     if (index === 0) return 0;
+    const previousPrice = extractPriceCandidates(text)
+      .filter((candidate) => candidate.endIndex <= match.index)
+      .at(-1);
+    if (previousPrice) return previousPrice.endIndex;
+
     const previousEnd = matches[index - 1].endIndex;
     const slice = text.slice(previousEnd, match.index);
     const brandMatches = Array.from(slice.matchAll(brandPattern));

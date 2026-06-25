@@ -526,6 +526,59 @@ export const parseApexData = (rawCsv: string): InventoryItem[] => {
   return parseSimpleSupplierCsv(rawCsv, 'apex', 'APEX');
 };
 
+// --- TUBESTONE PARSER ---
+export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
+  const items: InventoryItem[] = [];
+  const lines = rawCsv.split('\n');
+  const today = new Date().toISOString().split('T')[0];
+  let idCounter = 1;
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+
+    const cols = parseCSVLine(trimmed);
+    const size = cols[0]?.trim();
+    const sku = cols[1]?.trim();
+    const brand = cols[2]?.trim();
+    const description = cols[3]?.replace(/\s+/g, ' ').trim();
+    const category = cols[4]?.trim();
+
+    if (index === 0 && size?.toUpperCase() === 'SIZE') return;
+    if (!size || !brand || !description) return;
+
+    const bfnQty = parseStockUnits(cols[6]);
+    const cptQty = parseStockUnits(cols[7]);
+    const dbnQty = parseStockUnits(cols[8]);
+    const jhbQty = parseStockUnits(cols[9]);
+    const nwhQty = parseStockUnits(cols[10]);
+    const totalQty = parseStockUnits(cols[11]);
+    const sellingPrice = parseCurrencyString(cols[5]);
+    const pattern = description
+      .replace(new RegExp(escapeRegExp(size), 'i'), '')
+      .replace(new RegExp(escapeRegExp(brand), 'i'), '')
+      .replace(/\b\d+\s*PR\b/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim() || sku || 'Standard';
+
+    items.push({
+      id: `tubestone-${idCounter++}`,
+      type: ProductType.TYRE,
+      brand,
+      pattern,
+      size,
+      loadSpeedIndex: [sku, category].filter(Boolean).join(' | '),
+      location: `BFN: ${bfnQty} | CPT: ${cptQty} | DBN: ${dbnQty} | JHB: ${jhbQty} | NWH: ${nwhQty}`,
+      quantity: totalQty,
+      costPrice: sellingPrice,
+      sellingPrice,
+      lastUpdated: today
+    });
+  });
+
+  return items;
+};
+
 // --- TREADS UNLIMITED PARSER ---
 export const parseTreadsUnlimitedData = (rawCsv: string): InventoryItem[] => {
   const items: InventoryItem[] = [];
