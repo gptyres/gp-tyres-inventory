@@ -2,6 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { AppView, InventoryStats, ProductType } from '../types';
 import { StatsDashboard } from './StatsDashboard';
+import { STAFF_NAMES } from '../config';
+import {
+  TERMINAL_STAFF_NAMES,
+  TRAINING_PROGRESS_EVENT,
+  TrainingProgressSummary,
+  getAllStaffTrainingProgress,
+  loadTrainingProgressStore
+} from '../trainingProgress';
 
 interface DashboardViewProps {
   currentUser: string;
@@ -11,19 +19,6 @@ interface DashboardViewProps {
   onPortalSelect: (name: string, url: string, view: AppView) => void;
 }
 
-// User ID to Name Mapping
-const USER_NAMES: Record<string, string> = {
-  'GP1': 'Noor',
-  'GP2': 'Rafiek',
-  'GP3': 'Sabri',
-  'GP4': 'Laeeq',
-  'GP5': 'Yaseen',
-  'GP6': 'Mac',
-  'GP7': 'Zahied',
-  'GP8': 'Niyaaz',
-  'PC8': 'Niyaaz'
-};
-
 export const DashboardView: React.FC<DashboardViewProps> = ({ 
   currentUser, 
   stats, 
@@ -32,6 +27,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onPortalSelect 
 }) => {
   const [greeting, setGreeting] = useState('');
+  const [trainingProgress, setTrainingProgress] = useState<TrainingProgressSummary[]>(() =>
+    getAllStaffTrainingProgress(STAFF_NAMES, loadTrainingProgressStore())
+  );
 
   useEffect(() => {
     const updateGreeting = () => {
@@ -47,9 +45,50 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return () => clearInterval(interval);
   }, []);
 
-  const displayName = USER_NAMES[currentUser] || currentUser;
+  useEffect(() => {
+    const refreshTrainingProgress = () => {
+      setTrainingProgress(getAllStaffTrainingProgress(STAFF_NAMES, loadTrainingProgressStore()));
+    };
+
+    refreshTrainingProgress();
+    window.addEventListener('storage', refreshTrainingProgress);
+    window.addEventListener(TRAINING_PROGRESS_EVENT, refreshTrainingProgress);
+
+    return () => {
+      window.removeEventListener('storage', refreshTrainingProgress);
+      window.removeEventListener(TRAINING_PROGRESS_EVENT, refreshTrainingProgress);
+    };
+  }, []);
+
+  const displayName = TERMINAL_STAFF_NAMES[currentUser] || currentUser;
 
   const menuItems = [
+    {
+      title: 'Training Portal',
+      description: 'Open SOP guides and update staff training progress.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253" />
+        </svg>
+      ),
+      action: () => onNavigate('TRAINING_PORTAL'),
+      color: 'text-gp-red',
+      bg: 'bg-gp-red/10',
+      border: 'border-gp-red/30'
+    },
+    {
+      title: 'Customer Hub',
+      description: 'Manage customers, leads, saved quotes and invoices.',
+      icon: (
+        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m8-4a4 4 0 10-8 0 4 4 0 008 0zm-8 0a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      ),
+      action: () => onNavigate('CUSTOMER_HUB'),
+      color: 'text-emerald-400',
+      bg: 'bg-emerald-500/10',
+      border: 'border-emerald-500/20'
+    },
     {
       title: 'Inventory Management',
       description: 'Manage Tyres, Wheels, and Accessories stock levels.',
@@ -142,6 +181,54 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <div>
         <h2 className="text-sm font-bold text-gp-text-muted uppercase tracking-widest mb-4">System Overview</h2>
         <StatsDashboard stats={stats} visible={isAdmin} />
+      </div>
+
+      <div>
+        <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between mb-4">
+          <div>
+            <h2 className="text-sm font-bold text-gp-text-muted uppercase tracking-widest">Staff Training Progress</h2>
+            <p className="text-sm text-gp-text-muted mt-1">Checklist progress saved in the Training Portal for each staff member.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => onNavigate('TRAINING_PORTAL')}
+            className="self-start rounded bg-gp-red px-4 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-red-700 md:self-auto"
+          >
+            Open Training Portal
+          </button>
+        </div>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+          {trainingProgress.map((progress) => {
+            const isCurrentStaff = progress.staffName === displayName;
+
+            return (
+              <div
+                key={progress.staffName}
+                className={`rounded-lg border bg-gp-panel p-4 transition-colors ${
+                  isCurrentStaff ? 'border-gp-red shadow-[0_0_12px_rgba(255,0,0,0.18)]' : 'border-gp-border'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-black text-gp-text-main">{progress.staffName}</p>
+                    <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
+                      {progress.completed}/{progress.total} tasks
+                    </p>
+                  </div>
+                  <span className={`rounded px-2 py-1 text-xs font-black ${isCurrentStaff ? 'bg-gp-red text-white' : 'bg-gp-input text-gp-text-muted'}`}>
+                    {progress.percentage}%
+                  </span>
+                </div>
+                <div className="mt-4 h-2 overflow-hidden rounded-full border border-gp-border bg-gp-input">
+                  <div
+                    className="h-full rounded-full bg-gp-red transition-all duration-300"
+                    style={{ width: `${progress.percentage}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Feature Grid */}

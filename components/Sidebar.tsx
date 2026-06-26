@@ -154,6 +154,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span className="font-bold text-sm">Dashboard</span>
           </button>
 
+          <button
+            onClick={() => handleOrderClick('TRAINING_PORTAL')}
+            className={`flex items-center w-full px-3 py-2 rounded transition-colors ${currentView === 'TRAINING_PORTAL' ? 'bg-gp-red/10 text-gp-red' : 'text-gp-text-muted hover:text-gp-text-main hover:bg-gp-border'}`}
+          >
+            <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253" />
+            </svg>
+            <span className="font-bold text-sm">Training Portal</span>
+          </button>
+
+          <button
+            onClick={() => handleOrderClick('CUSTOMER_HUB')}
+            className={`flex items-center w-full px-3 py-2 rounded transition-colors ${currentView === 'CUSTOMER_HUB' ? 'bg-gp-red/10 text-gp-red' : 'text-gp-text-muted hover:text-gp-text-main hover:bg-gp-border'}`}
+          >
+            <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m8-4a4 4 0 10-8 0 4 4 0 008 0zm-8 0a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <span className="font-bold text-sm">Customer Hub</span>
+          </button>
+
           {/* Products Group */}
           <div>
             <button 

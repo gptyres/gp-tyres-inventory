@@ -43,6 +43,8 @@ interface POSModalProps {
   onCompleteSale: (staffName: StaffName) => Promise<void>;
   onGenerateQuote: (staffName?: StaffName) => void;
   isCompletingSale: boolean;
+  quoteActionLabel?: string;
+  saleActionLabel?: string;
 }
 
 const SERVICE_PRESETS: ServicePreset[] = [
@@ -106,7 +108,9 @@ export const POSModal: React.FC<POSModalProps> = ({
   onUpdateLineTotal,
   onCompleteSale,
   onGenerateQuote,
-  isCompletingSale
+  isCompletingSale,
+  quoteActionLabel = 'Generate Quote',
+  saleActionLabel = 'Complete Sale'
 }) => {
   const [query, setQuery] = useState('');
   const [selectedStaff, setSelectedStaff] = useState<StaffName | ''>('');
@@ -649,14 +653,14 @@ export const POSModal: React.FC<POSModalProps> = ({
                   disabled={!cart.length || isCompletingSale}
                   className="rounded-md border border-gp-border bg-gp-panel py-3 text-xs font-black uppercase tracking-wider text-gp-text-main transition-colors hover:bg-gp-border disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  Generate Quote
+                  {quoteActionLabel}
                 </button>
                 <button
                   onClick={handleCompleteSale}
                   disabled={!cart.length || isCompletingSale}
                   className="rounded-md bg-gp-red py-3 text-xs font-black uppercase tracking-wider text-white shadow-[0_0_15px_rgba(255,0,0,0.35)] transition-transform hover:bg-red-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  {isCompletingSale ? 'Processing...' : 'Complete Sale'}
+                  {isCompletingSale ? 'Processing...' : saleActionLabel}
                 </button>
               </div>
             </div>

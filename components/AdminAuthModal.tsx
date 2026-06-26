@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { StaffName } from '../types';
 
-const ALLOWED_ADMINS: StaffName[] = ['Noor', 'Mac', 'Rafiek', 'Tasneem', 'Gadija'];
+const ALLOWED_ADMINS: StaffName[] = ['Noor', 'Mac', 'Rafiek'];
 
 interface AdminAuthModalProps {
   isOpen: boolean;

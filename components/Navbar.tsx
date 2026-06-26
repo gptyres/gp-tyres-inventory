@@ -15,6 +15,7 @@ interface NavbarProps {
   toggleChat: () => void;
   isChatOpen: boolean;
   placeholder?: string;
+  pageTitle?: string;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -29,7 +30,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   toggleSearch,
   toggleChat,
   isChatOpen,
-  placeholder = "Search inventory (e.g. 195 40 17, Dunlop...)"
+  placeholder = "Search inventory (e.g. 195 40 17, Dunlop...)",
+  pageTitle
 }) => {
   const [aiResult, setAiResult] = useState<string | null>(null);
   const [isAiThinking, setIsAiThinking] = useState(false);
@@ -85,6 +87,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
+
+      {pageTitle && (
+        <div className="mr-4 flex min-w-0 items-center gap-3">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-gp-red shadow-[0_0_10px_rgba(255,0,0,0.55)]" />
+          <h1 className="truncate font-display text-sm font-black uppercase tracking-wider text-gp-text-main md:text-lg">
+            {pageTitle}
+          </h1>
+        </div>
+      )}
 
       {/* Search Bar Container */}
       <div className={`flex-1 max-w-2xl relative transition-all duration-300 ${isSearchVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 hidden md:block md:w-0 md:flex-none'}`}>

@@ -3,13 +3,10 @@ export const STAFF_NAMES: string[] = [
   'Noor', 
   'Mac', 
   'Rafiek', 
-  'Sabri', 
   'Yaseen', 
   'Laeeq', 
   'Zahied', 
-  'Niyaaz', 
-  'Tasneem', 
-  'Gadija'
+  'Niyaaz'
 ];
 
 export const USER_CREDENTIALS: Record<string, string> = {

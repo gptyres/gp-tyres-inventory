@@ -38,6 +38,102 @@ export interface SystemLogRow {
 
 export type SystemLogInsert = Omit<SystemLogRow, 'id' | 'created_at'>;
 
+export type CRMCustomerType = 'CUSTOMER' | 'LEAD';
+export type CRMCustomerStatus = 'ACTIVE' | 'INACTIVE' | 'ARCHIVED';
+export type CRMDocumentType = 'QUOTE' | 'INVOICE';
+export type CRMDocumentStatus = 'DRAFT' | 'ISSUED' | 'SENT' | 'ACCEPTED' | 'CONVERTED' | 'PAID' | 'VOID';
+export type CRMCustomerEventType = 'CUSTOMER_CREATED' | 'CUSTOMER_UPDATED' | 'DOCUMENT_CREATED' | 'DOCUMENT_UPDATED' | 'IMPORT' | 'NOTE';
+
+export interface CRMCustomerRow {
+  id: string;
+  display_name: string;
+  display_name_key?: string;
+  company_name?: string | null;
+  contact_name?: string | null;
+  contact_email?: string | null;
+  contact_phone?: string | null;
+  mobile?: string | null;
+  billing_address?: string | null;
+  shipping_address?: string | null;
+  vehicle_details?: string | null;
+  notes?: string | null;
+  customer_type: CRMCustomerType;
+  status: CRMCustomerStatus;
+  source: string;
+  external_ref?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export type CRMCustomerInsert = Omit<CRMCustomerRow, 'id' | 'display_name_key' | 'created_at' | 'updated_at'> & {
+  id?: string;
+};
+
+export type CRMCustomerUpdate = Partial<Omit<CRMCustomerRow, 'id' | 'display_name_key' | 'created_at' | 'updated_at'>>;
+
+export interface CRMDocumentRow {
+  id: string;
+  reference_id: string;
+  document_type: CRMDocumentType;
+  status: CRMDocumentStatus;
+  customer_id?: string | null;
+  customer_snapshot: Record<string, unknown>;
+  terminal_id: string;
+  staff_name?: string | null;
+  vehicle_details?: string | null;
+  subtotal: number;
+  total_discount: number;
+  tax_amount: number;
+  grand_total: number;
+  source: string;
+  issued_at: string;
+  due_at?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export type CRMDocumentInsert = Omit<CRMDocumentRow, 'id' | 'created_at' | 'updated_at'> & {
+  id?: string;
+};
+
+export type CRMDocumentUpdate = Partial<Omit<CRMDocumentRow, 'id' | 'created_at' | 'updated_at'>>;
+
+export interface CRMDocumentItemRow {
+  id: string;
+  document_id: string;
+  line_index: number;
+  cart_line_type: string;
+  inventory_item_id?: string | null;
+  product_type?: string | null;
+  activity_code?: string | null;
+  title: string;
+  description?: string | null;
+  quantity: number;
+  unit_price: number;
+  discount_each: number;
+  line_total: number;
+  created_at?: string;
+}
+
+export type CRMDocumentItemInsert = Omit<CRMDocumentItemRow, 'id' | 'created_at'> & {
+  id?: string;
+};
+
+export interface CRMCustomerEventRow {
+  id: string;
+  customer_id?: string | null;
+  document_id?: string | null;
+  event_type: CRMCustomerEventType;
+  notes?: string | null;
+  amount?: number | null;
+  created_by?: string | null;
+  created_at?: string;
+}
+
+export type CRMCustomerEventInsert = Omit<CRMCustomerEventRow, 'id' | 'created_at'> & {
+  id?: string;
+};
+
 interface Database {
   public: {
     Tables: {
@@ -57,6 +153,30 @@ interface Database {
         Row: SystemLogRow;
         Insert: SystemLogInsert;
         Update: Partial<SystemLogInsert>;
+        Relationships: [];
+      };
+      crm_customers: {
+        Row: CRMCustomerRow;
+        Insert: CRMCustomerInsert;
+        Update: CRMCustomerUpdate;
+        Relationships: [];
+      };
+      crm_documents: {
+        Row: CRMDocumentRow;
+        Insert: CRMDocumentInsert;
+        Update: CRMDocumentUpdate;
+        Relationships: [];
+      };
+      crm_document_items: {
+        Row: CRMDocumentItemRow;
+        Insert: CRMDocumentItemInsert;
+        Update: Partial<CRMDocumentItemInsert>;
+        Relationships: [];
+      };
+      crm_customer_events: {
+        Row: CRMCustomerEventRow;
+        Insert: CRMCustomerEventInsert;
+        Update: Partial<CRMCustomerEventInsert>;
         Relationships: [];
       };
     };

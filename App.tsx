@@ -21,10 +21,12 @@ import { WheelCatalogView } from './components/WheelCatalogView';
 import { POSModal } from './components/POSModal';
 import { InvoiceModal } from './components/InvoiceModal';
 import { QuoteModuleView } from './components/QuoteModuleView';
+import { TrainingPortalView } from './components/TrainingPortalView';
+import { CustomerHubView } from './components/CustomerHubView';
 import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { PricingPOSQuoteLine } from './pricing-processor/types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
-import { supabase, isSupabaseConfigured, InventoryItemRow, SalesLogInsert, SalesLogRow, SystemLogInsert, SystemLogRow } from './supabaseClient';
+import { supabase, isSupabaseConfigured, InventoryItemRow, SalesLogInsert, SalesLogRow, SystemLogInsert, SystemLogRow, CRMCustomerRow } from './supabaseClient';
 import { flushPendingSupabaseWrites, insertSystemLogEntries } from './supabaseSync';
 import {
   deleteGlobalInventoryItem,
@@ -44,6 +46,7 @@ import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
 import { TYRE_LIFE_RAW_DATA } from './supplier_data/tyreLifeData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
+import { customerRowToCustomerInfo, saveCRMDocumentFromPOS } from './crmSync';
 
 import {
   searchInventory,
@@ -143,6 +146,7 @@ const App: React.FC = () => {
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [posCart, setPOSCart] = useState<CartItem[]>([]);
   const [invoiceDocument, setInvoiceDocument] = useState<InvoiceDocument | null>(null);
+  const [editingPOSDocument, setEditingPOSDocument] = useState<InvoiceDocument | null>(null);
   const [isCompletingPOS, setIsCompletingPOS] = useState(false);
   const [posCustomerInfo, setPOSCustomerInfo] = useState<CustomerInfo>({
     fullName: '',
@@ -698,7 +702,7 @@ const App: React.FC = () => {
   const getInventoryCartDescription = (item: InventoryItem): string => {
     if (item.type === ProductType.TYRE) {
       const tyre = item as TyreProduct;
-      return [tyre.pattern, tyre.loadSpeedIndex, tyre.location].filter(Boolean).join(' | ');
+      return [tyre.pattern, tyre.loadSpeedIndex].filter(Boolean).join(' | ');
     }
     if (item.type === ProductType.WHEEL) {
       const wheel = item as WheelProduct;
@@ -935,6 +939,32 @@ const App: React.FC = () => {
     setIsPOSOpen(true);
   };
 
+  const handleOpenCRMDocument = (document: InvoiceDocument) => {
+    setInvoiceDocument(document);
+    setIsInvoiceModalOpen(true);
+  };
+
+  const handleEditCRMDocument = (document: InvoiceDocument) => {
+    setPOSCustomerInfo(document.customer);
+    setPOSCart(document.items.map((item, index) => ({
+      ...item,
+      id: `edit-${document.referenceId}-${index}-${item.id}`,
+      quantity: item.cartLineType === 'INVENTORY' || item.cartLineType === 'SUPPLIER'
+        ? Math.max(item.quantity, item.cartQuantity, 1)
+        : 999
+    })));
+    setEditingPOSDocument(document);
+    setIsInvoiceModalOpen(false);
+    setIsPOSOpen(true);
+  };
+
+  const handleCreateQuoteForCustomer = (customer: CRMCustomerRow) => {
+    setPOSCustomerInfo(customerRowToCustomerInfo(customer));
+    setPOSCart([]);
+    setEditingPOSDocument(null);
+    setIsPOSOpen(true);
+  };
+
   const handlePOSRemoveItem = (itemId: string) => {
     setPOSCart(prev => prev.filter(item => item.id !== itemId));
   };
@@ -977,16 +1007,51 @@ const App: React.FC = () => {
     }));
   };
 
-  const handlePOSGenerateQuote = (staffName?: StaffName) => {
+  const handlePOSGenerateQuote = async (staffName?: StaffName) => {
     if (posCart.length === 0) return;
-    const quoteDocument = buildPOSDocument('QUOTE', posCart, getNextPOSReference('QUOTE'), staffName);
+    const referenceId = editingPOSDocument?.documentType === 'QUOTE'
+      ? editingPOSDocument.referenceId
+      : getNextPOSReference('QUOTE');
+    const quoteDocument = buildPOSDocument('QUOTE', posCart, referenceId, staffName);
+    try {
+      await saveCRMDocumentFromPOS(quoteDocument);
+    } catch (error) {
+      console.error('[SUPABASE] Quote was generated but not saved to Customer Hub:', error);
+      alert(`Quote was generated, but Customer Hub save failed. ${error instanceof Error ? error.message : ''}`.trim());
+    }
     setInvoiceDocument(quoteDocument);
     setIsInvoiceModalOpen(true);
     setIsPOSOpen(false);
+    setEditingPOSDocument(null);
   };
 
   const handlePOSCompleteSale = async (staffName: StaffName) => {
     if (posCart.length === 0 || isCompletingPOS) return;
+
+    if (editingPOSDocument?.documentType === 'INVOICE') {
+      setIsCompletingPOS(true);
+      const editedInvoice = buildPOSDocument(
+        'INVOICE',
+        posCart,
+        editingPOSDocument.referenceId,
+        staffName,
+        editingPOSDocument.createdAt || new Date().toISOString()
+      );
+
+      try {
+        await saveCRMDocumentFromPOS(editedInvoice);
+        setInvoiceDocument(editedInvoice);
+        setIsInvoiceModalOpen(true);
+        setIsPOSOpen(false);
+        setEditingPOSDocument(null);
+      } catch (error) {
+        console.error('[SUPABASE] Invoice edit save failed:', error);
+        alert(`Invoice changes could not be saved. ${error instanceof Error ? error.message : ''}`.trim());
+      } finally {
+        setIsCompletingPOS(false);
+      }
+      return;
+    }
 
     const stockById = new Map<string, InventoryItem>(items.map(item => [item.id, item] as const));
     const stockIssues = posCart.filter(cartItem => {
@@ -1060,9 +1125,16 @@ const App: React.FC = () => {
       });
 
       setOrders(prev => mergeOrdersUnique(newOrders, prev));
+      try {
+        await saveCRMDocumentFromPOS(invoice);
+      } catch (crmError) {
+        console.error('[SUPABASE] Invoice was processed but not saved to Customer Hub:', crmError);
+        alert(`Sale was processed, but Customer Hub save failed. ${crmError instanceof Error ? crmError.message : ''}`.trim());
+      }
       setInvoiceDocument(invoice);
       setIsInvoiceModalOpen(true);
       setIsPOSOpen(false);
+      setEditingPOSDocument(null);
       setPOSCart([]);
       setPOSCustomerInfo({ fullName: '', contactDetail: '', vehicleDetails: '' });
     } catch (error) {
@@ -1397,7 +1469,20 @@ const App: React.FC = () => {
       searchPlaceholder = `Search ${supplierCatalogLabel} Catalog...`;
   } else if (currentView === 'QUOTE_MODULE') {
       searchPlaceholder = "Quote Module uses the paste box below...";
+  } else if (currentView === 'TRAINING_PORTAL') {
+      searchPlaceholder = "Search training content inside the portal...";
+  } else if (currentView === 'CUSTOMER_HUB') {
+      searchPlaceholder = "Search customers inside Customer Hub...";
   }
+
+  const topNavTitle = currentView === 'TRAINING_PORTAL'
+    ? 'TRAINING PORTAL'
+    : currentView === 'CUSTOMER_HUB'
+      ? 'CUSTOMER HUB'
+      : undefined;
+  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB'
+    ? false
+    : isSearchVisible || currentView === 'WHEEL_CATALOG';
 
   return (
     <div className="flex h-screen bg-gp-black font-sans text-gp-text-main overflow-hidden transition-colors duration-300 relative">
@@ -1427,14 +1512,15 @@ const App: React.FC = () => {
           onMenuClick={handleSidebarToggle}
           isDarkMode={isDarkMode}
           toggleTheme={toggleTheme}
-          isSearchVisible={isSearchVisible || currentView === 'WHEEL_CATALOG'}
+          isSearchVisible={shouldShowTopSearch}
           toggleSearch={() => setIsSearchVisible(!isSearchVisible)}
           toggleChat={() => setIsChatOpen(prev => !prev)}
           isChatOpen={isChatOpen}
           placeholder={searchPlaceholder}
+          pageTitle={topNavTitle}
         />
 
-        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHEEL_CATALOG' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE') ? '' : 'pb-20'}`}>
+        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHEEL_CATALOG' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB') ? '' : 'pb-20'}`}>
           {currentView === 'DASHBOARD' && (
             <DashboardView 
               currentUser={currentUser}
@@ -1517,6 +1603,19 @@ const App: React.FC = () => {
             <QuoteModuleView onPushToPOSQuote={handleQuoteModulePushToPOS} />
           )}
 
+          {currentView === 'TRAINING_PORTAL' && (
+            <TrainingPortalView currentUser={currentUser} />
+          )}
+
+          {currentView === 'CUSTOMER_HUB' && (
+            <CustomerHubView
+              currentUser={currentUser}
+              onOpenDocument={handleOpenCRMDocument}
+              onEditDocument={handleEditCRMDocument}
+              onCreateQuoteForCustomer={handleCreateQuoteForCustomer}
+            />
+          )}
+
           {(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHEEL_CATALOG' || currentView === 'WHATSAPP_PORTAL') && currentPortal && (
             <div className="w-full h-full flex flex-col bg-gp-black relative">
               <div className="bg-gp-input border-b border-gp-border p-2 flex items-center gap-2 sticky top-0 z-10 shadow-sm">
@@ -1537,7 +1636,10 @@ const App: React.FC = () => {
         <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} onMinimize={() => setIsChatOpen(false)} />
 
         <button
-          onClick={() => setIsPOSOpen(true)}
+          onClick={() => {
+            setEditingPOSDocument(null);
+            setIsPOSOpen(true);
+          }}
           className="fixed bottom-6 right-6 z-50 flex items-center justify-center rounded-full bg-gp-red p-4 text-white shadow-[0_0_20px_rgba(255,0,0,0.6)] transition-transform hover:scale-105 hover:bg-red-700 active:scale-95"
           title="Open Quick POS"
           aria-label="Open Quick POS"
@@ -1565,7 +1667,10 @@ const App: React.FC = () => {
       <ShiftReconciliationModal isOpen={isCashUpModalOpen} onClose={() => setIsCashUpModalOpen(false)} orders={orders} />
       <POSModal
         isOpen={isPOSOpen}
-        onClose={() => setIsPOSOpen(false)}
+        onClose={() => {
+          setIsPOSOpen(false);
+          setEditingPOSDocument(null);
+        }}
         items={items}
         supplierItems={allSupplierPOSItems}
         cart={posCart}
@@ -1582,6 +1687,8 @@ const App: React.FC = () => {
         onCompleteSale={handlePOSCompleteSale}
         onGenerateQuote={handlePOSGenerateQuote}
         isCompletingSale={isCompletingPOS}
+        quoteActionLabel={editingPOSDocument?.documentType === 'QUOTE' ? 'Update Quote' : 'Generate Quote'}
+        saleActionLabel={editingPOSDocument?.documentType === 'INVOICE' ? 'Save Invoice' : 'Complete Sale'}
       />
       <InvoiceModal
         isOpen={isInvoiceModalOpen}

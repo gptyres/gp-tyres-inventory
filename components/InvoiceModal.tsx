@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CartItem, InvoiceDocument } from '../types';
+import { CartItem, InvoiceDocument, ProductType } from '../types';
 import gpLogo from '../assets/gp-tyres-logo-transparent.png';
 
 interface InvoiceModalProps {
@@ -39,6 +39,19 @@ const getDocumentNumber = (referenceId: string) => {
 
 const getSafeFileName = (value: string) => {
   return value.replace(/[^a-z0-9-]+/gi, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase();
+};
+
+const getPrintableLineDescription = (item: CartItem) => {
+  if (!item.description) return '';
+  if (item.cartLineType === 'INVENTORY' && item.productType === ProductType.TYRE) {
+    return item.description
+      .split('|')
+      .map(part => part.trim())
+      .filter(Boolean)
+      .slice(0, 2)
+      .join(' | ');
+  }
+  return item.description;
 };
 
 export const InvoiceModal: React.FC<InvoiceModalProps> = ({ isOpen, document, onClose }) => {
@@ -223,7 +236,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ isOpen, document, on
                       <td className="px-3 py-3 font-bold text-gray-950">{item.activityCode}</td>
                       <td className="px-3 py-3">
                         <p className="font-medium text-gray-950">{item.title}</p>
-                        {item.description && <p className="mt-1 text-xs text-gray-600">{item.description}</p>}
+                        {getPrintableLineDescription(item) && <p className="mt-1 text-xs text-gray-600">{getPrintableLineDescription(item)}</p>}
                       </td>
                       <td className="px-3 py-3 text-center">{item.cartQuantity}</td>
                       <td className="px-3 py-3 text-right">{formatInvoiceCurrency(getDiscountedUnit(item))}</td>
