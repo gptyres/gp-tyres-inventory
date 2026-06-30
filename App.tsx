@@ -232,7 +232,7 @@ const App: React.FC = () => {
     },
     APEX: {
       label: 'APEX',
-      note: 'Viewing External Supplier Data. Prices use APEX selling prices, with category shown in the location field.'
+      note: 'Viewing External Supplier Data. Prices use APEX selling prices, with lead time shown in the location field.'
     },
     TUBESTONE: {
       label: 'TUBESTONE',
