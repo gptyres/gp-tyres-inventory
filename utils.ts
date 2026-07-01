@@ -1,6 +1,6 @@
 
 import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
-import { parseAlineStockImageKeys } from './supplierStockImages';
+import { parseAlineStockImageKeys, parseSupplierTyreImageKeys } from './supplierStockImages';
 
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-ZA', {
@@ -253,6 +253,21 @@ const splitBrandPattern = (brandPattern: string, fallbackBrand: string) => {
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+const supplierTyreImageMetadata = (
+  supplierName: string,
+  brand: string,
+  pattern: string,
+  supplierStockCode?: string
+) => {
+  const imageKeys = parseSupplierTyreImageKeys(brand, pattern);
+  return {
+    supplierName,
+    supplierStockCode,
+    imageDesignKey: imageKeys.designKey,
+    imageFinishKey: imageKeys.finishKey
+  };
+};
+
 export const parseRawData = (tyreCsv: string, coiloverCsv: string): InventoryItem[] => {
   const items: InventoryItem[] = [];
   
@@ -400,6 +415,7 @@ export const parseSailunData = (rawText: string): InventoryItem[] => {
     const item: TyreProduct = {
         id: parts[0], // Use SAP as ID
         type: ProductType.TYRE,
+        ...supplierTyreImageMetadata('SAILUN', 'Sailun', pattern, parts[0]),
         brand: 'Sailun',
         pattern: pattern,
         size: size,
@@ -452,9 +468,11 @@ export const parseExclusiveTyresData = (rawCsv: string): InventoryItem[] => {
     const quantity = qtyMatch ? parseInt(qtyMatch[0], 10) : 0;
     const priceIncVat = parseCurrencyString(cols[2]);
 
+    const itemId = `exclusive-${idCounter++}`;
     const item: TyreProduct = {
-      id: `exclusive-${idCounter++}`,
+      id: itemId,
       type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('EXCLUSIVE TYRES', brand, pattern, itemId),
       brand,
       pattern,
       size,
@@ -494,9 +512,11 @@ const parseSimpleSupplierCsv = (rawCsv: string, idPrefix: string, supplierName: 
     const priceIncVat = parseCurrencyString(cols[3]);
     const quantity = parseStockUnits(cols[4]);
 
+    const itemId = `${idPrefix}-${idCounter++}`;
     items.push({
-      id: `${idPrefix}-${idCounter++}`,
+      id: itemId,
       type: ProductType.TYRE,
+      ...supplierTyreImageMetadata(supplierName, brand, pattern, itemId),
       brand,
       pattern,
       size,
@@ -549,9 +569,11 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
     const priceExVat = parseCurrencyString(cols[3]);
     const priceIncVat = Number((priceExVat * 1.15).toFixed(2));
 
+    const itemId = `safetygrip-${idCounter++}`;
     items.push({
-      id: `safetygrip-${idCounter++}`,
+      id: itemId,
       type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('SAFETY GRIP', brand, pattern, code),
       brand,
       pattern,
       size,
@@ -675,9 +697,11 @@ export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
       .replace(/\s+/g, ' ')
       .trim() || sku || 'Standard';
 
+    const itemId = `tubestone-${idCounter++}`;
     items.push({
-      id: `tubestone-${idCounter++}`,
+      id: itemId,
       type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('TUBESTONE', brand, pattern, sku || itemId),
       brand,
       pattern,
       size,
@@ -722,9 +746,11 @@ export const parseTreadsUnlimitedData = (rawCsv: string): InventoryItem[] => {
       .replace(/\s+/g, ' ')
       .trim() || sku || 'Standard';
 
+    const itemId = `treads-${idCounter++}`;
     items.push({
-      id: `treads-${idCounter++}`,
+      id: itemId,
       type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('TREADS UNLIMITED', brand, pattern, sku || itemId),
       brand,
       pattern,
       size,
@@ -767,9 +793,11 @@ export const parseTyreLifeData = (rawCsv: string): InventoryItem[] => {
     const priceIncVat = parseCurrencyString(cols[8]);
     const loadSpeed = `${cols[4] || ''}${cols[5] || ''}${cols[6] ? ` ${cols[6]}` : ''}`.trim();
 
+    const itemId = `tyrelife-${idCounter++}`;
     items.push({
-      id: `tyrelife-${idCounter++}`,
+      id: itemId,
       type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('TYRE LIFE', brand, pattern, sku || itemId),
       brand,
       pattern,
       size,

@@ -60,8 +60,16 @@ const getWheelDisplayName = (wheel: WheelProduct): string => (
   wheel.imageDesignKey || wheel.code || wheel.size || 'Wheel'
 );
 
+const isSupplierTyre = (item: InventoryItem): item is TyreProduct => (
+  item.type === ProductType.TYRE && Boolean((item as TyreProduct).supplierName)
+);
+
 const getItemDisplayName = (item: InventoryItem): string => {
-  if (item.type === ProductType.TYRE) return (item as TyreProduct).size;
+  if (item.type === ProductType.TYRE) {
+    const tyre = item as TyreProduct;
+    if (isSupplierTyre(item)) return tyre.pattern || tyre.imageDesignKey || tyre.size;
+    return tyre.size;
+  }
   if (item.type === ProductType.WHEEL) return getWheelDisplayName(item as WheelProduct);
   return (item as CoiloverProduct).vehicleCompatibility;
 };
@@ -69,6 +77,9 @@ const getItemDisplayName = (item: InventoryItem): string => {
 const getItemSecondaryLine = (item: InventoryItem): string => {
   if (item.type === ProductType.TYRE) {
     const tyre = item as TyreProduct;
+    if (isSupplierTyre(item)) {
+      return [tyre.size, tyre.brand, tyre.loadSpeedIndex].filter(Boolean).join(' / ');
+    }
     return `${tyre.brand} ${tyre.pattern}`.trim();
   }
   if (item.type === ProductType.WHEEL) {
@@ -300,7 +311,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
 
               {visibleColumns.specs && (
                 <td className="p-3 border-r border-gp-border text-gp-text-muted text-xs">
-                  {item.type === ProductType.TYRE ? (item as TyreProduct).pattern : 
+                  {item.type === ProductType.TYRE ? getItemSecondaryLine(item) : 
                    item.type === ProductType.WHEEL ? getItemSecondaryLine(item) :
                    (item as CoiloverProduct).series}
                 </td>
@@ -595,8 +606,18 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const supplierImageLookupSignature = useMemo(
     () => supplierImageLookupItems
       .map((item) => {
-        const wheel = item as WheelProduct;
-        return `${item.id}:${wheel.imageDesignKey ?? ''}:${wheel.imageFinishKey ?? ''}:${wheel.size}:${wheel.pcd}`;
+        const lookupItem = inventoryItemToSupplierImageLookup(item);
+        if (!lookupItem) return '';
+        return [
+          lookupItem.id,
+          lookupItem.productType,
+          lookupItem.supplierName ?? '',
+          lookupItem.supplierStockCode ?? '',
+          lookupItem.imageDesignKey ?? '',
+          lookupItem.imageFinishKey ?? '',
+          lookupItem.size ?? '',
+          lookupItem.pcd ?? ''
+        ].join(':');
       })
       .join('|'),
     [supplierImageLookupItems]
@@ -616,7 +637,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       }
 
       try {
-        const rows = await fetchSupplierStockImages('ALINE');
+        const rows = await fetchSupplierStockImages();
         if (!cancelled) setSupplierImages(buildSupplierImageMap(supplierImageLookupItems, rows));
       } catch (error) {
         console.error('Supplier image lookup failed', error);

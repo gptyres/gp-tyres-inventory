@@ -1,4 +1,4 @@
-import { InventoryItem, ProductType, WheelProduct } from './types';
+import { InventoryItem, ProductType, TyreProduct, WheelProduct } from './types';
 import { supabase } from './supabaseClient';
 
 export interface SupplierStockImageRow {
@@ -20,6 +20,7 @@ export interface SupplierStockImageRow {
 }
 
 export interface SupplierImageMatchCandidate {
+  supplierName?: string | null;
   designKey: string;
   finishKey?: string | null;
   rimSize?: string | null;
@@ -30,6 +31,9 @@ export interface SupplierImageMatchCandidate {
 
 export interface SupplierImageLookupItem {
   id: string;
+  productType: ProductType;
+  supplierName?: string;
+  supplierStockCode?: string;
   imageDesignKey?: string;
   imageFinishKey?: string;
   size?: string;
@@ -189,6 +193,11 @@ export const parseAlineStockImageKeys = (description: string) => {
   };
 };
 
+export const parseSupplierTyreImageKeys = (brand: string, pattern: string) => ({
+  designKey: normalizeSupplierImageToken(pattern || brand || 'TYRE'),
+  finishKey: normalizeSupplierImageToken(brand)
+});
+
 export const parseAlineImageFileName = (fileName: string) => {
   const stem = fileName.replace(/\.[^.]+$/, '');
   const rimSize = stem.match(/(?:^|[^0-9])(1[3-9]|2[0-6])\s*(?:''|["”]|INCH|INCHES|IN)/i)?.[1]
@@ -222,7 +231,11 @@ export const findBestSupplierStockImage = (
   const designKey = normalizeSupplierImageToken(item.imageDesignKey);
   if (!designKey) return { confidence: 'missing', candidates: [] };
 
-  const designMatches = candidates.filter((candidate) => normalizeSupplierImageToken(candidate.designKey) === designKey);
+  const supplierKey = normalizeSupplierImageToken(item.supplierName);
+  const designMatches = candidates.filter((candidate) => (
+    normalizeSupplierImageToken(candidate.designKey) === designKey
+    && (!supplierKey || normalizeSupplierImageToken(candidate.supplierName) === supplierKey)
+  ));
   if (!designMatches.length) return { confidence: 'missing', candidates: [] };
 
   const itemFinish = normalizeSupplierImageToken(item.imageFinishKey);
@@ -259,26 +272,57 @@ export const findBestSupplierStockImage = (
 };
 
 export const inventoryItemToSupplierImageLookup = (item: InventoryItem): SupplierImageLookupItem | null => {
-  if (item.type !== ProductType.WHEEL) return null;
-  const wheel = item as WheelProduct;
-  if (wheel.supplierName !== 'ALINE' && !item.id.toUpperCase().includes('ALINE')) return null;
-  return {
-    id: item.id,
-    imageDesignKey: wheel.imageDesignKey,
-    imageFinishKey: wheel.imageFinishKey,
-    size: wheel.size,
-    pcd: wheel.pcd
-  };
+  if (item.type === ProductType.WHEEL) {
+    const wheel = item as WheelProduct;
+    const supplierName = wheel.supplierName ?? (item.id.toUpperCase().includes('ALINE') ? 'ALINE' : undefined);
+    if (supplierName !== 'ALINE') return null;
+
+    return {
+      id: item.id,
+      productType: ProductType.WHEEL,
+      supplierName,
+      supplierStockCode: wheel.supplierStockCode,
+      imageDesignKey: wheel.imageDesignKey,
+      imageFinishKey: wheel.imageFinishKey,
+      size: wheel.size,
+      pcd: wheel.pcd
+    };
+  }
+
+  if (item.type === ProductType.TYRE) {
+    const tyre = item as TyreProduct;
+    if (!tyre.supplierName) return null;
+
+    const imageKeys = parseSupplierTyreImageKeys(tyre.brand, tyre.pattern);
+    return {
+      id: item.id,
+      productType: ProductType.TYRE,
+      supplierName: tyre.supplierName,
+      supplierStockCode: tyre.supplierStockCode,
+      imageDesignKey: tyre.imageDesignKey || imageKeys.designKey,
+      imageFinishKey: tyre.imageFinishKey || imageKeys.finishKey,
+      size: tyre.size
+    };
+  }
+
+  return null;
 };
 
-export const fetchSupplierStockImages = async (supplier = 'ALINE'): Promise<SupplierStockImageRow[]> => {
-  if (!supplierImageCache.has(supplier)) {
-    supplierImageCache.set(supplier, (async () => {
-      const { data, error } = await (supabase as any)
+export const fetchSupplierStockImages = async (supplier?: string): Promise<SupplierStockImageRow[]> => {
+  const cacheKey = supplier ? normalizeSupplierImageToken(supplier) : 'ALL_SUPPLIERS';
+
+  if (!supplierImageCache.has(cacheKey)) {
+    supplierImageCache.set(cacheKey, (async () => {
+      let query = (supabase as any)
         .from('supplier_stock_images')
         .select('id,supplier,design_key,finish_key,rim_size,pcd,tags,file_name,storage_bucket,storage_path,public_image_url,mime_type,active,imported_at,updated_at')
-        .eq('supplier', supplier)
-        .eq('active', true)
+        .eq('active', true);
+
+      if (supplier) {
+        query = query.eq('supplier', supplier);
+      }
+
+      const { data, error } = await query
         .order('design_key', { ascending: true })
         .order('file_name', { ascending: true });
 
@@ -287,17 +331,22 @@ export const fetchSupplierStockImages = async (supplier = 'ALINE'): Promise<Supp
     })());
   }
 
-  return supplierImageCache.get(supplier)!;
+  return supplierImageCache.get(cacheKey)!;
 };
+
+const supplierDesignGroupKey = (supplierName: string | undefined | null, designKey: string | undefined | null): string => (
+  `${normalizeSupplierImageToken(supplierName)}::${normalizeSupplierImageToken(designKey)}`
+);
 
 export const buildSupplierImageMap = (
   items: InventoryItem[],
   imageRows: SupplierStockImageRow[]
 ): Record<string, string> => {
-  const candidatesByDesign = imageRows.reduce<Record<string, SupplierImageMatchCandidate[]>>((groups, row) => {
-    const designKey = normalizeSupplierImageToken(row.design_key);
-    groups[designKey] = groups[designKey] ?? [];
-    groups[designKey].push({
+  const candidatesBySupplierAndDesign = imageRows.reduce<Record<string, SupplierImageMatchCandidate[]>>((groups, row) => {
+    const groupKey = supplierDesignGroupKey(row.supplier, row.design_key);
+    groups[groupKey] = groups[groupKey] ?? [];
+    groups[groupKey].push({
+      supplierName: row.supplier,
       designKey: row.design_key,
       finishKey: row.finish_key,
       rimSize: row.rim_size,
@@ -312,7 +361,7 @@ export const buildSupplierImageMap = (
     const lookupItem = inventoryItemToSupplierImageLookup(item);
     if (!lookupItem) return imageMap;
 
-    const candidates = candidatesByDesign[normalizeSupplierImageToken(lookupItem.imageDesignKey)] ?? [];
+    const candidates = candidatesBySupplierAndDesign[supplierDesignGroupKey(lookupItem.supplierName, lookupItem.imageDesignKey)] ?? [];
     const match = findBestSupplierStockImage(lookupItem, candidates);
     if (match.imageUrl) imageMap[item.id] = match.imageUrl;
     return imageMap;
