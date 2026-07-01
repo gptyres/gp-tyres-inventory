@@ -56,6 +56,33 @@ const getSortValue = (item: InventoryItem, key: SortKey): string | number => {
   return '';
 };
 
+const getWheelDisplayName = (wheel: WheelProduct): string => (
+  wheel.imageDesignKey || wheel.code || wheel.size || 'Wheel'
+);
+
+const getItemDisplayName = (item: InventoryItem): string => {
+  if (item.type === ProductType.TYRE) return (item as TyreProduct).size;
+  if (item.type === ProductType.WHEEL) return getWheelDisplayName(item as WheelProduct);
+  return (item as CoiloverProduct).vehicleCompatibility;
+};
+
+const getItemSecondaryLine = (item: InventoryItem): string => {
+  if (item.type === ProductType.TYRE) {
+    const tyre = item as TyreProduct;
+    return `${tyre.brand} ${tyre.pattern}`.trim();
+  }
+  if (item.type === ProductType.WHEEL) {
+    const wheel = item as WheelProduct;
+    return [wheel.size, wheel.pcd, wheel.offset ? `ET${wheel.offset}` : ''].filter(Boolean).join(' / ');
+  }
+  const coilover = item as CoiloverProduct;
+  return `${coilover.brand} ${coilover.series}`.trim();
+};
+
+const getDragFileName = (item: InventoryItem): string => (
+  `${getItemDisplayName(item).replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() || 'gp-wheel'}.jpg`
+);
+
 // --- SUB-COMPONENTS ---
 
 const SpecBadge = ({ label, value }: { label: string; value: string | number }) => (
@@ -81,15 +108,29 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
   if (aspectRatio === '16:9') aspectClass = 'aspect-video';
   if (aspectRatio === '4:3') aspectClass = 'aspect-[4/3]';
   if (aspectRatio === '3:4') aspectClass = 'aspect-[3/4]';
+
+  const handleDragStart = (event: React.DragEvent<HTMLImageElement>) => {
+    if (!imageUrl) return;
+    const label = getItemDisplayName(item);
+    event.dataTransfer.effectAllowed = 'copy';
+    event.dataTransfer.setData('text/uri-list', imageUrl);
+    event.dataTransfer.setData('text/plain', imageUrl);
+    event.dataTransfer.setData('text/html', `<img src="${imageUrl}" alt="${label.replace(/"/g, '&quot;')}" />`);
+    event.dataTransfer.setData('DownloadURL', `image/jpeg:${getDragFileName(item)}:${imageUrl}`);
+  };
   
   return (
     <div className={`w-full ${aspectClass} bg-gp-black border-b border-gp-border relative overflow-hidden group`}>
       {imageUrl ? (
         <img 
           src={imageUrl} 
-          alt="Product" 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          alt={getItemDisplayName(item)}
+          className="w-full h-full object-contain bg-white p-1 transition-transform duration-500 group-hover:scale-105 cursor-grab active:cursor-grabbing"
           draggable={true}
+          loading="lazy"
+          decoding="async"
+          onDragStart={handleDragStart}
+          title="Drag this image into another app or message"
         />
       ) : (
         <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center">
@@ -246,9 +287,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               </td>
               
               <td className="p-3 border-r border-gp-border font-bold text-gp-text-main">
-                {item.type === ProductType.TYRE ? (item as TyreProduct).size : 
-                 item.type === ProductType.WHEEL ? (item as WheelProduct).size : 
-                 (item as CoiloverProduct).vehicleCompatibility}
+                {getItemDisplayName(item)}
               </td>
 
               {visibleColumns.specs && (
@@ -262,7 +301,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               {visibleColumns.specs && (
                 <td className="p-3 border-r border-gp-border text-gp-text-muted text-xs">
                   {item.type === ProductType.TYRE ? (item as TyreProduct).pattern : 
-                   item.type === ProductType.WHEEL ? `${(item as WheelProduct).pcd} / ${(item as WheelProduct).offset}` : 
+                   item.type === ProductType.WHEEL ? getItemSecondaryLine(item) :
                    (item as CoiloverProduct).series}
                 </td>
               )}
@@ -345,15 +384,11 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 {item.type}
               </span>
               <h3 className="text-xl font-black text-gp-text-main mt-2 leading-none font-display tracking-wide truncate max-w-full">
-                {item.type === ProductType.TYRE ? (item as TyreProduct).size : 
-                 item.type === ProductType.WHEEL ? (item as WheelProduct).size : 
-                 (item as CoiloverProduct).vehicleCompatibility}
+                {getItemDisplayName(item)}
               </h3>
               {visibleColumns.specs && (
                 <p className="text-xs text-gp-silver mt-1 uppercase font-semibold truncate max-w-full">
-                    {item.type === ProductType.TYRE ? `${(item as TyreProduct).brand} ${(item as TyreProduct).pattern}` :
-                    item.type === ProductType.WHEEL ? `${(item as WheelProduct).colour}` :
-                    (item as CoiloverProduct).brand}
+                    {getItemSecondaryLine(item)}
                 </p>
               )}
             </div>
@@ -477,16 +512,12 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
 
                <div className="flex flex-col cursor-pointer" onClick={() => !isReadOnly && onEdit(item)}>
                   <span className="text-lg font-black text-gp-text-main font-display">
-                    {item.type === ProductType.TYRE ? (item as TyreProduct).size : 
-                     item.type === ProductType.WHEEL ? (item as WheelProduct).size : 
-                     (item as CoiloverProduct).vehicleCompatibility}
+                    {getItemDisplayName(item)}
                   </span>
                   
                   {visibleColumns.specs && (
                     <span className="text-xs text-gp-silver uppercase font-bold mt-0.5">
-                        {item.type === ProductType.TYRE ? `${(item as TyreProduct).brand} ${(item as TyreProduct).pattern}` :
-                        item.type === ProductType.WHEEL ? `${(item as WheelProduct).code} ${(item as WheelProduct).pcd}` :
-                        `${(item as CoiloverProduct).brand} ${(item as CoiloverProduct).series}`}
+                        {getItemSecondaryLine(item)}
                     </span>
                   )}
 
@@ -557,21 +588,36 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [supplierImages, setSupplierImages] = useState<Record<string, string>>({});
   const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
   const [errorImages, setErrorImages] = useState<Set<string>>(new Set());
+  const supplierImageLookupItems = useMemo(
+    () => props.items.filter((item) => inventoryItemToSupplierImageLookup(item)),
+    [props.items]
+  );
+  const supplierImageLookupSignature = useMemo(
+    () => supplierImageLookupItems
+      .map((item) => {
+        const wheel = item as WheelProduct;
+        return `${item.id}:${wheel.imageDesignKey ?? ''}:${wheel.imageFinishKey ?? ''}:${wheel.size}:${wheel.pcd}`;
+      })
+      .join('|'),
+    [supplierImageLookupItems]
+  );
 
   useEffect(() => {
     let cancelled = false;
 
     const loadSupplierImages = async () => {
-      if (!showImages) return;
-      const lookupItems = props.items.filter((item) => inventoryItemToSupplierImageLookup(item));
-      if (!lookupItems.length) {
+      if (!showImages) {
+        setSupplierImages({});
+        return;
+      }
+      if (!supplierImageLookupItems.length) {
         setSupplierImages({});
         return;
       }
 
       try {
         const rows = await fetchSupplierStockImages('ALINE');
-        if (!cancelled) setSupplierImages(buildSupplierImageMap(lookupItems, rows));
+        if (!cancelled) setSupplierImages(buildSupplierImageMap(supplierImageLookupItems, rows));
       } catch (error) {
         console.error('Supplier image lookup failed', error);
         if (!cancelled) setSupplierImages({});
@@ -582,7 +628,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     return () => {
       cancelled = true;
     };
-  }, [props.items, showImages]);
+  }, [showImages, supplierImageLookupSignature]);
 
   // Function to generate image using Gemini
   const handleGenerateImage = async (item: InventoryItem) => {

@@ -42,6 +42,8 @@ export interface SupplierImageMatchResult {
   candidates: SupplierImageMatchCandidate[];
 }
 
+const supplierImageCache = new Map<string, Promise<SupplierStockImageRow[]>>();
+
 export const normalizeSupplierImageToken = (value: string | undefined | null): string => (
   (value ?? '')
     .normalize('NFKD')
@@ -270,35 +272,47 @@ export const inventoryItemToSupplierImageLookup = (item: InventoryItem): Supplie
 };
 
 export const fetchSupplierStockImages = async (supplier = 'ALINE'): Promise<SupplierStockImageRow[]> => {
-  const { data, error } = await (supabase as any)
-    .from('supplier_stock_images')
-    .select('*')
-    .eq('supplier', supplier)
-    .eq('active', true)
-    .order('design_key', { ascending: true })
-    .order('file_name', { ascending: true });
+  if (!supplierImageCache.has(supplier)) {
+    supplierImageCache.set(supplier, (async () => {
+      const { data, error } = await (supabase as any)
+        .from('supplier_stock_images')
+        .select('id,supplier,design_key,finish_key,rim_size,pcd,tags,file_name,storage_bucket,storage_path,public_image_url,mime_type,active,imported_at,updated_at')
+        .eq('supplier', supplier)
+        .eq('active', true)
+        .order('design_key', { ascending: true })
+        .order('file_name', { ascending: true });
 
-  if (error) throw error;
-  return data ?? [];
+      if (error) throw error;
+      return data ?? [];
+    })());
+  }
+
+  return supplierImageCache.get(supplier)!;
 };
 
 export const buildSupplierImageMap = (
   items: InventoryItem[],
   imageRows: SupplierStockImageRow[]
 ): Record<string, string> => {
-  const candidates: SupplierImageMatchCandidate[] = imageRows.map((row) => ({
-    designKey: row.design_key,
-    finishKey: row.finish_key,
-    rimSize: row.rim_size,
-    pcd: row.pcd,
-    publicImageUrl: row.public_image_url,
-    fileName: row.file_name
-  }));
+  const candidatesByDesign = imageRows.reduce<Record<string, SupplierImageMatchCandidate[]>>((groups, row) => {
+    const designKey = normalizeSupplierImageToken(row.design_key);
+    groups[designKey] = groups[designKey] ?? [];
+    groups[designKey].push({
+      designKey: row.design_key,
+      finishKey: row.finish_key,
+      rimSize: row.rim_size,
+      pcd: row.pcd,
+      publicImageUrl: row.public_image_url,
+      fileName: row.file_name
+    });
+    return groups;
+  }, {});
 
   return items.reduce<Record<string, string>>((imageMap, item) => {
     const lookupItem = inventoryItemToSupplierImageLookup(item);
     if (!lookupItem) return imageMap;
 
+    const candidates = candidatesByDesign[normalizeSupplierImageToken(lookupItem.imageDesignKey)] ?? [];
     const match = findBestSupplierStockImage(lookupItem, candidates);
     if (match.imageUrl) imageMap[item.id] = match.imageUrl;
     return imageMap;
