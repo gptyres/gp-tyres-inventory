@@ -46,6 +46,7 @@ import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
 import { TYRE_LIFE_RAW_DATA } from './supplier_data/tyreLifeData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
+import { SAFETY_GRIP_RAW_DATA } from './supplier_data/safetygripData';
 import { customerRowToCustomerInfo, saveCRMDocumentFromPOS } from './crmSync';
 
 import {
@@ -56,6 +57,7 @@ import {
   parseExclusiveTyresData,
   parseTyreWarehouseData,
   parseAttData,
+  parseSafetyGripData,
   parseApexData,
   parseTubestoneData,
   parseTreadsUnlimitedData,
@@ -87,6 +89,7 @@ const getAllSupplierPOSItems = (): InventoryItem[] => [
   ...tagSupplierPOSItems('exclusive', parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA)),
   ...tagSupplierPOSItems('tyrewarehouse', parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA)),
   ...tagSupplierPOSItems('att', parseAttData(ATT_RAW_DATA)),
+  ...tagSupplierPOSItems('safetygrip', parseSafetyGripData(SAFETY_GRIP_RAW_DATA)),
   ...tagSupplierPOSItems('apex', parseApexData(APEX_RAW_DATA)),
   ...tagSupplierPOSItems('tubestone', parseTubestoneData(TUBESTONE_RAW_DATA)),
   ...tagSupplierPOSItems('treads', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
@@ -182,6 +185,7 @@ const App: React.FC = () => {
             ...tagSupplierItems('EXCLUSIVE TYRES', parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA)),
             ...tagSupplierItems('TYREWAREHOUSE', parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA)),
             ...tagSupplierItems('ATT', parseAttData(ATT_RAW_DATA)),
+            ...tagSupplierItems('SAFETY GRIP', parseSafetyGripData(SAFETY_GRIP_RAW_DATA)),
             ...tagSupplierItems('APEX', parseApexData(APEX_RAW_DATA)),
             ...tagSupplierItems('TUBESTONE', parseTubestoneData(TUBESTONE_RAW_DATA)),
             ...tagSupplierItems('TREADS UNLIMITED', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
@@ -193,6 +197,8 @@ const App: React.FC = () => {
           return parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA);
         case 'ATT':
           return parseAttData(ATT_RAW_DATA);
+        case 'SAFETY_GRIP':
+          return parseSafetyGripData(SAFETY_GRIP_RAW_DATA);
         case 'APEX':
           return parseApexData(APEX_RAW_DATA);
         case 'TUBESTONE':
@@ -229,6 +235,10 @@ const App: React.FC = () => {
     ATT: {
       label: 'ATT',
       note: 'Viewing External Supplier Data. Prices use ATT selling prices.'
+    },
+    SAFETY_GRIP: {
+      label: 'SAFETY GRIP',
+      note: 'Viewing External Supplier Data. Prices are calculated with 15% VAT added to the supplied price.'
     },
     APEX: {
       label: 'APEX',

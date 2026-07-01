@@ -12,7 +12,7 @@ export enum ViewMode {
 }
 
 export type AppView = 'DASHBOARD' | 'TRAINING_PORTAL' | 'CUSTOMER_HUB' | 'INVENTORY' | 'ORDERS' | 'BACKORDERS' | 'SYSTEM_LOGS' | 'SUPPLIER_PORTAL' | 'SHIPPING_PORTAL' | 'PAYMENT_PORTAL' | 'TOOLS_PORTAL' | 'SUPPLIER_INVENTORY' | 'WHEEL_CATALOG' | 'WHATSAPP_PORTAL' | 'QUOTE_MODULE';
-export type SupplierCatalog = 'ALL_SUPPLIERS' | 'SAILUN' | 'EXCLUSIVE_TYRES' | 'TYREWAREHOUSE' | 'ATT' | 'TREADS_UNLIMITED' | 'TYRE_LIFE' | 'APEX' | 'TUBESTONE';
+export type SupplierCatalog = 'ALL_SUPPLIERS' | 'SAILUN' | 'EXCLUSIVE_TYRES' | 'TYREWAREHOUSE' | 'ATT' | 'SAFETY_GRIP' | 'TREADS_UNLIMITED' | 'TYRE_LIFE' | 'APEX' | 'TUBESTONE';
 
 // Changed to string to support dynamic config updates without type conflicts
 export type StaffName = string;

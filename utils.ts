@@ -521,6 +521,51 @@ export const parseAttData = (rawCsv: string): InventoryItem[] => {
   return parseSimpleSupplierCsv(rawCsv, 'att', 'ATT');
 };
 
+// --- SAFETY GRIP PARSER ---
+export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
+  const items: InventoryItem[] = [];
+  const lines = rawCsv.split('\n');
+  const today = new Date().toISOString().split('T')[0];
+  let idCounter = 1;
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+
+    const cols = parseCSVLine(trimmed);
+    const code = cols[0]?.trim();
+    const description = cols[1]?.replace(/\s+/g, ' ').trim();
+
+    if (index === 0 && code?.toUpperCase() === 'CODE') return;
+    if (!code || !description) return;
+
+    const [size, ...brandPatternParts] = description.split(/\s+/).filter(Boolean);
+    const brandPattern = brandPatternParts.join(' ');
+    if (!size || !brandPattern) return;
+
+    const { brand, pattern } = splitBrandPattern(brandPattern, 'SAFETY GRIP');
+    const quantity = parseStockUnits(cols[2]);
+    const priceExVat = parseCurrencyString(cols[3]);
+    const priceIncVat = Number((priceExVat * 1.15).toFixed(2));
+
+    items.push({
+      id: `safetygrip-${idCounter++}`,
+      type: ProductType.TYRE,
+      brand,
+      pattern,
+      size,
+      loadSpeedIndex: code,
+      location: 'SAFETY GRIP',
+      quantity,
+      costPrice: priceExVat,
+      sellingPrice: priceIncVat,
+      lastUpdated: today
+    });
+  });
+
+  return items;
+};
+
 // --- APEX PARSER ---
 export const parseApexData = (rawCsv: string): InventoryItem[] => {
   return parseSimpleSupplierCsv(rawCsv, 'apex', 'APEX');
