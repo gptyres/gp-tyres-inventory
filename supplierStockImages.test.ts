@@ -6,7 +6,7 @@ import {
   parseSupplierTyreImageKeys
 } from './supplierStockImages';
 import { ProductType } from './types';
-import { parseAttData } from './utils';
+import { parseAttData, parseTyreLifeWheelsData } from './utils';
 
 describe('ALINE supplier image parsing', () => {
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
@@ -31,6 +31,31 @@ describe('ALINE supplier image parsing', () => {
     expect(parseAlineImageFileName('Noble SLBLK .jpg')).toMatchObject({
       designKey: 'NOBLE',
       finishKey: 'SILK BLACK'
+    });
+  });
+});
+
+describe('TYRE LIFE wheel catalogue parsing', () => {
+  it('parses VAT-inclusive wheel rows with branch stock and visual keys', () => {
+    const [item] = parseTyreLifeWheelsData([
+      'Size,SKU,Brand,Wheel Name,Finish,PCD,Offset,Center Bore,Category,Selling Price,JHB Stock Units,CPT Stock Units,DBN Stock Units,Total Stock Units',
+      '"20” x 9""",SAA8306-2983MB,Dirty Life,A8306 MAYHEM RIDGELINE,Satin Black,139.7,18,106,Wheels,R4850,8 units,0 units,0 units,8 units'
+    ].join('\n'));
+
+    expect(item).toMatchObject({
+      type: ProductType.WHEEL,
+      supplierName: 'TYRE LIFE WHEELS',
+      supplierStockCode: 'SAA8306-2983MB',
+      imageDesignKey: 'A8306 MAYHEM RIDGELINE',
+      imageFinishKey: 'SATIN BLACK',
+      code: 'A8306 MAYHEM RIDGELINE',
+      size: '20x9',
+      pcd: '139.7',
+      offset: '18',
+      centerBore: '106',
+      quantity: 8,
+      sellingPrice: 4850,
+      costPrice: 4850
     });
   });
 });

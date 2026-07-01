@@ -1,6 +1,6 @@
 
 import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
-import { parseAlineStockImageKeys, parseSupplierTyreImageKeys } from './supplierStockImages';
+import { normalizeSupplierImageToken, parseAlineStockImageKeys, parseSupplierTyreImageKeys } from './supplierStockImages';
 
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-ZA', {
@@ -603,6 +603,14 @@ const parseAlineWheelSpec = (description: string) => {
   };
 };
 
+const normalizeWheelSize = (value: string): string => (
+  value
+    .replace(/[“”"]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\s*x\s*/i, 'x')
+);
+
 // --- ALINE PARSER ---
 export const parseAlineData = (rawCsv: string): InventoryItem[] => {
   const items: InventoryItem[] = [];
@@ -806,6 +814,64 @@ export const parseTyreLifeData = (rawCsv: string): InventoryItem[] => {
       quantity: totalQty,
       costPrice: priceIncVat,
       sellingPrice: priceIncVat,
+      lastUpdated: today
+    });
+  });
+
+  return items;
+};
+
+// --- TYRE LIFE WHEELS PARSER ---
+export const parseTyreLifeWheelsData = (rawCsv: string): InventoryItem[] => {
+  const items: InventoryItem[] = [];
+  const lines = rawCsv.split('\n');
+  const today = new Date().toISOString().split('T')[0];
+  let idCounter = 1;
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+
+    const cols = parseCSVLine(trimmed);
+    const rawSize = cols[0]?.trim();
+    const sku = cols[1]?.trim();
+    const brand = cols[2]?.trim();
+    const wheelName = cols[3]?.replace(/\s+/g, ' ').trim();
+    const finish = cols[4]?.replace(/\s+/g, ' ').trim();
+
+    if (index === 0 && rawSize?.toUpperCase() === 'SIZE') return;
+    if (!rawSize || !sku || !wheelName) return;
+
+    const pcd = cols[5]?.trim() || '';
+    const offset = cols[6]?.trim() || '';
+    const centerBore = cols[7]?.trim() || '';
+    const category = cols[8]?.trim() || 'Wheels';
+    const sellingPrice = parseCurrencyString(cols[9]);
+    const jhbQty = parseStockUnits(cols[10]);
+    const cptQty = parseStockUnits(cols[11]);
+    const dbnQty = parseStockUnits(cols[12]);
+    const totalQty = parseStockUnits(cols[13]);
+    const quantity = totalQty || jhbQty + cptQty + dbnQty;
+    const itemId = `tyrelifewheels-${idCounter++}`;
+
+    items.push({
+      id: itemId,
+      type: ProductType.WHEEL,
+      supplierName: 'TYRE LIFE WHEELS',
+      supplierStockCode: sku,
+      imageDesignKey: normalizeSupplierImageToken(wheelName),
+      imageFinishKey: normalizeSupplierImageToken(finish || brand),
+      code: wheelName,
+      size: normalizeWheelSize(rawSize),
+      pcd,
+      offset,
+      centerBore,
+      colour: [brand, finish, category, sku].filter(Boolean).join(' | '),
+      setQuantity: 4,
+      location: `JHB: ${jhbQty} | CPT: ${cptQty} | DBN: ${dbnQty}`,
+      quantity,
+      costPrice: sellingPrice,
+      sellingPrice,
       lastUpdated: today
     });
   });

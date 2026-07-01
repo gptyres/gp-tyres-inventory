@@ -44,6 +44,7 @@ import { TYRE_WAREHOUSE_RAW_DATA } from './supplier_data/tyreWarehouseData';
 import { ATT_RAW_DATA } from './supplier_data/attData';
 import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
 import { TYRE_LIFE_RAW_DATA } from './supplier_data/tyreLifeData';
+import { TYRE_LIFE_WHEELS_RAW_DATA } from './supplier_data/tyreLifeWheelsData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
 import { SAFETY_GRIP_RAW_DATA } from './supplier_data/safetygripData';
@@ -63,7 +64,8 @@ import {
   parseApexData,
   parseTubestoneData,
   parseTreadsUnlimitedData,
-  parseTyreLifeData
+  parseTyreLifeData,
+  parseTyreLifeWheelsData
 } from './utils';
 
 const POS_REFERENCE_COUNTERS: Record<InvoiceDocument['documentType'], { storageKey: string; startAt: number }> = {
@@ -96,7 +98,8 @@ const getAllSupplierPOSItems = (): InventoryItem[] => [
   ...tagSupplierPOSItems('apex', parseApexData(APEX_RAW_DATA)),
   ...tagSupplierPOSItems('tubestone', parseTubestoneData(TUBESTONE_RAW_DATA)),
   ...tagSupplierPOSItems('treads', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
-  ...tagSupplierPOSItems('tyrelife', parseTyreLifeData(TYRE_LIFE_RAW_DATA))
+  ...tagSupplierPOSItems('tyrelife', parseTyreLifeData(TYRE_LIFE_RAW_DATA)),
+  ...tagSupplierPOSItems('tyrelifewheels', parseTyreLifeWheelsData(TYRE_LIFE_WHEELS_RAW_DATA))
 ];
 
 const App: React.FC = () => {
@@ -169,6 +172,15 @@ const App: React.FC = () => {
   const supplierItems = useMemo(() => {
     const tagSupplierItems = (supplierName: string, supplierItems: InventoryItem[]): InventoryItem[] => {
       return supplierItems.map((item) => {
+        if (item.type === ProductType.WHEEL) {
+          const wheel = item as WheelProduct;
+          return {
+            ...wheel,
+            id: `${supplierName}-${wheel.id}`,
+            location: `${supplierName}: ${wheel.location || 'Supplier'}`
+          };
+        }
+
         if (item.type !== ProductType.TYRE) return { ...item, id: `${supplierName}-${item.id}` };
 
         const tyre = item as TyreProduct;
@@ -193,7 +205,8 @@ const App: React.FC = () => {
             ...tagSupplierItems('APEX', parseApexData(APEX_RAW_DATA)),
             ...tagSupplierItems('TUBESTONE', parseTubestoneData(TUBESTONE_RAW_DATA)),
             ...tagSupplierItems('TREADS UNLIMITED', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
-            ...tagSupplierItems('TYRE LIFE', parseTyreLifeData(TYRE_LIFE_RAW_DATA))
+            ...tagSupplierItems('TYRE LIFE', parseTyreLifeData(TYRE_LIFE_RAW_DATA)),
+            ...tagSupplierItems('TYRE LIFE WHEELS', parseTyreLifeWheelsData(TYRE_LIFE_WHEELS_RAW_DATA))
           ];
         case 'EXCLUSIVE_TYRES':
           return parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA);
@@ -213,6 +226,8 @@ const App: React.FC = () => {
           return parseTreadsUnlimitedData(TREADS_RAW_DATA);
         case 'TYRE_LIFE':
           return parseTyreLifeData(TYRE_LIFE_RAW_DATA);
+        case 'TYRE_LIFE_WHEELS':
+          return parseTyreLifeWheelsData(TYRE_LIFE_WHEELS_RAW_DATA);
         case 'SAILUN':
         default:
           return parseSailunData(SAILUN_RAW_DATA);
@@ -265,6 +280,10 @@ const App: React.FC = () => {
     TYRE_LIFE: {
       label: 'TYRE LIFE',
       note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.'
+    },
+    TYRE_LIFE_WHEELS: {
+      label: 'TYRE LIFE WHEELS',
+      note: 'Viewing External Supplier Wheel Data. Prices already include VAT, with branch wheel stock shown in the location field.'
     }
   };
 

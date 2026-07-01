@@ -308,6 +308,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   TYRE LIFE
                 </button>
+                <button
+                  onClick={() => handleSupplierClick('TYRE_LIFE_WHEELS')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'TYRE_LIFE_WHEELS' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  TYRE LIFE WHEELS
+                </button>
               </div>
             )}
           </div>
