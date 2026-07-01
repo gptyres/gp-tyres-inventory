@@ -1,5 +1,6 @@
 
 import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
+import { parseAlineStockImageKeys } from './supplierStockImages';
 
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-ZA', {
@@ -607,10 +608,15 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
     const category = cols[4]?.trim();
     const catalogueNumber = cols[10]?.trim();
     const spec = parseAlineWheelSpec(description);
+    const imageKeys = parseAlineStockImageKeys(description);
 
     items.push({
       id: `aline-${idCounter++}`,
       type: ProductType.WHEEL,
+      supplierName: 'ALINE',
+      supplierStockCode: stockCode,
+      imageDesignKey: imageKeys.designKey,
+      imageFinishKey: imageKeys.finishKey,
       code: stockCode,
       size: spec.size,
       pcd: spec.pcd,

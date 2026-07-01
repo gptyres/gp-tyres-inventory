@@ -24,6 +24,10 @@ export interface BaseProduct {
   sellingPrice: number;
   costPrice: number; // Only visible to admin
   lastUpdated: string;
+  supplierName?: string;
+  supplierStockCode?: string;
+  imageDesignKey?: string;
+  imageFinishKey?: string;
 }
 
 export interface TyreProduct extends BaseProduct {

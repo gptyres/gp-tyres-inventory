@@ -3,6 +3,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { InventoryItem, ProductType, TyreProduct, WheelProduct, CoiloverProduct, ViewMode } from '../types';
 import { formatCurrency, getStatusColor } from '../utils';
 import { GoogleGenAI } from "@google/genai";
+import { buildSupplierImageMap, fetchSupplierStockImages, inventoryItemToSupplierImageLookup } from '../supplierStockImages';
 
 interface InventoryViewProps {
   items: InventoryItem[];
@@ -125,7 +126,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
       {imageUrl && (
         <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded flex items-center gap-1">
             <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-            <span className="text-[8px] font-bold text-white uppercase">Google Grounded</span>
+            <span className="text-[8px] font-bold text-white uppercase">Visual</span>
         </div>
       )}
     </div>
@@ -553,8 +554,35 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [showImages, setShowImages] = useState(false);
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('1:1');
   const [generatedImages, setGeneratedImages] = useState<Record<string, string>>({});
+  const [supplierImages, setSupplierImages] = useState<Record<string, string>>({});
   const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
   const [errorImages, setErrorImages] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadSupplierImages = async () => {
+      if (!showImages) return;
+      const lookupItems = props.items.filter((item) => inventoryItemToSupplierImageLookup(item));
+      if (!lookupItems.length) {
+        setSupplierImages({});
+        return;
+      }
+
+      try {
+        const rows = await fetchSupplierStockImages('ALINE');
+        if (!cancelled) setSupplierImages(buildSupplierImageMap(lookupItems, rows));
+      } catch (error) {
+        console.error('Supplier image lookup failed', error);
+        if (!cancelled) setSupplierImages({});
+      }
+    };
+
+    void loadSupplierImages();
+    return () => {
+      cancelled = true;
+    };
+  }, [props.items, showImages]);
 
   // Function to generate image using Gemini
   const handleGenerateImage = async (item: InventoryItem) => {
@@ -735,6 +763,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
   // Helper to render the correct view component
   const renderView = (items: InventoryItem[]) => {
+    const visualImages = { ...generatedImages, ...supplierImages };
     const viewProps = { 
         ...props, 
         items, 
@@ -744,7 +773,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         selectedIds,
         onToggleSelect: handleToggleSelect,
         showImages,
-        generatedImages,
+        generatedImages: visualImages,
         loadingImages,
         errorImages,
         onGenerateImage: handleGenerateImage,
