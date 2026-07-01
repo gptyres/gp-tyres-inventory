@@ -1,0 +1,2804 @@
+{
+  "generatedAt": "2026-07-01T15:56:49.291Z",
+  "supplier": "TYRE LIFE WHEELS",
+  "officialSources": [
+    "https://www.dirtylifewheels.com/wheels",
+    "https://www.ionalloy.com/ion-wheels",
+    "https://momo.com/en-gb/products/road-wheels-eu/page/2/",
+    "https://momo.com/en-gb/products/road-wheels-eu/limited-availability/",
+    "https://www.mickeythompsontires.com/wheels",
+    "https://www.wheelpros.com/pro-comp",
+    "https://dynamicwheelco.nz/wheel/dwc-wheels/legend/",
+    "https://dynamicwheelco.nz/wheel/dynamic-steel-wheels/"
+  ],
+  "catalogueRows": 199,
+  "uniqueKeys": 83,
+  "sourceRecords": 74,
+  "sourceSamples": [
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9317 DT3",
+      "finishKey": "MATTE BLACK",
+      "sourceTitle": "Matte Black",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1769716969053-2C03ZYK8FD49M5LZ6EPY/DLRW9317-+5MB1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9317-matte-black-sim-beadlock"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9317 DT3",
+      "finishKey": "MACHINED",
+      "sourceTitle": "Machined",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1769716969872-R5OWBU2Z9QKMUH2CB8PN/DLRW9317-5M1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9317-machined-sim-beadlock"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9400",
+      "finishKey": "MATTE BLACK",
+      "sourceTitle": "Matte Black",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1712851163499-IT4J60OA235UDAMNK979/9400FB1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9400-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9400",
+      "finishKey": "MACHINED",
+      "sourceTitle": "Machined",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1712851167694-CQQ316VL15XQGUOBESA8/9400FM1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9400-machined"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9316",
+      "finishKey": "MATTE BLACK",
+      "sourceTitle": "MATTE BLACK",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1677109192284-G59WUL0FXZO40XC5636U/DIRTYLIFE9316SB1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9316-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9316",
+      "finishKey": "SATIN BRONZE",
+      "sourceTitle": "SATIN BRONZE",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1677109201387-X7AVERU1TE7UR7YZ0F8F/DIRTYLIFE9316MZ1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9316-satin-bronze"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9310S",
+      "finishKey": "MATTE BLACK",
+      "sourceTitle": "MATTE BLACK",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1653349549926-HVYRI93UJNZQ8W593KE3/DIRTYLIFE_9310S_matteblk_0001.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/utv-9310s-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9310S",
+      "finishKey": "MACHINED",
+      "sourceTitle": "MACHINED",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1653349563824-1KAX2XK076Q2X8LYQDU5/9310S-15x7-MACHINED+W+AS-CAST-1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/utv-9310s-machined"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9309R",
+      "finishKey": "MATTE BLACK",
+      "sourceTitle": "MATTE BLACK",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1665099617256-KS67ADNBAHUN3IEEK4H6/9209R-15x7.0-MatteBlack-0001.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/utv-9309r-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9309R",
+      "finishKey": "MACHINED",
+      "sourceTitle": "MACHINED",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1665099615186-ORHDF8W61DGJIT76FO11/9209R-15x7.0-Mach-0001.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/utv-9309r-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9315 COMPOUND",
+      "finishKey": "MATTE BLACK",
+      "sourceTitle": "MATTE BLACK",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1649172418582-8PQCXROM9ZWSN7IKQU44/DIRTYLIFE_9315-5_1709_matteblk_0001.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9315-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9314",
+      "finishKey": "MATTE BLACK",
+      "sourceTitle": "MATTE BLACK",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1649172552180-789F71HNTDXYWP9O7KQZ/DIRTYLIFE_9314_matteblk_0001.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9314-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9314",
+      "finishKey": "MACHINED",
+      "sourceTitle": "MACHINED",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1649172552291-BEC6WW7JQNJ3P7TPI51W/DIRTYLIFE_9314_1709_mach_0001.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9314-machined"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9313 ENIGMA RACE",
+      "finishKey": "CRIMSON CANDY RED",
+      "sourceTitle": "CRIMSON CANDY RED",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1645056314895-PA2I1ZDTJTV6B30WKQ75/DIRTYLIFE_9313-5_1709_crimswblk_0001.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9313-crimson-candy-red"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9313 ENIGMA RACE",
+      "finishKey": "MACHINED",
+      "sourceTitle": "MACHINED",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1645056215595-9Y7XMWN1CC34M1WFDLSD/DIRTYLIFE_9313-6_1709_mach_0001.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9313-machined"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9313 ENIGMA RACE",
+      "finishKey": "MATTE BLACK",
+      "sourceTitle": "MATTE BLACK",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1645055740664-7SP3ED9HWVC35WRO58KH/DIRTYLIFE_9313-6_1709_satinblk_0001.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9313-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9312 MESA RACE",
+      "finishKey": "MACHINED",
+      "sourceTitle": "MACHINED",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1625696815903-WEI0QSHM24RK2OIHE385/DIRTYLIFE9312M1.jpg",
+      "sourceUrl": "https://www.dirtylifewheels.com/9312-machined"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9312 MESA RACE",
+      "finishKey": "MATTE BLACK",
+      "sourceTitle": "MATTE BLACK",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1625696771984-Q488E5XO37K0SHYFJKSP/DIRTYLIFE9312MB1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9312-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9311 ENIGMA PRO",
+      "finishKey": "MATTE BLACK W BLACK LIP",
+      "sourceTitle": "MATTE BLACK W/ BLACK LIP",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613171589593-20T7MFUJJPM698AXXA9D/DIRTYLIFE9311MB1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9311-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9311 ENIGMA PRO",
+      "finishKey": "SATIN GOLD W BLACK LIP",
+      "sourceTitle": "SATIN GOLD W/ BLACK LIP",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613171593088-TP4I5FO6JZYEG68U7FAT/DIRTYLIFE9311MGD1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9311-satin-gold"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9311 ENIGMA PRO",
+      "finishKey": "SATIN GRAPHITE W BLACK LIP",
+      "sourceTitle": "SATIN GRAPHITE W/ BLACK LIP",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613171596204-9LIC5GR4PPD5F8EA83ED/DIRTYLIFE9311MGT1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9311-satin-graphite"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9310 CANYON",
+      "finishKey": "NEW MACHINED",
+      "sourceTitle": "NEW - Machined",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1713458278125-UT5HLOU4MDUMQAXWKU7S/9310M1.jpg",
+      "sourceUrl": "https://www.dirtylifewheels.com/9310-machined"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9310 CANYON",
+      "finishKey": "MATTE BLACK",
+      "sourceTitle": "MATTE BLACK",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613171237326-B5AUNXI8XJHDQS8VV1T4/DIRTYLIFE9310MB1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9310-matte-black"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9310 CANYON",
+      "finishKey": "SATIN GOLD",
+      "sourceTitle": "SATIN GOLD",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613171241110-C6RYFWJ86Y88A9QAE0HE/DIRTYLIFE9310MGD1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9310-satin-gold"
+    },
+    {
+      "brand": "Dirty Life",
+      "designKey": "A9310 CANYON",
+      "finishKey": "SATIN GRAPHITE",
+      "sourceTitle": "SATIN GRAPHITE",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613171244262-4BTYUV9KIST441LE9G50/DIRTYLIFE9310MGT1.png",
+      "sourceUrl": "https://www.dirtylifewheels.com/9310-satin-graphite"
+    }
+  ],
+  "matchedCount": 22,
+  "ambiguousCount": 1,
+  "missingCount": 60,
+  "matched": [
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9303 DT1",
+      "designKey": "A9303 DT1",
+      "finish": "MACHINED",
+      "finishKey": "MACHINED",
+      "affectedSkus": [
+        "SAA9303-7950M12NF"
+      ],
+      "affectedRows": 1,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9303 DT1",
+        "finishKey": "NEW MACHINED W SIMULATED BEADLOCK RING",
+        "canonicalFinishKey": "NEW MACHINED WITH SIMULATED RING",
+        "sourceTitle": "New - Machined W/ Simulated Beadlock Ring",
+        "sourceUrl": "https://www.dirtylifewheels.com/9303-machined-sim-beadlock",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1713458133274-3HMENLKY4N0D32OTPCMI/9303M1.jpg",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\d1a8702ac03fe56ec8ea55ea8a1e227837e8d237f2547c5d687aca166f229ab5.webp",
+      "storagePath": "tyre-life-wheels/d1a8702ac03fe56ec8ea55ea8a1e227837e8d237f2547c5d687aca166f229ab5.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9303 DT1",
+      "designKey": "A9303 DT1",
+      "finish": "MATTE BLACK W/ SIMULATED RING",
+      "finishKey": "MATTE BLACK W SIMULATED RING",
+      "affectedSkus": [
+        "SAA9303-7983MB0K",
+        "SAA9303-7950MB12N2",
+        "SAA9303-7970MBN",
+        "SAA9303-7973MB12N",
+        "SAA9303-7983MB12K",
+        "SAA9303-7983MBN",
+        "SAA9303-7986MB0N",
+        "SAA9303-2983MB12",
+        "SAA9303-7950MB12N",
+        "SAA9303-7981MB12N",
+        "SAA9303-7983MB12N"
+      ],
+      "affectedRows": 11,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9303 DT1",
+        "finishKey": "MATTE BLACK W SIMULATED BEADLOCK RING",
+        "canonicalFinishKey": "MATTE BLACK WITH SIMULATED RING",
+        "sourceTitle": "Matte Black W/ Simulated Beadlock Ring",
+        "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-matte-black",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1561487490518-MN8FQEOP17V5SSNKIS12/DIRTYLIFE9303MB1.png",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\cabfb40bf61ca4a3c7ce933554ea9b1fb06d3aa58bda3207b05d3533b15284b6.webp",
+      "storagePath": "tyre-life-wheels/cabfb40bf61ca4a3c7ce933554ea9b1fb06d3aa58bda3207b05d3533b15284b6.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9304 DT2",
+      "designKey": "A9304 DT2",
+      "finish": "Matte Black W/Simulated Ring",
+      "finishKey": "MATTE BLACK W SIMULATED RING",
+      "affectedSkus": [
+        "SAA9304-7950MB12N2",
+        "SAA9304-7983MB0K",
+        "SAA9304-7983MB12K",
+        "SAA9304-7950MB12N",
+        "SAA9304-7973MB12N",
+        "SAA9304-7983MB12N",
+        "SAA9304-7983MBN"
+      ],
+      "affectedRows": 7,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9304 DT2",
+        "finishKey": "MATTE BLACK W SIMULATED BEADLOCK RING",
+        "canonicalFinishKey": "MATTE BLACK WITH SIMULATED RING",
+        "sourceTitle": "Matte Black W/ Simulated Beadlock Ring",
+        "sourceUrl": "https://www.dirtylifewheels.com/9304-sim-beadlock-matte-black",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1543358365597-0TQRU2HVMF7VGXFIQIFM/DIRTYLIFE9304MB1-8LUG.png",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\86b9b3d0250579b8cb210bfe739efea0644c65c800ed7e17c1ede89ab86a78e5.webp",
+      "storagePath": "tyre-life-wheels/86b9b3d0250579b8cb210bfe739efea0644c65c800ed7e17c1ede89ab86a78e5.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9306 MESA",
+      "designKey": "A9306 MESA",
+      "finish": "Dark Bronze",
+      "finishKey": "DARK BRONZE",
+      "affectedSkus": [
+        "SAA9306-7983MZ12",
+        "SAA9306-7950MZ",
+        "SAA9306-7983MZ0"
+      ],
+      "affectedRows": 3,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9306 MESA",
+        "finishKey": "DARK BRONZE",
+        "canonicalFinishKey": "DARK BRONZE",
+        "sourceTitle": "DARK BRONZE",
+        "sourceUrl": "https://www.dirtylifewheels.com/9306-dark-bronze",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1579648101793-KQ8ZN2TKLDKVRLCJQYI3/DIRTYLIFE9306DB1.jpg",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\c20e01c2b76b607bbb5f6b262a1f54864d5bf3fb221d115e0fe1bc0285f28df1.webp",
+      "storagePath": "tyre-life-wheels/c20e01c2b76b607bbb5f6b262a1f54864d5bf3fb221d115e0fe1bc0285f28df1.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9306 MESA",
+      "designKey": "A9306 MESA",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "SAA9306-7983MB8K",
+        "SAA9306-7950MB2",
+        "SAA9306-7983MB8"
+      ],
+      "affectedRows": 3,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9306 MESA",
+        "finishKey": "MATTE BLACK",
+        "canonicalFinishKey": "MATTE BLACK",
+        "sourceTitle": "MATTE BLACK",
+        "sourceUrl": "https://www.dirtylifewheels.com/9306-matte-black",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1579648096222-V2Q1LY571MF9C5PU77Y1/DIRTYLIFE9306MB1.jpg",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\a36f5a10b01a166bf40a60ad23c1a6d119c6850d526f541b337678fe511c684e.webp",
+      "storagePath": "tyre-life-wheels/a36f5a10b01a166bf40a60ad23c1a6d119c6850d526f541b337678fe511c684e.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9309 CANYON PRO",
+      "designKey": "A9309 CANYON PRO",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "SAA9309-7983MB8K",
+        "SAA9309-7983MB8",
+        "SAA9309-5785MB"
+      ],
+      "affectedRows": 3,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9309 CANYON PRO",
+        "finishKey": "MATTE BLACK W BLACK LIP",
+        "canonicalFinishKey": "MATTE BLACK WITH BLACK LIP",
+        "sourceTitle": "MATTE BLACK W/ BLACK LIP",
+        "sourceUrl": "https://www.dirtylifewheels.com/9309-matte-black",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613170910481-UI7JUYEXHSJXH7GPGEMY/DIRTYLIFE9309MB1.png",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\9506a04dda3c94c8e0c7b7d4539a7eb6b4ffb5636e870d31377bb4bdeb88c129.webp",
+      "storagePath": "tyre-life-wheels/9506a04dda3c94c8e0c7b7d4539a7eb6b4ffb5636e870d31377bb4bdeb88c129.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9309 CANYON PRO",
+      "designKey": "A9309 CANYON PRO",
+      "finish": "Matte Black W/ Matte Black Lip",
+      "finishKey": "MATTE BLACK W MATTE BLACK LIP",
+      "affectedSkus": [
+        "SAA9309-7950MB2"
+      ],
+      "affectedRows": 1,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9309 CANYON PRO",
+        "finishKey": "MATTE BLACK W BLACK LIP",
+        "canonicalFinishKey": "MATTE BLACK WITH BLACK LIP",
+        "sourceTitle": "MATTE BLACK W/ BLACK LIP",
+        "sourceUrl": "https://www.dirtylifewheels.com/9309-matte-black",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613170910481-UI7JUYEXHSJXH7GPGEMY/DIRTYLIFE9309MB1.png",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\9256a6640ffcc5397a54d7109033e8aa70d36d30d64946a3974ecb020c0536a0.webp",
+      "storagePath": "tyre-life-wheels/9256a6640ffcc5397a54d7109033e8aa70d36d30d64946a3974ecb020c0536a0.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "Dirty Life A9309 CANYON PRO",
+      "designKey": "A9309 CANYON PRO",
+      "finish": "Satin Gold / Black Lip",
+      "finishKey": "SATIN GOLD BLACK LIP",
+      "affectedSkus": [
+        "SAA9309-7950MGD"
+      ],
+      "affectedRows": 1,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9309 CANYON PRO",
+        "finishKey": "SATIN GOLD W BLACK LIP",
+        "canonicalFinishKey": "SATIN GOLD WITH BLACK LIP",
+        "sourceTitle": "SATIN GOLD W/ BLACK LIP",
+        "sourceUrl": "https://www.dirtylifewheels.com/9309-satin-gold",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613170915135-DZSZIOXJBFDK58ZYPAK7/DIRTYLIFE9309MGD1.png",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\c8971d95da465c8e37cc0a1fac03961ccfa710b913a453a44b67489a17b12ed0.webp",
+      "storagePath": "tyre-life-wheels/c8971d95da465c8e37cc0a1fac03961ccfa710b913a453a44b67489a17b12ed0.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9309 CANYON PRO",
+      "designKey": "A9309 CANYON PRO",
+      "finish": "SATIN GRAPHITE/BLACK LIP",
+      "finishKey": "SATIN GRAPHITE BLACK LIP",
+      "affectedSkus": [
+        "SAA9309-7983MGT8K",
+        "SAA9309-7950MGT2",
+        "SAA9309-7983MGT",
+        "SAA9309-7983MGT8"
+      ],
+      "affectedRows": 4,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9309 CANYON PRO",
+        "finishKey": "SATIN GRAPHITE W BLACK LIP",
+        "canonicalFinishKey": "SATIN GRAPHITE WITH BLACK LIP",
+        "sourceTitle": "SATIN GRAPHITE W/ BLACK LIP",
+        "sourceUrl": "https://www.dirtylifewheels.com/9309-satin-graphite",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613170919466-IQRP974H8MK86FAR1HF5/DIRTYLIFE9309MGT1.png",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\921084a5645a15e08e8c165cf21dca4f9631865cda7a7ea9bcf0918472c57ac4.webp",
+      "storagePath": "tyre-life-wheels/921084a5645a15e08e8c165cf21dca4f9631865cda7a7ea9bcf0918472c57ac4.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9310 CANYON",
+      "designKey": "A9310 CANYON",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "SAA9310-7950MB12N2"
+      ],
+      "affectedRows": 1,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9310 CANYON",
+        "finishKey": "MATTE BLACK",
+        "canonicalFinishKey": "MATTE BLACK",
+        "sourceTitle": "MATTE BLACK",
+        "sourceUrl": "https://www.dirtylifewheels.com/9310-matte-black",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613171237326-B5AUNXI8XJHDQS8VV1T4/DIRTYLIFE9310MB1.png",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\33dfd946c39523258bb38c3cadcf9d0ecef5ea0d02743358acbe3e42c63b70ab.webp",
+      "storagePath": "tyre-life-wheels/33dfd946c39523258bb38c3cadcf9d0ecef5ea0d02743358acbe3e42c63b70ab.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9311 ENIGMA PRO",
+      "designKey": "A9311 ENIGMA PRO",
+      "finish": "SATIN GOLD/ BLACK LIP",
+      "finishKey": "SATIN GOLD BLACK LIP",
+      "affectedSkus": [
+        "SAA9311-7983MGD8K",
+        "SAA9311-7950MGD2",
+        "SAA9311-7983MGD",
+        "SAA9311-7983MGD8"
+      ],
+      "affectedRows": 4,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9311 ENIGMA PRO",
+        "finishKey": "SATIN GOLD W BLACK LIP",
+        "canonicalFinishKey": "SATIN GOLD WITH BLACK LIP",
+        "sourceTitle": "SATIN GOLD W/ BLACK LIP",
+        "sourceUrl": "https://www.dirtylifewheels.com/9311-satin-gold",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613171593088-TP4I5FO6JZYEG68U7FAT/DIRTYLIFE9311MGD1.png",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\8f8f81bb20a2a379bc06225bdb62df6196f0b9fe6e15e5eda40235a63ca8ed0d.webp",
+      "storagePath": "tyre-life-wheels/8f8f81bb20a2a379bc06225bdb62df6196f0b9fe6e15e5eda40235a63ca8ed0d.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9311 ENIGMA PRO",
+      "designKey": "A9311 ENIGMA PRO",
+      "finish": "SATIN GRAPHITE/ BLACK LIP",
+      "finishKey": "SATIN GRAPHITE BLACK LIP",
+      "affectedSkus": [
+        "SAA9311-7983MGT8K",
+        "SAA9311-7986MGT",
+        "SAA9311-7950MGT2",
+        "SAA9311-7983MGT",
+        "SAA9311-7983MGT8"
+      ],
+      "affectedRows": 5,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9311 ENIGMA PRO",
+        "finishKey": "SATIN GRAPHITE W BLACK LIP",
+        "canonicalFinishKey": "SATIN GRAPHITE WITH BLACK LIP",
+        "sourceTitle": "SATIN GRAPHITE W/ BLACK LIP",
+        "sourceUrl": "https://www.dirtylifewheels.com/9311-satin-graphite",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613171596204-9LIC5GR4PPD5F8EA83ED/DIRTYLIFE9311MGT1.png",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\e55c97bb9a86d9460039d3182893ee060bc165fff305427dbdcc491a54bf3b59.webp",
+      "storagePath": "tyre-life-wheels/e55c97bb9a86d9460039d3182893ee060bc165fff305427dbdcc491a54bf3b59.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9315 COMPOUND",
+      "designKey": "A9315 COMPOUND",
+      "finish": "Matte Black W/ Matte Black Lip",
+      "finishKey": "MATTE BLACK W MATTE BLACK LIP",
+      "affectedSkus": [
+        "SAA9315-7950MB2",
+        "SAA9315-7983MB"
+      ],
+      "affectedRows": 2,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Dirty Life",
+        "brandKey": "DIRTY LIFE",
+        "designKey": "A9315 COMPOUND",
+        "finishKey": "MATTE BLACK",
+        "canonicalFinishKey": "MATTE BLACK",
+        "sourceTitle": "MATTE BLACK",
+        "sourceUrl": "https://www.dirtylifewheels.com/9315-matte-black",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1649172418582-8PQCXROM9ZWSN7IKQU44/DIRTYLIFE_9315-5_1709_matteblk_0001.png",
+        "officialPage": "https://www.dirtylifewheels.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\af7892ca9e275fcebad476a186b5723ea837e1e090227c15476c541e581843e4.webp",
+      "storagePath": "tyre-life-wheels/af7892ca9e275fcebad476a186b5723ea837e1e090227c15476c541e581843e4.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Ion",
+      "brandKey": "ION",
+      "design": "ION 142",
+      "designKey": "142",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "SAA142-7970MB"
+      ],
+      "affectedRows": 1,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Ion",
+        "brandKey": "ION",
+        "designKey": "142",
+        "finishKey": "142 MATTE BLACK",
+        "canonicalFinishKey": "142 MATTE BLACK",
+        "sourceTitle": "142 Matte Black",
+        "sourceUrl": "http://ionalloy.com/142-matte-black",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/58b46a518419c21735b3f30d/1543877979850-EZVAQIY24IWR8564JAS8/ION142MB1.png",
+        "officialPage": "https://www.ionalloy.com/ion-wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\15a00771b0e3427c213d1a15dad1f5030137a45601f1bc8146fc8995a0ceb455.webp",
+      "storagePath": "tyre-life-wheels/15a00771b0e3427c213d1a15dad1f5030137a45601f1bc8146fc8995a0ceb455.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Ion",
+      "brandKey": "ION",
+      "design": "ION 143",
+      "designKey": "143",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "SAA143-7983MB",
+        "SAA143-2183MB"
+      ],
+      "affectedRows": 2,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Ion",
+        "brandKey": "ION",
+        "designKey": "143",
+        "finishKey": "143 MATTE BLACK",
+        "canonicalFinishKey": "143 MATTE BLACK",
+        "sourceTitle": "143 MATTE BLACK",
+        "sourceUrl": "https://www.ionalloy.com/143",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/58b46a518419c21735b3f30d/1629393622459-71QTLUCQIMYWMMGHDW1F/ION143MB1.png",
+        "officialPage": "https://www.ionalloy.com/ion-wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\ce29da834b6eae868f3735f0dc0bbaaccdf80b5e646ce08d4f8fe0023596fad0.webp",
+      "storagePath": "tyre-life-wheels/ce29da834b6eae868f3735f0dc0bbaaccdf80b5e646ce08d4f8fe0023596fad0.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Ion",
+      "brandKey": "ION",
+      "design": "ION 171",
+      "designKey": "171",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "SAA171-7950MB6"
+      ],
+      "affectedRows": 1,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Ion",
+        "brandKey": "ION",
+        "designKey": "171",
+        "finishKey": "171 MATTE BLACK",
+        "canonicalFinishKey": "171 MATTE BLACK",
+        "sourceTitle": "171 Matte Black",
+        "sourceUrl": "http://ionalloy.com/171-matte-black",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/58b46a518419c21735b3f30d/1585844025570-M1MX7IR75EGT3W9ORT2C/ION171MB1.png",
+        "officialPage": "https://www.ionalloy.com/ion-wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\363c4d82f03da6321eab07c9e448697f0a2311a865831dc2b0ee6a41919efb52.webp",
+      "storagePath": "tyre-life-wheels/363c4d82f03da6321eab07c9e448697f0a2311a865831dc2b0ee6a41919efb52.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Ion",
+      "brandKey": "ION",
+      "design": "ION 179",
+      "designKey": "179",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "SAA179-7950MB0"
+      ],
+      "affectedRows": 1,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Ion",
+        "brandKey": "ION",
+        "designKey": "179",
+        "finishKey": "179 MATTE BLACK",
+        "canonicalFinishKey": "179 MATTE BLACK",
+        "sourceTitle": "179 Matte Black",
+        "sourceUrl": "http://ionalloy.com/179-matteblack",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/58b46a518419c21735b3f30d/1585843556901-ZDCQRTV19Z4KE0CRMCQR/ION179MB1.png",
+        "officialPage": "https://www.ionalloy.com/ion-wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\aee7f372e6a1a8b63f488bf529c749cb3a4f3620231d93a358302a56758f5010.webp",
+      "storagePath": "tyre-life-wheels/aee7f372e6a1a8b63f488bf529c749cb3a4f3620231d93a358302a56758f5010.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Mickey Thompson",
+      "brandKey": "MICKEY THOMPSON",
+      "design": "MT SIDEBITER LOCK",
+      "designKey": "MT SIDEBITER LOCK",
+      "finish": "BLACK",
+      "finishKey": "BLACK",
+      "affectedSkus": [
+        "90000031077",
+        "90000031071"
+      ],
+      "affectedRows": 2,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Mickey Thompson",
+        "brandKey": "MICKEY THOMPSON",
+        "designKey": "MT SIDEBITER LOCK",
+        "finishKey": "BLACK",
+        "canonicalFinishKey": "BLACK",
+        "sourceTitle": "Sidebiter II - official black wheel image",
+        "sourceUrl": "https://www.mickeythompsontires.com/wheels#sidebiter-ii",
+        "imageUrl": "https://www.mickeythompsontires.com/media/pages/wheels/sidebiter-ii/fed94eec85-1745134785/sidebiter_ii_17x9_8lug.png",
+        "officialPage": "https://www.mickeythompsontires.com/wheels"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\f9714c65cbdcaf36685ffcf64640e4b0c7672f49e5d21a003427f3a1128bd3f7.png",
+      "storagePath": "tyre-life-wheels/f9714c65cbdcaf36685ffcf64640e4b0c7672f49e5d21a003427f3a1128bd3f7.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "QUANTUM EVO",
+      "designKey": "QUANTUM EVO",
+      "finish": "Matte Anthracite Polished",
+      "finishKey": "MATTE ANTHRACITE POLISHED",
+      "affectedSkus": [
+        "WQEA80848512L",
+        "WQEA05025514KL",
+        "WQEA90035520"
+      ],
+      "affectedRows": 3,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "MOMO",
+        "brandKey": "MOMO",
+        "designKey": "QUANTUM EVO",
+        "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2016 10 QUANTUM EVO MATTE ANTHRACITE POLISHED TURNED LEFT 750X750.PNG",
+        "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2016 10 QUANTUM EVO MATTE ANTHRACITE POLISHED TURNED LEFT 750X750.PNG",
+        "sourceTitle": "QUANTUM EVO",
+        "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/quantum-evo/",
+        "imageUrl": "https://momo.com/wp-content/uploads/2016/10/quantum-evo-matt-anthracite-polished-turned-left-750x750.png",
+        "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\b10dfd5cf7a5427fd2099e47114247fa435ffbedc611546fbaabdb4eeecfbfa3.png",
+      "storagePath": "tyre-life-wheels/b10dfd5cf7a5427fd2099e47114247fa435ffbedc611546fbaabdb4eeecfbfa3.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "RF-02",
+      "designKey": "RF 02",
+      "finish": "Matt Black Polished",
+      "finishKey": "MATTE BLACK POLISHED",
+      "affectedSkus": [
+        "WR21B90030272",
+        "WR21B90050371"
+      ],
+      "affectedRows": 2,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "MOMO",
+        "brandKey": "MOMO",
+        "designKey": "RF 02",
+        "finishKey": "MOMO RF 02 ROTARY FORMED ROAD WHEELS HTTPS MOMO.COM WP CONTENT UPLOADS 2018 03 RF 02 MBDC PRIMARY 750X750.PNG",
+        "canonicalFinishKey": "MOMO RF 02 ROTARY FORMED ROAD WHEELS HTTPS MOMO.COM WP CONTENT UPLOADS 2018 03 RF 02 MATTE BLACK POLISHED PRIMARY 750X750.PNG",
+        "sourceTitle": "MOMO RF-02 Rotary Formed Road Wheels",
+        "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/rf-02/",
+        "imageUrl": "https://momo.com/wp-content/uploads/2018/03/rf-02-mbdc-primary-750x750.png",
+        "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\e2e336b9740f9619f18bd9831ace8f1d237bbf98d21ee8aaa43a05d3dd43c2e7.png",
+      "storagePath": "tyre-life-wheels/e2e336b9740f9619f18bd9831ace8f1d237bbf98d21ee8aaa43a05d3dd43c2e7.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "RF-03",
+      "designKey": "RF 03",
+      "finish": "Titan Ice Polished",
+      "finishKey": "TITAN ICE POLISHED",
+      "affectedSkus": [
+        "WR31I90938706"
+      ],
+      "affectedRows": 1,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "MOMO",
+        "brandKey": "MOMO",
+        "designKey": "RF 03",
+        "finishKey": "MOMO RF 03 ROTARY FORMED ROAD WHEELS HTTPS MOMO.COM WP CONTENT UPLOADS 2018 03 RF 03 TIDC PRIMARY 750X750.PNG",
+        "canonicalFinishKey": "MOMO RF 03 ROTARY FORMED ROAD WHEELS HTTPS MOMO.COM WP CONTENT UPLOADS 2018 03 RF 03 TITAN ICE POLISHED PRIMARY 750X750.PNG",
+        "sourceTitle": "MOMO RF-03 Rotary Formed Road Wheels",
+        "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/rf-03/",
+        "imageUrl": "https://momo.com/wp-content/uploads/2018/03/rf-03-tidc-primary-750x750.png",
+        "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\6ab732c1772d61ef4d32c681a1b06794d06b2c2148af610483d7b902109be483.png",
+      "storagePath": "tyre-life-wheels/6ab732c1772d61ef4d32c681a1b06794d06b2c2148af610483d7b902109be483.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Procomp",
+      "brandKey": "PROCOMP",
+      "design": "SERIES 48 QUICK 8",
+      "designKey": "SERIES 48 QUICK 8",
+      "finish": "SATIN BLACK MILLED",
+      "finishKey": "SATIN BLACK MILLED",
+      "affectedSkus": [
+        "5148-293950"
+      ],
+      "affectedRows": 1,
+      "status": "matched",
+      "confidence": "exact",
+      "source": {
+        "brand": "Procomp",
+        "brandKey": "PROCOMP",
+        "designKey": "SERIES 48 QUICK 8",
+        "finishKey": "HTTPS WWW.WHEELPROS.COM MEDIA CATALOG PRODUCT P R PRO COMP PA48 QUICK 8 SATIN BLACK MILLED A1 PA0487 PNG.PNG",
+        "canonicalFinishKey": "HTTPS WWW.WHEELPROS.COM MEDIA CATALOG PRODUCT P R PRO COMP PA48 QUICK 8 SATIN BLACK MILLED A1 PA0487 PNG.PNG",
+        "sourceTitle": "pro-comp-pa48-quick-8-satin-black-milled-a1-pa0487-png.png",
+        "sourceUrl": "https://www.wheelpros.com/pro-comp",
+        "imageUrl": "https://www.wheelpros.com/media/catalog/product/p/r/pro-comp-pa48-quick-8-satin-black-milled-a1-pa0487-png.png",
+        "officialPage": "https://www.wheelpros.com/pro-comp"
+      },
+      "localFile": "tmp\\tyre-life-wheel-images\\8baa9164f2980519bdc083ca8562acec9a1e7252c0beeb900cec1ec1502686fc.png",
+      "storagePath": "tyre-life-wheels/8baa9164f2980519bdc083ca8562acec9a1e7252c0beeb900cec1ec1502686fc.png"
+    }
+  ],
+  "ambiguous": [
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "REVENGE",
+      "designKey": "REVENGE",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "WRVB90840520L"
+      ],
+      "affectedRows": 1,
+      "status": "ambiguous",
+      "candidates": [
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "REVENGE",
+          "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2026 02 REVENGE 2.0 MATTE BLACK POLISHED TURNED LEFT 750X750.PNG",
+          "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2026 02 REVENGE 2.0 MATTE BLACK POLISHED TURNED LEFT 750X750.PNG",
+          "sourceTitle": "REVENGE",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/alloy-eu/revenge-2-0-evo/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2026/02/revenge-2.0-matt-black-polished-turned-left-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        },
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "REVENGE",
+          "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2025 09 REVENGE 2.0 MATTE BLACK TURNED LEFT 750X750.PNG",
+          "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2025 09 REVENGE 2.0 MATTE BLACK TURNED LEFT 750X750.PNG",
+          "sourceTitle": "REVENGE",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/alloy-eu/revenge-2-0/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2025/09/revenge-2.0-matt-black-turned-left-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        },
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "REVENGE",
+          "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2016 12 REVENGE MATTE BLACK 750X750.PNG",
+          "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2016 12 REVENGE MATTE BLACK 750X750.PNG",
+          "sourceTitle": "REVENGE",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/revenge/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2016/12/Revenge-Matte-Black-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        }
+      ]
+    }
+  ],
+  "missing": [
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A8306 MAYHEM RIDGELINE",
+      "designKey": "A8306 MAYHEM RIDGELINE",
+      "finish": "Satin Black",
+      "finishKey": "SATIN BLACK",
+      "affectedSkus": [
+        "SAA8306-2983MB"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A8309 MAYHEM GRANITE",
+      "designKey": "A8309 MAYHEM GRANITE",
+      "finish": "Satin Black",
+      "finishKey": "SATIN BLACK",
+      "affectedSkus": [
+        "SAA8309-7983B"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9301 ROADKILL",
+      "designKey": "A9301 ROADKILL",
+      "finish": "Matte Black / Simulated Black Beadlock",
+      "finishKey": "MATTE BLACK SIMULATED BLACK BEADLOCK",
+      "affectedSkus": [
+        "SAA9301-47102MB",
+        "SAA9301-5785MBN"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9302 ROADKILL RACE",
+      "designKey": "A9302 ROADKILL RACE",
+      "finish": "MACHINED GENUINE BEADLOCK",
+      "finishKey": "MACHINED GENUINE BEADLOCK",
+      "affectedSkus": [
+        "SAA9302-7983M14NL6",
+        "SAA9302-7973M14N2",
+        "SAA9302-7983M14N2"
+      ],
+      "affectedRows": 3,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9302 ROADKILL RACE",
+          "finishKey": "SATIN BLACK W MATTE BLACK BEADLOCK",
+          "canonicalFinishKey": "SATIN BLACK WITH MATTE BLACK BEADLOCK",
+          "sourceTitle": "Satin Black W/ Matte Black Beadlock",
+          "sourceUrl": "https://www.dirtylifewheels.com/9302-satin-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1559598919295-RZGWK8LIJWDC6U0PVUZN/DIRTYLIFE9302MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9302 ROADKILL RACE",
+          "finishKey": "MACHINED AS CAST",
+          "canonicalFinishKey": "MACHINED AS CAST",
+          "sourceTitle": "Machined As-Cast",
+          "sourceUrl": "https://www.dirtylifewheels.com/9302-machined",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1538084620015-AVVWVQEUGGB6KSD1ZNF5/DIRTYLIFE9302M1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9302 ROADKILL RACE",
+          "finishKey": "NEW FINISH CRIMSON CANDY RED W BLACK RING",
+          "canonicalFinishKey": "NEW FINISH CRIMSON CANDY RED WITH BLACK RING",
+          "sourceTitle": "NEW FINISH | Crimson Candy Red w/ Black Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9302-crimson-candy-red",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1620154743054-WBQLLYVF4JECP82VH2Q8/DIRTYLIFE9302R1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9302 ROADKILL RACE",
+      "designKey": "A9302 ROADKILL RACE",
+      "finish": "Matte Black / Genuine Beadlock",
+      "finishKey": "MATTE BLACK GENUINE BEADLOCK",
+      "affectedSkus": [
+        "SAA9302-57102MBN",
+        "SAA9302-57102MB",
+        "SAA9302-7973MB14N2",
+        "SAA9302-7983MB14N2"
+      ],
+      "affectedRows": 4,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9302 ROADKILL RACE",
+          "finishKey": "SATIN BLACK W MATTE BLACK BEADLOCK",
+          "canonicalFinishKey": "SATIN BLACK WITH MATTE BLACK BEADLOCK",
+          "sourceTitle": "Satin Black W/ Matte Black Beadlock",
+          "sourceUrl": "https://www.dirtylifewheels.com/9302-satin-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1559598919295-RZGWK8LIJWDC6U0PVUZN/DIRTYLIFE9302MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9302 ROADKILL RACE",
+          "finishKey": "MACHINED AS CAST",
+          "canonicalFinishKey": "MACHINED AS CAST",
+          "sourceTitle": "Machined As-Cast",
+          "sourceUrl": "https://www.dirtylifewheels.com/9302-machined",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1538084620015-AVVWVQEUGGB6KSD1ZNF5/DIRTYLIFE9302M1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9302 ROADKILL RACE",
+          "finishKey": "NEW FINISH CRIMSON CANDY RED W BLACK RING",
+          "canonicalFinishKey": "NEW FINISH CRIMSON CANDY RED WITH BLACK RING",
+          "sourceTitle": "NEW FINISH | Crimson Candy Red w/ Black Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9302-crimson-candy-red",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1620154743054-WBQLLYVF4JECP82VH2Q8/DIRTYLIFE9302R1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9303 DT1",
+      "designKey": "A9303 DT1",
+      "finish": "MACHINED/ CHROME RING W/FILM",
+      "finishKey": "MACHINED CHROME RING W FILM",
+      "affectedSkus": [
+        "SAA9303-7983M0KF"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "MATTE BLACK W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "MATTE BLACK WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Matte Black W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257614264-MWAJ5KHYO8MVNLBSC9F5/DIRTYLIFE9303MB1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "SATIN GOLD W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "SATIN GOLD WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Satin Gold W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-satin-gold",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257623528-CJ4WTMJCGAWJ6HRHWSBM/DIRTYLIFE9303BR1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "SATIN GRAPHITE W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "SATIN GRAPHITE WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Satin Graphite W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-satin-graphite",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257632419-D618MA17IY8SUOP3RX2D/DIRTYLIFE9303GM1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "NEW FINISH CRIMSON CANDY RED W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "NEW FINISH CRIMSON CANDY RED WITH SIMULATED RING",
+          "sourceTitle": "NEW FINISH | Crimson Candy Red W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-crimson-candy-red",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1620154804228-WXOMNEB121KEACZAFTKP/DIRTYLIFE9303R1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "NEW MACHINED W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "NEW MACHINED WITH SIMULATED RING",
+          "sourceTitle": "New - Machined W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-machined-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1713458133274-3HMENLKY4N0D32OTPCMI/9303M1.jpg",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "MATTE BLACK W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "MATTE BLACK WITH SIMULATED RING",
+          "sourceTitle": "Matte Black W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1561487490518-MN8FQEOP17V5SSNKIS12/DIRTYLIFE9303MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9303 DT1",
+      "designKey": "A9303 DT1",
+      "finish": "Matte Black W/Plastic Ring",
+      "finishKey": "MATTE BLACK W PLASTIC RING",
+      "affectedSkus": [
+        "SAA9303-8950MB",
+        "SAA9303-8983MB"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "MATTE BLACK W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "MATTE BLACK WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Matte Black W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257614264-MWAJ5KHYO8MVNLBSC9F5/DIRTYLIFE9303MB1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "SATIN GOLD W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "SATIN GOLD WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Satin Gold W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-satin-gold",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257623528-CJ4WTMJCGAWJ6HRHWSBM/DIRTYLIFE9303BR1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "SATIN GRAPHITE W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "SATIN GRAPHITE WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Satin Graphite W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-satin-graphite",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257632419-D618MA17IY8SUOP3RX2D/DIRTYLIFE9303GM1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "NEW FINISH CRIMSON CANDY RED W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "NEW FINISH CRIMSON CANDY RED WITH SIMULATED RING",
+          "sourceTitle": "NEW FINISH | Crimson Candy Red W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-crimson-candy-red",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1620154804228-WXOMNEB121KEACZAFTKP/DIRTYLIFE9303R1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "NEW MACHINED W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "NEW MACHINED WITH SIMULATED RING",
+          "sourceTitle": "New - Machined W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-machined-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1713458133274-3HMENLKY4N0D32OTPCMI/9303M1.jpg",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "MATTE BLACK W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "MATTE BLACK WITH SIMULATED RING",
+          "sourceTitle": "Matte Black W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1561487490518-MN8FQEOP17V5SSNKIS12/DIRTYLIFE9303MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9303 DT1",
+      "designKey": "A9303 DT1",
+      "finish": "Matte Gold W/Simulated Ring",
+      "finishKey": "MATTE GOLD W SIMULATED RING",
+      "affectedSkus": [
+        "SAA9303-7983MGD0N",
+        "SAA9303-7950MGD12N",
+        "SAA9303-7973MGD12N",
+        "SAA9303-7983MGDN"
+      ],
+      "affectedRows": 4,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "MATTE BLACK W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "MATTE BLACK WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Matte Black W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257614264-MWAJ5KHYO8MVNLBSC9F5/DIRTYLIFE9303MB1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "SATIN GOLD W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "SATIN GOLD WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Satin Gold W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-satin-gold",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257623528-CJ4WTMJCGAWJ6HRHWSBM/DIRTYLIFE9303BR1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "SATIN GRAPHITE W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "SATIN GRAPHITE WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Satin Graphite W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-satin-graphite",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257632419-D618MA17IY8SUOP3RX2D/DIRTYLIFE9303GM1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "NEW FINISH CRIMSON CANDY RED W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "NEW FINISH CRIMSON CANDY RED WITH SIMULATED RING",
+          "sourceTitle": "NEW FINISH | Crimson Candy Red W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-crimson-candy-red",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1620154804228-WXOMNEB121KEACZAFTKP/DIRTYLIFE9303R1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "NEW MACHINED W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "NEW MACHINED WITH SIMULATED RING",
+          "sourceTitle": "New - Machined W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-machined-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1713458133274-3HMENLKY4N0D32OTPCMI/9303M1.jpg",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "MATTE BLACK W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "MATTE BLACK WITH SIMULATED RING",
+          "sourceTitle": "Matte Black W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1561487490518-MN8FQEOP17V5SSNKIS12/DIRTYLIFE9303MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9303 DT1",
+      "designKey": "A9303 DT1",
+      "finish": "Matte Gunmetal W/Simulated Ring",
+      "finishKey": "MATTE GUNMETAL W SIMULATED RING",
+      "affectedSkus": [
+        "SAA9303-7950MGT12N2",
+        "SAA9303-7973MGT12N",
+        "SAA9303-7983MGT0K",
+        "SAA9303-7983MGT12K",
+        "SAA9303-7983MGT12N",
+        "SAA9303-7983MGTN"
+      ],
+      "affectedRows": 6,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "MATTE BLACK W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "MATTE BLACK WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Matte Black W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257614264-MWAJ5KHYO8MVNLBSC9F5/DIRTYLIFE9303MB1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "SATIN GOLD W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "SATIN GOLD WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Satin Gold W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-satin-gold",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257623528-CJ4WTMJCGAWJ6HRHWSBM/DIRTYLIFE9303BR1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "SATIN GRAPHITE W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "SATIN GRAPHITE WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Satin Graphite W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-satin-graphite",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257632419-D618MA17IY8SUOP3RX2D/DIRTYLIFE9303GM1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "NEW FINISH CRIMSON CANDY RED W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "NEW FINISH CRIMSON CANDY RED WITH SIMULATED RING",
+          "sourceTitle": "NEW FINISH | Crimson Candy Red W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-crimson-candy-red",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1620154804228-WXOMNEB121KEACZAFTKP/DIRTYLIFE9303R1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "NEW MACHINED W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "NEW MACHINED WITH SIMULATED RING",
+          "sourceTitle": "New - Machined W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-machined-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1713458133274-3HMENLKY4N0D32OTPCMI/9303M1.jpg",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "MATTE BLACK W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "MATTE BLACK WITH SIMULATED RING",
+          "sourceTitle": "Matte Black W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1561487490518-MN8FQEOP17V5SSNKIS12/DIRTYLIFE9303MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9303 DT1",
+      "designKey": "A9303 DT1",
+      "finish": "Satin Gold / Black Lip",
+      "finishKey": "SATIN GOLD BLACK LIP",
+      "affectedSkus": [
+        "SAA9303-7983MGD0K"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "MATTE BLACK W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "MATTE BLACK WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Matte Black W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257614264-MWAJ5KHYO8MVNLBSC9F5/DIRTYLIFE9303MB1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "SATIN GOLD W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "SATIN GOLD WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Satin Gold W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-satin-gold",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257623528-CJ4WTMJCGAWJ6HRHWSBM/DIRTYLIFE9303BR1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "SATIN GRAPHITE W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "SATIN GRAPHITE WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Satin Graphite W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-beadlock-satin-graphite",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519257632419-D618MA17IY8SUOP3RX2D/DIRTYLIFE9303GM1_MAIN.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "NEW FINISH CRIMSON CANDY RED W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "NEW FINISH CRIMSON CANDY RED WITH SIMULATED RING",
+          "sourceTitle": "NEW FINISH | Crimson Candy Red W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-crimson-candy-red",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1620154804228-WXOMNEB121KEACZAFTKP/DIRTYLIFE9303R1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "NEW MACHINED W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "NEW MACHINED WITH SIMULATED RING",
+          "sourceTitle": "New - Machined W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-machined-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1713458133274-3HMENLKY4N0D32OTPCMI/9303M1.jpg",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9303 DT1",
+          "finishKey": "MATTE BLACK W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "MATTE BLACK WITH SIMULATED RING",
+          "sourceTitle": "Matte Black W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9303-sim-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1561487490518-MN8FQEOP17V5SSNKIS12/DIRTYLIFE9303MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9304 DT2",
+      "designKey": "A9304 DT2",
+      "finish": "MATTE GOLD W/SIMULATED RING",
+      "finishKey": "MATTE GOLD W SIMULATED RING",
+      "affectedSkus": [
+        "SAA9304-7983MGD0K",
+        "SAA9304-7983MGDN",
+        "SAA9304-7973MGD12N"
+      ],
+      "affectedRows": 3,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9304 DT2",
+          "finishKey": "MATTE BLACK W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "MATTE BLACK WITH SIMULATED RING",
+          "sourceTitle": "Matte Black W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9304-sim-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1543358365597-0TQRU2HVMF7VGXFIQIFM/DIRTYLIFE9304MB1-8LUG.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9304 DT2",
+          "finishKey": "SATIN GOLD W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "SATIN GOLD WITH SIMULATED RING",
+          "sourceTitle": "Satin Gold W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9304-sim-beadlock-satin-gold",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1546905737804-B1WSSMNQM4SO1UW0KSZO/DIRTYLIFE9304GD1-8LUG.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9304 DT2",
+          "finishKey": "MATTE BLACK W RASH RING",
+          "canonicalFinishKey": "MATTE BLACK WITH RASH RING",
+          "sourceTitle": "Matte Black W/ Rash Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9304-rash-ring-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519258638467-7HOMJ816FRX2OMOM5N3H/DIRTYLIFE9304MB1RASHRING.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9304 DT2",
+          "finishKey": "MATTE BLACK W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "MATTE BLACK WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Matte Black W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9304-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1561485208869-4VE9L36OZ6FILBPQX25S/DIRTYLIFE9304MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9304 DT2",
+      "designKey": "A9304 DT2",
+      "finish": "MATTE GUNMETAL W/SIMULATED RING",
+      "finishKey": "MATTE GUNMETAL W SIMULATED RING",
+      "affectedSkus": [
+        "SAA9304-7983MGT0K",
+        "SAA9304-7950MGT12N2",
+        "SAA9304-7973MGT12N",
+        "SAA9304-7983MGT12N",
+        "SAA9304-7983MGTN"
+      ],
+      "affectedRows": 5,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9304 DT2",
+          "finishKey": "MATTE BLACK W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "MATTE BLACK WITH SIMULATED RING",
+          "sourceTitle": "Matte Black W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9304-sim-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1543358365597-0TQRU2HVMF7VGXFIQIFM/DIRTYLIFE9304MB1-8LUG.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9304 DT2",
+          "finishKey": "SATIN GOLD W SIMULATED BEADLOCK RING",
+          "canonicalFinishKey": "SATIN GOLD WITH SIMULATED RING",
+          "sourceTitle": "Satin Gold W/ Simulated Beadlock Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9304-sim-beadlock-satin-gold",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1546905737804-B1WSSMNQM4SO1UW0KSZO/DIRTYLIFE9304GD1-8LUG.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9304 DT2",
+          "finishKey": "MATTE BLACK W RASH RING",
+          "canonicalFinishKey": "MATTE BLACK WITH RASH RING",
+          "sourceTitle": "Matte Black W/ Rash Ring",
+          "sourceUrl": "https://www.dirtylifewheels.com/9304-rash-ring-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1519258638467-7HOMJ816FRX2OMOM5N3H/DIRTYLIFE9304MB1RASHRING.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9304 DT2",
+          "finishKey": "MATTE BLACK W BEADLOCK RING OFFROAD USE ONLY",
+          "canonicalFinishKey": "MATTE BLACK WITH BEADLOCK RING OFFROAD USE ONLY",
+          "sourceTitle": "Matte Black W/ Beadlock Ring - OffRoad Use Only",
+          "sourceUrl": "https://www.dirtylifewheels.com/9304-beadlock-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1561485208869-4VE9L36OZ6FILBPQX25S/DIRTYLIFE9304MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9305 THEORY",
+      "designKey": "A9305 THEORY",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "SAA9305-7983MB15",
+        "SAA9305-7983MB20"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9305 THEORY",
+      "designKey": "A9305 THEORY",
+      "finish": "Matte Black W/ Matte Black Lip",
+      "finishKey": "MATTE BLACK W MATTE BLACK LIP",
+      "affectedSkus": [
+        "SAA9305-6850MBN2",
+        "SAA9305-6883MBN",
+        "SAA9305-7950MB2",
+        "SAA9305-8912MB20",
+        "SAA9305-8983MB20",
+        "SAA9305-7973MB",
+        "SA9305-8983MB",
+        "SAA9305-8950MB30"
+      ],
+      "affectedRows": 8,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9305 THEORY",
+      "designKey": "A9305 THEORY",
+      "finish": "Matte Gold W/ Matte Black Lip",
+      "finishKey": "MATTE GOLD W MATTE BLACK LIP",
+      "affectedSkus": [
+        "SAA9305-8983MGD20",
+        "SAA9305-7950MGD",
+        "SAA9305-7983MGD15"
+      ],
+      "affectedRows": 3,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9305 THEORY",
+      "designKey": "A9305 THEORY",
+      "finish": "Matte Gunmetal W/ Matte Black Lip",
+      "finishKey": "MATTE GUNMETAL W MATTE BLACK LIP",
+      "affectedSkus": [
+        "SAA9305-8983MGT20",
+        "SAA9305-6850MGTN2",
+        "SAA9305-7950MGT2",
+        "SAA9305-7983MGT15",
+        "SAA9305-8950MGT30"
+      ],
+      "affectedRows": 5,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9307 DRIFTER",
+      "designKey": "A9307 DRIFTER",
+      "finish": "MATTE BLACK W/ MATTE BLACK LIP",
+      "finishKey": "MATTE BLACK W MATTE BLACK LIP",
+      "affectedSkus": [
+        "SAA9307-7883MB6K",
+        "SAA9307-7883MB"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9307 DRIFTER",
+      "designKey": "A9307 DRIFTER",
+      "finish": "Matte Gunmetal W/ Matte Black Lip",
+      "finishKey": "MATTE GUNMETAL W MATTE BLACK LIP",
+      "affectedSkus": [
+        "SAA9307-7883MGT"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9308 NEW CAGE",
+      "designKey": "A9308 NEW CAGE",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "SAA9308-7883MB"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9309 CANYON PRO",
+      "designKey": "A9309 CANYON PRO",
+      "finish": "MACHINED",
+      "finishKey": "MACHINED",
+      "affectedSkus": [
+        "SAA9309-7983M8K"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9309 CANYON PRO",
+          "finishKey": "MATTE BLACK W BLACK LIP",
+          "canonicalFinishKey": "MATTE BLACK WITH BLACK LIP",
+          "sourceTitle": "MATTE BLACK W/ BLACK LIP",
+          "sourceUrl": "https://www.dirtylifewheels.com/9309-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613170910481-UI7JUYEXHSJXH7GPGEMY/DIRTYLIFE9309MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9309 CANYON PRO",
+          "finishKey": "SATIN GOLD W BLACK LIP",
+          "canonicalFinishKey": "SATIN GOLD WITH BLACK LIP",
+          "sourceTitle": "SATIN GOLD W/ BLACK LIP",
+          "sourceUrl": "https://www.dirtylifewheels.com/9309-satin-gold",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613170915135-DZSZIOXJBFDK58ZYPAK7/DIRTYLIFE9309MGD1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9309 CANYON PRO",
+          "finishKey": "SATIN GRAPHITE W BLACK LIP",
+          "canonicalFinishKey": "SATIN GRAPHITE WITH BLACK LIP",
+          "sourceTitle": "SATIN GRAPHITE W/ BLACK LIP",
+          "sourceUrl": "https://www.dirtylifewheels.com/9309-satin-graphite",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1613170919466-IQRP974H8MK86FAR1HF5/DIRTYLIFE9309MGT1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9309S CANYON PRO SE",
+      "designKey": "A9309S CANYON PRO SE",
+      "finish": "MATTE BLACK",
+      "finishKey": "MATTE BLACK",
+      "affectedSkus": [
+        "SAA9309S-5785MB"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "Dirty Life A9312 MESA RACE",
+      "designKey": "A9312 MESA RACE",
+      "finish": "Machined Genuine Beadlock",
+      "finishKey": "MACHINED GENUINE BEADLOCK",
+      "affectedSkus": [
+        "SAA9312-7999M12"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9312 MESA RACE",
+          "finishKey": "MACHINED",
+          "canonicalFinishKey": "MACHINED",
+          "sourceTitle": "MACHINED",
+          "sourceUrl": "https://www.dirtylifewheels.com/9312-machined",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1625696815903-WEI0QSHM24RK2OIHE385/DIRTYLIFE9312M1.jpg",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9312 MESA RACE",
+          "finishKey": "MATTE BLACK",
+          "canonicalFinishKey": "MATTE BLACK",
+          "sourceTitle": "MATTE BLACK",
+          "sourceUrl": "https://www.dirtylifewheels.com/9312-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1625696771984-Q488E5XO37K0SHYFJKSP/DIRTYLIFE9312MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9312 MESA RACE",
+      "designKey": "A9312 MESA RACE",
+      "finish": "Matte Black / Genuine Beadlock",
+      "finishKey": "MATTE BLACK GENUINE BEADLOCK",
+      "affectedSkus": [
+        "SAA9312-7999MB38"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9312 MESA RACE",
+          "finishKey": "MACHINED",
+          "canonicalFinishKey": "MACHINED",
+          "sourceTitle": "MACHINED",
+          "sourceUrl": "https://www.dirtylifewheels.com/9312-machined",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1625696815903-WEI0QSHM24RK2OIHE385/DIRTYLIFE9312M1.jpg",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9312 MESA RACE",
+          "finishKey": "MATTE BLACK",
+          "canonicalFinishKey": "MATTE BLACK",
+          "sourceTitle": "MATTE BLACK",
+          "sourceUrl": "https://www.dirtylifewheels.com/9312-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1625696771984-Q488E5XO37K0SHYFJKSP/DIRTYLIFE9312MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9313 ENIGMA RACE",
+      "designKey": "A9313 ENIGMA RACE",
+      "finish": "Matte Black Comp Beadlock",
+      "finishKey": "MATTE BLACK COMP BEADLOCK",
+      "affectedSkus": [
+        "SAA9313-7983MB12KL"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9313 ENIGMA RACE",
+          "finishKey": "CRIMSON CANDY RED",
+          "canonicalFinishKey": "CRIMSON CANDY RED",
+          "sourceTitle": "CRIMSON CANDY RED",
+          "sourceUrl": "https://www.dirtylifewheels.com/9313-crimson-candy-red",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1645056314895-PA2I1ZDTJTV6B30WKQ75/DIRTYLIFE_9313-5_1709_crimswblk_0001.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9313 ENIGMA RACE",
+          "finishKey": "MACHINED",
+          "canonicalFinishKey": "MACHINED",
+          "sourceTitle": "MACHINED",
+          "sourceUrl": "https://www.dirtylifewheels.com/9313-machined",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1645056215595-9Y7XMWN1CC34M1WFDLSD/DIRTYLIFE_9313-6_1709_mach_0001.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9313 ENIGMA RACE",
+          "finishKey": "MATTE BLACK",
+          "canonicalFinishKey": "MATTE BLACK",
+          "sourceTitle": "MATTE BLACK",
+          "sourceUrl": "https://www.dirtylifewheels.com/9313-matte-black",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1645055740664-7SP3ED9HWVC35WRO58KH/DIRTYLIFE_9313-6_1709_satinblk_0001.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9317 DT3",
+      "designKey": "A9317 DT3",
+      "finish": "Gloss Metallic Graphite",
+      "finishKey": "GLOSS METALLIC GRAPHITE",
+      "affectedSkus": [
+        "SAA9317-7950GMG12N"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9317 DT3",
+          "finishKey": "MATTE BLACK",
+          "canonicalFinishKey": "MATTE BLACK",
+          "sourceTitle": "Matte Black",
+          "sourceUrl": "https://www.dirtylifewheels.com/9317-matte-black-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1769716969053-2C03ZYK8FD49M5LZ6EPY/DLRW9317-+5MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9317 DT3",
+          "finishKey": "MACHINED",
+          "canonicalFinishKey": "MACHINED",
+          "sourceTitle": "Machined",
+          "sourceUrl": "https://www.dirtylifewheels.com/9317-machined-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1769716969872-R5OWBU2Z9QKMUH2CB8PN/DLRW9317-5M1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9317 DT3",
+      "designKey": "A9317 DT3",
+      "finish": "GLOSS METALLIC GRAPHITE BLACK W/ PLASTIC RING",
+      "finishKey": "GLOSS METALLIC GRAPHITE BLACK W PLASTIC RING",
+      "affectedSkus": [
+        "SAA9317-8983GMG15K"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9317 DT3",
+          "finishKey": "MATTE BLACK",
+          "canonicalFinishKey": "MATTE BLACK",
+          "sourceTitle": "Matte Black",
+          "sourceUrl": "https://www.dirtylifewheels.com/9317-matte-black-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1769716969053-2C03ZYK8FD49M5LZ6EPY/DLRW9317-+5MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9317 DT3",
+          "finishKey": "MACHINED",
+          "canonicalFinishKey": "MACHINED",
+          "sourceTitle": "Machined",
+          "sourceUrl": "https://www.dirtylifewheels.com/9317-machined-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1769716969872-R5OWBU2Z9QKMUH2CB8PN/DLRW9317-5M1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9317 DT3",
+      "designKey": "A9317 DT3",
+      "finish": "MATTE BLACK W/ PLASTIC RING",
+      "finishKey": "MATTE BLACK W PLASTIC RING",
+      "affectedSkus": [
+        "SAA9317-7950MB12N",
+        "SAA9317-7983MB0K",
+        "SAA9317-7983MB25K",
+        "SAA9317-8983MB15K"
+      ],
+      "affectedRows": 4,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9317 DT3",
+          "finishKey": "MATTE BLACK",
+          "canonicalFinishKey": "MATTE BLACK",
+          "sourceTitle": "Matte Black",
+          "sourceUrl": "https://www.dirtylifewheels.com/9317-matte-black-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1769716969053-2C03ZYK8FD49M5LZ6EPY/DLRW9317-+5MB1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        },
+        {
+          "brand": "Dirty Life",
+          "brandKey": "DIRTY LIFE",
+          "designKey": "A9317 DT3",
+          "finishKey": "MACHINED",
+          "canonicalFinishKey": "MACHINED",
+          "sourceTitle": "Machined",
+          "sourceUrl": "https://www.dirtylifewheels.com/9317-machined-sim-beadlock",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1769716969872-R5OWBU2Z9QKMUH2CB8PN/DLRW9317-5M1.png",
+          "officialPage": "https://www.dirtylifewheels.com/wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9318 DT4",
+      "designKey": "A9318 DT4",
+      "finish": "AW-4 DARK MATTE BRONZE",
+      "finishKey": "AW 4 DARK MATTE BRONZE",
+      "affectedSkus": [
+        "SAA9318-7950DMZ12N"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9318 DT4",
+      "designKey": "A9318 DT4",
+      "finish": "DARK MATTE BRONZE",
+      "finishKey": "DARK MATTE BRONZE",
+      "affectedSkus": [
+        "SAA9318-7983DMZ25K"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9318 DT4",
+      "designKey": "A9318 DT4",
+      "finish": "Matte Black W/Plastic Ring",
+      "finishKey": "MATTE BLACK W PLASTIC RING",
+      "affectedSkus": [
+        "SAA9318-7950MB12N",
+        "SAA9318-7983MB12K",
+        "SAA9318-7983MB25K"
+      ],
+      "affectedRows": 3,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "A9318 DT4",
+      "designKey": "A9318 DT4",
+      "finish": "Metallic Graphite Black W/Plastic Ring",
+      "finishKey": "METALLIC GRAPHITE BLACK W PLASTIC RING",
+      "affectedSkus": [
+        "SAA9318-7950GMG12N"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "brandKey": "DIRTY LIFE",
+      "design": "Dirty Life ROADKILL",
+      "designKey": "ROADKILL",
+      "finish": "Matte Black W/ Matte Black Lip",
+      "finishKey": "MATTE BLACK W MATTE BLACK LIP",
+      "affectedSkus": [
+        "SAA9301-7850MB6N"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "DWC",
+      "brandKey": "DWC",
+      "design": "DWC PRODIGY",
+      "designKey": "PRODIGY",
+      "finish": "MATTE BLACK W/BRONZE TINT",
+      "finishKey": "MATTE BLACK W BRONZE TINT",
+      "affectedSkus": [
+        "SAA8300-7950TZ",
+        "SAA8300-7983TZ"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "DWC",
+      "brandKey": "DWC",
+      "design": "DWC PRODIGY",
+      "designKey": "PRODIGY",
+      "finish": "MATTE BLACK W/DARK TINT",
+      "finishKey": "MATTE BLACK W DARK TINT",
+      "affectedSkus": [
+        "SAA8300-7983TM",
+        "SAA8300-7986TM"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic",
+      "brandKey": "DYNAMIC",
+      "design": "108.1 - 93.1",
+      "designKey": "108.1 93.1",
+      "finish": "HUB RINGS",
+      "finishKey": "HUB RINGS",
+      "affectedSkus": [
+        "CBL10893"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic",
+      "brandKey": "DYNAMIC",
+      "design": "DYNAMIC SUNRAYSIA",
+      "designKey": "SUNRAYSIA",
+      "finish": "BLACK TRIANGLE",
+      "finishKey": "BLACK TRIANGLE",
+      "affectedSkus": [
+        "15712N51397B",
+        "1573P51397B",
+        "1686P51651B",
+        "1780P5150BHL",
+        "17913N61397B"
+      ],
+      "affectedRows": 5,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic",
+      "brandKey": "DYNAMIC",
+      "design": "DYNAMIC SUNRAYSIA",
+      "designKey": "SUNRAYSIA",
+      "finish": "BLACK TRIANGLE LARGE INTERNAL",
+      "finishKey": "BLACK TRIANGLE LARGE INTERNAL",
+      "affectedSkus": [
+        "1680P5150BHL"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "brandKey": "DYNAMIC STEEL WHEELS",
+      "design": "BEADLOCK IMITATION",
+      "designKey": "BEADLOCK IMITATION",
+      "finish": "Black D Shape",
+      "finishKey": "BLACK D SHAPE",
+      "affectedSkus": [
+        "BI16822N61397BD",
+        "BI15822N61397BD"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "brandKey": "DYNAMIC STEEL WHEELS",
+      "design": "BEADLOCK IMITATION",
+      "designKey": "BEADLOCK IMITATION",
+      "finish": "Black Round Hole",
+      "finishKey": "BLACK ROUND HOLE",
+      "affectedSkus": [
+        "BI151044N61397BR"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "brandKey": "DYNAMIC STEEL WHEELS",
+      "design": "BEADLOCK IMITATION",
+      "designKey": "BEADLOCK IMITATION",
+      "finish": "Black Soft 8",
+      "finishKey": "BLACK SOFT 8",
+      "affectedSkus": [
+        "BI1680P5150BS8",
+        "BI16850N5150BS8"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "brandKey": "DYNAMIC STEEL WHEELS",
+      "design": "BEADLOCK IMITATION",
+      "designKey": "BEADLOCK IMITATION",
+      "finish": "Black Triangle",
+      "finishKey": "BLACK TRIANGLE",
+      "affectedSkus": [
+        "BI161044N61397B",
+        "BI1680P61397BL",
+        "BI1780P61397BL",
+        "BI1796N5127B",
+        "BI1680P5150B",
+        "BI1686P5165B",
+        "BI171025N5150B",
+        "BI171025N61397B",
+        "BI1780P5150B",
+        "BI1780P61397B"
+      ],
+      "affectedRows": 10,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "brandKey": "DYNAMIC STEEL WHEELS",
+      "design": "BLACK ROUND HOLE",
+      "designKey": "BLACK ROUND HOLE",
+      "finish": "Black Round",
+      "finishKey": "BLACK ROUND",
+      "affectedSkus": [
+        "17912N8170BRHD",
+        "17912N81651BRHD"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "brandKey": "DYNAMIC STEEL WHEELS",
+      "design": "Dymanic Steel DYNAMIC SUNRAYSIA",
+      "designKey": "DYNAMIC SUNRAYSIA",
+      "finish": "Black Triangle",
+      "finishKey": "BLACK TRIANGLE",
+      "affectedSkus": [
+        "171025N61397B",
+        "1780P61397B",
+        "1780P61397BL",
+        "1790P61397B",
+        "1790P61397BL",
+        "151044N61397B",
+        "161025N61397B",
+        "161026N8170B",
+        "161030N5150B",
+        "171025N5150B",
+        "18830P5150B"
+      ],
+      "affectedRows": 11,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "brandKey": "DYNAMIC STEEL WHEELS",
+      "design": "DYNAMIC SUNRAYSIA",
+      "designKey": "DYNAMIC SUNRAYSIA",
+      "finish": "Black Triangle Large Internal",
+      "finishKey": "BLACK TRIANGLE LARGE INTERNAL",
+      "affectedSkus": [
+        "1680P61397BL"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "brandKey": "DYNAMIC STEEL WHEELS",
+      "design": "Dymanic Steel DYNAMIC SUNRAYSIA",
+      "designKey": "DYNAMIC SUNRAYSIA",
+      "finish": "White Triangle",
+      "finishKey": "WHITE TRIANGLE",
+      "affectedSkus": [
+        "1468P61397W",
+        "14614P51143W"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "brandKey": "DYNAMIC STEEL WHEELS",
+      "design": "Dymanic Steel GENUINE BEADLOCK",
+      "designKey": "GENUINE BEADLOCK",
+      "finish": "Black Triangle",
+      "finishKey": "BLACK TRIANGLE",
+      "affectedSkus": [
+        "G161025N5150B",
+        "G161025N61397B",
+        "G16822N61397B",
+        "G171025N5150B",
+        "G171025N61397B",
+        "G1780P61397B",
+        "G1796N5127B"
+      ],
+      "affectedRows": 7,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "brandKey": "DYNAMIC STEEL WHEELS",
+      "design": "Dymanic Steel SOFT 8",
+      "designKey": "SOFT 8",
+      "finish": "Black Soft 8",
+      "finishKey": "BLACK SOFT 8",
+      "affectedSkus": [
+        "16822N61397BS8"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Ion",
+      "brandKey": "ION",
+      "design": "ION 143",
+      "designKey": "143",
+      "finish": "GLOSS BLACK/RED MACHINED",
+      "finishKey": "GLOSS BLACK RED MACHINED",
+      "affectedSkus": [
+        "SAA143-8983BTR"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Ion",
+          "brandKey": "ION",
+          "designKey": "143",
+          "finishKey": "143 MATTE BLACK",
+          "canonicalFinishKey": "143 MATTE BLACK",
+          "sourceTitle": "143 MATTE BLACK",
+          "sourceUrl": "https://www.ionalloy.com/143",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/58b46a518419c21735b3f30d/1629393622459-71QTLUCQIMYWMMGHDW1F/ION143MB1.png",
+          "officialPage": "https://www.ionalloy.com/ion-wheels"
+        },
+        {
+          "brand": "Ion",
+          "brandKey": "ION",
+          "designKey": "143",
+          "finishKey": "143 BLACK WITH MACHINED FACE",
+          "canonicalFinishKey": "143 BLACK WITH MACHINED FACE",
+          "sourceTitle": "143 BLACK WITH MACHINED FACE",
+          "sourceUrl": "https://www.ionalloy.com/143-black-machined-face",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/58b46a518419c21735b3f30d/1629393614689-GXTIO9K9324U0D1NROTB/ION143BM1.png",
+          "officialPage": "https://www.ionalloy.com/ion-wheels"
+        },
+        {
+          "brand": "Ion",
+          "brandKey": "ION",
+          "designKey": "143",
+          "finishKey": "143 BLACK W RED TINT FACE",
+          "canonicalFinishKey": "143 BLACK WITH RED TINT FACE",
+          "sourceTitle": "143 BLACK W/ RED TINT FACE",
+          "sourceUrl": "https://www.ionalloy.com/143-black-red-tint-machined-face",
+          "imageUrl": "https://images.squarespace-cdn.com/content/v1/58b46a518419c21735b3f30d/1629393607123-XGQ14NZRVLKZPPT3REHH/ION143REDTNT1.png",
+          "officialPage": "https://www.ionalloy.com/ion-wheels"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "MASSIMO",
+      "designKey": "MASSIMO",
+      "finish": "Matt Black Polished",
+      "finishKey": "MATTE BLACK POLISHED",
+      "affectedSkus": [
+        "WMSB80848512"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "MASSIMO",
+          "finishKey": "MOMO MOSSIMO ROAD WHEEL HTTPS MOMO.COM WP CONTENT UPLOADS 2017 02 1 4 750X750.PNG",
+          "canonicalFinishKey": "MOMO MOSSIMO ROAD WHEEL HTTPS MOMO.COM WP CONTENT UPLOADS 2017 02 1 4 750X750.PNG",
+          "sourceTitle": "MOMO Mossimo Road Wheel",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/alloy-eu/massimo/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2017/02/1-4-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "REVENGE",
+      "designKey": "REVENGE",
+      "finish": "Matte Anthracite",
+      "finishKey": "MATTE ANTHRACITE",
+      "affectedSkus": [
+        "WRVA80845512L"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "REVENGE",
+          "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2026 02 REVENGE 2.0 MATTE BLACK POLISHED TURNED LEFT 750X750.PNG",
+          "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2026 02 REVENGE 2.0 MATTE BLACK POLISHED TURNED LEFT 750X750.PNG",
+          "sourceTitle": "REVENGE",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/alloy-eu/revenge-2-0-evo/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2026/02/revenge-2.0-matt-black-polished-turned-left-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        },
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "REVENGE",
+          "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2025 09 REVENGE 2.0 MATTE BLACK TURNED LEFT 750X750.PNG",
+          "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2025 09 REVENGE 2.0 MATTE BLACK TURNED LEFT 750X750.PNG",
+          "sourceTitle": "REVENGE",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/alloy-eu/revenge-2-0/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2025/09/revenge-2.0-matt-black-turned-left-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        },
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "REVENGE",
+          "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2016 12 REVENGE MATTE BLACK 750X750.PNG",
+          "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2016 12 REVENGE MATTE BLACK 750X750.PNG",
+          "sourceTitle": "REVENGE",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/revenge/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2016/12/Revenge-Matte-Black-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        },
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "REVENGE",
+          "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2019 03 MOMO REVENGE WHEEL 1 750X750.PNG",
+          "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2019 03 MOMO REVENGE WHEEL 1 750X750.PNG",
+          "sourceTitle": "REVENGE",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/revenge-suv/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2019/03/MOMO-Revenge-Wheel-1-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "REVENGE EVO",
+      "designKey": "REVENGE EVO",
+      "finish": "Matt Black Polished",
+      "finishKey": "MATTE BLACK POLISHED",
+      "affectedSkus": [
+        "WRVE80845265L"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "REVENGE EVO",
+          "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2016 10 REVENGE EVO 750X750.PNG",
+          "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2016 10 REVENGE EVO 750X750.PNG",
+          "sourceTitle": "REVENGE EVO",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/revenge-evo/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2016/10/Revenge-EVO-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "RF-02",
+      "designKey": "RF 02",
+      "finish": "Titan Silver Brushed",
+      "finishKey": "TITAN SILVER BRUSHED",
+      "affectedSkus": [
+        "WR22T10040272",
+        "WR21T90050371"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "RF 02",
+          "finishKey": "MOMO RF 02 ROTARY FORMED ROAD WHEELS HTTPS MOMO.COM WP CONTENT UPLOADS 2018 03 RF 02 MBDC PRIMARY 750X750.PNG",
+          "canonicalFinishKey": "MOMO RF 02 ROTARY FORMED ROAD WHEELS HTTPS MOMO.COM WP CONTENT UPLOADS 2018 03 RF 02 MATTE BLACK POLISHED PRIMARY 750X750.PNG",
+          "sourceTitle": "MOMO RF-02 Rotary Formed Road Wheels",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/rf-02/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2018/03/rf-02-mbdc-primary-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "RF-03",
+      "designKey": "RF 03",
+      "finish": "Stardust Glossy Black",
+      "finishKey": "STARDUST GLOSSY BLACK",
+      "affectedSkus": [
+        "WR31B90938706",
+        "WR31B95940272"
+      ],
+      "affectedRows": 2,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "RF 03",
+          "finishKey": "MOMO RF 03 ROTARY FORMED ROAD WHEELS HTTPS MOMO.COM WP CONTENT UPLOADS 2018 03 RF 03 TIDC PRIMARY 750X750.PNG",
+          "canonicalFinishKey": "MOMO RF 03 ROTARY FORMED ROAD WHEELS HTTPS MOMO.COM WP CONTENT UPLOADS 2018 03 RF 03 TITAN ICE POLISHED PRIMARY 750X750.PNG",
+          "sourceTitle": "MOMO RF-03 Rotary Formed Road Wheels",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/rf-03/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2018/03/rf-03-tidc-primary-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "RF-04",
+      "designKey": "RF 04",
+      "finish": "Matte Black Polished",
+      "finishKey": "MATTE BLACK POLISHED",
+      "affectedSkus": [
+        "WR41E90043863"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "RF 04",
+          "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2019 03 MOMO RFX 04 WHEEL IMAGE 2 750X750.PNG",
+          "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2019 03 MOMO RFX 04 WHEEL IMAGE 2 750X750.PNG",
+          "sourceTitle": "RF 04",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/rf-series-eu/rf-04/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2019/03/MOMO-RFX-04-Wheel-Image-2-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "RF-05",
+      "designKey": "RF 05",
+      "finish": "Matte Graphite Polished",
+      "finishKey": "MATTE GRAPHITE POLISHED",
+      "affectedSkus": [
+        "WR51D85947266"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "RF 05",
+          "finishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2019 03 MOMO RFX 05 WHEEL IMAGE 1 750X750.PNG",
+          "canonicalFinishKey": "HTTPS MOMO.COM WP CONTENT UPLOADS 2019 03 MOMO RFX 05 WHEEL IMAGE 1 750X750.PNG",
+          "sourceTitle": "RF 05",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/rf-series-eu/rf-05-wheels/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2019/03/MOMO-RFX-05-Wheel-Image-1-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "SPIDER",
+      "designKey": "SPIDER",
+      "finish": "Matte Black Polished",
+      "finishKey": "MATTE BLACK POLISHED",
+      "affectedSkus": [
+        "WSPB10035272"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "SPIDER",
+          "finishKey": "MOMO SPIDER ROAD WHEEL HTTPS MOMO.COM WP CONTENT UPLOADS 2017 02 1 5 750X750.PNG",
+          "canonicalFinishKey": "MOMO SPIDER ROAD WHEEL HTTPS MOMO.COM WP CONTENT UPLOADS 2017 02 1 5 750X750.PNG",
+          "sourceTitle": "MOMO Spider Road Wheel",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/spider/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2017/02/1-5-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "brandKey": "MOMO",
+      "design": "STEALTH",
+      "designKey": "STEALTH",
+      "finish": "Mag-Matte Anthracite Polished",
+      "finishKey": "MAG MATTE ANTHRACITE POLISHED",
+      "affectedSkus": [
+        "WSHM85045508"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "MOMO",
+          "brandKey": "MOMO",
+          "designKey": "STEALTH",
+          "finishKey": "MOMO STEALTH MATTE ANTHRACITE ROAD WHEELS HTTPS MOMO.COM WP CONTENT UPLOADS 2018 03 STEALTH ANT PRIMARY 750X750.PNG",
+          "canonicalFinishKey": "MOMO STEALTH MATTE ANTHRACITE ROAD WHEELS HTTPS MOMO.COM WP CONTENT UPLOADS 2018 03 STEALTH MATTE ANTHRACITE PRIMARY 750X750.PNG",
+          "sourceTitle": "MOMO Stealth Matte Anthracite Road Wheels",
+          "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/stealth/",
+          "imageUrl": "https://momo.com/wp-content/uploads/2018/03/stealth-ant-primary-750x750.png",
+          "officialPage": "https://momo.com/en-gb/products/road-wheels-eu/page/2/"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Procomp",
+      "brandKey": "PROCOMP",
+      "design": "SERIES 40 VERTIGO",
+      "designKey": "SERIES 40 VERTIGO",
+      "finish": "SATIN BLACK MILLED",
+      "finishKey": "SATIN BLACK MILLED",
+      "affectedSkus": [
+        "5140-898350"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "Official design found, but exact finish was not available.",
+      "candidates": [
+        {
+          "brand": "Procomp",
+          "brandKey": "PROCOMP",
+          "designKey": "SERIES 40 VERTIGO",
+          "finishKey": "HTTPS WWW.WHEELPROS.COM MEDIA CATALOG PRODUCT P R PROCOMP PA40 VERTIGO DARK GRAY A1 PA0402 PNG.PNG",
+          "canonicalFinishKey": "HTTPS WWW.WHEELPROS.COM MEDIA CATALOG PRODUCT P R PROCOMP PA40 VERTIGO DARK GRAY A1 PA0402 PNG.PNG",
+          "sourceTitle": "procomp-pa40-vertigo-dark-gray-a1-pa0402-png.png",
+          "sourceUrl": "https://www.wheelpros.com/pro-comp",
+          "imageUrl": "https://www.wheelpros.com/media/catalog/product/p/r/procomp-pa40-vertigo-dark-gray-a1-pa0402-png.png",
+          "officialPage": "https://www.wheelpros.com/pro-comp"
+        }
+      ]
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Procomp",
+      "brandKey": "PROCOMP",
+      "design": "SERIES 43 SLEDGE",
+      "designKey": "SERIES 43 SLEDGE",
+      "finish": "SATIN BLACK MILLED",
+      "finishKey": "SATIN BLACK MILLED",
+      "affectedSkus": [
+        "5143-2983"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Procomp",
+      "brandKey": "PROCOMP",
+      "design": "SERIES 50 GAUGE",
+      "designKey": "SERIES 50 GAUGE",
+      "finish": "SATIN BLACK",
+      "finishKey": "SATIN BLACK",
+      "affectedSkus": [
+        "5050-292745"
+      ],
+      "affectedRows": 1,
+      "status": "missing",
+      "reason": "No official design image found."
+    }
+  ],
+  "importedAt": "2026-07-01T15:57:02.364Z",
+  "importMode": "edge-function",
+  "importedCount": 22,
+  "failedCount": 0,
+  "failures": []
+}

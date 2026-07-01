@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
   findBestSupplierStockImage,
+  inventoryItemToSupplierImageLookup,
   parseAlineImageFileName,
   parseAlineStockImageKeys,
-  parseSupplierTyreImageKeys
+  parseSupplierTyreImageKeys,
+  parseSupplierWheelImageKeys
 } from './supplierStockImages';
 import { ProductType } from './types';
 import { parseAttData, parseTyreLifeWheelsData } from './utils';
@@ -56,6 +58,32 @@ describe('TYRE LIFE wheel catalogue parsing', () => {
       quantity: 8,
       sellingPrice: 4850,
       costPrice: 4850
+    });
+  });
+
+  it('collapses repeated branded wheel names to one design key', () => {
+    expect(parseSupplierWheelImageKeys('Dirty Life', 'A9303 DT1', 'Matte Black W/Simulated Ring')).toEqual({
+      designKey: 'A9303 DT1',
+      finishKey: 'MATTE BLACK W SIMULATED RING'
+    });
+
+    expect(parseSupplierWheelImageKeys('Dirty Life', 'Dirty Life A9303 DT1', 'Matte Black W/Simulated Ring')).toEqual({
+      designKey: 'A9303 DT1',
+      finishKey: 'MATTE BLACK W SIMULATED RING'
+    });
+  });
+
+  it('enables supplier image lookups for TYRE LIFE WHEELS wheel rows', () => {
+    const [item] = parseTyreLifeWheelsData([
+      'Size,SKU,Brand,Wheel Name,Finish,PCD,Offset,Center Bore,Category,Selling Price,JHB Stock Units,CPT Stock Units,DBN Stock Units,Total Stock Units',
+      '"17 x 9""",SAA9303-7983MB12N,Dirty Life,Dirty Life A9303 DT1,Matte Black W/Simulated Ring,139.7,--12,,Wheels,R5200,0 units,0 units,0 units,0 units'
+    ].join('\n'));
+
+    expect(inventoryItemToSupplierImageLookup(item)).toMatchObject({
+      supplierName: 'TYRE LIFE WHEELS',
+      supplierStockCode: 'SAA9303-7983MB12N',
+      imageDesignKey: 'A9303 DT1',
+      imageFinishKey: 'MATTE BLACK W SIMULATED RING'
     });
   });
 });
@@ -116,6 +144,67 @@ describe('supplier stock image matching', () => {
       size: '19x8.5',
       pcd: '5/112'
     }, candidates);
+
+    expect(match.confidence).toBe('missing');
+    expect(match.imageUrl).toBeUndefined();
+  });
+
+  it('keeps TYRE LIFE WHEELS matches finish-aware across repeated sizes', () => {
+    const supplierCandidates = [
+      {
+        supplierName: 'TYRE LIFE WHEELS',
+        designKey: 'A9303 DT1',
+        finishKey: 'MATTE BLACK W SIMULATED RING',
+        rimSize: null,
+        pcd: null,
+        publicImageUrl: 'https://example.test/a9303-black.jpg',
+        fileName: 'a9303-black.jpg'
+      },
+      {
+        supplierName: 'TYRE LIFE WHEELS',
+        designKey: 'A9303 DT1',
+        finishKey: 'MATTE GUNMETAL W SIMULATED RING',
+        rimSize: null,
+        pcd: null,
+        publicImageUrl: 'https://example.test/a9303-gunmetal.jpg',
+        fileName: 'a9303-gunmetal.jpg'
+      }
+    ];
+
+    const match = findBestSupplierStockImage({
+      id: 'tyrelifewheels-1',
+      productType: ProductType.WHEEL,
+      supplierName: 'TYRE LIFE WHEELS',
+      imageDesignKey: 'A9303 DT1',
+      imageFinishKey: 'MATTE BLACK W SIMULATED RING',
+      size: '17x9',
+      pcd: '139.7'
+    }, supplierCandidates);
+
+    expect(match.confidence).toBe('exact');
+    expect(match.imageUrl).toBe('https://example.test/a9303-black.jpg');
+  });
+
+  it('does not use a TYRE LIFE WHEELS image when only the wrong finish is available', () => {
+    const match = findBestSupplierStockImage({
+      id: 'tyrelifewheels-2',
+      productType: ProductType.WHEEL,
+      supplierName: 'TYRE LIFE WHEELS',
+      imageDesignKey: 'A9303 DT1',
+      imageFinishKey: 'MATTE BLACK W SIMULATED RING',
+      size: '17x9',
+      pcd: '139.7'
+    }, [
+      {
+        supplierName: 'TYRE LIFE WHEELS',
+        designKey: 'A9303 DT1',
+        finishKey: 'MATTE GUNMETAL W SIMULATED RING',
+        rimSize: null,
+        pcd: null,
+        publicImageUrl: 'https://example.test/a9303-gunmetal.jpg',
+        fileName: 'a9303-gunmetal.jpg'
+      }
+    ]);
 
     expect(match.confidence).toBe('missing');
     expect(match.imageUrl).toBeUndefined();

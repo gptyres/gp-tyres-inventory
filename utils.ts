@@ -1,6 +1,6 @@
 
 import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
-import { normalizeSupplierImageToken, parseAlineStockImageKeys, parseSupplierTyreImageKeys } from './supplierStockImages';
+import { parseAlineStockImageKeys, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
 
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-ZA', {
@@ -853,14 +853,15 @@ export const parseTyreLifeWheelsData = (rawCsv: string): InventoryItem[] => {
     const totalQty = parseStockUnits(cols[13]);
     const quantity = totalQty || jhbQty + cptQty + dbnQty;
     const itemId = `tyrelifewheels-${idCounter++}`;
+    const imageKeys = parseSupplierWheelImageKeys(brand, wheelName, finish);
 
     items.push({
       id: itemId,
       type: ProductType.WHEEL,
       supplierName: 'TYRE LIFE WHEELS',
       supplierStockCode: sku,
-      imageDesignKey: normalizeSupplierImageToken(wheelName),
-      imageFinishKey: normalizeSupplierImageToken(finish || brand),
+      imageDesignKey: imageKeys.designKey,
+      imageFinishKey: imageKeys.finishKey,
       code: wheelName,
       size: normalizeWheelSize(rawSize),
       pcd,

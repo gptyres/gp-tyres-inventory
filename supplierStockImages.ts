@@ -198,6 +198,23 @@ export const parseSupplierTyreImageKeys = (brand: string, pattern: string) => ({
   finishKey: normalizeSupplierImageToken(brand)
 });
 
+export const parseSupplierWheelImageKeys = (brand: string, wheelName: string, finish: string) => {
+  const brandKey = normalizeSupplierImageToken(brand);
+  let designName = normalizeSupplierImageToken(wheelName)
+    .replace(/\bDYMANIC\b/g, 'DYNAMIC')
+    .replace(/\bDYNAMIC STEEL WHEELS\b/g, 'DYNAMIC STEEL');
+
+  if (brandKey) {
+    const brandPattern = new RegExp(`^${brandKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+`);
+    designName = designName.replace(brandPattern, '');
+  }
+
+  return {
+    designKey: designName || brandKey || 'WHEEL',
+    finishKey: normalizeSupplierImageToken(finish || brand)
+  };
+};
+
 export const parseAlineImageFileName = (fileName: string) => {
   const stem = fileName.replace(/\.[^.]+$/, '');
   const rimSize = stem.match(/(?:^|[^0-9])(1[3-9]|2[0-6])\s*(?:''|["”]|INCH|INCHES|IN)/i)?.[1]
@@ -239,10 +256,18 @@ export const findBestSupplierStockImage = (
   if (!designMatches.length) return { confidence: 'missing', candidates: [] };
 
   const itemFinish = normalizeSupplierImageToken(item.imageFinishKey);
+  const finishMatches = itemFinish
+    ? designMatches.filter((candidate) => normalizeSupplierImageToken(candidate.finishKey) === itemFinish)
+    : designMatches;
+
+  if (itemFinish && designMatches.some((candidate) => normalizeSupplierImageToken(candidate.finishKey)) && !finishMatches.length) {
+    return { confidence: 'missing', candidates: designMatches };
+  }
+
   const itemRim = rimSizeFromItemSize(item.size);
   const itemPcd = normalizePcd(item.pcd);
 
-  const scored = designMatches
+  const scored = (finishMatches.length ? finishMatches : designMatches)
     .map((candidate) => {
       let score = 100;
       if (itemFinish && normalizeSupplierImageToken(candidate.finishKey) === itemFinish) score += 30;
@@ -275,7 +300,7 @@ export const inventoryItemToSupplierImageLookup = (item: InventoryItem): Supplie
   if (item.type === ProductType.WHEEL) {
     const wheel = item as WheelProduct;
     const supplierName = wheel.supplierName ?? (item.id.toUpperCase().includes('ALINE') ? 'ALINE' : undefined);
-    if (supplierName !== 'ALINE') return null;
+    if (!supplierName || !wheel.imageDesignKey) return null;
 
     return {
       id: item.id,
