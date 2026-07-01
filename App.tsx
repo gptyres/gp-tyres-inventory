@@ -47,6 +47,7 @@ import { TYRE_LIFE_RAW_DATA } from './supplier_data/tyreLifeData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
 import { SAFETY_GRIP_RAW_DATA } from './supplier_data/safetygripData';
+import { ALINE_RAW_DATA } from './supplier_data/alineData';
 import { customerRowToCustomerInfo, saveCRMDocumentFromPOS } from './crmSync';
 
 import {
@@ -58,6 +59,7 @@ import {
   parseTyreWarehouseData,
   parseAttData,
   parseSafetyGripData,
+  parseAlineData,
   parseApexData,
   parseTubestoneData,
   parseTreadsUnlimitedData,
@@ -90,6 +92,7 @@ const getAllSupplierPOSItems = (): InventoryItem[] => [
   ...tagSupplierPOSItems('tyrewarehouse', parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA)),
   ...tagSupplierPOSItems('att', parseAttData(ATT_RAW_DATA)),
   ...tagSupplierPOSItems('safetygrip', parseSafetyGripData(SAFETY_GRIP_RAW_DATA)),
+  ...tagSupplierPOSItems('aline', parseAlineData(ALINE_RAW_DATA)),
   ...tagSupplierPOSItems('apex', parseApexData(APEX_RAW_DATA)),
   ...tagSupplierPOSItems('tubestone', parseTubestoneData(TUBESTONE_RAW_DATA)),
   ...tagSupplierPOSItems('treads', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
@@ -186,6 +189,7 @@ const App: React.FC = () => {
             ...tagSupplierItems('TYREWAREHOUSE', parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA)),
             ...tagSupplierItems('ATT', parseAttData(ATT_RAW_DATA)),
             ...tagSupplierItems('SAFETY GRIP', parseSafetyGripData(SAFETY_GRIP_RAW_DATA)),
+            ...tagSupplierItems('ALINE', parseAlineData(ALINE_RAW_DATA)),
             ...tagSupplierItems('APEX', parseApexData(APEX_RAW_DATA)),
             ...tagSupplierItems('TUBESTONE', parseTubestoneData(TUBESTONE_RAW_DATA)),
             ...tagSupplierItems('TREADS UNLIMITED', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
@@ -199,6 +203,8 @@ const App: React.FC = () => {
           return parseAttData(ATT_RAW_DATA);
         case 'SAFETY_GRIP':
           return parseSafetyGripData(SAFETY_GRIP_RAW_DATA);
+        case 'ALINE':
+          return parseAlineData(ALINE_RAW_DATA);
         case 'APEX':
           return parseApexData(APEX_RAW_DATA);
         case 'TUBESTONE':
@@ -239,6 +245,10 @@ const App: React.FC = () => {
     SAFETY_GRIP: {
       label: 'SAFETY GRIP',
       note: 'Viewing External Supplier Data. Prices are calculated with 15% VAT added to the supplied price.'
+    },
+    ALINE: {
+      label: 'ALINE',
+      note: 'Viewing External Supplier Data. Prices already include VAT, with branch wheel stock shown in the location field.'
     },
     APEX: {
       label: 'APEX',

@@ -566,6 +566,69 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
   return items;
 };
 
+const parseAlineWheelSpec = (description: string) => {
+  const compact = description.replace(/\s+/g, '');
+  const specMatch = compact.match(/^(\d)(\d{3})(\d{2})X([\d.]+)/i);
+  const offsetMatch = description.match(/\bET\s*(-?\d+)/i);
+  const centerBoreMatch = description.match(/\b(\d{2,3}\.\d)\b/);
+
+  return {
+    size: specMatch ? `${specMatch[3]}x${specMatch[4]}` : 'Accessory',
+    pcd: specMatch ? `${specMatch[1]}/${specMatch[2]}` : '',
+    offset: offsetMatch ? offsetMatch[1] : '',
+    centerBore: centerBoreMatch ? centerBoreMatch[1] : ''
+  };
+};
+
+// --- ALINE PARSER ---
+export const parseAlineData = (rawCsv: string): InventoryItem[] => {
+  const items: InventoryItem[] = [];
+  const lines = rawCsv.split('\n');
+  const today = new Date().toISOString().split('T')[0];
+  let idCounter = 1;
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+
+    const cols = parseCSVLine(trimmed);
+    const stockCode = cols[0]?.trim();
+    const brand = cols[1]?.trim();
+    const description = cols[2]?.replace(/\s+/g, ' ').trim();
+
+    if (index === 0 && stockCode?.toUpperCase() === 'STOCK CODE') return;
+    if (!stockCode || !description) return;
+
+    const qtyJhb = parseStockUnits(cols[5]);
+    const qtyCpt = parseStockUnits(cols[6]);
+    const qtyDbn = parseStockUnits(cols[7]);
+    const priceIncVat = parseCurrencyString(cols[8]);
+    const recommendedRetail = parseCurrencyString(cols[9]);
+    const category = cols[4]?.trim();
+    const catalogueNumber = cols[10]?.trim();
+    const spec = parseAlineWheelSpec(description);
+
+    items.push({
+      id: `aline-${idCounter++}`,
+      type: ProductType.WHEEL,
+      code: stockCode,
+      size: spec.size,
+      pcd: spec.pcd,
+      offset: spec.offset,
+      centerBore: spec.centerBore,
+      colour: [brand, description, category, catalogueNumber, recommendedRetail ? `RR ${formatCurrency(recommendedRetail)}` : ''].filter(Boolean).join(' | '),
+      setQuantity: 4,
+      location: `JHB: ${qtyJhb} | CPT: ${qtyCpt} | DBN: ${qtyDbn}`,
+      quantity: qtyJhb + qtyCpt + qtyDbn,
+      costPrice: priceIncVat,
+      sellingPrice: priceIncVat,
+      lastUpdated: today
+    });
+  });
+
+  return items;
+};
+
 // --- APEX PARSER ---
 export const parseApexData = (rawCsv: string): InventoryItem[] => {
   return parseSimpleSupplierCsv(rawCsv, 'apex', 'APEX');

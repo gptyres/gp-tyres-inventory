@@ -279,6 +279,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   SAFETY GRIP
                 </button>
                 <button
+                  onClick={() => handleSupplierClick('ALINE')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALINE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  ALINE
+                </button>
+                <button
                   onClick={() => handleSupplierClick('APEX')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'APEX' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >
