@@ -309,6 +309,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   TREAD ZONE
                 </button>
                 <button
+                  onClick={() => handleSupplierClick('SUMITOMO_DUNLOP')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'SUMITOMO_DUNLOP' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  SUMITOMO/DUNLOP
+                </button>
+                <button
                   onClick={() => handleSupplierClick('TREADS_UNLIMITED')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'TREADS_UNLIMITED' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >

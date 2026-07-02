@@ -8,7 +8,7 @@ import {
   parseSupplierWheelImageKeys
 } from './supplierStockImages';
 import { ProductType } from './types';
-import { parseAttData, parseStamfordData, parseTreadZoneData, parseTyreLifeWheelsData } from './utils';
+import { parseAttData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData } from './utils';
 
 describe('ALINE supplier image parsing', () => {
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
@@ -174,6 +174,40 @@ describe('TREAD ZONE supplier catalogue parsing', () => {
     expect(item.location).toContain('Durban: 15');
     expect(item.location).toContain('Jet Park: 120');
     expect(item.location).toContain('Port Elizabeth: 12');
+  });
+});
+
+describe('SUMITOMO/DUNLOP supplier catalogue parsing', () => {
+  it('groups branch rows into one tyre item per SKU with supplier pricing', () => {
+    const [item] = parseSumitomoDunlopData([
+      'SKU,Category,Brand,Pattern,Tyre Size,Stock Location,Stock Units Availability,Stock Units,Price',
+      'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Cape Town,Available,18 units,R1870.62',
+      'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Durban,Available,16 units,R1870.62',
+      'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Durban CDC,Available,19 units,R1870.62',
+      'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Eastport,Available,40 units,R1870.62',
+      'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Ladysmith,Available,17 units,R1870.62',
+      'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Port Elizabeth,Available,10 units,R1870.62'
+    ].join('\n'));
+
+    expect(item).toMatchObject({
+      type: ProductType.TYRE,
+      supplierName: 'SUMITOMO/DUNLOP',
+      supplierStockCode: 'G10591287DJ',
+      brand: 'Dunlop',
+      pattern: 'EC300+',
+      size: '185/60R16',
+      quantity: 120,
+      sellingPrice: 1870.62,
+      costPrice: 1870.62,
+      imageDesignKey: 'EC300',
+      imageFinishKey: 'DUNLOP'
+    });
+    expect(item.location).toContain('Cape Town: 18');
+    expect(item.location).toContain('Durban: 16');
+    expect(item.location).toContain('Durban CDC: 19');
+    expect(item.location).toContain('Eastport: 40');
+    expect(item.location).toContain('Ladysmith: 17');
+    expect(item.location).toContain('Port Elizabeth: 10');
   });
 });
 

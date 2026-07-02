@@ -46,6 +46,7 @@ import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
 import { TYRE_LIFE_RAW_DATA } from './supplier_data/tyreLifeData';
 import { TYRE_LIFE_WHEELS_RAW_DATA } from './supplier_data/tyreLifeWheelsData';
 import { TREAD_ZONE_RAW_DATA } from './supplier_data/treadZoneData';
+import { SUMITOMO_DUNLOP_RAW_DATA } from './supplier_data/sumitomoDunlopData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
 import { SAFETY_GRIP_RAW_DATA } from './supplier_data/safetygripData';
@@ -68,6 +69,7 @@ import {
   parseTubestoneData,
   parseTreadsUnlimitedData,
   parseTreadZoneData,
+  parseSumitomoDunlopData,
   parseTyreLifeData,
   parseTyreLifeWheelsData
 } from './utils';
@@ -103,6 +105,7 @@ const getAllSupplierPOSItems = (): InventoryItem[] => [
   ...tagSupplierPOSItems('apex', parseApexData(APEX_RAW_DATA)),
   ...tagSupplierPOSItems('tubestone', parseTubestoneData(TUBESTONE_RAW_DATA)),
   ...tagSupplierPOSItems('treadzone', parseTreadZoneData(TREAD_ZONE_RAW_DATA)),
+  ...tagSupplierPOSItems('sumitomo-dunlop', parseSumitomoDunlopData(SUMITOMO_DUNLOP_RAW_DATA)),
   ...tagSupplierPOSItems('treads', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
   ...tagSupplierPOSItems('tyrelife', parseTyreLifeData(TYRE_LIFE_RAW_DATA)),
   ...tagSupplierPOSItems('tyrelifewheels', parseTyreLifeWheelsData(TYRE_LIFE_WHEELS_RAW_DATA))
@@ -212,6 +215,7 @@ const App: React.FC = () => {
             ...tagSupplierItems('APEX', parseApexData(APEX_RAW_DATA)),
             ...tagSupplierItems('TUBESTONE', parseTubestoneData(TUBESTONE_RAW_DATA)),
             ...tagSupplierItems('TREAD ZONE', parseTreadZoneData(TREAD_ZONE_RAW_DATA)),
+            ...tagSupplierItems('SUMITOMO/DUNLOP', parseSumitomoDunlopData(SUMITOMO_DUNLOP_RAW_DATA)),
             ...tagSupplierItems('TREADS UNLIMITED', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
             ...tagSupplierItems('TYRE LIFE', parseTyreLifeData(TYRE_LIFE_RAW_DATA)),
             ...tagSupplierItems('TYRE LIFE WHEELS', parseTyreLifeWheelsData(TYRE_LIFE_WHEELS_RAW_DATA))
@@ -234,6 +238,8 @@ const App: React.FC = () => {
           return parseTubestoneData(TUBESTONE_RAW_DATA);
         case 'TREAD_ZONE':
           return parseTreadZoneData(TREAD_ZONE_RAW_DATA);
+        case 'SUMITOMO_DUNLOP':
+          return parseSumitomoDunlopData(SUMITOMO_DUNLOP_RAW_DATA);
         case 'TREADS_UNLIMITED':
           return parseTreadsUnlimitedData(TREADS_RAW_DATA);
         case 'TYRE_LIFE':
@@ -291,6 +297,10 @@ const App: React.FC = () => {
     },
     TREAD_ZONE: {
       label: 'TREAD ZONE',
+      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.'
+    },
+    SUMITOMO_DUNLOP: {
+      label: 'SUMITOMO/DUNLOP',
       note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.'
     },
     TREADS_UNLIMITED: {
