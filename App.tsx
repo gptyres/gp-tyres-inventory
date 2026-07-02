@@ -273,7 +273,7 @@ const App: React.FC = () => {
     },
     STAMFORD: {
       label: 'STAMFORD',
-      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field. Pricing was not supplied in this Stamford file.'
+      note: 'Viewing External Supplier Data. Prices are matched by SKU, with branch stock shown in the location field.'
     },
     APEX: {
       label: 'APEX',
