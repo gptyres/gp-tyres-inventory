@@ -1,6 +1,7 @@
 
 import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
 import { parseAlineStockImageKeys, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
+import { STAMFORD_PRICE_BY_SKU } from './supplier_data/stamfordData';
 
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-ZA', {
@@ -592,7 +593,7 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
 // --- STAMFORD PARSER ---
 export const parseStamfordData = (
   rawCsv: string,
-  priceBySku: Record<string, number> = {}
+  priceBySku: Record<string, number> = STAMFORD_PRICE_BY_SKU
 ): InventoryItem[] => {
   const groupedItems = new Map<string, {
     sku: string;
