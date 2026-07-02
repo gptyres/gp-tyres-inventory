@@ -8,7 +8,7 @@ import {
   parseSupplierWheelImageKeys
 } from './supplierStockImages';
 import { ProductType } from './types';
-import { parseAttData, parseStamfordData, parseTyreLifeWheelsData } from './utils';
+import { parseAttData, parseStamfordData, parseTreadZoneData, parseTyreLifeWheelsData } from './utils';
 
 describe('ALINE supplier image parsing', () => {
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
@@ -144,6 +144,36 @@ describe('STAMFORD supplier catalogue parsing', () => {
     expect(item.location).toContain('Cape Town: 2');
     expect(item.location).toContain('Durban: 0');
     expect(item.location).toContain('Johannesburg: 3');
+  });
+});
+
+describe('TREAD ZONE supplier catalogue parsing', () => {
+  it('groups branch rows into one tyre item per SKU with supplier pricing', () => {
+    const [item] = parseTreadZoneData([
+      'SKU,Category,Brand,Pattern,Tyre Size,Stock Location,Stock Units Availability,Stock Units,Price',
+      '1.01.016.121,Agricultural > Bias,Farm Master,F2,6.00-16,Treadzone Cape Town,Available,30 units,R773.50',
+      '1.01.016.121,Agricultural > Bias,Farm Master,F2,6.00-16,Treadzone Durban,Available,15 units,R773.50',
+      '1.01.016.121,Agricultural > Bias,Farm Master,F2,6.00-16,Treadzone Jet Park,Available,120 units,R773.50',
+      '1.01.016.121,Agricultural > Bias,Farm Master,F2,6.00-16,Treadzone Port Elizabeth,Available,12 units,R773.50'
+    ].join('\n'));
+
+    expect(item).toMatchObject({
+      type: ProductType.TYRE,
+      supplierName: 'TREAD ZONE',
+      supplierStockCode: '1.01.016.121',
+      brand: 'Farm Master',
+      pattern: 'F2',
+      size: '6.00-16',
+      quantity: 177,
+      sellingPrice: 773.5,
+      costPrice: 773.5,
+      imageDesignKey: 'F2',
+      imageFinishKey: 'FARM MASTER'
+    });
+    expect(item.location).toContain('Cape Town: 30');
+    expect(item.location).toContain('Durban: 15');
+    expect(item.location).toContain('Jet Park: 120');
+    expect(item.location).toContain('Port Elizabeth: 12');
   });
 });
 
