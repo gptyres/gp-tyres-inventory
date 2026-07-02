@@ -589,6 +589,75 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
   return items;
 };
 
+// --- STAMFORD PARSER ---
+export const parseStamfordData = (rawCsv: string): InventoryItem[] => {
+  const groupedItems = new Map<string, {
+    sku: string;
+    brand: string;
+    pattern: string;
+    size: string;
+    category: string;
+    branchStock: Record<string, number>;
+    totalQuantity: number;
+  }>();
+  const lines = rawCsv.split('\n');
+  const today = new Date().toISOString().split('T')[0];
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+
+    const cols = parseCSVLine(trimmed);
+    const sku = cols[0]?.trim();
+    const brand = cols[1]?.trim();
+    const pattern = cols[2]?.replace(/\s+/g, ' ').trim();
+    const size = cols[3]?.trim();
+    const category = cols[4]?.trim() || 'STAMFORD';
+    const stockLocation = cols[5]?.trim() || 'Supplier';
+
+    if (index === 0 && sku?.toUpperCase() === 'SKU') return;
+    if (!sku || !brand || !pattern || !size) return;
+
+    const quantity = parseStockUnits(cols[7] || cols[6]);
+    const existing = groupedItems.get(sku) ?? {
+      sku,
+      brand,
+      pattern,
+      size,
+      category,
+      branchStock: {},
+      totalQuantity: 0
+    };
+
+    existing.branchStock[stockLocation] = (existing.branchStock[stockLocation] || 0) + quantity;
+    existing.totalQuantity += quantity;
+    groupedItems.set(sku, existing);
+  });
+
+  return Array.from(groupedItems.values()).map((entry, index) => {
+    const branchLocations = ['Cape Town', 'Durban', 'Johannesburg'];
+    const location = branchLocations
+      .filter((branch) => branch in entry.branchStock)
+      .map((branch) => `${branch}: ${entry.branchStock[branch]}`)
+      .join(' | ');
+
+    return {
+      id: `stamford-${index + 1}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('STAMFORD', entry.brand, entry.pattern, entry.sku),
+      brand: entry.brand,
+      pattern: entry.pattern,
+      size: entry.size,
+      loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
+      location: location || 'STAMFORD',
+      quantity: entry.totalQuantity,
+      costPrice: 0,
+      sellingPrice: 0,
+      lastUpdated: today
+    };
+  });
+};
+
 const parseAlineWheelSpec = (description: string) => {
   const compact = description.replace(/\s+/g, '');
   const specMatch = compact.match(/^(\d)(\d{3})(\d{2})X([\d.]+)/i);

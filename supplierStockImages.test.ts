@@ -8,7 +8,7 @@ import {
   parseSupplierWheelImageKeys
 } from './supplierStockImages';
 import { ProductType } from './types';
-import { parseAttData, parseTyreLifeWheelsData } from './utils';
+import { parseAttData, parseStamfordData, parseTyreLifeWheelsData } from './utils';
 
 describe('ALINE supplier image parsing', () => {
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
@@ -116,6 +116,34 @@ describe('TYRE LIFE wheel catalogue parsing', () => {
       imageDesignKey: 'A9303 DT1',
       imageFinishKey: 'MATTE BLACK W SIMULATED RING'
     });
+  });
+});
+
+describe('STAMFORD supplier catalogue parsing', () => {
+  it('groups branch stock rows into one tyre item per SKU', () => {
+    const [item] = parseStamfordData([
+      'SKU,Brand,Pattern,Size,Category,Stock Location,Stock Units Availability,Stock Units',
+      'LRBH077,Blackhawk,Hiscend-H Ha01,LT235/75R15,SUV and 4x4 / All Terrain,Cape Town,Available,2 units',
+      'LRBH077,Blackhawk,Hiscend-H Ha01,LT235/75R15,SUV and 4x4 / All Terrain,Durban,Out of stock,0 units',
+      'LRBH077,Blackhawk,Hiscend-H Ha01,LT235/75R15,SUV and 4x4 / All Terrain,Johannesburg,Available,3 units'
+    ].join('\n'));
+
+    expect(item).toMatchObject({
+      type: ProductType.TYRE,
+      supplierName: 'STAMFORD',
+      supplierStockCode: 'LRBH077',
+      brand: 'Blackhawk',
+      pattern: 'Hiscend-H Ha01',
+      size: 'LT235/75R15',
+      quantity: 5,
+      sellingPrice: 0,
+      costPrice: 0,
+      imageDesignKey: 'HISCEND H HA01',
+      imageFinishKey: 'BLACKHAWK'
+    });
+    expect(item.location).toContain('Cape Town: 2');
+    expect(item.location).toContain('Durban: 0');
+    expect(item.location).toContain('Johannesburg: 3');
   });
 });
 

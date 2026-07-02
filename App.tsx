@@ -50,6 +50,7 @@ import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
 import { SAFETY_GRIP_RAW_DATA } from './supplier_data/safetygripData';
 import { ALINE_RAW_DATA } from './supplier_data/alineData';
 import { customerRowToCustomerInfo, saveCRMDocumentFromPOS } from './crmSync';
+import { STAMFORD_RAW_DATA } from './supplier_data/stamfordData';
 
 import {
   searchInventory,
@@ -61,6 +62,7 @@ import {
   parseAttData,
   parseSafetyGripData,
   parseAlineData,
+  parseStamfordData,
   parseApexData,
   parseTubestoneData,
   parseTreadsUnlimitedData,
@@ -95,6 +97,7 @@ const getAllSupplierPOSItems = (): InventoryItem[] => [
   ...tagSupplierPOSItems('att', parseAttData(ATT_RAW_DATA)),
   ...tagSupplierPOSItems('safetygrip', parseSafetyGripData(SAFETY_GRIP_RAW_DATA)),
   ...tagSupplierPOSItems('aline', parseAlineData(ALINE_RAW_DATA)),
+  ...tagSupplierPOSItems('stamford', parseStamfordData(STAMFORD_RAW_DATA)),
   ...tagSupplierPOSItems('apex', parseApexData(APEX_RAW_DATA)),
   ...tagSupplierPOSItems('tubestone', parseTubestoneData(TUBESTONE_RAW_DATA)),
   ...tagSupplierPOSItems('treads', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
@@ -202,6 +205,7 @@ const App: React.FC = () => {
             ...tagSupplierItems('ATT', parseAttData(ATT_RAW_DATA)),
             ...tagSupplierItems('SAFETY GRIP', parseSafetyGripData(SAFETY_GRIP_RAW_DATA)),
             ...tagSupplierItems('ALINE', parseAlineData(ALINE_RAW_DATA)),
+            ...tagSupplierItems('STAMFORD', parseStamfordData(STAMFORD_RAW_DATA)),
             ...tagSupplierItems('APEX', parseApexData(APEX_RAW_DATA)),
             ...tagSupplierItems('TUBESTONE', parseTubestoneData(TUBESTONE_RAW_DATA)),
             ...tagSupplierItems('TREADS UNLIMITED', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
@@ -218,6 +222,8 @@ const App: React.FC = () => {
           return parseSafetyGripData(SAFETY_GRIP_RAW_DATA);
         case 'ALINE':
           return parseAlineData(ALINE_RAW_DATA);
+        case 'STAMFORD':
+          return parseStamfordData(STAMFORD_RAW_DATA);
         case 'APEX':
           return parseApexData(APEX_RAW_DATA);
         case 'TUBESTONE':
@@ -264,6 +270,10 @@ const App: React.FC = () => {
     ALINE: {
       label: 'ALINE',
       note: 'Viewing External Supplier Data. Prices already include VAT, with branch wheel stock shown in the location field.'
+    },
+    STAMFORD: {
+      label: 'STAMFORD',
+      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field. Pricing was not supplied in this Stamford file.'
     },
     APEX: {
       label: 'APEX',
