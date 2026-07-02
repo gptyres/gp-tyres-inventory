@@ -35,6 +35,20 @@ describe('ALINE supplier image parsing', () => {
       finishKey: 'SILK BLACK'
     });
   });
+
+  it('normalizes compact ALINE steel and AR design names from stock rows', () => {
+    expect(parseAlineStockImageKeys('410015X7AR-1 35 GM RSPEC 73.1 + TRACK USE')).toMatchObject({
+      designKey: 'AR Z2'
+    });
+
+    expect(parseAlineStockImageKeys('613918X9 STBK Soft8 B/XF CB106.2 1250kg load')).toMatchObject({
+      designKey: 'STEEL SOFT 8'
+    });
+
+    expect(parseAlineStockImageKeys('613914X7 STBLK MOD Dual Red Pinstripe 920kg')).toMatchObject({
+      designKey: 'STEEL MODULAR BLACK'
+    });
+  });
 });
 
 describe('TYRE LIFE wheel catalogue parsing', () => {
@@ -70,6 +84,23 @@ describe('TYRE LIFE wheel catalogue parsing', () => {
     expect(parseSupplierWheelImageKeys('Dirty Life', 'Dirty Life A9303 DT1', 'Matte Black W/Simulated Ring')).toEqual({
       designKey: 'A9303 DT1',
       finishKey: 'MATTE BLACK W SIMULATED RING'
+    });
+
+    expect(parseSupplierWheelImageKeys('Dirty Life', 'Dirty Life ROADKILL', 'Matte Black W/ Matte Black Lip', 'SAA9301-7850MB6N')).toEqual({
+      designKey: 'A9301 ROADKILL',
+      finishKey: 'MATTE BLACK W MATTE BLACK LIP'
+    });
+  });
+
+  it('normalizes Dynamic Steel catalogue prefixes to reusable design keys', () => {
+    expect(parseSupplierWheelImageKeys('Dynamic Steel Wheels', 'Dymanic Steel BEADLOCK IMITATION', 'Black Triangle')).toEqual({
+      designKey: 'BEADLOCK IMITATION',
+      finishKey: 'BLACK TRIANGLE'
+    });
+
+    expect(parseSupplierWheelImageKeys('Dynamic Steel Wheels', 'Dymanic Steel DYNAMIC SUNRAYSIA', 'Black Triangle')).toEqual({
+      designKey: 'DYNAMIC SUNRAYSIA',
+      finishKey: 'BLACK TRIANGLE'
     });
   });
 
@@ -185,7 +216,7 @@ describe('supplier stock image matching', () => {
     expect(match.imageUrl).toBe('https://example.test/a9303-black.jpg');
   });
 
-  it('does not use a TYRE LIFE WHEELS image when only the wrong finish is available', () => {
+  it('uses a same-design TYRE LIFE WHEELS image as a fallback when exact finish is unavailable', () => {
     const match = findBestSupplierStockImage({
       id: 'tyrelifewheels-2',
       productType: ProductType.WHEEL,
@@ -206,8 +237,8 @@ describe('supplier stock image matching', () => {
       }
     ]);
 
-    expect(match.confidence).toBe('missing');
-    expect(match.imageUrl).toBeUndefined();
+    expect(match.confidence).toBe('best');
+    expect(match.imageUrl).toBe('https://example.test/a9303-gunmetal.jpg');
   });
 });
 

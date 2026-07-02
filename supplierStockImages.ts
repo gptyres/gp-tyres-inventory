@@ -72,7 +72,29 @@ const SPECIAL_DESIGN_NAMES = new Set([
   'STEEL WHITE SPOKE'
 ]);
 
+const canonicalSupplierDesignKey = (value: string | undefined | null): string => {
+  let designKey = normalizeSupplierImageToken(value)
+    .replace(/\bDYMANIC\b/g, 'DYNAMIC')
+    .replace(/\bDYNAMIC STEEL WHEELS\b/g, 'DYNAMIC STEEL');
+
+  if (designKey === 'ZENNITH') designKey = 'ZENITH';
+  if (designKey === 'SUNRAYSIA') designKey = 'DYNAMIC SUNRAYSIA';
+  if (designKey === 'ROADKILL') designKey = 'A9301 ROADKILL';
+
+  designKey = designKey
+    .replace(/^DYNAMIC STEEL\s+(BEADLOCK IMITATION|BLACK ROUND HOLE|DYNAMIC SUNRAYSIA|GENUINE BEADLOCK|SOFT 8)$/, '$1')
+    .replace(/^DYNAMIC STEEL\s+SOFT\s+8$/, 'SOFT 8');
+
+  return designKey.trim();
+};
+
 const FINISH_HINTS = [
+  ['ARCTICSILVERMF', 'ARCTIC SILVER'],
+  ['ARCTICSILVER', 'ARCTIC SILVER'],
+  ['ARCTICSIL', 'ARCTIC SILVER'],
+  ['ARCTIC SILVE', 'ARCTIC SILVER'],
+  ['ARCTIC SIVER', 'ARCTIC SILVER'],
+  ['ARCTIC SIL', 'ARCTIC SILVER'],
   ['ARCTIC SILVER', 'ARCTIC SILVER'],
   ['AMBER BRNZ', 'AMBER BRONZE'],
   ['BKMF', 'GMMF'],
@@ -93,6 +115,7 @@ const FINISH_HINTS = [
   ['DIAMOND BLK', 'DIAMOND BLACK'],
   ['GLOSS BLK', 'GLOSS BLACK'],
   ['GLOSSBLK', 'GLOSS BLACK'],
+  ['GLOSS BLACK', 'GLOSS BLACK'],
   ['GOLD', 'GOLD'],
   ['GMML', 'GMMF'],
   ['GMMF', 'GMMF'],
@@ -173,6 +196,22 @@ export const extractAlineFinishKey = (value: string): string => {
 
 const extractSpecialDesignName = (source: string): string => {
   const words = normalizeSupplierImageToken(source).split(' ').filter(Boolean);
+  const compactFirst = words[0] ?? '';
+
+  if (compactFirst === 'BIGROCK') return 'BIG ROCK';
+  if (compactFirst === 'AR' || /^AR\d*/.test(compactFirst)) return 'AR Z2';
+  if (/^MONACO\d*/.test(compactFirst)) return 'MONACO';
+  if (/^DESTROYER\d*/.test(compactFirst)) return 'DESTROYER';
+  if (/^VILLAIN/.test(compactFirst)) return 'VILLAIN';
+  if (/^HOSTILE/.test(compactFirst)) return 'HOSTILE';
+  if (compactFirst === 'AW') return 'STEEL CHROME MODULAR';
+  if (compactFirst === 'WHITE' && words[1] === 'SPOKE') return 'STEEL WHITE SPOKE';
+  if (compactFirst === 'STBK' || compactFirst === 'STBLK') {
+    if (words.some((word) => word.includes('SOFT8')) || (words.includes('SOFT') && words.includes('8'))) return 'STEEL SOFT 8';
+    if (words.includes('MOD')) return 'STEEL MODULAR BLACK';
+    if (words[1] === 'SPOKE') return 'STEEL SPOKE';
+  }
+
   for (let length = Math.min(3, words.length); length >= 2; length -= 1) {
     const candidate = words.slice(0, length).join(' ');
     if (SPECIAL_DESIGN_NAMES.has(candidate)) return candidate;
@@ -198,19 +237,23 @@ export const parseSupplierTyreImageKeys = (brand: string, pattern: string) => ({
   finishKey: normalizeSupplierImageToken(brand)
 });
 
-export const parseSupplierWheelImageKeys = (brand: string, wheelName: string, finish: string) => {
+export const parseSupplierWheelImageKeys = (brand: string, wheelName: string, finish: string, stockCode = '') => {
   const brandKey = normalizeSupplierImageToken(brand);
+  const normalizedBrandKey = canonicalSupplierDesignKey(brandKey);
   let designName = normalizeSupplierImageToken(wheelName)
     .replace(/\bDYMANIC\b/g, 'DYNAMIC')
     .replace(/\bDYNAMIC STEEL WHEELS\b/g, 'DYNAMIC STEEL');
 
-  if (brandKey) {
-    const brandPattern = new RegExp(`^${brandKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+`);
+  if (normalizedBrandKey) {
+    const brandPattern = new RegExp(`^${normalizedBrandKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+`);
     designName = designName.replace(brandPattern, '');
   }
 
+  const stockCodePrefix = normalizeSupplierImageToken(stockCode).match(/\bA?(\d{4}S?)\b/)?.[1];
+  if (stockCodePrefix === '9301' && designName === 'ROADKILL') designName = 'A9301 ROADKILL';
+
   return {
-    designKey: designName || brandKey || 'WHEEL',
+    designKey: canonicalSupplierDesignKey(designName || brandKey || 'WHEEL'),
     finishKey: normalizeSupplierImageToken(finish || brand)
   };
 };
@@ -245,12 +288,12 @@ export const findBestSupplierStockImage = (
   item: SupplierImageLookupItem,
   candidates: SupplierImageMatchCandidate[]
 ): SupplierImageMatchResult => {
-  const designKey = normalizeSupplierImageToken(item.imageDesignKey);
+  const designKey = canonicalSupplierDesignKey(item.imageDesignKey);
   if (!designKey) return { confidence: 'missing', candidates: [] };
 
   const supplierKey = normalizeSupplierImageToken(item.supplierName);
   const designMatches = candidates.filter((candidate) => (
-    normalizeSupplierImageToken(candidate.designKey) === designKey
+    canonicalSupplierDesignKey(candidate.designKey) === designKey
     && (!supplierKey || normalizeSupplierImageToken(candidate.supplierName) === supplierKey)
   ));
   if (!designMatches.length) return { confidence: 'missing', candidates: [] };
@@ -259,10 +302,6 @@ export const findBestSupplierStockImage = (
   const finishMatches = itemFinish
     ? designMatches.filter((candidate) => normalizeSupplierImageToken(candidate.finishKey) === itemFinish)
     : designMatches;
-
-  if (itemFinish && designMatches.some((candidate) => normalizeSupplierImageToken(candidate.finishKey)) && !finishMatches.length) {
-    return { confidence: 'missing', candidates: designMatches };
-  }
 
   const itemRim = rimSizeFromItemSize(item.size);
   const itemPcd = normalizePcd(item.pcd);
@@ -361,6 +400,7 @@ export const fetchSupplierStockImages = async (supplier?: string): Promise<Suppl
 
 const supplierDesignGroupKey = (supplierName: string | undefined | null, designKey: string | undefined | null): string => (
   `${normalizeSupplierImageToken(supplierName)}::${normalizeSupplierImageToken(designKey)}`
+    .replace(/::(.+)$/, (_match, design) => `::${canonicalSupplierDesignKey(design)}`)
 );
 
 export const buildSupplierImageMap = (

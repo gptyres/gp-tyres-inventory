@@ -1,0 +1,1755 @@
+{
+  "generatedAt": "2026-07-02T07:33:47.337Z",
+  "suppliers": [
+    "ALINE",
+    "TYRE LIFE WHEELS"
+  ],
+  "summary": {
+    "catalogueGroups": 322,
+    "imageRowsBefore": 254,
+    "exactBefore": 147,
+    "fallbackBefore": 92,
+    "missingGroupsBefore": 83,
+    "missingDesignsBefore": 56,
+    "sourceMatchedDesigns": 54,
+    "unresolvedDesigns": 2,
+    "imageRowsAfter": 308,
+    "exactAfter": 154,
+    "fallbackAfter": 166,
+    "missingGroupsAfter": 2
+  },
+  "sourceRecords": [
+    {
+      "sourceId": "39a5ee86c9000ac14f878efd1ec1b0c984912684",
+      "supplier": "ALINE",
+      "designKey": "AR Z2",
+      "sourceTitle": "A-LINE AR-Z2 Racegold RSPEC",
+      "sourceUrl": "https://www.errolstyres.co.za/wheel/a-line/ar-z2-racegold-rspec/16082/82410229",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16082_13852_ar-z2-gold_.jpg",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "2342c3ef39f3b5f703486668eaf8c618d7b631e0",
+      "supplier": "ALINE",
+      "designKey": "BALTIC",
+      "sourceTitle": "A-LINE Baltic BKMF Black Machine Face Flow Form",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16118_13944_baltic-bkmf-side.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "af28463871314192aeecb66a6a09c4afb1e470e4",
+      "supplier": "ALINE",
+      "designKey": "BRAVE",
+      "sourceTitle": "A-LINE Brave Gloss Black",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16170_14106_brave-gloss-black.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "7c769bb146d5821547609685be12f3d66aede47d",
+      "supplier": "ALINE",
+      "designKey": "BROOK",
+      "sourceTitle": "A-LINE Brook STBLK",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_10965_6640_brookstblk.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "4dbc909e563d40f2b5e6934010080e8bc47af927",
+      "supplier": "ALINE",
+      "designKey": "CHALLENGER",
+      "sourceTitle": "A-LINE Challenger STBLKMILL Satin Black Milled",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15478_12779_challenger-satin-blk-milled.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "aecea4fbd02ce2f49b52338fa93ab22ecac6992a",
+      "supplier": "ALINE",
+      "designKey": "CHICAGO",
+      "sourceTitle": "A-LINE Chicago BKMF Black Machined Face",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16177_14100_chicago-bkmf-side.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "3166857a6ab75b37eca977405e2e3bbb3d8a9243",
+      "supplier": "ALINE",
+      "designKey": "CLAW",
+      "sourceTitle": "A-LINE Claw Satin Black STBK",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_10318_4747_clawstbkmspec.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "7a382f5259e2fbe9f0cdf29ca8477ecf08336f66",
+      "supplier": "ALINE",
+      "designKey": "DELTA",
+      "sourceTitle": "A-LINE Delta Arctic Silver",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16150_14045_delta-arctic-silver-side.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "f5c5a37f58f9a31d8ef6944e7f08bc38ceb89210",
+      "supplier": "ALINE",
+      "designKey": "DUNE",
+      "sourceTitle": "A-LINE Dune STBLKTNT Satin Black Tint",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16620_15062_dune-blktnt-side.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "1fe85b196d6c297a7454c2a4ab7388ae28647431",
+      "supplier": "ALINE",
+      "designKey": "DUSK",
+      "sourceTitle": "A-LINE Dusk SLBLK Silk Black",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15946_13618_dusk-silk-blk-1-scaled.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "1dbb0cefb7c54e4ef05eb51b5adf43fb86d814f3",
+      "supplier": "ALINE",
+      "designKey": "GRANDE",
+      "sourceTitle": "A-LINE Grande BLK Black",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_11809_8681_grandeglossblkside.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "078fe47870ef931ff78063d8130f4374004d7c6c",
+      "supplier": "ALINE",
+      "designKey": "HOSTILE",
+      "sourceTitle": "A-LINE Hostile CS Crystal Silver",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_14141_10157_hostile-crystal-silver.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "a4a2e6aef88f7fea29729ce443f406554c93b4c3",
+      "supplier": "ALINE",
+      "designKey": "ICE",
+      "sourceTitle": "A-LINE Ice Titanium Black Lip",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16628_15128_ice-gm.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "c7e3695f09a943f0b331ccf923010c6342666b82",
+      "supplier": "ALINE",
+      "designKey": "JEDI",
+      "sourceTitle": "A-LINE Jedi SSMLChRiv Super Silver Machined Lip Chrome Rivet",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15853_13427_jedi-ssml.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "175183b6e09a4b571ccef7a3726b31781ab4b8fe",
+      "supplier": "ALINE",
+      "designKey": "KNIGHT",
+      "sourceTitle": "A-LINE Knight Arctic Silver",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16153_14047_knight-arctic-silver-side.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "9851f18b77eb7ae00c7ad0849d8445891ca1f70c",
+      "supplier": "ALINE",
+      "designKey": "LYNX",
+      "sourceTitle": "A-LINE Lynx BKMF",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_9463_4796_lynxbkmf4x4outbackrange.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "0a8e680afe4e6e57558ff307a7edec88d9527c22",
+      "supplier": "ALINE",
+      "designKey": "MASTER",
+      "sourceTitle": "A-LINE Master BKMF Black Machined Face",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_12081_13963_master-bkmf-side.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "9000ce8697ab7da298a391404863989d4b7226f8",
+      "supplier": "ALINE",
+      "designKey": "MAVERICK",
+      "sourceTitle": "A-LINE Maverick SLBLK Silk Black",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16631_15053_maverick-silkblk-side.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "f1b53e4084f082ecf3e69f2e5aff91349f9286bd",
+      "supplier": "ALINE",
+      "designKey": "NEBULA",
+      "sourceTitle": "A-LINE Nebula SLBKGldRiv Silk Black Gold Rivet",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15858_13435_nebula-slbk-gldriv.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "622a1a5fb6c9ac002947f76b8f3874d381e6fa9e",
+      "supplier": "ALINE",
+      "designKey": "PHANTOM",
+      "sourceTitle": "A-LINE Phantom SSML",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15438_12713_phantom-ssml.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "a0460ecb982192de61bac7a0b251b5cb84f4e955",
+      "supplier": "ALINE",
+      "designKey": "SCORPION",
+      "sourceTitle": "A-LINE Scorpion SSML Super Silver Machined Lip",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15502_12822_scorpion-ssml.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "f67cfabff7c0ae66ae02675a0856ad155f20991d",
+      "supplier": "ALINE",
+      "designKey": "SOLO",
+      "sourceTitle": "A-LINE Solo BKMLChRiv Black Machined Lip Chrome Rivets",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15911_13588_solo-bkml.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "f1d4a5d2104fc78e1539fc815de191c128aa5601",
+      "supplier": "ALINE",
+      "designKey": "SONIC",
+      "sourceTitle": "A-LINE Sonic Machined",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_14317_10445_sonic-machined-1.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "cf17cb7a20b719418e8a6e57e49ca2cfd8a44687",
+      "supplier": "ALINE",
+      "designKey": "STBK",
+      "sourceTitle": "A-LINE Dagger STBKTNT Satin Black Tint",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_11456_7685_daggerstbktnt.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "996e26afa4a6a81f9d35939a99661194c16a82bd",
+      "supplier": "ALINE",
+      "designKey": "SWAG",
+      "sourceTitle": "A-LINE Swag BKMLChRiv Black Machined Lip Chrome Rivets",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15913_13592_swag-bkml-chriv.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "2fff2d039ca396d2d8dcbb03379df92421bb50ca",
+      "supplier": "ALINE",
+      "designKey": "TREKD",
+      "sourceTitle": "A-LINE TrekD BKML",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_11886_8859_trek-d-bkml-side.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "ab30c18ac39b1901116150406c5bba5fffaad7a9",
+      "supplier": "ALINE",
+      "designKey": "ZENNA",
+      "sourceTitle": "A-LINE Zenna BKMF Black Machine Face",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16167_14080_zenna-bkmf-1.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "1d48e05cfba25d3d4d0a3bae88a228cf5522ed92",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A8306 MAYHEM RIDGELINE",
+      "sourceTitle": "Mayhem 8306 Ridgeline Satin Black",
+      "sourceUrl": "https://www.mayhemwheels.com/product/8306-ridgeline-satin-black/",
+      "imageUrl": "https://www.mayhemwheels.com/wp-content/uploads/2023/04/MAYHEM8306SB1.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "474d9a44e3b8bc4b47a759d3cb5796e437b8b148",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A8309 MAYHEM GRANITE",
+      "sourceTitle": "Mayhem 8309 Granite Satin Black",
+      "sourceUrl": "https://www.mayhemwheels.com/product/8309-granite-satin-black/",
+      "imageUrl": "https://www.mayhemwheels.com/wp-content/uploads/2023/02/8309SB1.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "46981b5246b045cac158798081b90429ea52a3b0",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A9301 ROADKILL",
+      "sourceTitle": "Dirty Life A9301 Roadkill Matte Black/Black Imitation Beadlock",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15592_12991_saa9301-47102mb.png",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "bd8de2859dbff796dcecde506f740fa1416e6766",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A9302 ROADKILL RACE",
+      "sourceTitle": "Dirty Life A9302 Roadkill Race Machined Beadlock",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15570_12995_saa9302-7973m14n2.png",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "225c8633ce2356c8c92d99f52eb390e2d1985bab",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A9305 THEORY",
+      "sourceTitle": "Dirty Life A9305 Theory Matte Black",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_14920_11748_9305-dirtylife9305mb1-1.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "686982926dc95d929192e0a416752e5055440d57",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A9307 DRIFTER",
+      "sourceTitle": "Dirty Life A9307 Drifter Matte Black",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15587_13038_saa9307-7883mb.jpg",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "89e876d6163d80460a4c3804659e0ce1b616bff0",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A9308 NEW CAGE",
+      "sourceTitle": "Dirty Life A9308 New Cage Matte Black",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16462_14286_a9308-new-cage.png",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "eb06e723936138257978a5ceb796fe9f9901bd00",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A9309S CANYON PRO SE",
+      "sourceTitle": "Dirty Life A9309S Canyon Pro Matte Black with Chrome lip bolts",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16140_14008_a9309s.jpg",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "95e202223e08bd3a9a8f2b85c12215b7d148f503",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A9312 MESA RACE",
+      "sourceTitle": "Dirty Life A9312 Mesa Race Matte Black Genuine Beadlock",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16142_14006_a9312-mesa-blank-matte-black.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "d91fc1a018fa18aa9fe2a47f2e7283da9021e288",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A9313 ENIGMA RACE",
+      "sourceTitle": "Dirty Life 9313 Enigma Race Machined",
+      "sourceUrl": "https://www.dirtylifewheels.com/9313-machined",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1645056215595-9Y7XMWN1CC34M1WFDLSD/DIRTYLIFE_9313-6_1709_mach_0001.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "f1f5b0202c1fb0e1e3a21f59583a8648e22778d3",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A9317 DT3",
+      "sourceTitle": "Dirty Life A9317 DT3 Matte Black with Simulated Ring",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16157_14062_a9317-dt3.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "6416789236c791f24979a88beda0407e44588f61",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "A9318 DT4",
+      "sourceTitle": "Dirty Life A9318 DT4 Matte Black with Simulated Ring",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16158_14064_a9318-dt4.jpg",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "e7b1562f072ea1012d3148935e9ea714215417ac",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "BEADLOCK IMITATION",
+      "sourceTitle": "Dynamic Beadlock Imitation Black Soft 8",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dynamic",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15588_12979_bi16850n5150bs8.png",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "1158bce6d6993fa21865a91e9cced33d4251753a",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "BLACK ROUND HOLE",
+      "sourceTitle": "Dynamic Black Round HD Mine Spec",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dynamic",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15590_12983_17912n81651brhd.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "a6b6b93d2471b7f2751d07e62d32083028fe4226",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "DYNAMIC SUNRAYSIA",
+      "sourceTitle": "Dynamic Sunraysia Black Steel",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dynamic",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_13985_9993_sunrasia-black-steel.png",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "411ff4fd3f011466fe756c6051aab9007060dfe1",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "GENUINE BEADLOCK",
+      "sourceTitle": "Dirty Life A9312 Mesa Race Machined Genuine Beadlock (BLANK)",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16141_14004_a9312-mesa-blank-machined.png",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "8e53a488064f3f578b5c4a281f2431c826b9e3ca",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "MASSIMO",
+      "sourceTitle": "MOMO Massimo",
+      "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/alloy-eu/massimo/",
+      "imageUrl": "https://momo.com/wp-content/uploads/2017/02/1-4.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "2efaad577a8e5a7bdb53883dfd4158082524ab24",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "PRODIGY",
+      "sourceTitle": "Dirty Life DWC Prodigy Matte Black with Bronze Tint",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15223_12373_dwc-prodigy-bronze.png",
+      "source": "errols-product-page"
+    },
+    {
+      "sourceId": "f6ab9cf0531da5c0e41351a4cf97e640d3b68f86",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "REVENGE",
+      "sourceTitle": "MOMO Revenge",
+      "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/revenge/",
+      "imageUrl": "https://momo.com/wp-content/uploads/2016/12/Revenge-Matte-Black.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "a62b0017472764ec2afe4e785cc59e5d954a87b4",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "REVENGE EVO",
+      "sourceTitle": "MOMO Revenge EVO",
+      "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/revenge-evo/",
+      "imageUrl": "https://momo.com/wp-content/uploads/2016/10/Revenge-EVO.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "cfe8c3d5023be3e28363f1d753867bf76fc64c95",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "RF 04",
+      "sourceTitle": "MOMO RF-04",
+      "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/rf-series-eu/rf-04/",
+      "imageUrl": "https://momo.com/wp-content/uploads/2019/03/MOMO-RFX-04-Wheel-Image-2.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "8ddf09a38b8c2fb4785a23d950f88bb458705657",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "RF 05",
+      "sourceTitle": "MOMO RF-05",
+      "sourceUrl": "https://momo.com/it-it/product/cerchi-in-lega-it/rf-series-it/rf-05/",
+      "imageUrl": "https://momo.com/wp-content/uploads/2019/03/MOMO-RFX-05-Wheel-Image-1.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "e8ebaca001ced36061779a6071e1d19ae656b037",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "SERIES 40 VERTIGO",
+      "sourceTitle": "Pro Comp Series 40 Vertigo",
+      "sourceUrl": "https://ruggedridge.com/p/pro-comp-grey-vertigo-2640-series-wheels/prc-2640-897350/",
+      "imageUrl": "https://ruggedridge.com/production/4768-pro-comp-anthracite-vertigo-2640-series-wheels/r/800x600/fff/80/f0a5bc524c46abe89db5f5d1bb6421eb.jpg",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "d4f500c829050526e5aee71368e8c80641ffd9a2",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "SERIES 43 SLEDGE",
+      "sourceTitle": "Pro Comp Series 43 Sledge",
+      "sourceUrl": "https://ruggedridge.com/p/pro-comp-black-sledge-5143-series-wheels/",
+      "imageUrl": "https://ruggedridge.com/production/4786-pro-comp-black-sledge-5143-series-wheels/r/800x600/fff/80/a66899c2603ba1e0d79b771f01f5d364.jpg",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "eb4c9dc14f005b6902afae95a75ec656a1a6544f",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "SERIES 50 GAUGE",
+      "sourceTitle": "Pro Comp Series 50 Gauge",
+      "sourceUrl": "https://ruggedridge.com/p/pro-comp-black-10-gauge-5050-series-wheels/",
+      "imageUrl": "https://ruggedridge.com/production/4877-pro-comp-black-10-gauge-5050-series-wheels/r/800x600/fff/80/b85a5abf8a8a23ff17d665b7a7ead18d.jpg",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "e79a6c5910426c947500f4c69af7ab5493acdfa8",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "SOFT 8",
+      "sourceTitle": "Dynamic Beadlock Imitation Black Soft 8",
+      "sourceUrl": "https://www.errolstyres.co.za/brand/dynamic",
+      "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15588_12979_bi16850n5150bs8.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "f5c15f15b81880324b551b1563ea33f9cbf3ea93",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "SPIDER",
+      "sourceTitle": "MOMO Spider",
+      "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/spider/",
+      "imageUrl": "https://momo.com/wp-content/uploads/2017/02/1-5.png",
+      "source": "verified-manual-source"
+    },
+    {
+      "sourceId": "d8ecef6fb2fa7ae2a5030340fded3dfcf5c01186",
+      "supplier": "TYRE LIFE WHEELS",
+      "designKey": "STEALTH",
+      "sourceTitle": "MOMO Stealth",
+      "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/stealth/",
+      "imageUrl": "https://momo.com/wp-content/uploads/2018/03/stealth-ant-primary.png",
+      "source": "verified-manual-source"
+    }
+  ],
+  "importPlan": [
+    {
+      "supplier": "ALINE",
+      "designKey": "BALTIC",
+      "finishKey": "GMMF",
+      "sampleDescription": "510017X8BALTIC ET35 BKMF Flow Form",
+      "affectedRows": 12,
+      "finishes": [
+        "GMMF"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "2342c3ef39f3b5f703486668eaf8c618d7b631e0",
+        "supplier": "ALINE",
+        "designKey": "BALTIC",
+        "sourceTitle": "A-LINE Baltic BKMF Black Machine Face Flow Form",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16118_13944_baltic-bkmf-side.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\ce74b6f93a881c790b8104a5c66b88dbb62a939c923a0fbf1ac2c65d04306f39.jpg",
+      "storagePath": "aline/ce74b6f93a881c790b8104a5c66b88dbb62a939c923a0fbf1ac2c65d04306f39.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "BRAVE",
+      "finishKey": "GLOSS BLACK",
+      "sampleDescription": "512019X10.5BRAVE 40R GLOSSBLK FlowForm 72.6 900kg",
+      "affectedRows": 4,
+      "finishes": [
+        "GLOSS BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "af28463871314192aeecb66a6a09c4afb1e470e4",
+        "supplier": "ALINE",
+        "designKey": "BRAVE",
+        "sourceTitle": "A-LINE Brave Gloss Black",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16170_14106_brave-gloss-black.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\7ffb7edb83ce27412d680686d6c4c3987aab712136ffd58315efacf2c5956b17.jpg",
+      "storagePath": "aline/7ffb7edb83ce27412d680686d6c4c3987aab712136ffd58315efacf2c5956b17.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "BROOK",
+      "finishKey": "SATIN BLACK",
+      "sampleDescription": "511219X8.5BROOK ET42 STBLK 73.1 815KG load",
+      "affectedRows": 1,
+      "finishes": [
+        "SATIN BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "7c769bb146d5821547609685be12f3d66aede47d",
+        "supplier": "ALINE",
+        "designKey": "BROOK",
+        "sourceTitle": "A-LINE Brook STBLK",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_10965_6640_brookstblk.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\1fd4d28b68ed2488a81b60f233d318835d556d45238a623162bf0c73e29066d1.jpg",
+      "storagePath": "aline/1fd4d28b68ed2488a81b60f233d318835d556d45238a623162bf0c73e29066d1.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "CHALLENGER",
+      "finishKey": "SATIN BLACK",
+      "sampleDescription": "613920X9CHALLENGER ET0 STBLK MILLED 106.2 1130kg",
+      "affectedRows": 1,
+      "finishes": [
+        "SATIN BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "4dbc909e563d40f2b5e6934010080e8bc47af927",
+        "supplier": "ALINE",
+        "designKey": "CHALLENGER",
+        "sourceTitle": "A-LINE Challenger STBLKMILL Satin Black Milled",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15478_12779_challenger-satin-blk-milled.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\bac10195f793813cee50fca064cb5de755d6bcd61d4174dbcdc98ef608cc98d1.jpg",
+      "storagePath": "aline/bac10195f793813cee50fca064cb5de755d6bcd61d4174dbcdc98ef608cc98d1.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "CHICAGO",
+      "finishKey": "GMMF",
+      "sampleDescription": "510019X8CHICAGO ET39 BKMF FlowForm 73.1 815kg",
+      "affectedRows": 3,
+      "finishes": [
+        "GMMF"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "aecea4fbd02ce2f49b52338fa93ab22ecac6992a",
+        "supplier": "ALINE",
+        "designKey": "CHICAGO",
+        "sourceTitle": "A-LINE Chicago BKMF Black Machined Face",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16177_14100_chicago-bkmf-side.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\59d0d5daada601c8638bab94f6b127b99ca549a476bb26a0163150e3a680a470.jpg",
+      "storagePath": "aline/59d0d5daada601c8638bab94f6b127b99ca549a476bb26a0163150e3a680a470.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "CLAW",
+      "finishKey": "SATIN BLACK",
+      "sampleDescription": "511219X8.5CLAW ET30F STBLK 73.1 815kg load",
+      "affectedRows": 2,
+      "finishes": [
+        "SATIN BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "3166857a6ab75b37eca977405e2e3bbb3d8a9243",
+        "supplier": "ALINE",
+        "designKey": "CLAW",
+        "sourceTitle": "A-LINE Claw Satin Black STBK",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_10318_4747_clawstbkmspec.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\b2cd68fcd65e8a1c0bff6cc790fbc433f5f6c3b74b0c8cc989aaef4ffd0f2d76.jpg",
+      "storagePath": "aline/b2cd68fcd65e8a1c0bff6cc790fbc433f5f6c3b74b0c8cc989aaef4ffd0f2d76.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "DELTA",
+      "finishKey": "",
+      "sampleDescription": "613917X9DELTA 20 ARCTIC SILVEFlowForm106.2 1150kg*",
+      "affectedRows": 2,
+      "finishes": [],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "7a382f5259e2fbe9f0cdf29ca8477ecf08336f66",
+        "supplier": "ALINE",
+        "designKey": "DELTA",
+        "sourceTitle": "A-LINE Delta Arctic Silver",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16150_14045_delta-arctic-silver-side.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\8b838db0cb4c68bc345c95c4b93e1d1c1ca232a46a49b90c206eb3d039689edd.jpg",
+      "storagePath": "aline/8b838db0cb4c68bc345c95c4b93e1d1c1ca232a46a49b90c206eb3d039689edd.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "DUNE",
+      "finishKey": "SATIN BLACK TINT",
+      "sampleDescription": "613922X10DUNE ET-18 STBLKTNTSMOKE 106.2 1100kg",
+      "affectedRows": 1,
+      "finishes": [
+        "SATIN BLACK TINT"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "f5c5a37f58f9a31d8ef6944e7f08bc38ceb89210",
+        "supplier": "ALINE",
+        "designKey": "DUNE",
+        "sourceTitle": "A-LINE Dune STBLKTNT Satin Black Tint",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16620_15062_dune-blktnt-side.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\0d40ef6c80b1e598b5763e02a38c83ea568b4e34db64d124699a9a0757f9421e.jpg",
+      "storagePath": "aline/0d40ef6c80b1e598b5763e02a38c83ea568b4e34db64d124699a9a0757f9421e.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "DUSK",
+      "finishKey": "SILK BLACK",
+      "sampleDescription": "511415X7.5DUSK ET30 SLBLK",
+      "affectedRows": 1,
+      "finishes": [
+        "SILK BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "1fe85b196d6c297a7454c2a4ab7388ae28647431",
+        "supplier": "ALINE",
+        "designKey": "DUSK",
+        "sourceTitle": "A-LINE Dusk SLBLK Silk Black",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15946_13618_dusk-silk-blk-1-scaled.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\d832174532b0d80418699cbb9c17947d40b300edab3781b47a55c118cb7ee2ae.jpg",
+      "storagePath": "aline/d832174532b0d80418699cbb9c17947d40b300edab3781b47a55c118cb7ee2ae.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "GLACIER",
+      "finishKey": "",
+      "sampleDescription": "510818X8.5GLACIER ET30 GRAPHITE 73.1 900kg",
+      "affectedRows": 1,
+      "finishes": [],
+      "affectedGroups": 1,
+      "sourceRecord": null
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "GRANDE",
+      "finishKey": "GLOSS BLACK",
+      "sampleDescription": "511419X11GRANDE ET50 R GLOSSBLK 70.5 Flow Form",
+      "affectedRows": 1,
+      "finishes": [
+        "GLOSS BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "1dbb0cefb7c54e4ef05eb51b5adf43fb86d814f3",
+        "supplier": "ALINE",
+        "designKey": "GRANDE",
+        "sourceTitle": "A-LINE Grande BLK Black",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_11809_8681_grandeglossblkside.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\6717e8187aae3429d6ec1286e8a625c8a878dd5d1c00f4fafec5fbd2b87c9c41.jpg",
+      "storagePath": "aline/6717e8187aae3429d6ec1286e8a625c8a878dd5d1c00f4fafec5fbd2b87c9c41.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "HAVOC",
+      "finishKey": "SATIN BLACK",
+      "sampleDescription": "613917X9HAVOC ET20 STBLK FlowForm108.1 1150kg load",
+      "affectedRows": 2,
+      "finishes": [
+        "SATIN BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": null
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "HOSTILE",
+      "finishKey": "CHG",
+      "sampleDescription": "511219X9.5HOSTILE ET48 CHG 73.1 815kg Flow Form",
+      "affectedRows": 2,
+      "finishes": [
+        "CHG"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "078fe47870ef931ff78063d8130f4374004d7c6c",
+        "supplier": "ALINE",
+        "designKey": "HOSTILE",
+        "sourceTitle": "A-LINE Hostile CS Crystal Silver",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_14141_10157_hostile-crystal-silver.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\c700bb494804452ec681a23ff16d5ef041841290a69fe1f4c672750bbc72863f.jpg",
+      "storagePath": "aline/c700bb494804452ec681a23ff16d5ef041841290a69fe1f4c672750bbc72863f.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "ICE",
+      "finishKey": "",
+      "sampleDescription": "510018X8ICE ET35 GLOSS BLACK FlowForm",
+      "affectedRows": 1,
+      "finishes": [],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "a4a2e6aef88f7fea29729ce443f406554c93b4c3",
+        "supplier": "ALINE",
+        "designKey": "ICE",
+        "sourceTitle": "A-LINE Ice Titanium Black Lip",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16628_15128_ice-gm.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\cf9264b4ae4c5cd513f54c736c46bc45941f7e182710c9a9fda25c857c7c554a.jpg",
+      "storagePath": "aline/cf9264b4ae4c5cd513f54c736c46bc45941f7e182710c9a9fda25c857c7c554a.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "JEDI",
+      "finishKey": "SILVER MACHINED LIP",
+      "sampleDescription": "410017X8JEDI ET25 SSML ChRiv",
+      "affectedRows": 2,
+      "finishes": [
+        "SILVER MACHINED LIP"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "c7e3695f09a943f0b331ccf923010c6342666b82",
+        "supplier": "ALINE",
+        "designKey": "JEDI",
+        "sourceTitle": "A-LINE Jedi SSMLChRiv Super Silver Machined Lip Chrome Rivet",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15853_13427_jedi-ssml.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\90237b15df141cc7984e26bde62119012991eadf5d6d2fff7ab0be9374b86ffe.jpg",
+      "storagePath": "aline/90237b15df141cc7984e26bde62119012991eadf5d6d2fff7ab0be9374b86ffe.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "KNIGHT",
+      "finishKey": "ARCTIC SILVER",
+      "sampleDescription": "410015X6.5KNIGHT ET35 ARCTICSIL MF",
+      "affectedRows": 1,
+      "finishes": [
+        "ARCTIC SILVER"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "175183b6e09a4b571ccef7a3726b31781ab4b8fe",
+        "supplier": "ALINE",
+        "designKey": "KNIGHT",
+        "sourceTitle": "A-LINE Knight Arctic Silver",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16153_14047_knight-arctic-silver-side.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\06583519552bc803a72a2bfe590bf3047c2c5736fc1ac5eaadc24c243240d3cb.jpg",
+      "storagePath": "aline/06583519552bc803a72a2bfe590bf3047c2c5736fc1ac5eaadc24c243240d3cb.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "LYNX",
+      "finishKey": "GMMF",
+      "sampleDescription": "516016X7.5LYNX ET0 BKMFcb108.1",
+      "affectedRows": 1,
+      "finishes": [
+        "GMMF"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "9851f18b77eb7ae00c7ad0849d8445891ca1f70c",
+        "supplier": "ALINE",
+        "designKey": "LYNX",
+        "sourceTitle": "A-LINE Lynx BKMF",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_9463_4796_lynxbkmf4x4outbackrange.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\a0ca74e19981cd7289e7ca36876b8c2e14647daa156c9fb67369ca74c69ea0f3.jpg",
+      "storagePath": "aline/a0ca74e19981cd7289e7ca36876b8c2e14647daa156c9fb67369ca74c69ea0f3.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "MASTER",
+      "finishKey": "GMMF",
+      "sampleDescription": "510018X8MASTER ET35 BKMF Flow Form 73.1 900kg",
+      "affectedRows": 3,
+      "finishes": [
+        "GMMF"
+      ],
+      "affectedGroups": 3,
+      "sourceRecord": {
+        "sourceId": "0a8e680afe4e6e57558ff307a7edec88d9527c22",
+        "supplier": "ALINE",
+        "designKey": "MASTER",
+        "sourceTitle": "A-LINE Master BKMF Black Machined Face",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_12081_13963_master-bkmf-side.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\dff9e20015046553a7dc40f277119ca875771609d9c2d3c1b29676f9a2d6e103.jpg",
+      "storagePath": "aline/dff9e20015046553a7dc40f277119ca875771609d9c2d3c1b29676f9a2d6e103.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "MAVERICK",
+      "finishKey": "SILK BLACK",
+      "sampleDescription": "511218X8.5MAVERICK ET42 SLBLK FlowForm 73.1 750kg",
+      "affectedRows": 1,
+      "finishes": [
+        "SILK BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "9000ce8697ab7da298a391404863989d4b7226f8",
+        "supplier": "ALINE",
+        "designKey": "MAVERICK",
+        "sourceTitle": "A-LINE Maverick SLBLK Silk Black",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16631_15053_maverick-silkblk-side.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\2839a862619de8092b39c362213a1ae916e51a394d731da3182b4e3275c1b810.jpg",
+      "storagePath": "aline/2839a862619de8092b39c362213a1ae916e51a394d731da3182b4e3275c1b810.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "NEBULA",
+      "finishKey": "",
+      "sampleDescription": "410017X7.5NEBULA ET35 SLBK GldRiv",
+      "affectedRows": 1,
+      "finishes": [],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "f1b53e4084f082ecf3e69f2e5aff91349f9286bd",
+        "supplier": "ALINE",
+        "designKey": "NEBULA",
+        "sourceTitle": "A-LINE Nebula SLBKGldRiv Silk Black Gold Rivet",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15858_13435_nebula-slbk-gldriv.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\bbc5c335856542c72063aa21663b3a93f338bf9a49d7c6438f8d97be1eeb7f90.jpg",
+      "storagePath": "aline/bbc5c335856542c72063aa21663b3a93f338bf9a49d7c6438f8d97be1eeb7f90.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "PHANTOM",
+      "finishKey": "SILVER MACHINED LIP",
+      "sampleDescription": "411417X8PHANTOM ET25 SSML",
+      "affectedRows": 4,
+      "finishes": [
+        "SILVER MACHINED LIP"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "622a1a5fb6c9ac002947f76b8f3874d381e6fa9e",
+        "supplier": "ALINE",
+        "designKey": "PHANTOM",
+        "sourceTitle": "A-LINE Phantom SSML",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15438_12713_phantom-ssml.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\8977c252e0183fde7600a68ee86606f09736a251009bc728d583a65e72717f9b.jpg",
+      "storagePath": "aline/8977c252e0183fde7600a68ee86606f09736a251009bc728d583a65e72717f9b.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "SCORPION",
+      "finishKey": "SILVER MACHINED LIP",
+      "sampleDescription": "511418X8SCORPION ET25F SSML",
+      "affectedRows": 2,
+      "finishes": [
+        "SILVER MACHINED LIP"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "a0460ecb982192de61bac7a0b251b5cb84f4e955",
+        "supplier": "ALINE",
+        "designKey": "SCORPION",
+        "sourceTitle": "A-LINE Scorpion SSML Super Silver Machined Lip",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15502_12822_scorpion-ssml.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\97d84c0938712e7eb92f1b5c7a5d7b0a574d9f8f60458d788e7aa597e7f18b17.jpg",
+      "storagePath": "aline/97d84c0938712e7eb92f1b5c7a5d7b0a574d9f8f60458d788e7aa597e7f18b17.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "SOLO",
+      "finishKey": "BLACK MACHINED LIP",
+      "sampleDescription": "410017X8.5/114SOLO ET20 BKML ChRiv Wider Fit",
+      "affectedRows": 1,
+      "finishes": [
+        "BLACK MACHINED LIP"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "f67cfabff7c0ae66ae02675a0856ad155f20991d",
+        "supplier": "ALINE",
+        "designKey": "SOLO",
+        "sourceTitle": "A-LINE Solo BKMLChRiv Black Machined Lip Chrome Rivets",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15911_13588_solo-bkml.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\6ac259194bf32ccfdfe898cb198ab3f1121c8da7fcd9fab360a36535fce5b751.jpg",
+      "storagePath": "aline/6ac259194bf32ccfdfe898cb198ab3f1121c8da7fcd9fab360a36535fce5b751.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "SONIC",
+      "finishKey": "",
+      "sampleDescription": "410018X8SONIC ET35 MACHINED",
+      "affectedRows": 2,
+      "finishes": [],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "f1d4a5d2104fc78e1539fc815de191c128aa5601",
+        "supplier": "ALINE",
+        "designKey": "SONIC",
+        "sourceTitle": "A-LINE Sonic Machined",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_14317_10445_sonic-machined-1.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\d48052f51b3e27cff9c856b19e5d3df29156041c9b94d51ada89851b2ab21a2f.jpg",
+      "storagePath": "aline/d48052f51b3e27cff9c856b19e5d3df29156041c9b94d51ada89851b2ab21a2f.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "STBK",
+      "finishKey": "SATIN BLACK",
+      "sampleDescription": "511414X7 STBK SpokeRedpinstripe 60.1 RUMION 920kg",
+      "affectedRows": 1,
+      "finishes": [
+        "SATIN BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "cf17cb7a20b719418e8a6e57e49ca2cfd8a44687",
+        "supplier": "ALINE",
+        "designKey": "STBK",
+        "sourceTitle": "A-LINE Dagger STBKTNT Satin Black Tint",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_11456_7685_daggerstbktnt.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\b3bd93b3b5d748ae1421fcd3de44df6d0a7d9888801a7c94b768f3cb255082c7.jpg",
+      "storagePath": "aline/b3bd93b3b5d748ae1421fcd3de44df6d0a7d9888801a7c94b768f3cb255082c7.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "SWAG",
+      "finishKey": "BLACK MACHINED LIP",
+      "sampleDescription": "410017X8.5/114SWAG ET25 BKML ChRiv Wider Fit",
+      "affectedRows": 1,
+      "finishes": [
+        "BLACK MACHINED LIP"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "996e26afa4a6a81f9d35939a99661194c16a82bd",
+        "supplier": "ALINE",
+        "designKey": "SWAG",
+        "sourceTitle": "A-LINE Swag BKMLChRiv Black Machined Lip Chrome Rivets",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15913_13592_swag-bkml-chriv.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\fcba0a56dd7839053bc58e7cf1559898a70adef4f38308b481734e61ff62894a.jpg",
+      "storagePath": "aline/fcba0a56dd7839053bc58e7cf1559898a70adef4f38308b481734e61ff62894a.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "TREKD",
+      "finishKey": "BLACK MACHINED LIP",
+      "sampleDescription": "515016X10TREKD ET-25 BLKML 110.5 920kg load",
+      "affectedRows": 1,
+      "finishes": [
+        "BLACK MACHINED LIP"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "2fff2d039ca396d2d8dcbb03379df92421bb50ca",
+        "supplier": "ALINE",
+        "designKey": "TREKD",
+        "sourceTitle": "A-LINE TrekD BKML",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_11886_8859_trek-d-bkml-side.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\26ec34eb7d2557fce9619e09fc3f638bc2f5b862544451f9a611b1b6f14f91e6.jpg",
+      "storagePath": "aline/26ec34eb7d2557fce9619e09fc3f638bc2f5b862544451f9a611b1b6f14f91e6.jpg"
+    },
+    {
+      "supplier": "ALINE",
+      "designKey": "ZENNA",
+      "finishKey": "GLOSS BLACK",
+      "sampleDescription": "511218X8ZENNA ET40F GLOSS BLK Flow Form",
+      "affectedRows": 3,
+      "finishes": [
+        "GLOSS BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "ab30c18ac39b1901116150406c5bba5fffaad7a9",
+        "supplier": "ALINE",
+        "designKey": "ZENNA",
+        "sourceTitle": "A-LINE Zenna BKMF Black Machine Face",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/a-line",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16167_14080_zenna-bkmf-1.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\862b66a809e88d8fb339f986b3de8e03bf420ca981ff4ede86769dcb2c19bf71.jpg",
+      "storagePath": "aline/862b66a809e88d8fb339f986b3de8e03bf420ca981ff4ede86769dcb2c19bf71.jpg"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A8306 MAYHEM RIDGELINE",
+      "finishKey": "SATIN BLACK",
+      "sampleDescription": "A8306 MAYHEM RIDGELINE",
+      "affectedRows": 1,
+      "finishes": [
+        "SATIN BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "1d48e05cfba25d3d4d0a3bae88a228cf5522ed92",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A8306 MAYHEM RIDGELINE",
+        "sourceTitle": "Mayhem 8306 Ridgeline Satin Black",
+        "sourceUrl": "https://www.mayhemwheels.com/product/8306-ridgeline-satin-black/",
+        "imageUrl": "https://www.mayhemwheels.com/wp-content/uploads/2023/04/MAYHEM8306SB1.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\bd4115217f60ac7a4cddfad3e068c88f6cbf39bc4ae658040b22ff0b0211b260.png",
+      "storagePath": "tyre-life-wheels/bd4115217f60ac7a4cddfad3e068c88f6cbf39bc4ae658040b22ff0b0211b260.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A8309 MAYHEM GRANITE",
+      "finishKey": "SATIN BLACK",
+      "sampleDescription": "A8309 MAYHEM GRANITE",
+      "affectedRows": 1,
+      "finishes": [
+        "SATIN BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "474d9a44e3b8bc4b47a759d3cb5796e437b8b148",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A8309 MAYHEM GRANITE",
+        "sourceTitle": "Mayhem 8309 Granite Satin Black",
+        "sourceUrl": "https://www.mayhemwheels.com/product/8309-granite-satin-black/",
+        "imageUrl": "https://www.mayhemwheels.com/wp-content/uploads/2023/02/8309SB1.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\104ac6375b2ccd1527196f471d1a209d77668373df47b197a9243b3191d3a131.png",
+      "storagePath": "tyre-life-wheels/104ac6375b2ccd1527196f471d1a209d77668373df47b197a9243b3191d3a131.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A9301 ROADKILL",
+      "finishKey": "MATTE BLACK SIMULATED BLACK BEADLOCK",
+      "sampleDescription": "A9301 ROADKILL",
+      "affectedRows": 2,
+      "finishes": [
+        "MATTE BLACK SIMULATED BLACK BEADLOCK"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "46981b5246b045cac158798081b90429ea52a3b0",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A9301 ROADKILL",
+        "sourceTitle": "Dirty Life A9301 Roadkill Matte Black/Black Imitation Beadlock",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15592_12991_saa9301-47102mb.png",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\041e7321d566c4d06a9fa783ccf45bf4a1cf2518022ad6358beb19c4744303d4.png",
+      "storagePath": "tyre-life-wheels/041e7321d566c4d06a9fa783ccf45bf4a1cf2518022ad6358beb19c4744303d4.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A9302 ROADKILL RACE",
+      "finishKey": "MATTE BLACK GENUINE BEADLOCK",
+      "sampleDescription": "A9302 ROADKILL RACE",
+      "affectedRows": 4,
+      "finishes": [
+        "MATTE BLACK GENUINE BEADLOCK"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "bd8de2859dbff796dcecde506f740fa1416e6766",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A9302 ROADKILL RACE",
+        "sourceTitle": "Dirty Life A9302 Roadkill Race Machined Beadlock",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15570_12995_saa9302-7973m14n2.png",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\d618e5a36a345f2c7ddd6cb8e758f92ca361322dca51b7ab858e60a747a13262.png",
+      "storagePath": "tyre-life-wheels/d618e5a36a345f2c7ddd6cb8e758f92ca361322dca51b7ab858e60a747a13262.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A9305 THEORY",
+      "finishKey": "MATTE BLACK W MATTE BLACK LIP",
+      "sampleDescription": "A9305 THEORY",
+      "affectedRows": 8,
+      "finishes": [
+        "MATTE BLACK W MATTE BLACK LIP"
+      ],
+      "affectedGroups": 4,
+      "sourceRecord": {
+        "sourceId": "225c8633ce2356c8c92d99f52eb390e2d1985bab",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A9305 THEORY",
+        "sourceTitle": "Dirty Life A9305 Theory Matte Black",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_14920_11748_9305-dirtylife9305mb1-1.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\0c2124ed4bc96b92d6d8f5d12a6c50e2e9488969fcbc3ed0b4aec7c79c479487.jpg",
+      "storagePath": "tyre-life-wheels/0c2124ed4bc96b92d6d8f5d12a6c50e2e9488969fcbc3ed0b4aec7c79c479487.jpg"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A9307 DRIFTER",
+      "finishKey": "MATTE BLACK W MATTE BLACK LIP",
+      "sampleDescription": "A9307 DRIFTER",
+      "affectedRows": 2,
+      "finishes": [
+        "MATTE BLACK W MATTE BLACK LIP"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "686982926dc95d929192e0a416752e5055440d57",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A9307 DRIFTER",
+        "sourceTitle": "Dirty Life A9307 Drifter Matte Black",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15587_13038_saa9307-7883mb.jpg",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\3e4cebac22a9c67d643cd386fef807e3ef335743742c0bbf69e308dc993b7941.jpg",
+      "storagePath": "tyre-life-wheels/3e4cebac22a9c67d643cd386fef807e3ef335743742c0bbf69e308dc993b7941.jpg"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A9308 NEW CAGE",
+      "finishKey": "MATTE BLACK",
+      "sampleDescription": "A9308 NEW CAGE",
+      "affectedRows": 1,
+      "finishes": [
+        "MATTE BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "89e876d6163d80460a4c3804659e0ce1b616bff0",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A9308 NEW CAGE",
+        "sourceTitle": "Dirty Life A9308 New Cage Matte Black",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16462_14286_a9308-new-cage.png",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\2ec1bde23f8545340ec31ddf59508bc7a6b9c15a60da743a02c36a8c8d0dc25b.png",
+      "storagePath": "tyre-life-wheels/2ec1bde23f8545340ec31ddf59508bc7a6b9c15a60da743a02c36a8c8d0dc25b.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A9309S CANYON PRO SE",
+      "finishKey": "MATTE BLACK",
+      "sampleDescription": "A9309S CANYON PRO SE",
+      "affectedRows": 1,
+      "finishes": [
+        "MATTE BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "eb06e723936138257978a5ceb796fe9f9901bd00",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A9309S CANYON PRO SE",
+        "sourceTitle": "Dirty Life A9309S Canyon Pro Matte Black with Chrome lip bolts",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16140_14008_a9309s.jpg",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\237fa97cafbda90acd1d4a62e3e3f2d43d8c9a8d0d9bdd529be18e88ecf0a36a.jpg",
+      "storagePath": "tyre-life-wheels/237fa97cafbda90acd1d4a62e3e3f2d43d8c9a8d0d9bdd529be18e88ecf0a36a.jpg"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A9312 MESA RACE",
+      "finishKey": "MATTE BLACK GENUINE BEADLOCK",
+      "sampleDescription": "A9312 MESA RACE",
+      "affectedRows": 1,
+      "finishes": [
+        "MATTE BLACK GENUINE BEADLOCK"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "95e202223e08bd3a9a8f2b85c12215b7d148f503",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A9312 MESA RACE",
+        "sourceTitle": "Dirty Life A9312 Mesa Race Matte Black Genuine Beadlock",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16142_14006_a9312-mesa-blank-matte-black.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\8a8bd2316a4f5cd186359fa5d038c49d41cb0ad55e97746913eac320001d7a01.png",
+      "storagePath": "tyre-life-wheels/8a8bd2316a4f5cd186359fa5d038c49d41cb0ad55e97746913eac320001d7a01.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A9313 ENIGMA RACE",
+      "finishKey": "MATTE BLACK COMP BEADLOCK",
+      "sampleDescription": "A9313 ENIGMA RACE",
+      "affectedRows": 1,
+      "finishes": [
+        "MATTE BLACK COMP BEADLOCK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "d91fc1a018fa18aa9fe2a47f2e7283da9021e288",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A9313 ENIGMA RACE",
+        "sourceTitle": "Dirty Life 9313 Enigma Race Machined",
+        "sourceUrl": "https://www.dirtylifewheels.com/9313-machined",
+        "imageUrl": "https://images.squarespace-cdn.com/content/v1/591ddf011b10e33d96abaa5f/1645056215595-9Y7XMWN1CC34M1WFDLSD/DIRTYLIFE_9313-6_1709_mach_0001.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\87f0576f0aa445eaf3664bae97c98fa097e191585836215516ab3e98a891f6d4.webp",
+      "storagePath": "tyre-life-wheels/87f0576f0aa445eaf3664bae97c98fa097e191585836215516ab3e98a891f6d4.webp"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A9317 DT3",
+      "finishKey": "MATTE BLACK W PLASTIC RING",
+      "sampleDescription": "A9317 DT3",
+      "affectedRows": 4,
+      "finishes": [
+        "MATTE BLACK W PLASTIC RING"
+      ],
+      "affectedGroups": 3,
+      "sourceRecord": {
+        "sourceId": "f1f5b0202c1fb0e1e3a21f59583a8648e22778d3",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A9317 DT3",
+        "sourceTitle": "Dirty Life A9317 DT3 Matte Black with Simulated Ring",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16157_14062_a9317-dt3.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\c524df14ebc6c7c103e3fa61a1f15f369b6b561549d99aebb59d27ab1c5d67bf.jpg",
+      "storagePath": "tyre-life-wheels/c524df14ebc6c7c103e3fa61a1f15f369b6b561549d99aebb59d27ab1c5d67bf.jpg"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dirty Life",
+      "designKey": "A9318 DT4",
+      "finishKey": "AW 4 DARK MATTE BRONZE",
+      "sampleDescription": "A9318 DT4",
+      "affectedRows": 1,
+      "finishes": [
+        "AW 4 DARK MATTE BRONZE"
+      ],
+      "affectedGroups": 4,
+      "sourceRecord": {
+        "sourceId": "6416789236c791f24979a88beda0407e44588f61",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "A9318 DT4",
+        "sourceTitle": "Dirty Life A9318 DT4 Matte Black with Simulated Ring",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16158_14064_a9318-dt4.jpg",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\976060c8bb826d107b7445a2221f86c56219eaf19c166c78e43ce3609e14f487.jpg",
+      "storagePath": "tyre-life-wheels/976060c8bb826d107b7445a2221f86c56219eaf19c166c78e43ce3609e14f487.jpg"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "designKey": "BEADLOCK IMITATION",
+      "finishKey": "BLACK ROUND HOLE",
+      "sampleDescription": "BEADLOCK IMITATION",
+      "affectedRows": 1,
+      "finishes": [
+        "BLACK ROUND HOLE"
+      ],
+      "affectedGroups": 4,
+      "sourceRecord": {
+        "sourceId": "e7b1562f072ea1012d3148935e9ea714215417ac",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "BEADLOCK IMITATION",
+        "sourceTitle": "Dynamic Beadlock Imitation Black Soft 8",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dynamic",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15588_12979_bi16850n5150bs8.png",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\4ec453bbe260a1e26bd415f1f46fef8de290b09d2f241530ad1b8c257de37c40.png",
+      "storagePath": "tyre-life-wheels/4ec453bbe260a1e26bd415f1f46fef8de290b09d2f241530ad1b8c257de37c40.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "designKey": "BLACK ROUND HOLE",
+      "finishKey": "BLACK ROUND",
+      "sampleDescription": "BLACK ROUND HOLE",
+      "affectedRows": 2,
+      "finishes": [
+        "BLACK ROUND"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "1158bce6d6993fa21865a91e9cced33d4251753a",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "BLACK ROUND HOLE",
+        "sourceTitle": "Dynamic Black Round HD Mine Spec",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dynamic",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15590_12983_17912n81651brhd.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\9e91058cba79296907c25490e2ace82415b03ceac616dc59e31d0ac4fbce76aa.png",
+      "storagePath": "tyre-life-wheels/9e91058cba79296907c25490e2ace82415b03ceac616dc59e31d0ac4fbce76aa.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic",
+      "designKey": "DYNAMIC SUNRAYSIA",
+      "finishKey": "BLACK TRIANGLE",
+      "sampleDescription": "DYNAMIC SUNRAYSIA",
+      "affectedRows": 16,
+      "finishes": [
+        "BLACK TRIANGLE"
+      ],
+      "affectedGroups": 3,
+      "sourceRecord": {
+        "sourceId": "a6b6b93d2471b7f2751d07e62d32083028fe4226",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "DYNAMIC SUNRAYSIA",
+        "sourceTitle": "Dynamic Sunraysia Black Steel",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dynamic",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_13985_9993_sunrasia-black-steel.png",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\30fe676aa923d5f99a7df36aab3e2c000cfd763dde936f1797f43add92f3ec2b.png",
+      "storagePath": "tyre-life-wheels/30fe676aa923d5f99a7df36aab3e2c000cfd763dde936f1797f43add92f3ec2b.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "designKey": "GENUINE BEADLOCK",
+      "finishKey": "BLACK TRIANGLE",
+      "sampleDescription": "Dymanic Steel GENUINE BEADLOCK",
+      "affectedRows": 7,
+      "finishes": [
+        "BLACK TRIANGLE"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "411ff4fd3f011466fe756c6051aab9007060dfe1",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "GENUINE BEADLOCK",
+        "sourceTitle": "Dirty Life A9312 Mesa Race Machined Genuine Beadlock (BLANK)",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_16141_14004_a9312-mesa-blank-machined.png",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\576692eaafa8777a3be55125d043a1e89ef95d9410c18bdcad5cf59f2fe10c42.png",
+      "storagePath": "tyre-life-wheels/576692eaafa8777a3be55125d043a1e89ef95d9410c18bdcad5cf59f2fe10c42.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "designKey": "MASSIMO",
+      "finishKey": "MATT BLACK POLISHED",
+      "sampleDescription": "MASSIMO",
+      "affectedRows": 1,
+      "finishes": [
+        "MATT BLACK POLISHED"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "8e53a488064f3f578b5c4a281f2431c826b9e3ca",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "MASSIMO",
+        "sourceTitle": "MOMO Massimo",
+        "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/alloy-eu/massimo/",
+        "imageUrl": "https://momo.com/wp-content/uploads/2017/02/1-4.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\5f47c5571dd1711462501a82f1286966e9ce16f17ca7cc137d2ac2ca7971d3be.png",
+      "storagePath": "tyre-life-wheels/5f47c5571dd1711462501a82f1286966e9ce16f17ca7cc137d2ac2ca7971d3be.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "DWC",
+      "designKey": "PRODIGY",
+      "finishKey": "MATTE BLACK W BRONZE TINT",
+      "sampleDescription": "DWC PRODIGY",
+      "affectedRows": 2,
+      "finishes": [
+        "MATTE BLACK W BRONZE TINT"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "2efaad577a8e5a7bdb53883dfd4158082524ab24",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "PRODIGY",
+        "sourceTitle": "Dirty Life DWC Prodigy Matte Black with Bronze Tint",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dirty-life",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15223_12373_dwc-prodigy-bronze.png",
+        "source": "errols-product-page"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\959825b193f7ad1ba817a1b5d69429b47ab3c969573fd6d81dcd0b8357915248.png",
+      "storagePath": "tyre-life-wheels/959825b193f7ad1ba817a1b5d69429b47ab3c969573fd6d81dcd0b8357915248.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "designKey": "REVENGE",
+      "finishKey": "MATTE ANTHRACITE",
+      "sampleDescription": "REVENGE",
+      "affectedRows": 1,
+      "finishes": [
+        "MATTE ANTHRACITE"
+      ],
+      "affectedGroups": 2,
+      "sourceRecord": {
+        "sourceId": "f6ab9cf0531da5c0e41351a4cf97e640d3b68f86",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "REVENGE",
+        "sourceTitle": "MOMO Revenge",
+        "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/revenge/",
+        "imageUrl": "https://momo.com/wp-content/uploads/2016/12/Revenge-Matte-Black.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\a40f7fc3b05eda6d22c64fc444ad6c1054429217a2db358f3d8a9c97174a3ebb.png",
+      "storagePath": "tyre-life-wheels/a40f7fc3b05eda6d22c64fc444ad6c1054429217a2db358f3d8a9c97174a3ebb.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "designKey": "REVENGE EVO",
+      "finishKey": "MATT BLACK POLISHED",
+      "sampleDescription": "REVENGE EVO",
+      "affectedRows": 1,
+      "finishes": [
+        "MATT BLACK POLISHED"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "a62b0017472764ec2afe4e785cc59e5d954a87b4",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "REVENGE EVO",
+        "sourceTitle": "MOMO Revenge EVO",
+        "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/revenge-evo/",
+        "imageUrl": "https://momo.com/wp-content/uploads/2016/10/Revenge-EVO.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\cb664d7a368af189c53ce20fec52b485e903b3613dcc00c6121d619401899700.png",
+      "storagePath": "tyre-life-wheels/cb664d7a368af189c53ce20fec52b485e903b3613dcc00c6121d619401899700.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "designKey": "RF 04",
+      "finishKey": "MATTE BLACK POLISHED",
+      "sampleDescription": "RF-04",
+      "affectedRows": 1,
+      "finishes": [
+        "MATTE BLACK POLISHED"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "cfe8c3d5023be3e28363f1d753867bf76fc64c95",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "RF 04",
+        "sourceTitle": "MOMO RF-04",
+        "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/rf-series-eu/rf-04/",
+        "imageUrl": "https://momo.com/wp-content/uploads/2019/03/MOMO-RFX-04-Wheel-Image-2.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\cb7d371cc0446958f8fff94e304389a172449339f035ad6674400d6bb920d0ab.png",
+      "storagePath": "tyre-life-wheels/cb7d371cc0446958f8fff94e304389a172449339f035ad6674400d6bb920d0ab.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "designKey": "RF 05",
+      "finishKey": "MATTE GRAPHITE POLISHED",
+      "sampleDescription": "RF-05",
+      "affectedRows": 1,
+      "finishes": [
+        "MATTE GRAPHITE POLISHED"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "8ddf09a38b8c2fb4785a23d950f88bb458705657",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "RF 05",
+        "sourceTitle": "MOMO RF-05",
+        "sourceUrl": "https://momo.com/it-it/product/cerchi-in-lega-it/rf-series-it/rf-05/",
+        "imageUrl": "https://momo.com/wp-content/uploads/2019/03/MOMO-RFX-05-Wheel-Image-1.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\c585adffc943b7f9aa99e80b8c3e1a5837895c713a20365fc1cf20d880bb82b8.png",
+      "storagePath": "tyre-life-wheels/c585adffc943b7f9aa99e80b8c3e1a5837895c713a20365fc1cf20d880bb82b8.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Procomp",
+      "designKey": "SERIES 40 VERTIGO",
+      "finishKey": "SATIN BLACK MILLED",
+      "sampleDescription": "SERIES 40 VERTIGO",
+      "affectedRows": 1,
+      "finishes": [
+        "SATIN BLACK MILLED"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "e8ebaca001ced36061779a6071e1d19ae656b037",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "SERIES 40 VERTIGO",
+        "sourceTitle": "Pro Comp Series 40 Vertigo",
+        "sourceUrl": "https://ruggedridge.com/p/pro-comp-grey-vertigo-2640-series-wheels/prc-2640-897350/",
+        "imageUrl": "https://ruggedridge.com/production/4768-pro-comp-anthracite-vertigo-2640-series-wheels/r/800x600/fff/80/f0a5bc524c46abe89db5f5d1bb6421eb.jpg",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\665b46673baf603af84b4420fde0391674675dc23f353d11c4eb2d7a8bbc5ea1.jpg",
+      "storagePath": "tyre-life-wheels/665b46673baf603af84b4420fde0391674675dc23f353d11c4eb2d7a8bbc5ea1.jpg"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Procomp",
+      "designKey": "SERIES 43 SLEDGE",
+      "finishKey": "SATIN BLACK MILLED",
+      "sampleDescription": "SERIES 43 SLEDGE",
+      "affectedRows": 1,
+      "finishes": [
+        "SATIN BLACK MILLED"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "d4f500c829050526e5aee71368e8c80641ffd9a2",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "SERIES 43 SLEDGE",
+        "sourceTitle": "Pro Comp Series 43 Sledge",
+        "sourceUrl": "https://ruggedridge.com/p/pro-comp-black-sledge-5143-series-wheels/",
+        "imageUrl": "https://ruggedridge.com/production/4786-pro-comp-black-sledge-5143-series-wheels/r/800x600/fff/80/a66899c2603ba1e0d79b771f01f5d364.jpg",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\6369ff652f7163501f3b62d89de10f9efcd20e8d9fb65f32db5730d42ab0e948.jpg",
+      "storagePath": "tyre-life-wheels/6369ff652f7163501f3b62d89de10f9efcd20e8d9fb65f32db5730d42ab0e948.jpg"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Procomp",
+      "designKey": "SERIES 50 GAUGE",
+      "finishKey": "SATIN BLACK",
+      "sampleDescription": "SERIES 50 GAUGE",
+      "affectedRows": 1,
+      "finishes": [
+        "SATIN BLACK"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "eb4c9dc14f005b6902afae95a75ec656a1a6544f",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "SERIES 50 GAUGE",
+        "sourceTitle": "Pro Comp Series 50 Gauge",
+        "sourceUrl": "https://ruggedridge.com/p/pro-comp-black-10-gauge-5050-series-wheels/",
+        "imageUrl": "https://ruggedridge.com/production/4877-pro-comp-black-10-gauge-5050-series-wheels/r/800x600/fff/80/b85a5abf8a8a23ff17d665b7a7ead18d.jpg",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\df41bd799de7df7e8ef81b64fb7bea27903fc8d87005209ae958347d25f8dec8.jpg",
+      "storagePath": "tyre-life-wheels/df41bd799de7df7e8ef81b64fb7bea27903fc8d87005209ae958347d25f8dec8.jpg"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "Dynamic Steel Wheels",
+      "designKey": "SOFT 8",
+      "finishKey": "BLACK SOFT 8",
+      "sampleDescription": "Dymanic Steel SOFT 8",
+      "affectedRows": 1,
+      "finishes": [
+        "BLACK SOFT 8"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "e79a6c5910426c947500f4c69af7ab5493acdfa8",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "SOFT 8",
+        "sourceTitle": "Dynamic Beadlock Imitation Black Soft 8",
+        "sourceUrl": "https://www.errolstyres.co.za/brand/dynamic",
+        "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15588_12979_bi16850n5150bs8.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\2daeb2845b00fe9b441fc678c6b3ba511db86003721062b6387b1e298c194ba3.png",
+      "storagePath": "tyre-life-wheels/2daeb2845b00fe9b441fc678c6b3ba511db86003721062b6387b1e298c194ba3.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "designKey": "SPIDER",
+      "finishKey": "MATTE BLACK POLISHED",
+      "sampleDescription": "SPIDER",
+      "affectedRows": 1,
+      "finishes": [
+        "MATTE BLACK POLISHED"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "f5c15f15b81880324b551b1563ea33f9cbf3ea93",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "SPIDER",
+        "sourceTitle": "MOMO Spider",
+        "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/spider/",
+        "imageUrl": "https://momo.com/wp-content/uploads/2017/02/1-5.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\5ec52fd8f3c2dd54de37610bc731ad46359b21c5442a0d52554abb373c3ac4e9.png",
+      "storagePath": "tyre-life-wheels/5ec52fd8f3c2dd54de37610bc731ad46359b21c5442a0d52554abb373c3ac4e9.png"
+    },
+    {
+      "supplier": "TYRE LIFE WHEELS",
+      "brand": "MOMO",
+      "designKey": "STEALTH",
+      "finishKey": "MAG MATTE ANTHRACITE POLISHED",
+      "sampleDescription": "STEALTH",
+      "affectedRows": 1,
+      "finishes": [
+        "MAG MATTE ANTHRACITE POLISHED"
+      ],
+      "affectedGroups": 1,
+      "sourceRecord": {
+        "sourceId": "d8ecef6fb2fa7ae2a5030340fded3dfcf5c01186",
+        "supplier": "TYRE LIFE WHEELS",
+        "designKey": "STEALTH",
+        "sourceTitle": "MOMO Stealth",
+        "sourceUrl": "https://momo.com/en-gb/product/road-wheels-eu/limited-availability/stealth/",
+        "imageUrl": "https://momo.com/wp-content/uploads/2018/03/stealth-ant-primary.png",
+        "source": "verified-manual-source"
+      },
+      "localFile": "tmp\\supplier-wheel-visual-gaps\\250be3d1c868fdfde124c0e214afba90d469155683695c74e46a3dba4832b8e5.png",
+      "storagePath": "tyre-life-wheels/250be3d1c868fdfde124c0e214afba90d469155683695c74e46a3dba4832b8e5.png"
+    }
+  ],
+  "importedAt": "2026-07-02T07:34:21.917Z",
+  "importRunId": "8891efb3-8397-4a13-8836-0b412f228f85",
+  "importedCount": 54,
+  "failedCount": 0,
+  "failures": []
+}

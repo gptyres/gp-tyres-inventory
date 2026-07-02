@@ -853,7 +853,7 @@ export const parseTyreLifeWheelsData = (rawCsv: string): InventoryItem[] => {
     const totalQty = parseStockUnits(cols[13]);
     const quantity = totalQty || jhbQty + cptQty + dbnQty;
     const itemId = `tyrelifewheels-${idCounter++}`;
-    const imageKeys = parseSupplierWheelImageKeys(brand, wheelName, finish);
+    const imageKeys = parseSupplierWheelImageKeys(brand, wheelName, finish, sku);
 
     items.push({
       id: itemId,
