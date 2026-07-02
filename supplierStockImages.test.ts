@@ -8,7 +8,7 @@ import {
   parseSupplierWheelImageKeys
 } from './supplierStockImages';
 import { ProductType } from './types';
-import { parseAttData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
+import { parseAttData, parseExclusiveTyresData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
 
 describe('ALINE supplier image parsing', () => {
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
@@ -174,6 +174,37 @@ describe('TYREWAREHOUSE supplier catalogue parsing', () => {
     expect(item.location).toContain('GLK: 4');
     expect(item.location).toContain('CPT: 0');
     expect(item.location).toContain('DBN: 0');
+  });
+});
+
+describe('EXCLUSIVE TYRES supplier catalogue parsing', () => {
+  it('removes import markers and load/speed clutter from tyre visual keys', () => {
+    const items = parseExclusiveTyresData([
+      'TYRE SIZE,BRAND & PATTERN,COST + VAT,STOCK UNITS',
+      '225/45R17,TRACMAX IMP TRACMAX X privilo TX3,R900,12 units',
+      '235/45R18,RADAR IMP RADAR DIMAX R8+ 105Y Z,R1100,5 units',
+      '185/65R15,FIREMAX IMP 88H FM601,R600,20 units',
+      '265/65R17,RADAR IMP RADAR 123 120S E RENEG.AT.SPORT,R1850,4 units',
+      '165/50R15,TRACMAX - TYRES IMP 72V TRACMAX X privilo TX5,R550,20 units',
+      '245/45R18,RADAR - TYRES IMP 100Y RADAR XL DMAX SPORT,R1500,20 units'
+    ].join('\n'));
+
+    expect(items.map((item) => item.pattern)).toEqual([
+      'X Privilo TX3',
+      'DIMAX R8+',
+      'FM601',
+      'Renegade AT Sport',
+      'X Privilo TX5',
+      'DMAX SPORT'
+    ]);
+    expect(items.map((item) => item.imageDesignKey)).toEqual([
+      'X PRIVILO TX3',
+      'DIMAX R8',
+      'FM601',
+      'RENEGADE AT SPORT',
+      'X PRIVILO TX5',
+      'DMAX SPORT'
+    ]);
   });
 });
 

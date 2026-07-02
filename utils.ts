@@ -252,6 +252,30 @@ const splitBrandPattern = (brandPattern: string, fallbackBrand: string) => {
   };
 };
 
+const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
+  const brandKey = brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  let cleaned = pattern
+    .replace(/\bIMP\b/gi, ' ')
+    .replace(new RegExp(`^\\s*${brandKey}\\s+`, 'i'), ' ')
+    .replace(/\b(?:XL|XLL|BSW|OWL|RWL|WWL|POR)\b/gi, ' ')
+    .replace(/\b\d{2,3}\s*\/\s*\d{2,3}\s*[A-Z]\b/gi, ' ')
+    .replace(/\b\d{2,3}\s+\d{2,3}\s*[A-Z]\b/gi, ' ')
+    .replace(/\b\d{2,3}\s*[A-Z]\b/gi, ' ')
+    .replace(/\b(?:E|Z)\b/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  cleaned = cleaned
+    .replace(new RegExp(`^\\s*${brandKey}\\s+`, 'i'), ' ')
+    .replace(/\b\d{2,3}\s*[A-Z]\b/gi, ' ')
+    .replace(/\bPRIVILO\b/gi, 'Privilo')
+    .replace(/\bRENEG\.?AT\.?SPORT\b/gi, 'Renegade AT Sport')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return cleaned || pattern.replace(/\bIMP\b/gi, ' ').replace(/\s+/g, ' ').trim() || 'Standard';
+};
+
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const supplierTyreImageMetadata = (
@@ -464,6 +488,8 @@ export const parseExclusiveTyresData = (rawCsv: string): InventoryItem[] => {
       brand = brandParts[0] || 'Exclusive';
       pattern = brandParts.slice(1).join(' ') || 'Standard';
     }
+
+    pattern = normalizeExclusiveTyrePattern(brand, pattern);
 
     const qtyMatch = (cols[3] || '').match(/-?\d+/);
     const quantity = qtyMatch ? parseInt(qtyMatch[0], 10) : 0;

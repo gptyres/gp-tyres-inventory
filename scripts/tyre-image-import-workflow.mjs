@@ -97,6 +97,30 @@ const splitBrandPattern = (brandPattern, fallbackBrand) => {
   };
 };
 
+const normalizeExclusiveTyrePattern = (brand, pattern) => {
+  const brandKey = String(brand || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  let cleaned = String(pattern || '')
+    .replace(/\bIMP\b/gi, ' ')
+    .replace(new RegExp(`^\\s*${brandKey}\\s+`, 'i'), ' ')
+    .replace(/\b(?:XL|XLL|BSW|OWL|RWL|WWL|POR)\b/gi, ' ')
+    .replace(/\b\d{2,3}\s*\/\s*\d{2,3}\s*[A-Z]\b/gi, ' ')
+    .replace(/\b\d{2,3}\s+\d{2,3}\s*[A-Z]\b/gi, ' ')
+    .replace(/\b\d{2,3}\s*[A-Z]\b/gi, ' ')
+    .replace(/\b(?:E|Z)\b/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  cleaned = cleaned
+    .replace(new RegExp(`^\\s*${brandKey}\\s+`, 'i'), ' ')
+    .replace(/\b\d{2,3}\s*[A-Z]\b/gi, ' ')
+    .replace(/\bPRIVILO\b/gi, 'Privilo')
+    .replace(/\bRENEG\.?AT\.?SPORT\b/gi, 'Renegade AT Sport')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return cleaned || String(pattern || '').replace(/\bIMP\b/gi, ' ').replace(/\s+/g, ' ').trim() || 'Standard';
+};
+
 const imageKeys = (brand, pattern) => ({
   designKey: normalizeToken(pattern || brand || 'TYRE'),
   finishKey: normalizeToken(brand)
@@ -167,7 +191,8 @@ export const parseSupplierTyreRows = (supplier, parser, raw) => {
       const size = cols[0]?.trim();
       const brandPattern = cols[1]?.trim();
       if (!size || !brandPattern) continue;
-      const { brand, pattern } = splitBrandPattern(brandPattern, supplier);
+      const { brand, pattern: rawPattern } = splitBrandPattern(brandPattern, supplier);
+      const pattern = normalizeExclusiveTyrePattern(brand, rawPattern);
       addItem(items, supplier, `exclusive-${idCounter++}`, brand, pattern, parseStockUnits(cols[3]), `exclusive-${idCounter}`);
     }
 
