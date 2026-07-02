@@ -535,7 +535,76 @@ const parseSimpleSupplierCsv = (rawCsv: string, idPrefix: string, supplierName: 
 
 // --- TYREWAREHOUSE PARSER ---
 export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
-  return parseSimpleSupplierCsv(rawCsv, 'tyrewarehouse', 'TYREWAREHOUSE');
+  const groupedItems = new Map<string, {
+    sku: string;
+    size: string;
+    brand: string;
+    pattern: string;
+    category: string;
+    branchStock: Record<string, number>;
+    totalQuantity: number;
+    price: number;
+  }>();
+  const lines = rawCsv.split('\n');
+  const today = new Date().toISOString().split('T')[0];
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+
+    const cols = parseCSVLine(trimmed);
+    const sku = cols[0]?.trim();
+    const size = cols[1]?.trim();
+    const brand = cols[2]?.trim();
+    const pattern = cols[3]?.replace(/\s+/g, ' ').trim();
+    const category = cols[4]?.trim() || 'TYREWAREHOUSE';
+    const stockLocation = cols[5]?.trim() || 'Supplier';
+
+    if (index === 0 && sku?.toUpperCase() === 'SKU') return;
+    if (!sku || !size || !brand || !pattern) return;
+
+    const quantity = parseStockUnits(cols[7] || cols[6]);
+    const price = parseCurrencyString(cols[8]);
+    const existing = groupedItems.get(sku) ?? {
+      sku,
+      size,
+      brand,
+      pattern,
+      category,
+      branchStock: {},
+      totalQuantity: 0,
+      price
+    };
+
+    existing.branchStock[stockLocation] = (existing.branchStock[stockLocation] || 0) + quantity;
+    existing.totalQuantity += quantity;
+    if (!existing.price && price) existing.price = price;
+    groupedItems.set(sku, existing);
+  });
+
+  return Array.from(groupedItems.values()).map((entry, index) => {
+    const branchLocations = ['JHB', 'GLK', 'CPT', 'DBN'];
+    const knownBranches = branchLocations.filter((branch) => branch in entry.branchStock);
+    const otherBranches = Object.keys(entry.branchStock).filter((branch) => !branchLocations.includes(branch)).sort();
+    const location = [...knownBranches, ...otherBranches]
+      .map((branch) => `${branch}: ${entry.branchStock[branch]}`)
+      .join(' | ');
+
+    return {
+      id: `tyrewarehouse-${index + 1}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('TYREWAREHOUSE', entry.brand, entry.pattern, entry.sku),
+      brand: entry.brand,
+      pattern: entry.pattern,
+      size: entry.size,
+      loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
+      location: location || 'TYREWAREHOUSE',
+      quantity: entry.totalQuantity,
+      costPrice: entry.price,
+      sellingPrice: entry.price,
+      lastUpdated: today
+    };
+  });
 };
 
 // --- ATT PARSER ---

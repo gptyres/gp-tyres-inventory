@@ -8,7 +8,7 @@ import {
   parseSupplierWheelImageKeys
 } from './supplierStockImages';
 import { ProductType } from './types';
-import { parseAttData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData } from './utils';
+import { parseAttData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
 
 describe('ALINE supplier image parsing', () => {
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
@@ -144,6 +144,36 @@ describe('STAMFORD supplier catalogue parsing', () => {
     expect(item.location).toContain('Cape Town: 2');
     expect(item.location).toContain('Durban: 0');
     expect(item.location).toContain('Johannesburg: 3');
+  });
+});
+
+describe('TYREWAREHOUSE supplier catalogue parsing', () => {
+  it('groups branch rows into one tyre item per SKU with discounted selling price', () => {
+    const [item] = parseTyreWarehouseData([
+      'SKU,Size,Brand,Pattern,Category,Stock Location,Stock Units Availability,Stock Units,Selling Price',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,JHB,Out of stock,0 units,R3350',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,GLK,Available,4 units,R3350',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,CPT,Out of stock,0 units,R3350',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,DBN,Out of stock,0 units,R3350'
+    ].join('\n'));
+
+    expect(item).toMatchObject({
+      type: ProductType.TYRE,
+      supplierName: 'TYREWAREHOUSE',
+      supplierStockCode: '303426560181w',
+      brand: 'Continental',
+      pattern: 'ContiCrossContact AT',
+      size: '265/60R18',
+      quantity: 4,
+      sellingPrice: 3350,
+      costPrice: 3350,
+      imageDesignKey: 'CONTICROSSCONTACT AT',
+      imageFinishKey: 'CONTINENTAL'
+    });
+    expect(item.location).toContain('JHB: 0');
+    expect(item.location).toContain('GLK: 4');
+    expect(item.location).toContain('CPT: 0');
+    expect(item.location).toContain('DBN: 0');
   });
 });
 

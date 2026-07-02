@@ -269,7 +269,7 @@ const App: React.FC = () => {
     },
     TYREWAREHOUSE: {
       label: 'TYREWAREHOUSE',
-      note: 'Viewing External Supplier Data. Prices use the Cost + VAT values from TyreWarehouse.'
+      note: 'Viewing External Supplier Data. Prices use the discounted selling price from the latest TyreWarehouse file.'
     },
     ATT: {
       label: 'ATT',
