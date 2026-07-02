@@ -126,7 +126,7 @@ describe('STAMFORD supplier catalogue parsing', () => {
       'LRBH077,Blackhawk,Hiscend-H Ha01,LT235/75R15,SUV and 4x4 / All Terrain,Cape Town,Available,2 units',
       'LRBH077,Blackhawk,Hiscend-H Ha01,LT235/75R15,SUV and 4x4 / All Terrain,Durban,Out of stock,0 units',
       'LRBH077,Blackhawk,Hiscend-H Ha01,LT235/75R15,SUV and 4x4 / All Terrain,Johannesburg,Available,3 units'
-    ].join('\n'));
+    ].join('\n'), { LRBH077: 1450 });
 
     expect(item).toMatchObject({
       type: ProductType.TYRE,
@@ -136,8 +136,8 @@ describe('STAMFORD supplier catalogue parsing', () => {
       pattern: 'Hiscend-H Ha01',
       size: 'LT235/75R15',
       quantity: 5,
-      sellingPrice: 0,
-      costPrice: 0,
+      sellingPrice: 1450,
+      costPrice: 1450,
       imageDesignKey: 'HISCEND H HA01',
       imageFinishKey: 'BLACKHAWK'
     });

@@ -590,7 +590,10 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
 };
 
 // --- STAMFORD PARSER ---
-export const parseStamfordData = (rawCsv: string): InventoryItem[] => {
+export const parseStamfordData = (
+  rawCsv: string,
+  priceBySku: Record<string, number> = {}
+): InventoryItem[] => {
   const groupedItems = new Map<string, {
     sku: string;
     brand: string;
@@ -640,6 +643,7 @@ export const parseStamfordData = (rawCsv: string): InventoryItem[] => {
       .filter((branch) => branch in entry.branchStock)
       .map((branch) => `${branch}: ${entry.branchStock[branch]}`)
       .join(' | ');
+    const price = priceBySku[entry.sku] ?? 0;
 
     return {
       id: `stamford-${index + 1}`,
@@ -651,8 +655,8 @@ export const parseStamfordData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
       location: location || 'STAMFORD',
       quantity: entry.totalQuantity,
-      costPrice: 0,
-      sellingPrice: 0,
+      costPrice: price,
+      sellingPrice: price,
       lastUpdated: today
     };
   });
