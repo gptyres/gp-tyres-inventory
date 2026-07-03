@@ -195,7 +195,7 @@ describe('EXCLUSIVE TYRES supplier catalogue parsing', () => {
       'FM601',
       'Renegade AT Sport',
       'X Privilo TX5',
-      'DMAX SPORT'
+      'DIMAX SPORT'
     ]);
     expect(items.map((item) => item.imageDesignKey)).toEqual([
       'X PRIVILO TX3',
@@ -203,7 +203,7 @@ describe('EXCLUSIVE TYRES supplier catalogue parsing', () => {
       'FM601',
       'RENEGADE AT SPORT',
       'X PRIVILO TX5',
-      'DMAX SPORT'
+      'DIMAX SPORT'
     ]);
   });
 });

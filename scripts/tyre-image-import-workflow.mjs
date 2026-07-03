@@ -101,10 +101,13 @@ const normalizeExclusiveTyrePattern = (brand, pattern) => {
   const brandKey = String(brand || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   let cleaned = String(pattern || '')
     .replace(/\bIMP\b/gi, ' ')
+    .replace(/\bTYRES?\b/gi, ' ')
     .replace(new RegExp(`^\\s*${brandKey}\\s+`, 'i'), ' ')
-    .replace(/\b(?:XL|XLL|BSW|OWL|RWL|WWL|POR)\b/gi, ' ')
+    .replace(new RegExp(`\\b${brandKey}\\b`, 'gi'), ' ')
+    .replace(/\b(?:XL|XLL|BSW|OWL|RWL|WWL|POR|TL|T\/L|TUBELESS|RFT|RUN\s*FLAT|RF|MIT|FP|WSW|MFS)\b/gi, ' ')
+    .replace(/\b\d{1,2}\s*PR\b/gi, ' ')
+    .replace(/\b\d{1,3}\s+\d{1,3}\s*[A-Z]\b/gi, ' ')
     .replace(/\b\d{2,3}\s*\/\s*\d{2,3}\s*[A-Z]\b/gi, ' ')
-    .replace(/\b\d{2,3}\s+\d{2,3}\s*[A-Z]\b/gi, ' ')
     .replace(/\b\d{2,3}\s*[A-Z]\b/gi, ' ')
     .replace(/\b(?:E|Z)\b/gi, ' ')
     .replace(/\s+/g, ' ')
@@ -112,9 +115,18 @@ const normalizeExclusiveTyrePattern = (brand, pattern) => {
 
   cleaned = cleaned
     .replace(new RegExp(`^\\s*${brandKey}\\s+`, 'i'), ' ')
+    .replace(new RegExp(`\\b${brandKey}\\b`, 'gi'), ' ')
     .replace(/\b\d{2,3}\s*[A-Z]\b/gi, ' ')
     .replace(/\bPRIVILO\b/gi, 'Privilo')
     .replace(/\bRENEG\.?AT\.?SPORT\b/gi, 'Renegade AT Sport')
+    .replace(/\bDMAX\b/gi, 'DIMAX')
+    .replace(/\bRENEG\.?\b/gi, 'Renegade')
+    .replace(/\bA\s*T\b/gi, 'AT')
+    .replace(/\bR\s*T\b/gi, 'RT')
+    .replace(/\bM\s*T\b/gi, 'MT')
+    .replace(/\bX\s*PRIVILO\s*TX\s*([0-9])\b/gi, 'X Privilo TX$1')
+    .replace(/\bRPX\s*[\-.]?\s*800\b/gi, 'RPX800')
+    .replace(/\bDIMAX\s*R8\+?(?!\w)/gi, 'DIMAX R8+')
     .replace(/\s+/g, ' ')
     .trim();
 
