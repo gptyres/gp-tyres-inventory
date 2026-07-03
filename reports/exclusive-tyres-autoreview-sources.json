@@ -1,38 +1,342 @@
 [
   {
-    "brand": "TRACMAX",
-    "pattern": "GRT880",
+    "brand": "CONTINENTAL",
+    "pattern": "ContiCrossContact AT",
     "confidence": "exact",
-    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/photo/product/20200826145509.png",
-    "sourcePageUrl": "https://landspidertire.com/product_detail/grt880.html",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/101520_FTR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/continental-conticrosscontact-at/",
     "checkedSourceUrls": [
-      "https://landspidertire.com/product_detail/grt880.html"
+      "https://whattyre.com/products/continental-conticrosscontact-at/"
+    ],
+    "source": "whattyre",
+    "reason": "Corrected exact image endpoint after failed import retry."
+  },
+  {
+    "brand": "CONTINENTAL",
+    "pattern": "ContiSportContact 5 P",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/101635_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/continental-contisportcontact-5-p/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/continental-contisportcontact-5-p/"
+    ],
+    "source": "whattyre",
+    "reason": "WhatTyre product page title matches Continental ContiSportContact 5 P."
+  },
+  {
+    "brand": "CONTINENTAL",
+    "pattern": "CrossContact ATR",
+    "confidence": "exact",
+    "imageUrl": "https://www.tyrereviews.com/public/tyres/thumbs/x200-Continental-CrossContact-ATR.webp",
+    "sourcePageUrl": "https://www.continental-tires.com/products/car/tires/crosscontact-atr/",
+    "checkedSourceUrls": [
+      "https://www.continental-tires.com/products/car/tires/crosscontact-atr/"
+    ],
+    "source": "tyrereviews",
+    "reason": "Corrected exact image endpoint after failed import retry."
+  },
+  {
+    "brand": "CONTINENTAL",
+    "pattern": "CrossContact LX Sport",
+    "confidence": "exact",
+    "imageUrl": "https://continentaltire.com/sites/default/files/media/image/2024-08/ct_webpage_crosscontactlxsport_l3qt_220x220_oe.png",
+    "sourcePageUrl": "https://continentaltire.com/tires/crosscontact-lx-sport",
+    "checkedSourceUrls": [
+      "https://continentaltire.com/tires/crosscontact-lx-sport"
     ],
     "source": "official",
     "reason": "Official manufacturer page and product-image path match brand and pattern."
   },
   {
-    "brand": "TRACMAX",
-    "pattern": "GRT932",
+    "brand": "CONTINENTAL",
+    "pattern": "EcoContact 6Q",
     "confidence": "exact",
-    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/photo/temp/upload20200619173506.png",
-    "sourcePageUrl": "https://landspidertire.com/product_detail/grt932.html",
+    "imageUrl": "https://static.tirerack.com/content/dam/tires/continental/co_ecocontact_6q_full.jpg",
+    "sourcePageUrl": "https://www.tirerack.com/tires/tires.jsp?partnum=73YR1EC6QXLCS&tireMake=Continental&tireModel=EcoContact+6Q",
     "checkedSourceUrls": [
-      "https://landspidertire.com/product_detail/grt932.html"
+      "https://www.tirerack.com/tires/tires.jsp?partnum=73YR1EC6QXLCS&tireMake=Continental&tireModel=EcoContact+6Q"
+    ],
+    "source": "retailer",
+    "reason": "Corrected exact image endpoint after failed import retry."
+  },
+  {
+    "brand": "CONTINENTAL",
+    "pattern": "PremiumContact 7",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2022/11/5vgcA9qCOLMRvujB3s4yYaJAVYKocvD91E2ZGjcu.png",
+    "sourcePageUrl": "https://whattyre.com/products/continental-premiumcontact-7/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/continental-premiumcontact-7/"
+    ],
+    "source": "whattyre",
+    "reason": "Verified product reference page and product-image path match brand and pattern."
+  },
+  {
+    "brand": "DUNLOP",
+    "pattern": "FM800",
+    "confidence": "exact",
+    "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15794_13318_med-fm800.png",
+    "sourcePageUrl": "https://www.errolstyres.co.za/tyre/dunlop/sp-sport-fm800/15794",
+    "checkedSourceUrls": [
+      "https://www.errolstyres.co.za/tyre/dunlop/sp-sport-fm800/15794",
+      "https://www.errolstyres.co.za/tyres"
+    ],
+    "source": "errols",
+    "reason": "Errols product title matched exactly: DUNLOP SP SPORT FM800"
+  },
+  {
+    "brand": "DUNLOP",
+    "pattern": "Grandtrek AT20",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/102103_FTR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/dunlop-grandtrek-at20/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/dunlop-grandtrek-at20/"
+    ],
+    "source": "whattyre",
+    "reason": "Verified product reference page and product-image path match brand and pattern."
+  },
+  {
+    "brand": "DUNLOP",
+    "pattern": "Grandtrek AT22",
+    "confidence": "exact",
+    "imageUrl": "https://www.autohero.com.au/content/images/Dunlop-GrandtrekAT22-20170107034755.png",
+    "sourcePageUrl": "https://www.autohero.com.au/brand/dunlop/grandtrek-at22/",
+    "checkedSourceUrls": [
+      "https://www.autohero.com.au/brand/dunlop/grandtrek-at22/"
+    ],
+    "source": "retailer",
+    "reason": "Targeted verified source added during Exclusive Tyres visual completion."
+  },
+  {
+    "brand": "DUNLOP",
+    "pattern": "GRANDTREK AT30",
+    "confidence": "exact",
+    "imageUrl": "https://ws-tires.s3.amazonaws.com/dunlop/grandtrek-at30/grandtrek_at30_touring.png",
+    "sourcePageUrl": "https://tiresvote.com/catalog/dunlop/grandtrek-at30/",
+    "checkedSourceUrls": [
+      "https://tiresvote.com/catalog/dunlop/grandtrek-at30/"
+    ],
+    "source": "tiresvote",
+    "reason": "Corrected from generic tyre-profile icon to a Grandtrek AT30 product image."
+  },
+  {
+    "brand": "DUNLOP",
+    "pattern": "Grandtrek AT3G",
+    "confidence": "exact",
+    "imageUrl": "https://www.dunloptyres.co.za/content/usercontent/images/FindATyre/single-tyres/medium/GT-AT3G.png",
+    "sourcePageUrl": "https://www.dunloptyres.co.za/Tyre-Range/SUV4x4/GRANDTREK%20AT3G",
+    "checkedSourceUrls": [
+      "https://www.dunloptyres.co.za/Tyre-Range/SUV4x4/GRANDTREK%20AT3G"
+    ],
+    "source": "official",
+    "reason": "Targeted verified source added during Exclusive Tyres visual completion."
+  },
+  {
+    "brand": "DUNLOP",
+    "pattern": "MAXX050+",
+    "confidence": "exact",
+    "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_11033_6503_spsportmaxx050.jpg",
+    "sourcePageUrl": "https://www.errolstyres.co.za/tyre/dunlop/sp-sport-maxx-050/11033",
+    "checkedSourceUrls": [
+      "https://www.errolstyres.co.za/tyre/dunlop/sp-sport-maxx-050/11033",
+      "https://www.errolstyres.co.za/tyres"
+    ],
+    "source": "errols",
+    "reason": "Errols product title matched exactly: DUNLOP SP Sport Maxx 050"
+  },
+  {
+    "brand": "DUNLOP",
+    "pattern": "SP TrakGrip",
+    "confidence": "exact",
+    "imageUrl": "https://dunlop.co.bw/wp-content/uploads/2025/07/Sp-Trakgrirp.png",
+    "sourcePageUrl": "https://dunlop.co.bw/product-category/suv-4x4/all-terrain-suv-4x4/sp-trakgrip-all-terrain-suv-4x4/",
+    "checkedSourceUrls": [
+      "https://dunlop.co.bw/product-category/suv-4x4/all-terrain-suv-4x4/sp-trakgrip-all-terrain-suv-4x4/"
+    ],
+    "source": "official",
+    "reason": "Targeted verified source added during Exclusive Tyres visual completion."
+  },
+  {
+    "brand": "DUNLOP",
+    "pattern": "SPORT 560",
+    "confidence": "exact",
+    "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_6546_6233_spsport560aug.jpg",
+    "sourcePageUrl": "https://www.errolstyres.co.za/tyre/dunlop/sp-sport-560/6546",
+    "checkedSourceUrls": [
+      "https://www.errolstyres.co.za/tyre/dunlop/sp-sport-560/6546",
+      "https://www.errolstyres.co.za/tyres"
+    ],
+    "source": "errols",
+    "reason": "Errols product title matched exactly: DUNLOP SP Sport 560"
+  },
+  {
+    "brand": "DUNLOP",
+    "pattern": "TOURING R1",
+    "confidence": "exact",
+    "imageUrl": "https://www.errolstyres.co.za/images/cmsimages/big/product_15795_13319_sp-touring-r1.png",
+    "sourcePageUrl": "https://www.errolstyres.co.za/tyre/dunlop/sp-touring-r1/15795",
+    "checkedSourceUrls": [
+      "https://www.errolstyres.co.za/tyre/dunlop/sp-touring-r1/15795",
+      "https://www.errolstyres.co.za/tyres"
+    ],
+    "source": "errols",
+    "reason": "Errols product title matched exactly: DUNLOP SP Touring R1"
+  },
+  {
+    "brand": "GENERAL",
+    "pattern": "ContiSportContact 5 P",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/101635_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/continental-contisportcontact-5-p/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/continental-contisportcontact-5-p/"
+    ],
+    "source": "whattyre",
+    "reason": "Verified product reference page and product-image path match brand and pattern."
+  },
+  {
+    "brand": "GENERAL",
+    "pattern": "ContiVanContact 100",
+    "confidence": "exact",
+    "imageUrl": "https://www.autohero.com.au/content/images/Continental-ContiVanContact100-20180412102943.png",
+    "sourcePageUrl": "https://www.autohero.com.au/brand/continental/contivancontact-100/",
+    "checkedSourceUrls": [
+      "https://www.autohero.com.au/brand/continental/contivancontact-100/"
+    ],
+    "source": "retailer",
+    "reason": "Verified product reference page and product-image path match brand and pattern."
+  },
+  {
+    "brand": "GENERAL",
+    "pattern": "CrossContact LX Sport",
+    "confidence": "exact",
+    "imageUrl": "https://continentaltire.com/sites/default/files/media/image/2024-08/ct_webpage_crosscontactlxsport_l3qt_220x220_oe.png",
+    "sourcePageUrl": "https://continentaltire.com/tires/crosscontact-lx-sport",
+    "checkedSourceUrls": [
+      "https://continentaltire.com/tires/crosscontact-lx-sport"
+    ],
+    "source": "official",
+    "reason": "Targeted verified source added during Exclusive Tyres visual completion."
+  },
+  {
+    "brand": "GENERAL",
+    "pattern": "Super All Grip",
+    "confidence": "exact",
+    "imageUrl": "https://4x4tyres.co.uk/app/uploads/2025/09/16_General_Super_All_Grip_1_3.webp",
+    "sourcePageUrl": "https://4x4tyres.co.uk/product/7-50-16-general-super-all-grip-112n-2/",
+    "checkedSourceUrls": [
+      "https://4x4tyres.co.uk/product/7-50-16-general-super-all-grip-112n-2/"
+    ],
+    "source": "retailer",
+    "reason": "Verified product reference page and product-image path match brand and pattern."
+  },
+  {
+    "brand": "GOODYEAR",
+    "pattern": "Eagle F1 Asymmetric 5 * ROF",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/123615_FTR-1.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/goodyear-eagle-f1-asymmetric-5-rof/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/goodyear-eagle-f1-asymmetric-5-rof/"
+    ],
+    "source": "whattyre",
+    "reason": "WhatTyre page title matched exactly: Goodyear Eagle F1 Asymmetric 5 ROF"
+  },
+  {
+    "brand": "GOODYEAR",
+    "pattern": "Eagle F1 SuperSport",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/123729_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/goodyear-eagle-f1-supersport/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/goodyear-eagle-f1-supersport/"
+    ],
+    "source": "whattyre",
+    "reason": "Targeted verified source added during Exclusive Tyres visual completion."
+  },
+  {
+    "brand": "GOODYEAR",
+    "pattern": "EfficientGrip Cargo 2",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2021/01/ampsAKRz5xBRqSN01Su0vx76OU5nH7AsAc9rsluI.png",
+    "sourcePageUrl": "https://whattyre.com/products/goodyear-efficientgrip-cargo-2/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/goodyear-efficientgrip-cargo-2/"
+    ],
+    "source": "whattyre",
+    "reason": "Targeted verified source added during Exclusive Tyres visual completion."
+  },
+  {
+    "brand": "GOODYEAR",
+    "pattern": "EfficientGrip Performance",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/103596_FTR-1.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/goodyear-efficientgrip-performance/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/goodyear-efficientgrip-performance/"
+    ],
+    "source": "whattyre",
+    "reason": "WhatTyre page title matched exactly: Goodyear Efficientgrip Performance"
+  },
+  {
+    "brand": "GOODYEAR",
+    "pattern": "Wrangler AT Adventure",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/103868_FLR-1.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/goodyear-wrangler-at-adventure/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/goodyear-wrangler-at-adventure/"
+    ],
+    "source": "whattyre",
+    "reason": "Targeted verified source added during Exclusive Tyres visual completion."
+  },
+  {
+    "brand": "LANDSPIDER",
+    "pattern": "WILDTRAXX MT",
+    "confidence": "exact",
+    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260127/c49f67c0a6b0e6b7f91e0e7b81daae11.webp",
+    "sourcePageUrl": "https://landspidertire.com/product_detail/wildtraxx-mt.html",
+    "checkedSourceUrls": [
+      "https://landspidertire.com/product_detail/wildtraxx-mt.html"
     ],
     "source": "official",
     "reason": "Official manufacturer page and product-image path match brand and pattern."
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "RIVERA PRO",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/110831_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/radar-rivera-pro/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/radar-rivera-pro/"
+    ],
+    "source": "whattyre",
+    "reason": "WhatTyre page title matched exactly: Radar Rivera Pro 2"
+  },
+  {
+    "brand": "TRACMAX",
+    "pattern": "X Privilo AT08",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/119384_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/tracmax-x-privilo-at08/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/tracmax-x-privilo-at08/"
+    ],
+    "source": "whattyre",
+    "reason": "WhatTyre page title matched exactly: Tracmax X-privilo At08"
   },
   {
     "brand": "WINDFORCE",
-    "pattern": "TRANS MASTER GTM380",
+    "pattern": "CATCHFORS AT",
     "confidence": "exact",
-    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260119/15d583685d57d37e57594c8b9987d78f.webp",
-    "sourcePageUrl": "https://landspidertire.com/product_detail/gtm380.html",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/124130_FLR-1.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/windforce-catchfors-at/",
     "checkedSourceUrls": [
-      "https://landspidertire.com/product_detail/gtm380.html"
+      "https://whattyre.com/products/windforce-catchfors-at/"
     ],
-    "source": "official",
-    "reason": "Official manufacturer page and product-image path match brand and pattern."
+    "source": "whattyre",
+    "reason": "WhatTyre page title matched exactly: Windforce Catchfors AT II"
   }
 ]

@@ -1,4542 +1,563 @@
 {
-  "generatedAt": "2026-07-03T14:14:36.180Z",
+  "generatedAt": "2026-07-03T15:53:29.578Z",
   "supplier": "EXCLUSIVE TYRES",
-  "uniqueCandidates": 333,
-  "activeImageRows": 153,
-  "covered": 149,
-  "missing": 184,
-  "missingTop": [
-    {
-      "id": "DUNLOP::SUMITOMO HTRH5",
-      "brand": "DUNLOP",
-      "pattern": "SUMITOMO HTRH5",
-      "brandKey": "DUNLOP",
-      "patternKey": "SUMITOMO HTRH5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SUMITOMO HTRT5 88",
-      "brand": "DUNLOP",
-      "pattern": "SUMITOMO HTRT5 88",
-      "brandKey": "DUNLOP",
-      "patternKey": "SUMITOMO HTRT5 88",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "FIREMAX::FM330",
-      "brand": "FIREMAX",
-      "pattern": "FM330",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM330",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
+  "uniqueCandidates": 291,
+  "activeImageRows": 220,
+  "covered": 212,
+  "missing": 79,
+  "topMissing": [
     {
       "id": "FIREMAX::FM350",
       "brand": "FIREMAX",
       "pattern": "FM350",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM350",
       "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "FIREMAX::TTF FM18 TUBE FLAP",
-      "brand": "FIREMAX",
-      "pattern": "TTF FM18 tube+flap",
-      "brandKey": "FIREMAX",
-      "patternKey": "TTF FM18 TUBE FLAP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::SUP AG",
-      "brand": "GENERAL",
-      "pattern": "SUP AG",
-      "brandKey": "GENERAL",
-      "patternKey": "SUP AG",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::WRL AT",
-      "brand": "GOODYEAR",
-      "pattern": "WRL AT",
-      "brandKey": "GOODYEAR",
-      "patternKey": "WRL AT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
+      "totalAvailableStock": 20
     },
     {
       "id": "KAPSEN::AENEAS S01 S",
       "brand": "KAPSEN",
       "pattern": "AENEAS S01 S",
-      "brandKey": "KAPSEN",
-      "patternKey": "AENEAS S01 S",
       "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "TIMAX::ECO 59",
-      "brand": "TIMAX",
-      "pattern": "ECO 59",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO 59",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::WT3020",
-      "brand": "WINDFORCE",
-      "pattern": "WT3020",
-      "brandKey": "WINDFORCE",
-      "patternKey": "WT3020",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SUMITOMO BC100",
-      "brand": "DUNLOP",
-      "pattern": "SUMITOMO BC100",
-      "brandKey": "DUNLOP",
-      "patternKey": "SUMITOMO BC100",
-      "affectedSkus": 2,
-      "totalAvailableStock": 19,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SUMITOMO BC10",
-      "brand": "DUNLOP",
-      "pattern": "SUMITOMO BC10",
-      "brandKey": "DUNLOP",
-      "patternKey": "SUMITOMO BC10",
-      "affectedSkus": 3,
-      "totalAvailableStock": 18,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::DUELER AT",
-      "brand": "BRIDGESTONE",
-      "pattern": "DUELER AT",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "DUELER AT",
-      "affectedSkus": 2,
-      "totalAvailableStock": 16,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::D697",
-      "brand": "BRIDGESTONE",
-      "pattern": "D697",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "D697",
-      "affectedSkus": 4,
-      "totalAvailableStock": 15,
-      "covered": false
-    },
-    {
-      "id": "KAPSEN::65VR15 H202 96",
-      "brand": "KAPSEN",
-      "pattern": "65VR15 H202 96",
-      "brandKey": "KAPSEN",
-      "patternKey": "65VR15 H202 96",
-      "affectedSkus": 1,
-      "totalAvailableStock": 15,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::AT5",
-      "brand": "DUNLOP",
-      "pattern": "AT5",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT5",
-      "affectedSkus": 4,
-      "totalAvailableStock": 14,
-      "covered": false
-    },
-    {
-      "id": "TRACMAX::X PRIVILOAT01",
-      "brand": "TRACMAX",
-      "pattern": "X priviloAT01",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILOAT01",
-      "affectedSkus": 1,
-      "totalAvailableStock": 14,
-      "covered": false
+      "totalAvailableStock": 20
     },
     {
       "id": "WINDFORCE::WD2068",
       "brand": "WINDFORCE",
       "pattern": "WD2068",
-      "brandKey": "WINDFORCE",
-      "patternKey": "WD2068",
       "affectedSkus": 1,
-      "totalAvailableStock": 14,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR SC5 SSR",
-      "brand": "CONTINENTAL",
-      "pattern": "FR SC5 SSR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR SC5 SSR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 13,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::S001 EXT",
-      "brand": "BRIDGESTONE",
-      "pattern": "S001 EXT",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "S001 EXT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CROSSCONT LX SP SIL",
-      "brand": "CONTINENTAL",
-      "pattern": "CrossCont LX Sp SIL",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CROSSCONT LX SP SIL",
-      "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::AT20",
-      "brand": "DUNLOP",
-      "pattern": "AT20",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT20",
-      "affectedSkus": 2,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "KAPSEN::HS102 D",
-      "brand": "KAPSEN",
-      "pattern": "HS102 D",
-      "brandKey": "KAPSEN",
-      "patternKey": "HS102 D",
-      "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "LANDSAIL::CLX 10",
-      "brand": "LANDSAIL",
-      "pattern": "CLX 10",
-      "brandKey": "LANDSAIL",
-      "patternKey": "CLX 10",
-      "affectedSkus": 2,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "LANDSPIDER::WILDTRAXX MT MI",
-      "brand": "LANDSPIDER",
-      "pattern": "WILDTRAXX MT MI",
-      "brandKey": "LANDSPIDER",
-      "patternKey": "WILDTRAXX MT MI",
-      "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": false
+      "totalAvailableStock": 14
     },
     {
       "id": "WINDFORCE::WD2080",
       "brand": "WINDFORCE",
       "pattern": "WD2080",
-      "brandKey": "WINDFORCE",
-      "patternKey": "WD2080",
       "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": false
+      "totalAvailableStock": 12
     },
     {
       "id": "CEAT::PRO B10 D",
       "brand": "CEAT",
       "pattern": "PRO B10 D",
-      "brandKey": "CEAT",
-      "patternKey": "PRO B10 D",
       "affectedSkus": 1,
-      "totalAvailableStock": 11,
-      "covered": false
-    },
-    {
-      "id": "CEAT::SECURA ZOOM TT",
-      "brand": "CEAT",
-      "pattern": "Secura Zoom+ TT",
-      "brandKey": "CEAT",
-      "patternKey": "SECURA ZOOM TT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 11,
-      "covered": false
+      "totalAvailableStock": 11
     },
     {
       "id": "GOODYEAR::KELLY ARMORSTEEL KMT",
       "brand": "GOODYEAR",
       "pattern": "KELLY ARMORSTEEL KMT",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KELLY ARMORSTEEL KMT",
       "affectedSkus": 1,
-      "totalAvailableStock": 11,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::BC10",
-      "brand": "DUNLOP",
-      "pattern": "BC10",
-      "brandKey": "DUNLOP",
-      "patternKey": "BC10",
-      "affectedSkus": 2,
-      "totalAvailableStock": 10,
-      "covered": false
-    },
-    {
-      "id": "CEAT::90 12 ZOOM D",
-      "brand": "CEAT",
-      "pattern": "90 12 ZOOM D",
-      "brandKey": "CEAT",
-      "patternKey": "90 12 ZOOM D",
-      "affectedSkus": 1,
-      "totalAvailableStock": 9,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CROSSCONT ATR LRE FR",
-      "brand": "CONTINENTAL",
-      "pattern": "CROSSCONT ATR LRE FR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CROSSCONT ATR LRE FR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 9,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::SC5 FR SSR",
-      "brand": "CONTINENTAL",
-      "pattern": "SC5 FR SSR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "SC5 FR SSR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 9,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::VANC10",
-      "brand": "GENERAL",
-      "pattern": "VANC10",
-      "brandKey": "GENERAL",
-      "patternKey": "VANC10",
-      "affectedSkus": 1,
-      "totalAvailableStock": 9,
-      "covered": false
+      "totalAvailableStock": 11
     },
     {
       "id": "GOODYEAR::INTENSA UHP 2",
       "brand": "GOODYEAR",
       "pattern": "INTENSA UHP 2",
-      "brandKey": "GOODYEAR",
-      "patternKey": "INTENSA UHP 2",
       "affectedSkus": 3,
-      "totalAvailableStock": 9,
-      "covered": false
-    },
-    {
-      "id": "TRACMAX::X PRIVILOH",
-      "brand": "TRACMAX",
-      "pattern": "X priviloH",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILOH",
-      "affectedSkus": 2,
-      "totalAvailableStock": 9,
-      "covered": false
-    },
-    {
-      "id": "CEAT::PRO S10 RD SWR18PR154 150 MS",
-      "brand": "CEAT",
-      "pattern": "PRO S10 RD SWR18PR154 150 MS",
-      "brandKey": "CEAT",
-      "patternKey": "PRO S10 RD SWR18PR154 150 MS",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CCART LRE FR",
-      "brand": "CONTINENTAL",
-      "pattern": "CCART# LRE FR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CCART LRE FR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CCAT CONTICROSSCONTACT AT",
-      "brand": "CONTINENTAL",
-      "pattern": "CCAT CONTICROSSCONTACT AT",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CCAT CONTICROSSCONTACT AT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON255 FR CCAT CROSSCONTACT",
-      "brand": "CONTINENTAL",
-      "pattern": "CON255 FR CCAT CROSSCONTACT",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON255 FR CCAT CROSSCONTACT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CONTI FR PC7 PREMIUMCONTACT 7",
-      "brand": "CONTINENTAL",
-      "pattern": "CONTI FR PC7 PREMIUMCONTACT 7",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CONTI FR PC7 PREMIUMCONTACT 7",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR CCATR CROSSCONTACT ATR",
-      "brand": "CONTINENTAL",
-      "pattern": "FR CCATR CROSSCONTACT ATR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR CCATR CROSSCONTACT ATR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR ECOCONTACT 6Q",
-      "brand": "CONTINENTAL",
-      "pattern": "FR * ECOCONTACT 6Q",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR ECOCONTACT 6Q",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::SC5 SUV CONTI SPORTCONTACT5",
-      "brand": "CONTINENTAL",
-      "pattern": "SC5 SUV CONTI SPORTCONTACT5",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "SC5 SUV CONTI SPORTCONTACT5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::TRAKGRIP",
-      "brand": "DUNLOP",
-      "pattern": "TRAKGRIP",
-      "brandKey": "DUNLOP",
-      "patternKey": "TRAKGRIP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::FR SC5P",
-      "brand": "GENERAL",
-      "pattern": "FR SC5P",
-      "brandKey": "GENERAL",
-      "patternKey": "FR SC5P",
-      "affectedSkus": 2,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::SZROAS LR",
-      "brand": "PIRELLI",
-      "pattern": "SZROAS LR",
-      "brandKey": "PIRELLI",
-      "patternKey": "SZROAS LR",
-      "affectedSkus": 2,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "RADAR::DIMAX AS",
-      "brand": "RADAR",
-      "pattern": "Dimax AS",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX AS",
-      "affectedSkus": 2,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "RADAR::RENEGADE PRO",
-      "brand": "RADAR",
-      "pattern": "RENEGADE PRO",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE PRO",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "ANNAITE::CENTARA VANTI TOURING S1",
-      "brand": "ANNAITE",
-      "pattern": "CENTARA VANTI TOURING S1",
-      "brandKey": "ANNAITE",
-      "patternKey": "CENTARA VANTI TOURING S1",
-      "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::DHP SP",
-      "brand": "BRIDGESTONE",
-      "pattern": "DHP SP",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "DHP SP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "CEAT::80 18 GRIPP",
-      "brand": "CEAT",
-      "pattern": "80 18 GRIPP",
-      "brandKey": "CEAT",
-      "patternKey": "80 18 GRIPP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR CCATR",
-      "brand": "CONTINENTAL",
-      "pattern": "FR CCATR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR CCATR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::AT3GM",
-      "brand": "DUNLOP",
-      "pattern": "AT3GM",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT3GM",
-      "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::P ZERO VOL",
-      "brand": "PIRELLI",
-      "pattern": "P ZERO VOL",
-      "brandKey": "PIRELLI",
-      "patternKey": "P ZERO VOL",
-      "affectedSkus": 2,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::S VERD",
-      "brand": "PIRELLI",
-      "pattern": "S VERD",
-      "brandKey": "PIRELLI",
-      "patternKey": "S VERD",
-      "affectedSkus": 3,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "TRACMAX::X PRIVILO MT",
-      "brand": "TRACMAX",
-      "pattern": "X Privilo MT",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILO MT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR PC6 PREMIUMCONTACT 6",
-      "brand": "CONTINENTAL",
-      "pattern": "FR PC6 PREMIUMCONTACT 6",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR PC6 PREMIUMCONTACT 6",
-      "affectedSkus": 2,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::GEN CONTI GENERAL GRAB GT",
-      "brand": "CONTINENTAL",
-      "pattern": "GEN CONTI GENERAL GRAB GT+",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "GEN CONTI GENERAL GRAB GT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::MAXX050 ROF",
-      "brand": "DUNLOP",
-      "pattern": "MAXX050+ ROF",
-      "brandKey": "DUNLOP",
-      "patternKey": "MAXX050 ROF",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SP431W 54",
-      "brand": "DUNLOP",
-      "pattern": "SP431W 54",
-      "brandKey": "DUNLOP",
-      "patternKey": "SP431W 54",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::5 II HCT",
-      "brand": "GOODYEAR",
-      "pattern": "5 II HCT",
-      "brandKey": "GOODYEAR",
-      "patternKey": "5 II HCT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3 SUV XLROFF",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 3 SUV XLROFF",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 3 SUV XLROFF",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::SAVA CARGO 4",
-      "brand": "GOODYEAR",
-      "pattern": "SAVA CARGO 4",
-      "brandKey": "GOODYEAR",
-      "patternKey": "SAVA CARGO 4",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "RADAR::DIMAX R8 LT",
-      "brand": "RADAR",
-      "pattern": "DIMAX R8+ LT",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX R8 LT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::TOURINGMAX",
-      "brand": "WINDFORCE",
-      "pattern": "TOURINGMAX",
-      "brandKey": "WINDFORCE",
-      "patternKey": "TOURINGMAX",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "XCENT::RADIAL EL913",
-      "brand": "XCENT",
-      "pattern": "RADIAL EL913",
-      "brandKey": "XCENT",
-      "patternKey": "RADIAL EL913",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "YOKOHAMA::YOK Y360",
-      "brand": "YOKOHAMA",
-      "pattern": "YOK Y360",
-      "brandKey": "YOKOHAMA",
-      "patternKey": "YOK Y360",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "ANCHEE::AC898",
-      "brand": "ANCHEE",
-      "pattern": "AC898",
-      "brandKey": "ANCHEE",
-      "patternKey": "AC898",
-      "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CCAT CONTICROSSCONTAC AT 8",
-      "brand": "CONTINENTAL",
-      "pattern": "CCAT CONTICROSSCONTAC AT 8",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CCAT CONTICROSSCONTAC AT 8",
-      "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3 SUV XLROF",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 3 SUV XLROF",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 3 SUV XLROF",
-      "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": false
-    },
-    {
-      "id": "TIMAX::LTR18",
-      "brand": "TIMAX",
-      "pattern": "LTR18",
-      "brandKey": "TIMAX",
-      "patternKey": "LTR18",
-      "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::PR143 WT3000",
-      "brand": "WINDFORCE",
-      "pattern": "PR143 WT3000",
-      "brandKey": "WINDFORCE",
-      "patternKey": "PR143 WT3000",
-      "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": false
-    },
-    {
-      "id": "BFGOODRICH::BFG ALLTERRAIN KO3",
-      "brand": "BFGOODRICH",
-      "pattern": "BFG ALLTERRAIN KO3",
-      "brandKey": "BFGOODRICH",
-      "patternKey": "BFG ALLTERRAIN KO3",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::BST BRIDGESTONE 623 106S",
-      "brand": "BRIDGESTONE",
-      "pattern": "BST BRIDGESTONE 623 106S",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "BST BRIDGESTONE 623 106S",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::HP SPORT",
-      "brand": "BRIDGESTONE",
-      "pattern": "HP SPORT",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "HP SPORT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CEAT::WINMILE RTL 160 158KL",
-      "brand": "CEAT",
-      "pattern": "WINMILE RTL 160 158KL",
-      "brandKey": "CEAT",
-      "patternKey": "WINMILE RTL 160 158KL",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::35YR19 XLFRSC5P CONTISPORTCONTACT5P",
-      "brand": "CONTINENTAL",
-      "pattern": "35YR19 XLFRSC5P CONTISPORTCONTACT5P",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "35YR19 XLFRSC5P CONTISPORTCONTACT5P",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::EC5 CONTIECOCONTACT 5",
-      "brand": "CONTINENTAL",
-      "pattern": "EC5 CONTIECOCONTACT 5",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "EC5 CONTIECOCONTACT 5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::ECOCONTACT6Q SIL",
-      "brand": "CONTINENTAL",
-      "pattern": "ECOCONTACT6Q SIL",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "ECOCONTACT6Q SIL",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR PREMIUMCONTACT 6",
-      "brand": "CONTINENTAL",
-      "pattern": "FR PremiumContact 6",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR PREMIUMCONTACT 6",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR SC5 CONTISPORTCONTACT 5",
-      "brand": "CONTINENTAL",
-      "pattern": "FR SC5 CONTISPORTCONTACT 5",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR SC5 CONTISPORTCONTACT 5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::GEN FR GRABB GT PLUS",
-      "brand": "CONTINENTAL",
-      "pattern": "GEN FR GRABB GT PLUS",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "GEN FR GRABB GT PLUS",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::GRABBER AT3 LRC",
-      "brand": "CONTINENTAL",
-      "pattern": "GRABBER AT3 LRC",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "GRABBER AT3 LRC",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::SPORTCONTACT 5 SUV",
-      "brand": "CONTINENTAL",
-      "pattern": "SPORTCONTACT 5 SUV",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "SPORTCONTACT 5 SUV",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::VANCONT",
-      "brand": "CONTINENTAL",
-      "pattern": "VanCONT",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "VANCONT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::VANCONT 10",
-      "brand": "CONTINENTAL",
-      "pattern": "VanCONT 10",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "VANCONT 10",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::AT22",
-      "brand": "DUNLOP",
-      "pattern": "AT22",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT22",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::AT25",
-      "brand": "DUNLOP",
-      "pattern": "AT25",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT25",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::MAXX 060",
-      "brand": "DUNLOP",
-      "pattern": "MAXX 060+",
-      "brandKey": "DUNLOP",
-      "patternKey": "MAXX 060",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::MT2",
-      "brand": "DUNLOP",
-      "pattern": "MT2",
-      "brandKey": "DUNLOP",
-      "patternKey": "MT2",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SUMITOMO HTRH5 91",
-      "brand": "DUNLOP",
-      "pattern": "SUMITOMO HTRH5 91",
-      "brandKey": "DUNLOP",
-      "patternKey": "SUMITOMO HTRH5 91",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::ALTIMAX COMFORT",
-      "brand": "GENERAL",
-      "pattern": "Altimax Comfort",
-      "brandKey": "GENERAL",
-      "patternKey": "ALTIMAX COMFORT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::FR GENRAL GRABBER GT",
-      "brand": "GENERAL",
-      "pattern": "FR GENRAL GRABBER GT+",
-      "brandKey": "GENERAL",
-      "patternKey": "FR GENRAL GRABBER GT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::GRAB AT3 LRC FR",
-      "brand": "GENERAL",
-      "pattern": "GRAB AT3 LRC FR",
-      "brandKey": "GENERAL",
-      "patternKey": "GRAB AT3 LRC FR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::LT245 GRAB AT3 LRD",
-      "brand": "GENERAL",
-      "pattern": "LT245 GRAB AT3 LRD",
-      "brandKey": "GENERAL",
-      "patternKey": "LT245 GRAB AT3 LRD",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASY SUV MO1",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 ASY SUV MO1",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASY SUV MO1",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 3",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 3",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 SUPERSP",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 SUPERSP",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 SUPERSP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 SUPERSP R XLFPPC",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 SUPERSP R XLFPPC",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 SUPERSP R XLFPPC",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 SUPERSPORT AOXLFP",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 SUPERSPORT AOXLFP",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 SUPERSPORT AOXLFP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 SUPERSPORT R0XLP",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 SUPERSPORT R0XLP",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 SUPERSPORT R0XLP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EFFICIENTGRIP SUV",
-      "brand": "GOODYEAR",
-      "pattern": "EfficientGrip SUV",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EFFICIENTGRIP SUV",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::KMAX D EXT 156L154M ME",
-      "brand": "GOODYEAR",
-      "pattern": "KMAX D EXT 156L154M ME",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KMAX D EXT 156L154M ME",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::OMN D HD",
-      "brand": "GOODYEAR",
-      "pattern": "OMN D HD",
-      "brandKey": "GOODYEAR",
-      "patternKey": "OMN D HD",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::VOYAGER ZA",
-      "brand": "GOODYEAR",
-      "pattern": "VOYAGER ZA",
-      "brandKey": "GOODYEAR",
-      "patternKey": "VOYAGER ZA",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::WRANGLER DURATRAC",
-      "brand": "GOODYEAR",
-      "pattern": "Wrangler DuraTrac",
-      "brandKey": "GOODYEAR",
-      "patternKey": "WRANGLER DURATRAC",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "KAPSEN::HS203 C",
-      "brand": "KAPSEN",
-      "pattern": "HS203 C",
-      "brandKey": "KAPSEN",
-      "patternKey": "HS203 C",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "LANDSAIL::LS188",
-      "brand": "LANDSAIL",
-      "pattern": "LS188",
-      "brandKey": "LANDSAIL",
-      "patternKey": "LS188",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::P ZERO K1",
-      "brand": "PIRELLI",
-      "pattern": "P ZERO K1",
-      "brandKey": "PIRELLI",
-      "patternKey": "P ZERO K1",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::P7CINT",
-      "brand": "PIRELLI",
-      "pattern": "P7cint *",
-      "brandKey": "PIRELLI",
-      "patternKey": "P7CINT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::P7CINT K1",
-      "brand": "PIRELLI",
-      "pattern": "P7cint * K1",
-      "brandKey": "PIRELLI",
-      "patternKey": "P7CINT K1",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::PIR275 P ZERO KS NCS",
-      "brand": "PIRELLI",
-      "pattern": "PIR275 P ZERO * KS ncs",
-      "brandKey": "PIRELLI",
-      "patternKey": "PIR275 P ZERO KS NCS",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::S I P7CINT",
-      "brand": "PIRELLI",
-      "pattern": "s i P7cint",
-      "brandKey": "PIRELLI",
-      "patternKey": "S I P7CINT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::S VEAS LR",
-      "brand": "PIRELLI",
-      "pattern": "S VEas LR",
-      "brandKey": "PIRELLI",
-      "patternKey": "S VEAS LR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::SCORPN JP KS",
-      "brand": "PIRELLI",
-      "pattern": "SCORPN JP KS",
-      "brandKey": "PIRELLI",
-      "patternKey": "SCORPN JP KS",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::SZROAS LR NCS",
-      "brand": "PIRELLI",
-      "pattern": "SZROAS LR ncs",
-      "brandKey": "PIRELLI",
-      "patternKey": "SZROAS LR NCS",
-      "affectedSkus": 2,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::ZERO",
-      "brand": "PIRELLI",
-      "pattern": "ZERO",
-      "brandKey": "PIRELLI",
-      "patternKey": "ZERO",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "RADAR::LT RENEGADE RT",
-      "brand": "RADAR",
-      "pattern": "LT Renegade RT+",
-      "brandKey": "RADAR",
-      "patternKey": "LT RENEGADE RT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "RADAR::RENEGADE A T5",
-      "brand": "RADAR",
-      "pattern": "RENEGADE A T5",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE A T5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    }
-  ],
-  "candidates": [
-    {
-      "id": "DUNLOP::SUMITOMO HTRH5",
-      "brand": "DUNLOP",
-      "pattern": "SUMITOMO HTRH5",
-      "brandKey": "DUNLOP",
-      "patternKey": "SUMITOMO HTRH5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SUMITOMO HTRT5 88",
-      "brand": "DUNLOP",
-      "pattern": "SUMITOMO HTRT5 88",
-      "brandKey": "DUNLOP",
-      "patternKey": "SUMITOMO HTRT5 88",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "FIREMAX::FM330",
-      "brand": "FIREMAX",
-      "pattern": "FM330",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM330",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "FIREMAX::FM350",
-      "brand": "FIREMAX",
-      "pattern": "FM350",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM350",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "FIREMAX::TTF FM18 TUBE FLAP",
-      "brand": "FIREMAX",
-      "pattern": "TTF FM18 tube+flap",
-      "brandKey": "FIREMAX",
-      "patternKey": "TTF FM18 TUBE FLAP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::SUP AG",
-      "brand": "GENERAL",
-      "pattern": "SUP AG",
-      "brandKey": "GENERAL",
-      "patternKey": "SUP AG",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::WRL AT",
-      "brand": "GOODYEAR",
-      "pattern": "WRL AT",
-      "brandKey": "GOODYEAR",
-      "patternKey": "WRL AT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "KAPSEN::AENEAS S01 S",
-      "brand": "KAPSEN",
-      "pattern": "AENEAS S01 S",
-      "brandKey": "KAPSEN",
-      "patternKey": "AENEAS S01 S",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "TIMAX::ECO 59",
-      "brand": "TIMAX",
-      "pattern": "ECO 59",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO 59",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::WT3020",
-      "brand": "WINDFORCE",
-      "pattern": "WT3020",
-      "brandKey": "WINDFORCE",
-      "patternKey": "WT3020",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SUMITOMO BC100",
-      "brand": "DUNLOP",
-      "pattern": "SUMITOMO BC100",
-      "brandKey": "DUNLOP",
-      "patternKey": "SUMITOMO BC100",
-      "affectedSkus": 2,
-      "totalAvailableStock": 19,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SUMITOMO BC10",
-      "brand": "DUNLOP",
-      "pattern": "SUMITOMO BC10",
-      "brandKey": "DUNLOP",
-      "patternKey": "SUMITOMO BC10",
-      "affectedSkus": 3,
-      "totalAvailableStock": 18,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::DUELER AT",
-      "brand": "BRIDGESTONE",
-      "pattern": "DUELER AT",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "DUELER AT",
-      "affectedSkus": 2,
-      "totalAvailableStock": 16,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::D697",
-      "brand": "BRIDGESTONE",
-      "pattern": "D697",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "D697",
-      "affectedSkus": 4,
-      "totalAvailableStock": 15,
-      "covered": false
-    },
-    {
-      "id": "KAPSEN::65VR15 H202 96",
-      "brand": "KAPSEN",
-      "pattern": "65VR15 H202 96",
-      "brandKey": "KAPSEN",
-      "patternKey": "65VR15 H202 96",
-      "affectedSkus": 1,
-      "totalAvailableStock": 15,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::AT5",
-      "brand": "DUNLOP",
-      "pattern": "AT5",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT5",
-      "affectedSkus": 4,
-      "totalAvailableStock": 14,
-      "covered": false
-    },
-    {
-      "id": "TRACMAX::X PRIVILOAT01",
-      "brand": "TRACMAX",
-      "pattern": "X priviloAT01",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILOAT01",
-      "affectedSkus": 1,
-      "totalAvailableStock": 14,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::WD2068",
-      "brand": "WINDFORCE",
-      "pattern": "WD2068",
-      "brandKey": "WINDFORCE",
-      "patternKey": "WD2068",
-      "affectedSkus": 1,
-      "totalAvailableStock": 14,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR SC5 SSR",
-      "brand": "CONTINENTAL",
-      "pattern": "FR SC5 SSR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR SC5 SSR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 13,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::S001 EXT",
-      "brand": "BRIDGESTONE",
-      "pattern": "S001 EXT",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "S001 EXT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CROSSCONT LX SP SIL",
-      "brand": "CONTINENTAL",
-      "pattern": "CrossCont LX Sp SIL",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CROSSCONT LX SP SIL",
-      "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::AT20",
-      "brand": "DUNLOP",
-      "pattern": "AT20",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT20",
-      "affectedSkus": 2,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "KAPSEN::HS102 D",
-      "brand": "KAPSEN",
-      "pattern": "HS102 D",
-      "brandKey": "KAPSEN",
-      "patternKey": "HS102 D",
-      "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "LANDSAIL::CLX 10",
-      "brand": "LANDSAIL",
-      "pattern": "CLX 10",
-      "brandKey": "LANDSAIL",
-      "patternKey": "CLX 10",
-      "affectedSkus": 2,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "LANDSPIDER::WILDTRAXX MT MI",
-      "brand": "LANDSPIDER",
-      "pattern": "WILDTRAXX MT MI",
-      "brandKey": "LANDSPIDER",
-      "patternKey": "WILDTRAXX MT MI",
-      "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::WD2080",
-      "brand": "WINDFORCE",
-      "pattern": "WD2080",
-      "brandKey": "WINDFORCE",
-      "patternKey": "WD2080",
-      "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
-      "id": "CEAT::PRO B10 D",
-      "brand": "CEAT",
-      "pattern": "PRO B10 D",
-      "brandKey": "CEAT",
-      "patternKey": "PRO B10 D",
-      "affectedSkus": 1,
-      "totalAvailableStock": 11,
-      "covered": false
-    },
-    {
-      "id": "CEAT::SECURA ZOOM TT",
-      "brand": "CEAT",
-      "pattern": "Secura Zoom+ TT",
-      "brandKey": "CEAT",
-      "patternKey": "SECURA ZOOM TT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 11,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::KELLY ARMORSTEEL KMT",
-      "brand": "GOODYEAR",
-      "pattern": "KELLY ARMORSTEEL KMT",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KELLY ARMORSTEEL KMT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 11,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::BC10",
-      "brand": "DUNLOP",
-      "pattern": "BC10",
-      "brandKey": "DUNLOP",
-      "patternKey": "BC10",
-      "affectedSkus": 2,
-      "totalAvailableStock": 10,
-      "covered": false
+      "totalAvailableStock": 9
     },
     {
       "id": "CEAT::90 12 ZOOM D",
       "brand": "CEAT",
       "pattern": "90 12 ZOOM D",
-      "brandKey": "CEAT",
-      "patternKey": "90 12 ZOOM D",
       "affectedSkus": 1,
-      "totalAvailableStock": 9,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CROSSCONT ATR LRE FR",
-      "brand": "CONTINENTAL",
-      "pattern": "CROSSCONT ATR LRE FR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CROSSCONT ATR LRE FR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 9,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::SC5 FR SSR",
-      "brand": "CONTINENTAL",
-      "pattern": "SC5 FR SSR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "SC5 FR SSR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 9,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::VANC10",
-      "brand": "GENERAL",
-      "pattern": "VANC10",
-      "brandKey": "GENERAL",
-      "patternKey": "VANC10",
-      "affectedSkus": 1,
-      "totalAvailableStock": 9,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::INTENSA UHP 2",
-      "brand": "GOODYEAR",
-      "pattern": "INTENSA UHP 2",
-      "brandKey": "GOODYEAR",
-      "patternKey": "INTENSA UHP 2",
-      "affectedSkus": 3,
-      "totalAvailableStock": 9,
-      "covered": false
-    },
-    {
-      "id": "TRACMAX::X PRIVILOH",
-      "brand": "TRACMAX",
-      "pattern": "X priviloH",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILOH",
-      "affectedSkus": 2,
-      "totalAvailableStock": 9,
-      "covered": false
+      "totalAvailableStock": 9
     },
     {
       "id": "CEAT::PRO S10 RD SWR18PR154 150 MS",
       "brand": "CEAT",
       "pattern": "PRO S10 RD SWR18PR154 150 MS",
-      "brandKey": "CEAT",
-      "patternKey": "PRO S10 RD SWR18PR154 150 MS",
       "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CCART LRE FR",
-      "brand": "CONTINENTAL",
-      "pattern": "CCART# LRE FR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CCART LRE FR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CCAT CONTICROSSCONTACT AT",
-      "brand": "CONTINENTAL",
-      "pattern": "CCAT CONTICROSSCONTACT AT",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CCAT CONTICROSSCONTACT AT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON255 FR CCAT CROSSCONTACT",
-      "brand": "CONTINENTAL",
-      "pattern": "CON255 FR CCAT CROSSCONTACT",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON255 FR CCAT CROSSCONTACT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CONTI FR PC7 PREMIUMCONTACT 7",
-      "brand": "CONTINENTAL",
-      "pattern": "CONTI FR PC7 PREMIUMCONTACT 7",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CONTI FR PC7 PREMIUMCONTACT 7",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR CCATR CROSSCONTACT ATR",
-      "brand": "CONTINENTAL",
-      "pattern": "FR CCATR CROSSCONTACT ATR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR CCATR CROSSCONTACT ATR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR ECOCONTACT 6Q",
-      "brand": "CONTINENTAL",
-      "pattern": "FR * ECOCONTACT 6Q",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR ECOCONTACT 6Q",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::SC5 SUV CONTI SPORTCONTACT5",
-      "brand": "CONTINENTAL",
-      "pattern": "SC5 SUV CONTI SPORTCONTACT5",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "SC5 SUV CONTI SPORTCONTACT5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::TRAKGRIP",
-      "brand": "DUNLOP",
-      "pattern": "TRAKGRIP",
-      "brandKey": "DUNLOP",
-      "patternKey": "TRAKGRIP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::FR SC5P",
-      "brand": "GENERAL",
-      "pattern": "FR SC5P",
-      "brandKey": "GENERAL",
-      "patternKey": "FR SC5P",
-      "affectedSkus": 2,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::SZROAS LR",
-      "brand": "PIRELLI",
-      "pattern": "SZROAS LR",
-      "brandKey": "PIRELLI",
-      "patternKey": "SZROAS LR",
-      "affectedSkus": 2,
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "RADAR::DIMAX AS",
-      "brand": "RADAR",
-      "pattern": "Dimax AS",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX AS",
-      "affectedSkus": 2,
-      "totalAvailableStock": 8,
-      "covered": false
+      "totalAvailableStock": 8
     },
     {
       "id": "RADAR::RENEGADE PRO",
       "brand": "RADAR",
       "pattern": "RENEGADE PRO",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE PRO",
       "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": false
+      "totalAvailableStock": 8
     },
     {
       "id": "ANNAITE::CENTARA VANTI TOURING S1",
       "brand": "ANNAITE",
       "pattern": "CENTARA VANTI TOURING S1",
-      "brandKey": "ANNAITE",
-      "patternKey": "CENTARA VANTI TOURING S1",
       "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
+      "totalAvailableStock": 7
     },
     {
       "id": "BRIDGESTONE::DHP SP",
       "brand": "BRIDGESTONE",
       "pattern": "DHP SP",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "DHP SP",
       "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
+      "totalAvailableStock": 7
     },
     {
       "id": "CEAT::80 18 GRIPP",
       "brand": "CEAT",
       "pattern": "80 18 GRIPP",
-      "brandKey": "CEAT",
-      "patternKey": "80 18 GRIPP",
       "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR CCATR",
-      "brand": "CONTINENTAL",
-      "pattern": "FR CCATR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR CCATR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::AT3GM",
-      "brand": "DUNLOP",
-      "pattern": "AT3GM",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT3GM",
-      "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::P ZERO VOL",
-      "brand": "PIRELLI",
-      "pattern": "P ZERO VOL",
-      "brandKey": "PIRELLI",
-      "patternKey": "P ZERO VOL",
-      "affectedSkus": 2,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::S VERD",
-      "brand": "PIRELLI",
-      "pattern": "S VERD",
-      "brandKey": "PIRELLI",
-      "patternKey": "S VERD",
-      "affectedSkus": 3,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "TRACMAX::X PRIVILO MT",
-      "brand": "TRACMAX",
-      "pattern": "X Privilo MT",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILO MT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 7,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR PC6 PREMIUMCONTACT 6",
-      "brand": "CONTINENTAL",
-      "pattern": "FR PC6 PREMIUMCONTACT 6",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR PC6 PREMIUMCONTACT 6",
-      "affectedSkus": 2,
-      "totalAvailableStock": 6,
-      "covered": false
+      "totalAvailableStock": 7
     },
     {
       "id": "CONTINENTAL::GEN CONTI GENERAL GRAB GT",
       "brand": "CONTINENTAL",
       "pattern": "GEN CONTI GENERAL GRAB GT+",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "GEN CONTI GENERAL GRAB GT",
       "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::MAXX050 ROF",
-      "brand": "DUNLOP",
-      "pattern": "MAXX050+ ROF",
-      "brandKey": "DUNLOP",
-      "patternKey": "MAXX050 ROF",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SP431W 54",
-      "brand": "DUNLOP",
-      "pattern": "SP431W 54",
-      "brandKey": "DUNLOP",
-      "patternKey": "SP431W 54",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
+      "totalAvailableStock": 6
     },
     {
       "id": "GOODYEAR::5 II HCT",
       "brand": "GOODYEAR",
       "pattern": "5 II HCT",
-      "brandKey": "GOODYEAR",
-      "patternKey": "5 II HCT",
       "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3 SUV XLROFF",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 3 SUV XLROFF",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 3 SUV XLROFF",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::SAVA CARGO 4",
-      "brand": "GOODYEAR",
-      "pattern": "SAVA CARGO 4",
-      "brandKey": "GOODYEAR",
-      "patternKey": "SAVA CARGO 4",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
-    },
-    {
-      "id": "RADAR::DIMAX R8 LT",
-      "brand": "RADAR",
-      "pattern": "DIMAX R8+ LT",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX R8 LT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
+      "totalAvailableStock": 6
     },
     {
       "id": "WINDFORCE::TOURINGMAX",
       "brand": "WINDFORCE",
       "pattern": "TOURINGMAX",
-      "brandKey": "WINDFORCE",
-      "patternKey": "TOURINGMAX",
       "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
+      "totalAvailableStock": 6
     },
     {
       "id": "XCENT::RADIAL EL913",
       "brand": "XCENT",
       "pattern": "RADIAL EL913",
-      "brandKey": "XCENT",
-      "patternKey": "RADIAL EL913",
       "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
+      "totalAvailableStock": 6
     },
     {
       "id": "YOKOHAMA::YOK Y360",
       "brand": "YOKOHAMA",
       "pattern": "YOK Y360",
-      "brandKey": "YOKOHAMA",
-      "patternKey": "YOK Y360",
       "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": false
+      "totalAvailableStock": 6
     },
     {
       "id": "ANCHEE::AC898",
       "brand": "ANCHEE",
       "pattern": "AC898",
-      "brandKey": "ANCHEE",
-      "patternKey": "AC898",
       "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CCAT CONTICROSSCONTAC AT 8",
-      "brand": "CONTINENTAL",
-      "pattern": "CCAT CONTICROSSCONTAC AT 8",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CCAT CONTICROSSCONTAC AT 8",
-      "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3 SUV XLROF",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 3 SUV XLROF",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 3 SUV XLROF",
-      "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": false
+      "totalAvailableStock": 5
     },
     {
       "id": "TIMAX::LTR18",
       "brand": "TIMAX",
       "pattern": "LTR18",
-      "brandKey": "TIMAX",
-      "patternKey": "LTR18",
       "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::PR143 WT3000",
-      "brand": "WINDFORCE",
-      "pattern": "PR143 WT3000",
-      "brandKey": "WINDFORCE",
-      "patternKey": "PR143 WT3000",
-      "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": false
+      "totalAvailableStock": 5
     },
     {
       "id": "BFGOODRICH::BFG ALLTERRAIN KO3",
       "brand": "BFGOODRICH",
       "pattern": "BFG ALLTERRAIN KO3",
-      "brandKey": "BFGOODRICH",
-      "patternKey": "BFG ALLTERRAIN KO3",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "BRIDGESTONE::BST BRIDGESTONE 623 106S",
       "brand": "BRIDGESTONE",
       "pattern": "BST BRIDGESTONE 623 106S",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "BST BRIDGESTONE 623 106S",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "BRIDGESTONE::HP SPORT",
       "brand": "BRIDGESTONE",
       "pattern": "HP SPORT",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "HP SPORT",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "CEAT::WINMILE RTL 160 158KL",
       "brand": "CEAT",
       "pattern": "WINMILE RTL 160 158KL",
-      "brandKey": "CEAT",
-      "patternKey": "WINMILE RTL 160 158KL",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::35YR19 XLFRSC5P CONTISPORTCONTACT5P",
-      "brand": "CONTINENTAL",
-      "pattern": "35YR19 XLFRSC5P CONTISPORTCONTACT5P",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "35YR19 XLFRSC5P CONTISPORTCONTACT5P",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::EC5 CONTIECOCONTACT 5",
-      "brand": "CONTINENTAL",
-      "pattern": "EC5 CONTIECOCONTACT 5",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "EC5 CONTIECOCONTACT 5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::ECOCONTACT6Q SIL",
-      "brand": "CONTINENTAL",
-      "pattern": "ECOCONTACT6Q SIL",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "ECOCONTACT6Q SIL",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR PREMIUMCONTACT 6",
-      "brand": "CONTINENTAL",
-      "pattern": "FR PremiumContact 6",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR PREMIUMCONTACT 6",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR SC5 CONTISPORTCONTACT 5",
-      "brand": "CONTINENTAL",
-      "pattern": "FR SC5 CONTISPORTCONTACT 5",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR SC5 CONTISPORTCONTACT 5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "CONTINENTAL::GEN FR GRABB GT PLUS",
       "brand": "CONTINENTAL",
       "pattern": "GEN FR GRABB GT PLUS",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "GEN FR GRABB GT PLUS",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "CONTINENTAL::GRABBER AT3 LRC",
       "brand": "CONTINENTAL",
       "pattern": "GRABBER AT3 LRC",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "GRABBER AT3 LRC",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::SPORTCONTACT 5 SUV",
-      "brand": "CONTINENTAL",
-      "pattern": "SPORTCONTACT 5 SUV",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "SPORTCONTACT 5 SUV",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::VANCONT",
-      "brand": "CONTINENTAL",
-      "pattern": "VanCONT",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "VANCONT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::VANCONT 10",
-      "brand": "CONTINENTAL",
-      "pattern": "VanCONT 10",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "VANCONT 10",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::AT22",
-      "brand": "DUNLOP",
-      "pattern": "AT22",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT22",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "DUNLOP::AT25",
       "brand": "DUNLOP",
       "pattern": "AT25",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT25",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "DUNLOP::MAXX 060",
       "brand": "DUNLOP",
       "pattern": "MAXX 060+",
-      "brandKey": "DUNLOP",
-      "patternKey": "MAXX 060",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "DUNLOP::MT2",
       "brand": "DUNLOP",
       "pattern": "MT2",
-      "brandKey": "DUNLOP",
-      "patternKey": "MT2",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SUMITOMO HTRH5 91",
-      "brand": "DUNLOP",
-      "pattern": "SUMITOMO HTRH5 91",
-      "brandKey": "DUNLOP",
-      "patternKey": "SUMITOMO HTRH5 91",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::ALTIMAX COMFORT",
-      "brand": "GENERAL",
-      "pattern": "Altimax Comfort",
-      "brandKey": "GENERAL",
-      "patternKey": "ALTIMAX COMFORT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "GENERAL::FR GENRAL GRABBER GT",
       "brand": "GENERAL",
       "pattern": "FR GENRAL GRABBER GT+",
-      "brandKey": "GENERAL",
-      "patternKey": "FR GENRAL GRABBER GT",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "GENERAL::GRAB AT3 LRC FR",
       "brand": "GENERAL",
       "pattern": "GRAB AT3 LRC FR",
-      "brandKey": "GENERAL",
-      "patternKey": "GRAB AT3 LRC FR",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "GENERAL::LT245 GRAB AT3 LRD",
       "brand": "GENERAL",
       "pattern": "LT245 GRAB AT3 LRD",
-      "brandKey": "GENERAL",
-      "patternKey": "LT245 GRAB AT3 LRD",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "GOODYEAR::EAGLE F1 ASY SUV MO1",
       "brand": "GOODYEAR",
       "pattern": "Eagle F1 ASY SUV MO1",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASY SUV MO1",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 3",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 3",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 SUPERSP",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 SUPERSP",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 SUPERSP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 SUPERSP R XLFPPC",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 SUPERSP R XLFPPC",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 SUPERSP R XLFPPC",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 SUPERSPORT AOXLFP",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 SUPERSPORT AOXLFP",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 SUPERSPORT AOXLFP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "GOODYEAR::EAGLE F1 SUPERSPORT R0XLP",
       "brand": "GOODYEAR",
       "pattern": "Eagle F1 SUPERSPORT R0XLP",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 SUPERSPORT R0XLP",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EFFICIENTGRIP SUV",
-      "brand": "GOODYEAR",
-      "pattern": "EfficientGrip SUV",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EFFICIENTGRIP SUV",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "GOODYEAR::KMAX D EXT 156L154M ME",
       "brand": "GOODYEAR",
       "pattern": "KMAX D EXT 156L154M ME",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KMAX D EXT 156L154M ME",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "GOODYEAR::OMN D HD",
       "brand": "GOODYEAR",
       "pattern": "OMN D HD",
-      "brandKey": "GOODYEAR",
-      "patternKey": "OMN D HD",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "GOODYEAR::VOYAGER ZA",
       "brand": "GOODYEAR",
       "pattern": "VOYAGER ZA",
-      "brandKey": "GOODYEAR",
-      "patternKey": "VOYAGER ZA",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::WRANGLER DURATRAC",
-      "brand": "GOODYEAR",
-      "pattern": "Wrangler DuraTrac",
-      "brandKey": "GOODYEAR",
-      "patternKey": "WRANGLER DURATRAC",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "KAPSEN::HS203 C",
       "brand": "KAPSEN",
       "pattern": "HS203 C",
-      "brandKey": "KAPSEN",
-      "patternKey": "HS203 C",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "LANDSAIL::LS188",
-      "brand": "LANDSAIL",
-      "pattern": "LS188",
-      "brandKey": "LANDSAIL",
-      "patternKey": "LS188",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "PIRELLI::P ZERO K1",
       "brand": "PIRELLI",
       "pattern": "P ZERO K1",
-      "brandKey": "PIRELLI",
-      "patternKey": "P ZERO K1",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::P7CINT",
-      "brand": "PIRELLI",
-      "pattern": "P7cint *",
-      "brandKey": "PIRELLI",
-      "patternKey": "P7CINT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "PIRELLI::P7CINT K1",
       "brand": "PIRELLI",
       "pattern": "P7cint * K1",
-      "brandKey": "PIRELLI",
-      "patternKey": "P7CINT K1",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "PIRELLI::PIR275 P ZERO KS NCS",
       "brand": "PIRELLI",
       "pattern": "PIR275 P ZERO * KS ncs",
-      "brandKey": "PIRELLI",
-      "patternKey": "PIR275 P ZERO KS NCS",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "PIRELLI::S I P7CINT",
       "brand": "PIRELLI",
       "pattern": "s i P7cint",
-      "brandKey": "PIRELLI",
-      "patternKey": "S I P7CINT",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "PIRELLI::S VEAS LR",
       "brand": "PIRELLI",
       "pattern": "S VEas LR",
-      "brandKey": "PIRELLI",
-      "patternKey": "S VEAS LR",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "PIRELLI::SCORPN JP KS",
       "brand": "PIRELLI",
       "pattern": "SCORPN JP KS",
-      "brandKey": "PIRELLI",
-      "patternKey": "SCORPN JP KS",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::SZROAS LR NCS",
-      "brand": "PIRELLI",
-      "pattern": "SZROAS LR ncs",
-      "brandKey": "PIRELLI",
-      "patternKey": "SZROAS LR NCS",
-      "affectedSkus": 2,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "PIRELLI::ZERO",
-      "brand": "PIRELLI",
-      "pattern": "ZERO",
-      "brandKey": "PIRELLI",
-      "patternKey": "ZERO",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "RADAR::LT RENEGADE RT",
       "brand": "RADAR",
       "pattern": "LT Renegade RT+",
-      "brandKey": "RADAR",
-      "patternKey": "LT RENEGADE RT",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "RADAR::RENEGADE A T5",
-      "brand": "RADAR",
-      "pattern": "RENEGADE A T5",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE A T5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "WINDFORCE::TRANS MASTER ESL220",
       "brand": "WINDFORCE",
       "pattern": "TRANS MASTER ESL220",
-      "brandKey": "WINDFORCE",
-      "patternKey": "TRANS MASTER ESL220",
       "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::POTENZA SPORT",
-      "brand": "BRIDGESTONE",
-      "pattern": "POTENZA SPORT",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "POTENZA SPORT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 3,
-      "covered": false
+      "totalAvailableStock": 4
     },
     {
       "id": "CEAT::90 19 ZOOM PLUS F",
       "brand": "CEAT",
       "pattern": "90 19 ZOOM PLUS F",
-      "brandKey": "CEAT",
-      "patternKey": "90 19 ZOOM PLUS F",
       "affectedSkus": 1,
-      "totalAvailableStock": 3,
-      "covered": false
-    },
-    {
-      "id": "FIREMAX::FM787 S",
-      "brand": "FIREMAX",
-      "pattern": "FM787 S",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM787 S",
-      "affectedSkus": 1,
-      "totalAvailableStock": 3,
-      "covered": false
+      "totalAvailableStock": 3
     },
     {
       "id": "GENERAL::CON CONTINENTAL PREMCONT",
       "brand": "GENERAL",
       "pattern": "CON CONTINENTAL PREMCONT",
-      "brandKey": "GENERAL",
-      "patternKey": "CON CONTINENTAL PREMCONT",
       "affectedSkus": 1,
-      "totalAvailableStock": 3,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3 ROF",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 3 * ROF",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 3 ROF",
-      "affectedSkus": 1,
-      "totalAvailableStock": 3,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EFFICIENTGRIP",
-      "brand": "GOODYEAR",
-      "pattern": "EfficientGrip",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EFFICIENTGRIP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 3,
-      "covered": false
+      "totalAvailableStock": 3
     },
     {
       "id": "KAPSEN::RS23",
       "brand": "KAPSEN",
       "pattern": "RS23",
-      "brandKey": "KAPSEN",
-      "patternKey": "RS23",
       "affectedSkus": 1,
-      "totalAvailableStock": 3,
-      "covered": false
+      "totalAvailableStock": 3
     },
     {
       "id": "WINDFORCE::PR136 WT3000",
       "brand": "WINDFORCE",
       "pattern": "PR136 WT3000",
-      "brandKey": "WINDFORCE",
-      "patternKey": "PR136 WT3000",
       "affectedSkus": 1,
-      "totalAvailableStock": 3,
-      "covered": false
-    },
-    {
-      "id": "ANNAITE::AN906",
-      "brand": "ANNAITE",
-      "pattern": "AN906",
-      "brandKey": "ANNAITE",
-      "patternKey": "AN906",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 3
     },
     {
       "id": "BRIDGESTONE::DHP SPORT N 0",
       "brand": "BRIDGESTONE",
       "pattern": "DHP SPORT N 0",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "DHP SPORT N 0",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "CEAT::00 18 GRIPP X5 TT",
       "brand": "CEAT",
       "pattern": "00 18 GRIPP X5 TT",
-      "brandKey": "CEAT",
-      "patternKey": "00 18 GRIPP X5 TT",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CONTI FRSC5 SSR CONTISPORTCONT 5",
-      "brand": "CONTINENTAL",
-      "pattern": "CONTI FRSC5 SSR CONTISPORTCONT 5",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CONTI FRSC5 SSR CONTISPORTCONT 5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CROSSCONT AT FR",
-      "brand": "CONTINENTAL",
-      "pattern": "CROSSCONT AT FR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CROSSCONT AT FR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CROSSCONT ATR FR",
-      "brand": "CONTINENTAL",
-      "pattern": "CROSSCONT ATR FR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CROSSCONT ATR FR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::EC6 ECOCONTACT 6",
-      "brand": "CONTINENTAL",
-      "pattern": "EC6 EcoContact 6",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "EC6 ECOCONTACT 6",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "CONTINENTAL::FR GRAB GT GENERAL TIRE GRABBE",
       "brand": "CONTINENTAL",
       "pattern": "FR GRAB GT+ GENERAL TIRE GRABBE",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR GRAB GT GENERAL TIRE GRABBE",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::FR SC5 CONTISPORTCONTACT 5 SSR",
-      "brand": "CONTINENTAL",
-      "pattern": "FR SC5 ContiSportContact 5 SSR*",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "FR SC5 CONTISPORTCONTACT 5 SSR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::SC5",
-      "brand": "CONTINENTAL",
-      "pattern": "SC5",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "SC5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::SPORT CONTACT",
-      "brand": "CONTINENTAL",
-      "pattern": "Sport Contact",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "SPORT CONTACT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "CONTINENTAL::X4SC NO 4X4SPORTCONTACT FR",
       "brand": "CONTINENTAL",
       "pattern": "X4SC NO# 4X4SPORTCONTACT FR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "X4SC NO 4X4SPORTCONTACT FR",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "DRIVEMASTER::ST936 S",
       "brand": "DRIVEMASTER",
       "pattern": "ST936 S",
-      "brandKey": "DRIVEMASTER",
-      "patternKey": "ST936 S",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::45VR16 FM800 84",
-      "brand": "DUNLOP",
-      "pattern": "45VR16 FM800 84",
-      "brandKey": "DUNLOP",
-      "patternKey": "45VR16 FM800 84",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::AT3G WLT",
-      "brand": "DUNLOP",
-      "pattern": "AT3G\" WLT",
-      "brandKey": "DUNLOP",
-      "patternKey": "AT3G WLT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::FM800",
-      "brand": "DUNLOP",
-      "pattern": "FM800",
-      "brandKey": "DUNLOP",
-      "patternKey": "FM800",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "DUNLOP::MAXX TT",
       "brand": "DUNLOP",
       "pattern": "MAXX TT",
-      "brandKey": "DUNLOP",
-      "patternKey": "MAXX TT",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::CON CONTINENTAL CCLXSP",
-      "brand": "GENERAL",
-      "pattern": "CON CONTINENTAL CCLXSP",
-      "brandKey": "GENERAL",
-      "patternKey": "CON CONTINENTAL CCLXSP",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "GENERAL::FR GRABBER GT PLUS",
       "brand": "GENERAL",
       "pattern": "FR GRABBER GT PLUS",
-      "brandKey": "GENERAL",
-      "patternKey": "FR GRABBER GT PLUS",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "GOODYEAR::EAGLE F1 ASY SUV ROFFP",
       "brand": "GOODYEAR",
       "pattern": "Eagle F1 ASY SUV * ROFFP",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASY SUV ROFFP",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 2 SUV XI",
       "brand": "GOODYEAR",
       "pattern": "Eagle F1 Asymmetric 2 SUV XI",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 2 SUV XI",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "GOODYEAR::SAVA ORJAK 4",
       "brand": "GOODYEAR",
       "pattern": "SAVA ORJAK 4",
-      "brandKey": "GOODYEAR",
-      "patternKey": "SAVA ORJAK 4",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "GOODYEAR::VOYAGER HP ZA",
       "brand": "GOODYEAR",
       "pattern": "VOYAGER HP ZA",
-      "brandKey": "GOODYEAR",
-      "patternKey": "VOYAGER HP ZA",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "KAPSEN::50VR16 S2000 88",
       "brand": "KAPSEN",
       "pattern": "50VR16 S2000 88",
-      "brandKey": "KAPSEN",
-      "patternKey": "50VR16 S2000 88",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
-    },
-    {
-      "id": "KAPSEN::HS217 OR",
-      "brand": "KAPSEN",
-      "pattern": "HS217 OR",
-      "brandKey": "KAPSEN",
-      "patternKey": "HS217 OR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "KAPSEN::RS21",
       "brand": "KAPSEN",
       "pattern": "RS21",
-      "brandKey": "KAPSEN",
-      "patternKey": "RS21",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "RADAR::ARGONITE RV 4",
       "brand": "RADAR",
       "pattern": "Argonite RV 4",
-      "brandKey": "RADAR",
-      "patternKey": "ARGONITE RV 4",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "RADAR::RENEGADE AT PRO",
       "brand": "RADAR",
       "pattern": "RENEGADE AT PRO",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE AT PRO",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "TRACMAX::X PRIVILORS01",
       "brand": "TRACMAX",
       "pattern": "X priviloRS01",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILORS01",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "WINDFORCE::CATCHFORS MT",
       "brand": "WINDFORCE",
       "pattern": "CATCHFORS MT",
-      "brandKey": "WINDFORCE",
-      "patternKey": "CATCHFORS MT",
       "affectedSkus": 1,
-      "totalAvailableStock": 2,
-      "covered": false
+      "totalAvailableStock": 2
     },
     {
       "id": "CONTINENTAL::PREMCONT",
       "brand": "CONTINENTAL",
       "pattern": "PremCont",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "PREMCONT",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::SC5P SPORT CONTACT",
-      "brand": "CONTINENTAL",
-      "pattern": "SC5P SPORT CONTACT",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "SC5P SPORT CONTACT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "CONTINENTAL::SPORTCONT FR SUV VOL",
       "brand": "CONTINENTAL",
       "pattern": "SportCONT FR SUV VOL",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "SPORTCONT FR SUV VOL",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "DOUBLE KING::DOUBLE KING 558",
       "brand": "DOUBLE KING",
       "pattern": "DOUBLE KING 558",
-      "brandKey": "DOUBLE KING",
-      "patternKey": "DOUBLE KING 558",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "DRIVEMASTER::MACROYAL MR39",
       "brand": "DRIVEMASTER",
       "pattern": "MACROYAL MR39",
-      "brandKey": "DRIVEMASTER",
-      "patternKey": "MACROYAL MR39",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::GRANDTREK AT30",
-      "brand": "DUNLOP",
-      "pattern": "GRANDTREK AT30",
-      "brandKey": "DUNLOP",
-      "patternKey": "GRANDTREK AT30",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::MAXX050",
-      "brand": "DUNLOP",
-      "pattern": "MAXX050+",
-      "brandKey": "DUNLOP",
-      "patternKey": "MAXX050",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SPORT 560",
-      "brand": "DUNLOP",
-      "pattern": "SPORT 560",
-      "brandKey": "DUNLOP",
-      "patternKey": "SPORT 560",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::TOURING R1",
-      "brand": "DUNLOP",
-      "pattern": "TOURING R1",
-      "brandKey": "DUNLOP",
-      "patternKey": "TOURING R1",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "GENERAL::VANC100",
-      "brand": "GENERAL",
-      "pattern": "VANC100",
-      "brandKey": "GENERAL",
-      "patternKey": "VANC100",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 5 ROF",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 5 * ROF",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 5 ROF",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EFFICIENTGRIP CARGO 2",
-      "brand": "GOODYEAR",
-      "pattern": "EfficientGrip CARGO 2",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EFFICIENTGRIP CARGO 2",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EFFICIENTGRIP PERFORMANCE",
-      "brand": "GOODYEAR",
-      "pattern": "EfficientGrip Performance",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EFFICIENTGRIP PERFORMANCE",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "GOODYEAR::REGIOFORCE 3 156L154M",
       "brand": "GOODYEAR",
       "pattern": "REGIOFORCE 3 156L154M",
-      "brandKey": "GOODYEAR",
-      "patternKey": "REGIOFORCE 3 156L154M",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::WRANGLER AT ADVENTURE LR",
-      "brand": "GOODYEAR",
-      "pattern": "Wrangler AT Adventure LR",
-      "brandKey": "GOODYEAR",
-      "patternKey": "WRANGLER AT ADVENTURE LR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "LANDSAIL::CLV2 101WZ",
       "brand": "LANDSAIL",
       "pattern": "CLV2 101WZ",
-      "brandKey": "LANDSAIL",
-      "patternKey": "CLV2 101WZ",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "LANDSAIL::CLV2 HT",
       "brand": "LANDSAIL",
       "pattern": "CLV2 HT",
-      "brandKey": "LANDSAIL",
-      "patternKey": "CLV2 HT",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "RADAR::RIVERA PRO",
-      "brand": "RADAR",
-      "pattern": "RIVERA PRO",
-      "brandKey": "RADAR",
-      "patternKey": "RIVERA PRO",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "TIMAX::MUGNUM",
       "brand": "TIMAX",
       "pattern": "MUGNUM",
-      "brandKey": "TIMAX",
-      "patternKey": "MUGNUM",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "TIMAX::PEREFLY DK 558",
       "brand": "TIMAX",
       "pattern": "PEREFLY DK 558",
-      "brandKey": "TIMAX",
-      "patternKey": "PEREFLY DK 558",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "TRACMAX::ROADMAX",
       "brand": "TRACMAX",
       "pattern": "ROADMAX",
-      "brandKey": "TRACMAX",
-      "patternKey": "ROADMAX",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "TRACMAX::X PRIVILO AT RF11",
       "brand": "TRACMAX",
       "pattern": "X Privilo AT RF11",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILO AT RF11",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "TRACMAX::X PRIVILO AT08",
-      "brand": "TRACMAX",
-      "pattern": "X Privilo AT08",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILO AT08",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::CATCHFORS AT",
-      "brand": "WINDFORCE",
-      "pattern": "CATCHFORS AT",
-      "brandKey": "WINDFORCE",
-      "patternKey": "CATCHFORS AT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
+      "totalAvailableStock": 1
     },
     {
       "id": "WINDFORCE::WT3030 MS",
       "brand": "WINDFORCE",
       "pattern": "WT3030 MS",
-      "brandKey": "WINDFORCE",
-      "patternKey": "WT3030 MS",
       "affectedSkus": 1,
-      "totalAvailableStock": 1,
-      "covered": false
-    },
-    {
-      "id": "RADAR::DIMAX R8",
-      "brand": "RADAR",
-      "pattern": "DIMAX R8+",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX R8",
-      "affectedSkus": 114,
-      "totalAvailableStock": 1228,
-      "covered": true
-    },
-    {
-      "id": "FIREMAX::FM601",
-      "brand": "FIREMAX",
-      "pattern": "FM601",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM601",
-      "affectedSkus": 51,
-      "totalAvailableStock": 655,
-      "covered": true
-    },
-    {
-      "id": "RADAR::RPX800",
-      "brand": "RADAR",
-      "pattern": "RPX800",
-      "brandKey": "RADAR",
-      "patternKey": "RPX800",
-      "affectedSkus": 50,
-      "totalAvailableStock": 483,
-      "covered": true
-    },
-    {
-      "id": "TRACMAX::X PRIVILO TX5",
-      "brand": "TRACMAX",
-      "pattern": "X Privilo TX5",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILO TX5",
-      "affectedSkus": 31,
-      "totalAvailableStock": 461,
-      "covered": true
-    },
-    {
-      "id": "RADAR::RENEGADE RT",
-      "brand": "RADAR",
-      "pattern": "Renegade RT+",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE RT",
-      "affectedSkus": 33,
-      "totalAvailableStock": 424,
-      "covered": true
-    },
-    {
-      "id": "RADAR::RENEGADE AT5",
-      "brand": "RADAR",
-      "pattern": "Renegade AT5",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE AT5",
-      "affectedSkus": 36,
-      "totalAvailableStock": 315,
-      "covered": true
-    },
-    {
-      "id": "LANDSAIL::LS588",
-      "brand": "LANDSAIL",
-      "pattern": "LS588",
-      "brandKey": "LANDSAIL",
-      "patternKey": "LS588",
-      "affectedSkus": 41,
-      "totalAvailableStock": 272,
-      "covered": true
-    },
-    {
-      "id": "RADAR::DIMAX SPRINT",
-      "brand": "RADAR",
-      "pattern": "DIMAX SPRINT",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX SPRINT",
-      "affectedSkus": 18,
-      "totalAvailableStock": 260,
-      "covered": true
-    },
-    {
-      "id": "LANDSAIL::LS388",
-      "brand": "LANDSAIL",
-      "pattern": "LS388",
-      "brandKey": "LANDSAIL",
-      "patternKey": "LS388",
-      "affectedSkus": 23,
-      "totalAvailableStock": 235,
-      "covered": true
-    },
-    {
-      "id": "ANCHEE::AC808",
-      "brand": "ANCHEE",
-      "pattern": "AC808",
-      "brandKey": "ANCHEE",
-      "patternKey": "AC808",
-      "affectedSkus": 19,
-      "totalAvailableStock": 225,
-      "covered": true
-    },
-    {
-      "id": "RADAR::RENEGADE AT SPORT",
-      "brand": "RADAR",
-      "pattern": "Renegade AT Sport",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE AT SPORT",
-      "affectedSkus": 12,
-      "totalAvailableStock": 178,
-      "covered": true
-    },
-    {
-      "id": "RADAR::DIMAX SPORT",
-      "brand": "RADAR",
-      "pattern": "DIMAX SPORT",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX SPORT",
-      "affectedSkus": 15,
-      "totalAvailableStock": 160,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::CATCHFORS HP",
-      "brand": "WINDFORCE",
-      "pattern": "CATCHFORS HP",
-      "brandKey": "WINDFORCE",
-      "patternKey": "CATCHFORS HP",
-      "affectedSkus": 16,
-      "totalAvailableStock": 160,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::ADVANFORS TOURING",
-      "brand": "WINDFORCE",
-      "pattern": "ADVANFORS TOURING",
-      "brandKey": "WINDFORCE",
-      "patternKey": "ADVANFORS TOURING",
-      "affectedSkus": 12,
-      "totalAvailableStock": 142,
-      "covered": true
-    },
-    {
-      "id": "TRACMAX::X PRIVILO TX3",
-      "brand": "TRACMAX",
-      "pattern": "X Privilo TX3",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILO TX3",
-      "affectedSkus": 25,
-      "totalAvailableStock": 135,
-      "covered": true
-    },
-    {
-      "id": "KAPSEN::H202",
-      "brand": "KAPSEN",
-      "pattern": "H202",
-      "brandKey": "KAPSEN",
-      "patternKey": "H202",
-      "affectedSkus": 9,
-      "totalAvailableStock": 133,
-      "covered": true
-    },
-    {
-      "id": "RADAR::DIMAX TOURING",
-      "brand": "RADAR",
-      "pattern": "DIMAX TOURING",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX TOURING",
-      "affectedSkus": 10,
-      "totalAvailableStock": 133,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::TM568",
-      "brand": "TIMAX",
-      "pattern": "TM568",
-      "brandKey": "TIMAX",
-      "patternKey": "TM568",
-      "affectedSkus": 7,
-      "totalAvailableStock": 116,
-      "covered": true
-    },
-    {
-      "id": "FIREMAX::FM518",
-      "brand": "FIREMAX",
-      "pattern": "FM518",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM518",
-      "affectedSkus": 14,
-      "totalAvailableStock": 103,
-      "covered": true
-    },
-    {
-      "id": "FIREMAX::FM913",
-      "brand": "FIREMAX",
-      "pattern": "FM913",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM913",
-      "affectedSkus": 8,
-      "totalAvailableStock": 95,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::CATCHFORS AT II",
-      "brand": "WINDFORCE",
-      "pattern": "CATCHFORS AT II",
-      "brandKey": "WINDFORCE",
-      "patternKey": "CATCHFORS AT II",
-      "affectedSkus": 10,
-      "totalAvailableStock": 89,
-      "covered": true
-    },
-    {
-      "id": "FIREMAX::FM501 AT",
-      "brand": "FIREMAX",
-      "pattern": "FM501 AT",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM501 AT",
-      "affectedSkus": 8,
-      "totalAvailableStock": 81,
-      "covered": true
-    },
-    {
-      "id": "ANCHEE::AC838",
-      "brand": "ANCHEE",
-      "pattern": "AC838",
-      "brandKey": "ANCHEE",
-      "patternKey": "AC838",
-      "affectedSkus": 4,
-      "totalAvailableStock": 80,
-      "covered": true
-    },
-    {
-      "id": "RADAR::DIMAX CLASSIC",
-      "brand": "RADAR",
-      "pattern": "Dimax Classic",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX CLASSIC",
-      "affectedSkus": 10,
-      "totalAvailableStock": 77,
-      "covered": true
-    },
-    {
-      "id": "FIREMAX::FM316",
-      "brand": "FIREMAX",
-      "pattern": "FM316",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM316",
-      "affectedSkus": 8,
-      "totalAvailableStock": 70,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::WRANGLER AT ADVENTURE",
-      "brand": "GOODYEAR",
-      "pattern": "Wrangler AT Adventure",
-      "brandKey": "GOODYEAR",
-      "patternKey": "WRANGLER AT ADVENTURE",
-      "affectedSkus": 8,
-      "totalAvailableStock": 68,
-      "covered": true
-    },
-    {
-      "id": "KAPSEN::S2000",
-      "brand": "KAPSEN",
-      "pattern": "S2000",
-      "brandKey": "KAPSEN",
-      "patternKey": "S2000",
-      "affectedSkus": 7,
-      "totalAvailableStock": 67,
-      "covered": true
-    },
-    {
-      "id": "RADAR::RENEGADE R7",
-      "brand": "RADAR",
-      "pattern": "RENEGADE R7",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE R7",
-      "affectedSkus": 6,
-      "totalAvailableStock": 67,
-      "covered": true
-    },
-    {
-      "id": "BRIDGESTONE::ALENZA",
-      "brand": "BRIDGESTONE",
-      "pattern": "ALENZA",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "ALENZA",
-      "affectedSkus": 7,
-      "totalAvailableStock": 66,
-      "covered": true
-    },
-    {
-      "id": "CEAT::ECODRIVE",
-      "brand": "CEAT",
-      "pattern": "ECODRIVE",
-      "brandKey": "CEAT",
-      "patternKey": "ECODRIVE",
-      "affectedSkus": 4,
-      "totalAvailableStock": 66,
-      "covered": true
-    },
-    {
-      "id": "TRACMAX::TRANSPORTER RF09",
-      "brand": "TRACMAX",
-      "pattern": "Transporter RF09",
-      "brandKey": "TRACMAX",
-      "patternKey": "TRANSPORTER RF09",
-      "affectedSkus": 4,
-      "totalAvailableStock": 63,
-      "covered": true
-    },
-    {
-      "id": "LANDSAIL::LS288",
-      "brand": "LANDSAIL",
-      "pattern": "LS288",
-      "brandKey": "LANDSAIL",
-      "patternKey": "LS288",
-      "affectedSkus": 4,
-      "totalAvailableStock": 61,
-      "covered": true
-    },
-    {
-      "id": "RADAR::RLT71",
-      "brand": "RADAR",
-      "pattern": "RLT71",
-      "brandKey": "RADAR",
-      "patternKey": "RLT71",
-      "affectedSkus": 3,
-      "totalAvailableStock": 60,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::ECO SUV 71",
-      "brand": "TIMAX",
-      "pattern": "ECO SUV 71",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO SUV 71",
-      "affectedSkus": 3,
-      "totalAvailableStock": 60,
-      "covered": true
-    },
-    {
-      "id": "FIRESTONE::DESTINATION AT GRIP",
-      "brand": "FIRESTONE",
-      "pattern": "DESTINATION AT GRIP",
-      "brandKey": "FIRESTONE",
-      "patternKey": "DESTINATION AT GRIP",
-      "affectedSkus": 3,
-      "totalAvailableStock": 58,
-      "covered": true
-    },
-    {
-      "id": "DUNLOP::SP VAN01",
-      "brand": "DUNLOP",
-      "pattern": "SP Van01",
-      "brandKey": "DUNLOP",
-      "patternKey": "SP VAN01",
-      "affectedSkus": 4,
-      "totalAvailableStock": 55,
-      "covered": true
-    },
-    {
-      "id": "KAPSEN::HS268",
-      "brand": "KAPSEN",
-      "pattern": "HS268",
-      "brandKey": "KAPSEN",
-      "patternKey": "HS268",
-      "affectedSkus": 4,
-      "totalAvailableStock": 52,
-      "covered": true
-    },
-    {
-      "id": "ANNAITE::AN600",
-      "brand": "ANNAITE",
-      "pattern": "AN600",
-      "brandKey": "ANNAITE",
-      "patternKey": "AN600",
-      "affectedSkus": 6,
-      "totalAvailableStock": 51,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 6",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 6+",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 6",
-      "affectedSkus": 9,
-      "totalAvailableStock": 51,
-      "covered": true
-    },
-    {
-      "id": "RADAR::RENEGADE R7 MT",
-      "brand": "RADAR",
-      "pattern": "RENEGADE R7 MT",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE R7 MT",
-      "affectedSkus": 7,
-      "totalAvailableStock": 50,
-      "covered": true
-    },
-    {
-      "id": "DRIVEMASTER::ST901",
-      "brand": "DRIVEMASTER",
-      "pattern": "ST901",
-      "brandKey": "DRIVEMASTER",
-      "patternKey": "ST901",
-      "affectedSkus": 3,
-      "totalAvailableStock": 49,
-      "covered": true
-    },
-    {
-      "id": "KAPSEN::DURABLEMAX RS01",
-      "brand": "KAPSEN",
-      "pattern": "DurableMax RS01",
-      "brandKey": "KAPSEN",
-      "patternKey": "DURABLEMAX RS01",
-      "affectedSkus": 4,
-      "totalAvailableStock": 47,
-      "covered": true
-    },
-    {
-      "id": "KAPSEN::RS26",
-      "brand": "KAPSEN",
-      "pattern": "RS26",
-      "brandKey": "KAPSEN",
-      "patternKey": "RS26",
-      "affectedSkus": 5,
-      "totalAvailableStock": 46,
-      "covered": true
-    },
-    {
-      "id": "LANDSAIL::LSV88",
-      "brand": "LANDSAIL",
-      "pattern": "LSV88",
-      "brandKey": "LANDSAIL",
-      "patternKey": "LSV88",
-      "affectedSkus": 4,
-      "totalAvailableStock": 45,
-      "covered": true
-    },
-    {
-      "id": "RADAR::RENEGADE X",
-      "brand": "RADAR",
-      "pattern": "Renegade X",
-      "brandKey": "RADAR",
-      "patternKey": "RENEGADE X",
-      "affectedSkus": 3,
-      "totalAvailableStock": 44,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::CATCHFORS UHP PRO",
-      "brand": "WINDFORCE",
-      "pattern": "CATCHFORS UHP PRO",
-      "brandKey": "WINDFORCE",
-      "patternKey": "CATCHFORS UHP PRO",
-      "affectedSkus": 7,
-      "totalAvailableStock": 43,
-      "covered": true
-    },
-    {
-      "id": "ANCHEE::AC828",
-      "brand": "ANCHEE",
-      "pattern": "AC828",
-      "brandKey": "ANCHEE",
-      "patternKey": "AC828",
-      "affectedSkus": 4,
-      "totalAvailableStock": 42,
-      "covered": true
-    },
-    {
-      "id": "ANNAITE::AN606",
-      "brand": "ANNAITE",
-      "pattern": "AN606",
-      "brandKey": "ANNAITE",
-      "patternKey": "AN606",
-      "affectedSkus": 7,
-      "totalAvailableStock": 42,
-      "covered": true
-    },
-    {
-      "id": "BRIDGESTONE::S001",
-      "brand": "BRIDGESTONE",
-      "pattern": "S001",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "S001",
-      "affectedSkus": 3,
-      "totalAvailableStock": 41,
-      "covered": true
-    },
-    {
-      "id": "BRIDGESTONE::DUELER HT 684 II",
-      "brand": "BRIDGESTONE",
-      "pattern": "Dueler HT 684 II",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "DUELER HT 684 II",
-      "affectedSkus": 2,
-      "totalAvailableStock": 40,
-      "covered": true
-    },
-    {
-      "id": "CONTINENTAL::CONTIPREMIUMCONTACT 5",
-      "brand": "CONTINENTAL",
-      "pattern": "ContiPremiumContact 5",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CONTIPREMIUMCONTACT 5",
-      "affectedSkus": 2,
-      "totalAvailableStock": 40,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 SUPERSPORT",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 SUPERSPORT",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 SUPERSPORT",
-      "affectedSkus": 4,
-      "totalAvailableStock": 40,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::EFFICIENTGRIP PERFORMANCE ZAF",
-      "brand": "GOODYEAR",
-      "pattern": "EfficientGrip Performance ZAF",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EFFICIENTGRIP PERFORMANCE ZAF",
-      "affectedSkus": 2,
-      "totalAvailableStock": 40,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::ECO COMFORT 33",
-      "brand": "TIMAX",
-      "pattern": "ECO Comfort 33",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO COMFORT 33",
-      "affectedSkus": 2,
-      "totalAvailableStock": 40,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::TM257",
-      "brand": "TIMAX",
-      "pattern": "TM257",
-      "brandKey": "TIMAX",
-      "patternKey": "TM257",
-      "affectedSkus": 2,
-      "totalAvailableStock": 40,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::TM258",
-      "brand": "TIMAX",
-      "pattern": "TM258",
-      "brandKey": "TIMAX",
-      "patternKey": "TM258",
-      "affectedSkus": 2,
-      "totalAvailableStock": 40,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::ADVANFORS MAX",
-      "brand": "WINDFORCE",
-      "pattern": "ADVANFORS MAX",
-      "brandKey": "WINDFORCE",
-      "patternKey": "ADVANFORS MAX",
-      "affectedSkus": 2,
-      "totalAvailableStock": 40,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::WD2020",
-      "brand": "WINDFORCE",
-      "pattern": "WD2020",
-      "brandKey": "WINDFORCE",
-      "patternKey": "WD2020",
-      "affectedSkus": 2,
-      "totalAvailableStock": 40,
-      "covered": true
-    },
-    {
-      "id": "FIREMAX::FM",
-      "brand": "FIREMAX",
-      "pattern": "FM",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM",
-      "affectedSkus": 2,
-      "totalAvailableStock": 35,
-      "covered": true
-    },
-    {
-      "id": "CEAT::SECURA ZOOM",
-      "brand": "CEAT",
-      "pattern": "Secura Zoom+",
-      "brandKey": "CEAT",
-      "patternKey": "SECURA ZOOM",
-      "affectedSkus": 2,
-      "totalAvailableStock": 31,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::EFFICIENTGRIP 2 SUV",
-      "brand": "GOODYEAR",
-      "pattern": "EfficientGrip 2 SUV",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EFFICIENTGRIP 2 SUV",
-      "affectedSkus": 6,
-      "totalAvailableStock": 31,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::KELLY ARMORSTEEL KMS",
-      "brand": "GOODYEAR",
-      "pattern": "KELLY ARMORSTEEL KMS",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KELLY ARMORSTEEL KMS",
-      "affectedSkus": 2,
-      "totalAvailableStock": 30,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::WRANGLER DURATRAC RT",
-      "brand": "GOODYEAR",
-      "pattern": "Wrangler DuraTrac RT",
-      "brandKey": "GOODYEAR",
-      "patternKey": "WRANGLER DURATRAC RT",
-      "affectedSkus": 2,
-      "totalAvailableStock": 30,
-      "covered": true
-    },
-    {
-      "id": "LANDSAIL::CLV2",
-      "brand": "LANDSAIL",
-      "pattern": "CLV2",
-      "brandKey": "LANDSAIL",
-      "patternKey": "CLV2",
-      "affectedSkus": 5,
-      "totalAvailableStock": 30,
-      "covered": true
-    },
-    {
-      "id": "TRACMAX::GRT901",
-      "brand": "TRACMAX",
-      "pattern": "GRT901",
-      "brandKey": "TRACMAX",
-      "patternKey": "GRT901",
-      "affectedSkus": 3,
-      "totalAvailableStock": 30,
-      "covered": true
-    },
-    {
-      "id": "LANDSPIDER::WILDTRAXX AT",
-      "brand": "LANDSPIDER",
-      "pattern": "WILDTRAXX AT",
-      "brandKey": "LANDSPIDER",
-      "patternKey": "WILDTRAXX AT",
-      "affectedSkus": 5,
-      "totalAvailableStock": 29,
-      "covered": true
-    },
-    {
-      "id": "RADAR::DIMAX AS 8",
-      "brand": "RADAR",
-      "pattern": "DIMAX AS 8",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX AS 8",
-      "affectedSkus": 2,
-      "totalAvailableStock": 28,
-      "covered": true
-    },
-    {
-      "id": "TRACMAX::GRT800",
-      "brand": "TRACMAX",
-      "pattern": "GRT800",
-      "brandKey": "TRACMAX",
-      "patternKey": "GRT800",
-      "affectedSkus": 3,
-      "totalAvailableStock": 28,
-      "covered": true
-    },
-    {
-      "id": "TRACMAX::GRT880",
-      "brand": "TRACMAX",
-      "pattern": "GRT880",
-      "brandKey": "TRACMAX",
-      "patternKey": "GRT880",
-      "affectedSkus": 2,
-      "totalAvailableStock": 28,
-      "covered": true
-    },
-    {
-      "id": "ANNAITE::AN900",
-      "brand": "ANNAITE",
-      "pattern": "AN900",
-      "brandKey": "ANNAITE",
-      "patternKey": "AN900",
-      "affectedSkus": 4,
-      "totalAvailableStock": 26,
-      "covered": true
-    },
-    {
-      "id": "FIREMAX::FM188",
-      "brand": "FIREMAX",
-      "pattern": "FM188",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM188",
-      "affectedSkus": 2,
-      "totalAvailableStock": 26,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 2 ROF",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 2 ROF",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 2 ROF",
-      "affectedSkus": 5,
-      "totalAvailableStock": 26,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::KMAX",
-      "brand": "GOODYEAR",
-      "pattern": "KMAX",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KMAX",
-      "affectedSkus": 3,
-      "totalAvailableStock": 26,
-      "covered": true
-    },
-    {
-      "id": "RADAR::DIMAX AS 6",
-      "brand": "RADAR",
-      "pattern": "Dimax AS 6",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX AS 6",
-      "affectedSkus": 2,
-      "totalAvailableStock": 26,
-      "covered": true
-    },
-    {
-      "id": "TRACMAX::X PRIVILO RS01",
-      "brand": "TRACMAX",
-      "pattern": "X Privilo RS01",
-      "brandKey": "TRACMAX",
-      "patternKey": "X PRIVILO RS01",
-      "affectedSkus": 3,
-      "totalAvailableStock": 26,
-      "covered": true
-    },
-    {
-      "id": "ANCHEE::AC818",
-      "brand": "ANCHEE",
-      "pattern": "AC818",
-      "brandKey": "ANCHEE",
-      "patternKey": "AC818",
-      "affectedSkus": 10,
-      "totalAvailableStock": 25,
-      "covered": true
-    },
-    {
-      "id": "KAPSEN::HS101",
-      "brand": "KAPSEN",
-      "pattern": "HS101",
-      "brandKey": "KAPSEN",
-      "patternKey": "HS101",
-      "affectedSkus": 2,
-      "totalAvailableStock": 25,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 5",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 5",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 5",
-      "affectedSkus": 5,
-      "totalAvailableStock": 23,
-      "covered": true
-    },
-    {
-      "id": "PIRELLI::P ZERO",
-      "brand": "PIRELLI",
-      "pattern": "P ZERO *",
-      "brandKey": "PIRELLI",
-      "patternKey": "P ZERO",
-      "affectedSkus": 7,
-      "totalAvailableStock": 23,
-      "covered": true
-    },
-    {
-      "id": "KAPSEN::COMFORTMAX S801",
-      "brand": "KAPSEN",
-      "pattern": "ComfortMax S801",
-      "brandKey": "KAPSEN",
-      "patternKey": "COMFORTMAX S801",
-      "affectedSkus": 2,
-      "totalAvailableStock": 22,
-      "covered": true
-    },
-    {
-      "id": "DRIVEMASTER::ST939",
-      "brand": "DRIVEMASTER",
-      "pattern": "ST939",
-      "brandKey": "DRIVEMASTER",
-      "patternKey": "ST939",
-      "affectedSkus": 2,
-      "totalAvailableStock": 21,
-      "covered": true
-    },
-    {
-      "id": "BRIDGESTONE::ALENZA 001",
-      "brand": "BRIDGESTONE",
-      "pattern": "Alenza 001",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "ALENZA 001",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "BRIDGESTONE::DUELER AT D693 II",
-      "brand": "BRIDGESTONE",
-      "pattern": "Dueler AT D693 II",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "DUELER AT D693 II",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "BRIDGESTONE::POTENZA S001",
-      "brand": "BRIDGESTONE",
-      "pattern": "POTENZA S001",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "POTENZA S001",
-      "affectedSkus": 2,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "BRIDGESTONE::RE050",
-      "brand": "BRIDGESTONE",
-      "pattern": "RE050",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "RE050",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "CEAT::MILAZE",
-      "brand": "CEAT",
-      "pattern": "Milaze",
-      "brandKey": "CEAT",
-      "patternKey": "MILAZE",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "CONTINENTAL::CROSSCONTACT RX",
-      "brand": "CONTINENTAL",
-      "pattern": "CrossContact RX",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CROSSCONTACT RX",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "CONTINENTAL::WORLDCONTACT 4X4",
-      "brand": "CONTINENTAL",
-      "pattern": "WorldContact 4x4",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "WORLDCONTACT 4X4",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "DRIVEMASTER::ST916",
-      "brand": "DRIVEMASTER",
-      "pattern": "ST916",
-      "brandKey": "DRIVEMASTER",
-      "patternKey": "ST916",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "DRIVEMASTER::ST969",
-      "brand": "DRIVEMASTER",
-      "pattern": "ST969",
-      "brandKey": "DRIVEMASTER",
-      "patternKey": "ST969",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "DUNLOP::SP431W",
-      "brand": "DUNLOP",
-      "pattern": "SP431W",
-      "brandKey": "DUNLOP",
-      "patternKey": "SP431W",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "FIRESTONE::CV2020",
-      "brand": "FIRESTONE",
-      "pattern": "CV2020",
-      "brandKey": "FIRESTONE",
-      "patternKey": "CV2020",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::KMAX S",
-      "brand": "GOODYEAR",
-      "pattern": "KMAX S",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KMAX S",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "KAPSEN::HS166",
-      "brand": "KAPSEN",
-      "pattern": "HS166",
-      "brandKey": "KAPSEN",
-      "patternKey": "HS166",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::ECO COMFORT 34",
-      "brand": "TIMAX",
-      "pattern": "ECO COMFORT 34",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO COMFORT 34",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::ECO COMFORT 52",
-      "brand": "TIMAX",
-      "pattern": "ECO Comfort 52",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO COMFORT 52",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::ECO COMFORT 53",
-      "brand": "TIMAX",
-      "pattern": "ECO Comfort 53",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO COMFORT 53",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::ECO COMFORT 55",
-      "brand": "TIMAX",
-      "pattern": "ECO Comfort 55",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO COMFORT 55",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::ECO MAX 61",
-      "brand": "TIMAX",
-      "pattern": "ECO MAX 61",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO MAX 61",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::ECO SPORT 58",
-      "brand": "TIMAX",
-      "pattern": "ECO Sport 58",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO SPORT 58",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::ECO SPORT 59",
-      "brand": "TIMAX",
-      "pattern": "ECO Sport 59",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO SPORT 59",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::ECO31",
-      "brand": "TIMAX",
-      "pattern": "ECO31",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO31",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::LTR16",
-      "brand": "TIMAX",
-      "pattern": "LTR16",
-      "brandKey": "TIMAX",
-      "patternKey": "LTR16",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TIMAX::LTR28",
-      "brand": "TIMAX",
-      "pattern": "LTR28",
-      "brandKey": "TIMAX",
-      "patternKey": "LTR28",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TRACMAX::GRT916",
-      "brand": "TRACMAX",
-      "pattern": "GRT916",
-      "brandKey": "TRACMAX",
-      "patternKey": "GRT916",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TRACMAX::GRT932",
-      "brand": "TRACMAX",
-      "pattern": "GRT932",
-      "brandKey": "TRACMAX",
-      "patternKey": "GRT932",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "TRACMAX::TRANSPORTER RF08",
-      "brand": "TRACMAX",
-      "pattern": "Transporter RF08",
-      "brandKey": "TRACMAX",
-      "patternKey": "TRANSPORTER RF08",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::CATCHFORS H",
-      "brand": "WINDFORCE",
-      "pattern": "CATCHFORS H",
-      "brandKey": "WINDFORCE",
-      "patternKey": "CATCHFORS H",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::MILE MAX",
-      "brand": "WINDFORCE",
-      "pattern": "MILE MAX",
-      "brandKey": "WINDFORCE",
-      "patternKey": "MILE MAX",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::PRIMETOUR",
-      "brand": "WINDFORCE",
-      "pattern": "PRIMETOUR",
-      "brandKey": "WINDFORCE",
-      "patternKey": "PRIMETOUR",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::TRANS MASTER GSR210",
-      "brand": "WINDFORCE",
-      "pattern": "TRANS MASTER GSR210",
-      "brandKey": "WINDFORCE",
-      "patternKey": "TRANS MASTER GSR210",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::WA1060",
-      "brand": "WINDFORCE",
-      "pattern": "WA1060",
-      "brandKey": "WINDFORCE",
-      "patternKey": "WA1060",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::WT3000",
-      "brand": "WINDFORCE",
-      "pattern": "WT3000",
-      "brandKey": "WINDFORCE",
-      "patternKey": "WT3000",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "XCENT::EL316",
-      "brand": "XCENT",
-      "pattern": "EL316",
-      "brandKey": "XCENT",
-      "patternKey": "EL316",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "XCENT::EL913",
-      "brand": "XCENT",
-      "pattern": "EL913",
-      "brandKey": "XCENT",
-      "patternKey": "EL913",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": true
-    },
-    {
-      "id": "CEAT::SPORTDRIVE SUV",
-      "brand": "CEAT",
-      "pattern": "SPORTDRIVE SUV",
-      "brandKey": "CEAT",
-      "patternKey": "SPORTDRIVE SUV",
-      "affectedSkus": 3,
-      "totalAvailableStock": 19,
-      "covered": true
-    },
-    {
-      "id": "ANNAITE::AN616",
-      "brand": "ANNAITE",
-      "pattern": "AN616",
-      "brandKey": "ANNAITE",
-      "patternKey": "AN616",
-      "affectedSkus": 3,
-      "totalAvailableStock": 18,
-      "covered": true
-    },
-    {
-      "id": "CEAT::CROSSDRIVE AT",
-      "brand": "CEAT",
-      "pattern": "CrossDrive AT",
-      "brandKey": "CEAT",
-      "patternKey": "CROSSDRIVE AT",
-      "affectedSkus": 1,
-      "totalAvailableStock": 18,
-      "covered": true
-    },
-    {
-      "id": "CONTINENTAL::CONTIVANCONTACT 100",
-      "brand": "CONTINENTAL",
-      "pattern": "ContiVanContact 100",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CONTIVANCONTACT 100",
-      "affectedSkus": 2,
-      "totalAvailableStock": 17,
-      "covered": true
-    },
-    {
-      "id": "FIREMAX::VAN 916FM",
-      "brand": "FIREMAX",
-      "pattern": "VAN 916FM",
-      "brandKey": "FIREMAX",
-      "patternKey": "VAN 916FM",
-      "affectedSkus": 2,
-      "totalAvailableStock": 17,
-      "covered": true
-    },
-    {
-      "id": "GENERAL::GRABBER AT3",
-      "brand": "GENERAL",
-      "pattern": "Grabber AT3",
-      "brandKey": "GENERAL",
-      "patternKey": "GRABBER AT3",
-      "affectedSkus": 3,
-      "totalAvailableStock": 17,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::SAVA CARGO MS",
-      "brand": "GOODYEAR",
-      "pattern": "SAVA CARGO MS",
-      "brandKey": "GOODYEAR",
-      "patternKey": "SAVA CARGO MS",
-      "affectedSkus": 1,
-      "totalAvailableStock": 17,
-      "covered": true
-    },
-    {
-      "id": "BRIDGESTONE::TURANZA T005",
-      "brand": "BRIDGESTONE",
-      "pattern": "TURANZA T005",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "TURANZA T005",
-      "affectedSkus": 2,
-      "totalAvailableStock": 16,
-      "covered": true
-    },
-    {
-      "id": "CONTINENTAL::CROSSCONTACT LX 2",
-      "brand": "CONTINENTAL",
-      "pattern": "CROSSCONTACT LX 2",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CROSSCONTACT LX 2",
-      "affectedSkus": 2,
-      "totalAvailableStock": 16,
-      "covered": true
-    },
-    {
-      "id": "CONTINENTAL::ECOCONT",
-      "brand": "CONTINENTAL",
-      "pattern": "EcoCONT",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "ECOCONT",
-      "affectedSkus": 2,
-      "totalAvailableStock": 16,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::ADVANFORS SUV",
-      "brand": "WINDFORCE",
-      "pattern": "ADVANFORS SUV",
-      "brandKey": "WINDFORCE",
-      "patternKey": "ADVANFORS SUV",
-      "affectedSkus": 3,
-      "totalAvailableStock": 16,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::CATCHFORS PCR",
-      "brand": "WINDFORCE",
-      "pattern": "CATCHFORS PCR",
-      "brandKey": "WINDFORCE",
-      "patternKey": "CATCHFORS PCR",
-      "affectedSkus": 3,
-      "totalAvailableStock": 16,
-      "covered": true
-    },
-    {
-      "id": "XCENT::EL501",
-      "brand": "XCENT",
-      "pattern": "EL501",
-      "brandKey": "XCENT",
-      "patternKey": "EL501",
-      "affectedSkus": 1,
-      "totalAvailableStock": 16,
-      "covered": true
-    },
-    {
-      "id": "FIRESTONE::FS100",
-      "brand": "FIRESTONE",
-      "pattern": "FS100",
-      "brandKey": "FIRESTONE",
-      "patternKey": "FS100",
-      "affectedSkus": 2,
-      "totalAvailableStock": 13,
-      "covered": true
-    },
-    {
-      "id": "RADAR::DIMAX 4 SEASON",
-      "brand": "RADAR",
-      "pattern": "Dimax 4 Season",
-      "brandKey": "RADAR",
-      "patternKey": "DIMAX 4 SEASON",
-      "affectedSkus": 2,
-      "totalAvailableStock": 12,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::TRANS MASTER GTM380",
-      "brand": "WINDFORCE",
-      "pattern": "TRANS MASTER GTM380",
-      "brandKey": "WINDFORCE",
-      "patternKey": "TRANS MASTER GTM380",
-      "affectedSkus": 1,
-      "totalAvailableStock": 12,
-      "covered": true
-    },
-    {
-      "id": "CONTINENTAL::CROSSCONTACT UHP",
-      "brand": "CONTINENTAL",
-      "pattern": "CrossContact UHP",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CROSSCONTACT UHP",
-      "affectedSkus": 2,
-      "totalAvailableStock": 10,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::SAVA AVANT A3",
-      "brand": "GOODYEAR",
-      "pattern": "SAVA AVANT A3",
-      "brandKey": "GOODYEAR",
-      "patternKey": "SAVA AVANT A3",
-      "affectedSkus": 1,
-      "totalAvailableStock": 10,
-      "covered": true
-    },
-    {
-      "id": "XCENT::EL601",
-      "brand": "XCENT",
-      "pattern": "EL601",
-      "brandKey": "XCENT",
-      "patternKey": "EL601",
-      "affectedSkus": 2,
-      "totalAvailableStock": 10,
-      "covered": true
-    },
-    {
-      "id": "CEAT::SECURA F85",
-      "brand": "CEAT",
-      "pattern": "Secura F85",
-      "brandKey": "CEAT",
-      "patternKey": "SECURA F85",
-      "affectedSkus": 1,
-      "totalAvailableStock": 9,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::DURAMAX G2",
-      "brand": "GOODYEAR",
-      "pattern": "DuraMax G2",
-      "brandKey": "GOODYEAR",
-      "patternKey": "DURAMAX G2",
-      "affectedSkus": 2,
-      "totalAvailableStock": 9,
-      "covered": true
-    },
-    {
-      "id": "WINDFORCE::CATCHFORS UHP",
-      "brand": "WINDFORCE",
-      "pattern": "CATCHFORS UHP",
-      "brandKey": "WINDFORCE",
-      "patternKey": "CATCHFORS UHP",
-      "affectedSkus": 3,
-      "totalAvailableStock": 9,
-      "covered": true
-    },
-    {
-      "id": "ANCHEE::AC858",
-      "brand": "ANCHEE",
-      "pattern": "AC858",
-      "brandKey": "ANCHEE",
-      "patternKey": "AC858",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": true
-    },
-    {
-      "id": "BRIDGESTONE::TURANZA",
-      "brand": "BRIDGESTONE",
-      "pattern": "TURANZA",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "TURANZA",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": true
-    },
-    {
-      "id": "CEAT::SPORTDRIVE",
-      "brand": "CEAT",
-      "pattern": "SPORTDRIVE",
-      "brandKey": "CEAT",
-      "patternKey": "SPORTDRIVE",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::OMNITRAC MSS II",
-      "brand": "GOODYEAR",
-      "pattern": "OMNITRAC MSS II",
-      "brandKey": "GOODYEAR",
-      "patternKey": "OMNITRAC MSS II",
-      "affectedSkus": 1,
-      "totalAvailableStock": 8,
-      "covered": true
-    },
-    {
-      "id": "BRIDGESTONE::TURANZA T001",
-      "brand": "BRIDGESTONE",
-      "pattern": "TURANZA T001",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "TURANZA T001",
-      "affectedSkus": 2,
-      "totalAvailableStock": 6,
-      "covered": true
-    },
-    {
-      "id": "LANDSPIDER::CITYTRAXX H",
-      "brand": "LANDSPIDER",
-      "pattern": "CITYTRAXX H",
-      "brandKey": "LANDSPIDER",
-      "patternKey": "CITYTRAXX H",
-      "affectedSkus": 1,
-      "totalAvailableStock": 6,
-      "covered": true
-    },
-    {
-      "id": "PIRELLI::P7 CNT",
-      "brand": "PIRELLI",
-      "pattern": "P7 CNT",
-      "brandKey": "PIRELLI",
-      "patternKey": "P7 CNT",
-      "affectedSkus": 2,
-      "totalAvailableStock": 6,
-      "covered": true
-    },
-    {
-      "id": "DUNLOP::SP TOURING R1",
-      "brand": "DUNLOP",
-      "pattern": "SP TOURING R1",
-      "brandKey": "DUNLOP",
-      "patternKey": "SP TOURING R1",
-      "affectedSkus": 1,
-      "totalAvailableStock": 5,
-      "covered": true
-    },
-    {
-      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 2 SUV",
-      "brand": "GOODYEAR",
-      "pattern": "Eagle F1 Asymmetric 2 SUV",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EAGLE F1 ASYMMETRIC 2 SUV",
-      "affectedSkus": 2,
-      "totalAvailableStock": 5,
-      "covered": true
-    },
-    {
-      "id": "LANDSPIDER::CITYTRAXX H P",
-      "brand": "LANDSPIDER",
-      "pattern": "CITYTRAXX H P",
-      "brandKey": "LANDSPIDER",
-      "patternKey": "CITYTRAXX H P",
-      "affectedSkus": 4,
-      "totalAvailableStock": 5,
-      "covered": true
-    },
-    {
-      "id": "PIRELLI::P7 CINT",
-      "brand": "PIRELLI",
-      "pattern": "P7 CINT *",
-      "brandKey": "PIRELLI",
-      "patternKey": "P7 CINT",
-      "affectedSkus": 2,
-      "totalAvailableStock": 4,
-      "covered": true
-    },
-    {
-      "id": "RADAR::RIVERA PRO 2",
-      "brand": "RADAR",
-      "pattern": "RIVERA PRO 2",
-      "brandKey": "RADAR",
-      "patternKey": "RIVERA PRO 2",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": true
+      "totalAvailableStock": 1
     }
   ]
 }
