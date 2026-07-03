@@ -3,7 +3,15 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { InventoryItem, ProductType, TyreProduct, WheelProduct, CoiloverProduct, ViewMode } from '../types';
 import { formatCurrency, getStatusColor } from '../utils';
 import { GoogleGenAI } from "@google/genai";
-import { buildSupplierImageMap, fetchSupplierStockImages, inventoryItemToSupplierImageLookup } from '../supplierStockImages';
+import {
+  buildStaffSupplierTyreImageUploadPayload,
+  buildSupplierImageMap,
+  clearSupplierStockImageCache,
+  fetchSupplierStockImages,
+  inventoryItemToSupplierImageLookup,
+  supplierTyreMatchesUploadKeys
+} from '../supplierStockImages';
+import { supabase } from '../supabaseClient';
 
 interface InventoryViewProps {
   items: InventoryItem[];
@@ -16,6 +24,7 @@ interface InventoryViewProps {
   onReserve: (item: InventoryItem) => void;
   onBulkDelete: (ids: string[]) => void;
   isReadOnly?: boolean; // New Prop for Supplier Views
+  currentUser?: string | null;
 }
 
 // --- CONFIG TYPES ---
@@ -95,6 +104,29 @@ const getDragFileName = (item: InventoryItem): string => (
   `${getItemDisplayName(item).replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() || 'gp-wheel'}.jpg`
 );
 
+const SUPPLIER_IMAGE_IMPORT_FUNCTION = 'import-supplier-stock-image';
+const MAX_STAFF_UPLOAD_IMAGE_SIZE = 10 * 1024 * 1024;
+const STAFF_UPLOAD_TOKEN_STORAGE_KEY = 'gp-supplier-image-upload-token';
+const STAFF_UPLOAD_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+
+const fileToBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const result = String(reader.result ?? '');
+    resolve(result.includes(',') ? result.split(',')[1] : result);
+  };
+  reader.onerror = () => reject(reader.error ?? new Error('Could not read image file.'));
+  reader.readAsDataURL(file);
+});
+
+const hashFile = async (file: File): Promise<string> => {
+  const buffer = await file.arrayBuffer();
+  const digest = await crypto.subtle.digest('SHA-256', buffer);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+};
+
 // --- SUB-COMPONENTS ---
 
 const SpecBadge = ({ label, value }: { label: string; value: string | number }) => (
@@ -111,10 +143,12 @@ interface ProductImageProps {
   isLoading: boolean;
   isError: boolean;
   onGenerate: () => void;
+  canUploadImage?: boolean;
+  onUploadImage?: () => void;
   aspectRatio: AspectRatio;
 }
 
-const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, isError, onGenerate, aspectRatio }) => {
+const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, isError, onGenerate, canUploadImage, onUploadImage, aspectRatio }) => {
   // Calculate height based on aspect ratio for placeholder
   let aspectClass = 'aspect-square';
   if (aspectRatio === '16:9') aspectClass = 'aspect-video';
@@ -162,15 +196,25 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
                <span className="text-[9px] uppercase font-bold">No Image Found</span>
              </div>
           ) : (
-            <button 
-              onClick={(e) => { e.stopPropagation(); onGenerate(); }}
-              className="group/btn flex flex-col items-center gap-2 text-gp-text-muted hover:text-gp-text-main transition-colors"
-            >
-              <div className="p-3 rounded-full bg-gp-input group-hover/btn:bg-gp-border transition-colors">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-              </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider">Load Visual</span>
-            </button>
+            <div className="flex flex-col items-center gap-2">
+              {canUploadImage && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); onUploadImage?.(); }}
+                  className="px-3 py-2 rounded bg-gp-red text-white text-[10px] font-black uppercase tracking-wider hover:bg-red-700 transition-colors"
+                >
+                  Upload Visual
+                </button>
+              )}
+              <button
+                onClick={(e) => { e.stopPropagation(); onGenerate(); }}
+                className="group/btn flex flex-col items-center gap-2 text-gp-text-muted hover:text-gp-text-main transition-colors"
+              >
+                <div className="p-3 rounded-full bg-gp-input group-hover/btn:bg-gp-border transition-colors">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-wider">Load Visual</span>
+              </button>
+            </div>
           )}
         </div>
       )}
@@ -182,6 +226,259 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
             <span className="text-[8px] font-bold text-white uppercase">Visual</span>
         </div>
       )}
+      {imageUrl && canUploadImage && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onUploadImage?.(); }}
+          className="absolute left-2 bottom-2 bg-gp-red/90 px-2 py-1 rounded text-[8px] font-black uppercase tracking-wider text-white opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+          title="Upload a corrected tyre tread image"
+        >
+          Replace
+        </button>
+      )}
+    </div>
+  );
+};
+
+interface SupplierTyreImageUploadModalProps {
+  item: InventoryItem | null;
+  currentUser?: string | null;
+  onClose: () => void;
+  onUploaded: (item: InventoryItem, brand: string, pattern: string, imageUrl: string) => void;
+}
+
+const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> = ({ item, currentUser, onClose, onUploaded }) => {
+  const tyre = item?.type === ProductType.TYRE ? item as TyreProduct : null;
+  const [brand, setBrand] = useState('');
+  const [pattern, setPattern] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [uploadToken, setUploadToken] = useState('');
+  const [rememberToken, setRememberToken] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (!tyre) return;
+    setBrand(tyre.brand || tyre.imageFinishKey || '');
+    setPattern(tyre.pattern || tyre.imageDesignKey || '');
+    setFile(null);
+    setPreviewUrl('');
+    setMessage('');
+    setUploadToken(sessionStorage.getItem(STAFF_UPLOAD_TOKEN_STORAGE_KEY) ?? '');
+  }, [tyre]);
+
+  useEffect(() => () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
+
+  if (!tyre || !item) return null;
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextFile = event.target.files?.[0] ?? null;
+    setFile(nextFile);
+    setMessage('');
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(nextFile ? URL.createObjectURL(nextFile) : '');
+  };
+
+  const handleUpload = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!file) {
+      setMessage('Select the tyre tread image first.');
+      return;
+    }
+    if (!STAFF_UPLOAD_IMAGE_TYPES.has(file.type)) {
+      setMessage('Use a JPG, PNG, WEBP or GIF image.');
+      return;
+    }
+    if (file.size > MAX_STAFF_UPLOAD_IMAGE_SIZE) {
+      setMessage('Image is too large. Maximum upload size is 10MB.');
+      return;
+    }
+    if (!brand.trim() || !pattern.trim()) {
+      setMessage('Confirm both tyre brand and tread/pattern.');
+      return;
+    }
+    if (!uploadToken.trim()) {
+      setMessage('Enter the supplier image upload code.');
+      return;
+    }
+
+    setIsUploading(true);
+    setMessage('Uploading confirmed tyre visual...');
+
+    try {
+      const [base64, hash] = await Promise.all([fileToBase64(file), hashFile(file)]);
+      const payload = buildStaffSupplierTyreImageUploadPayload({
+        item,
+        brand: brand.trim(),
+        pattern: pattern.trim(),
+        fileName: file.name,
+        mimeType: file.type,
+        base64,
+        hash,
+        uploadedBy: currentUser ?? undefined
+      });
+
+      const { data, error } = await supabase.functions.invoke(SUPPLIER_IMAGE_IMPORT_FUNCTION, {
+        body: payload,
+        headers: {
+          'x-supplier-image-import-token': uploadToken.trim()
+        }
+      });
+
+      if (error) throw error;
+      if (!data?.ok) throw new Error(data?.error || 'Supplier image upload failed.');
+
+      if (rememberToken) {
+        sessionStorage.setItem(STAFF_UPLOAD_TOKEN_STORAGE_KEY, uploadToken.trim());
+      } else {
+        sessionStorage.removeItem(STAFF_UPLOAD_TOKEN_STORAGE_KEY);
+      }
+
+      onUploaded(item, brand.trim(), pattern.trim(), data.publicImageUrl);
+      setMessage('Uploaded. Matching supplier tyres now use this visual.');
+      onClose();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setMessage(errorMessage || 'Upload failed.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[80] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <form onSubmit={handleUpload} className="w-full max-w-2xl bg-gp-panel border border-gp-border rounded-lg shadow-2xl overflow-hidden">
+        <div className="bg-gp-black border-b border-gp-border p-5 flex items-start justify-between gap-4">
+          <div>
+            <h2 className="font-display text-2xl font-black uppercase text-gp-text-main">Upload Tyre Visual</h2>
+            <p className="mt-1 text-xs font-bold uppercase tracking-widest text-gp-text-muted">
+              Confirm supplier, brand and tread before uploading
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gp-text-muted hover:text-white text-3xl leading-none"
+            aria-label="Close upload modal"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div className="grid gap-5 p-5 md:grid-cols-[220px_1fr]">
+          <div className="min-h-[220px] rounded border border-gp-border bg-gp-black flex items-center justify-center overflow-hidden">
+            {previewUrl ? (
+              <img src={previewUrl} alt="Selected tyre tread preview" className="h-full w-full object-contain bg-white p-2" />
+            ) : (
+              <div className="px-4 text-center text-xs font-bold uppercase tracking-wider text-gp-text-muted">
+                Image preview
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Supplier</label>
+                <input
+                  value={tyre.supplierName ?? ''}
+                  disabled
+                  className="w-full rounded border border-gp-border bg-gp-black p-2 text-sm font-bold text-gp-text-main opacity-80"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Stock Code</label>
+                <input
+                  value={tyre.supplierStockCode ?? item.id}
+                  disabled
+                  className="w-full rounded border border-gp-border bg-gp-black p-2 text-sm font-bold text-gp-text-main opacity-80"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Tyre Brand</label>
+                <input
+                  value={brand}
+                  onChange={(event) => setBrand(event.target.value)}
+                  className="w-full rounded border border-gp-border bg-gp-input p-2 text-sm font-bold text-gp-text-main focus:border-gp-red focus:outline-none"
+                  placeholder="e.g. Sailun"
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Tread / Pattern</label>
+                <input
+                  value={pattern}
+                  onChange={(event) => setPattern(event.target.value)}
+                  className="w-full rounded border border-gp-border bg-gp-input p-2 text-sm font-bold text-gp-text-main focus:border-gp-red focus:outline-none"
+                  placeholder="e.g. TERRAMAX RT"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Tyre Image</label>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                onChange={handleFileChange}
+                className="w-full rounded border border-gp-border bg-gp-input p-2 text-sm text-gp-text-main file:mr-3 file:rounded file:border-0 file:bg-gp-red file:px-3 file:py-1.5 file:text-xs file:font-black file:uppercase file:text-white"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Upload Code</label>
+              <input
+                type="password"
+                value={uploadToken}
+                onChange={(event) => setUploadToken(event.target.value)}
+                className="w-full rounded border border-gp-border bg-gp-input p-2 text-sm font-bold text-gp-text-main focus:border-gp-red focus:outline-none"
+                placeholder="Supplier image upload code"
+                required
+              />
+              <label className="mt-2 flex items-center gap-2 text-xs font-bold text-gp-text-muted">
+                <input
+                  type="checkbox"
+                  checked={rememberToken}
+                  onChange={(event) => setRememberToken(event.target.checked)}
+                  className="rounded border-gp-border bg-gp-input text-gp-red focus:ring-gp-red"
+                />
+                Remember for this browser session
+              </label>
+            </div>
+
+            {message && (
+              <div className={`rounded border p-3 text-xs font-bold ${message.includes('Uploaded') ? 'border-green-600/40 bg-green-900/20 text-green-400' : 'border-gp-border bg-gp-black text-gp-text-muted'}`}>
+                {message}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="border-t border-gp-border bg-gp-black p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
+            This visual will apply to matching tyres from the same supplier, brand and tread pattern.
+          </p>
+          <div className="flex gap-2">
+            <button type="button" onClick={onClose} className="rounded border border-gp-border px-4 py-2 text-xs font-black uppercase text-gp-text-muted hover:text-white">
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isUploading}
+              className="rounded bg-gp-red px-5 py-2 text-xs font-black uppercase tracking-wider text-white hover:bg-red-700 disabled:cursor-wait disabled:opacity-60"
+            >
+              {isUploading ? 'Uploading...' : 'Confirm Upload'}
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
   );
 };
@@ -198,9 +495,10 @@ interface ViewComponentProps extends InventoryViewProps {
   loadingImages: Set<string>;
   errorImages: Set<string>;
   onGenerateImage: (item: InventoryItem) => void;
+  onUploadSupplierTyreImage: (item: InventoryItem) => void;
 }
 
-const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, aspectRatio }) => {
+const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, aspectRatio }) => {
   
   const SortIcon = ({ colKey }: { colKey: SortKey }) => (
     <span className={`ml-1 inline-block transition-opacity ${sortConfig.key === colKey ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`}>
@@ -288,6 +586,8 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                             isLoading={loadingImages.has(item.id)}
                             isError={errorImages.has(item.id)}
                             onGenerate={() => onGenerateImage(item)}
+                            canUploadImage={isSupplierTyre(item)}
+                            onUploadImage={() => onUploadSupplierTyreImage(item)}
                             aspectRatio={aspectRatio}
                         />
                     </div>
@@ -348,7 +648,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
   );
 };
 
-const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, aspectRatio }) => {
+const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, aspectRatio }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
       {items.map((item) => (
@@ -361,6 +661,8 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 isLoading={loadingImages.has(item.id)}
                 isError={errorImages.has(item.id)}
                 onGenerate={() => onGenerateImage(item)}
+                canUploadImage={isSupplierTyre(item)}
+                onUploadImage={() => onUploadSupplierTyreImage(item)}
                 aspectRatio={aspectRatio}
             />
           )}
@@ -491,7 +793,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
   );
 };
 
-const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, aspectRatio }) => {
+const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, aspectRatio }) => {
   return (
     <div className="flex flex-col divide-y divide-gp-border p-2 mb-6">
       {items.map((item) => (
@@ -517,6 +819,8 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                         isLoading={loadingImages.has(item.id)}
                         isError={errorImages.has(item.id)}
                         onGenerate={() => onGenerateImage(item)}
+                        canUploadImage={isSupplierTyre(item)}
+                        onUploadImage={() => onUploadSupplierTyreImage(item)}
                         aspectRatio={aspectRatio}
                     />
                  </div>
@@ -600,6 +904,8 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [supplierImages, setSupplierImages] = useState<Record<string, string>>({});
   const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
   const [errorImages, setErrorImages] = useState<Set<string>>(new Set());
+  const [uploadImageItem, setUploadImageItem] = useState<InventoryItem | null>(null);
+  const [supplierImageRefreshKey, setSupplierImageRefreshKey] = useState(0);
   const supplierImageLookupItems = useMemo(
     () => props.items.filter((item) => inventoryItemToSupplierImageLookup(item)),
     [props.items]
@@ -650,7 +956,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     return () => {
       cancelled = true;
     };
-  }, [showImages, supplierImageLookupSignature]);
+  }, [showImages, supplierImageLookupSignature, supplierImageRefreshKey]);
 
   // Function to generate image using Gemini
   const handleGenerateImage = async (item: InventoryItem) => {
@@ -720,6 +1026,21 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
             return next;
         });
     }
+  };
+
+  const handleSupplierTyreImageUploaded = (item: InventoryItem, brand: string, pattern: string, imageUrl: string) => {
+    const tyre = item as TyreProduct;
+    clearSupplierStockImageCache(tyre.supplierName);
+    setSupplierImages((previous) => {
+      const next = { ...previous };
+      props.items.forEach((candidate) => {
+        if (supplierTyreMatchesUploadKeys(candidate, tyre.supplierName ?? '', brand, pattern)) {
+          next[candidate.id] = imageUrl;
+        }
+      });
+      return next;
+    });
+    setSupplierImageRefreshKey((value) => value + 1);
   };
 
   const handleHeaderClick = (key: SortKey) => {
@@ -845,6 +1166,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         loadingImages,
         errorImages,
         onGenerateImage: handleGenerateImage,
+        onUploadSupplierTyreImage: (item: InventoryItem) => setUploadImageItem(item),
         aspectRatio
     };
 
@@ -858,6 +1180,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
   return (
     <div className="flex flex-col gap-4 relative">
+      <SupplierTyreImageUploadModal
+        item={uploadImageItem}
+        currentUser={props.currentUser}
+        onClose={() => setUploadImageItem(null)}
+        onUploaded={handleSupplierTyreImageUploaded}
+      />
       
       {/* View Configuration Toolbar */}
       <div className="bg-gp-panel border border-gp-border rounded-lg p-3 flex flex-col lg:flex-row gap-4 lg:items-center justify-between shadow-sm sticky top-0 z-20">

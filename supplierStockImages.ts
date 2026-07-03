@@ -4,6 +4,8 @@ import { supabase } from './supabaseClient';
 export interface SupplierStockImageRow {
   id: string;
   supplier: string;
+  source?: string;
+  source_file_id?: string;
   design_key: string;
   finish_key?: string | null;
   rim_size?: string | null;
@@ -38,6 +40,20 @@ export interface SupplierImageLookupItem {
   imageFinishKey?: string;
   size?: string;
   pcd?: string;
+}
+
+export interface StaffSupplierTyreImageUploadPayload {
+  supplier: string;
+  source: 'staff-upload';
+  sourceFileId: string;
+  fileName: string;
+  storagePath: string;
+  mimeType: string;
+  designKey: string;
+  finishKey: string;
+  tags: string[];
+  base64: string;
+  uploadedBy?: string;
 }
 
 export interface SupplierImageMatchResult {
@@ -237,6 +253,97 @@ export const parseSupplierTyreImageKeys = (brand: string, pattern: string) => ({
   finishKey: normalizeSupplierImageToken(brand)
 });
 
+export const slugifySupplierImageToken = (value: string | undefined | null): string => (
+  normalizeSupplierImageToken(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'unknown'
+);
+
+const extensionFromMimeType = (mimeType: string, fileName: string): string => {
+  const extension = fileName.match(/\.([a-z0-9]+)$/i)?.[1]?.toLowerCase();
+  if (extension && ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(extension)) return extension;
+  if (mimeType === 'image/png') return 'png';
+  if (mimeType === 'image/webp') return 'webp';
+  if (mimeType === 'image/gif') return 'gif';
+  return 'jpg';
+};
+
+export const buildStaffSupplierTyreImageUploadPayload = ({
+  item,
+  brand,
+  pattern,
+  fileName,
+  mimeType,
+  base64,
+  hash,
+  uploadedBy
+}: {
+  item: InventoryItem;
+  brand: string;
+  pattern: string;
+  fileName: string;
+  mimeType: string;
+  base64: string;
+  hash: string;
+  uploadedBy?: string;
+}): StaffSupplierTyreImageUploadPayload => {
+  if (item.type !== ProductType.TYRE) throw new Error('Only supplier tyre images can be uploaded here.');
+
+  const tyre = item as TyreProduct;
+  const supplier = tyre.supplierName?.trim();
+  if (!supplier) throw new Error('This tyre is not linked to a supplier catalogue.');
+
+  const imageKeys = parseSupplierTyreImageKeys(brand, pattern);
+  if (!imageKeys.designKey || !imageKeys.finishKey) {
+    throw new Error('Confirm both tyre brand and tread/pattern before uploading.');
+  }
+
+  const supplierSlug = slugifySupplierImageToken(supplier);
+  const brandSlug = slugifySupplierImageToken(imageKeys.finishKey);
+  const patternSlug = slugifySupplierImageToken(imageKeys.designKey);
+  const extension = extensionFromMimeType(mimeType, fileName);
+
+  return {
+    supplier,
+    source: 'staff-upload',
+    sourceFileId: `staff-upload:${supplierSlug}:${brandSlug}:${patternSlug}`,
+    fileName,
+    storagePath: `tyres/staff-upload/${supplierSlug}/${brandSlug}/${patternSlug}/${hash}.${extension}`,
+    mimeType,
+    designKey: imageKeys.designKey,
+    finishKey: imageKeys.finishKey,
+    tags: Array.from(new Set([
+      'staff-upload',
+      supplier,
+      imageKeys.finishKey,
+      imageKeys.designKey,
+      uploadedBy ? `uploaded-by:${uploadedBy}` : ''
+    ].filter(Boolean))),
+    base64,
+    uploadedBy
+  };
+};
+
+export const supplierTyreMatchesUploadKeys = (
+  item: InventoryItem,
+  supplier: string,
+  brand: string,
+  pattern: string
+): boolean => {
+  if (item.type !== ProductType.TYRE) return false;
+  const tyre = item as TyreProduct;
+  if (normalizeSupplierImageToken(tyre.supplierName) !== normalizeSupplierImageToken(supplier)) return false;
+
+  const targetKeys = parseSupplierTyreImageKeys(brand, pattern);
+  const itemKeys = inventoryItemToSupplierImageLookup(item);
+  return Boolean(
+    itemKeys
+    && normalizeSupplierImageToken(itemKeys.imageDesignKey) === targetKeys.designKey
+    && normalizeSupplierImageToken(itemKeys.imageFinishKey) === targetKeys.finishKey
+  );
+};
+
 export const parseSupplierWheelImageKeys = (brand: string, wheelName: string, finish: string, stockCode = '') => {
   const brandKey = normalizeSupplierImageToken(brand);
   const normalizedBrandKey = canonicalSupplierDesignKey(brandKey);
@@ -396,6 +503,13 @@ export const fetchSupplierStockImages = async (supplier?: string): Promise<Suppl
   }
 
   return supplierImageCache.get(cacheKey)!;
+};
+
+export const clearSupplierStockImageCache = (supplier?: string) => {
+  if (supplier) {
+    supplierImageCache.delete(normalizeSupplierImageToken(supplier));
+  }
+  supplierImageCache.delete('ALL_SUPPLIERS');
 };
 
 const supplierDesignGroupKey = (supplierName: string | undefined | null, designKey: string | undefined | null): string => (

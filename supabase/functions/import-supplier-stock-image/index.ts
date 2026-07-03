@@ -11,6 +11,7 @@ const IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'imag
 
 interface ImportPayload {
   supplier: string;
+  source?: string;
   sourceFileId: string;
   fileName: string;
   storagePath: string;
@@ -21,6 +22,7 @@ interface ImportPayload {
   pcd?: string | null;
   tags?: string[];
   base64: string;
+  uploadedBy?: string | null;
 }
 
 const jsonResponse = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
@@ -111,7 +113,7 @@ Deno.serve(async (request) => {
       .from('supplier_stock_images')
       .upsert({
         supplier: payload.supplier,
-        source: 'local-import',
+        source: payload.source?.trim() || 'local-import',
         source_file_id: payload.sourceFileId,
         file_name: payload.fileName,
         storage_bucket: BUCKET_NAME,
@@ -122,7 +124,10 @@ Deno.serve(async (request) => {
         finish_key: payload.finishKey ?? null,
         rim_size: payload.rimSize ?? null,
         pcd: payload.pcd ?? null,
-        tags: payload.tags ?? [],
+        tags: Array.from(new Set([
+          ...(payload.tags ?? []),
+          payload.uploadedBy ? `uploaded-by:${payload.uploadedBy}` : ''
+        ].filter(Boolean))),
         active: true,
         imported_at: new Date().toISOString()
       }, { onConflict: 'supplier,source_file_id' });
