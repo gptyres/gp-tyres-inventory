@@ -1086,6 +1086,8 @@ export const parseSumitomoDunlopData = (rawCsv: string): InventoryItem[] => {
     const location = [...knownBranches, ...otherBranches]
       .map((branch) => `${branch}: ${entry.branchStock[branch]}`)
       .join(' | ');
+    const sellingPriceIncVat = entry.price * 1.15;
+    const roundedSellingPrice = Math.round(sellingPriceIncVat / 50) * 50;
 
     return {
       id: `sumitomo-dunlop-${index + 1}`,
@@ -1098,7 +1100,7 @@ export const parseSumitomoDunlopData = (rawCsv: string): InventoryItem[] => {
       location: location || 'SUMITOMO/DUNLOP',
       quantity: entry.totalQuantity,
       costPrice: entry.price,
-      sellingPrice: entry.price,
+      sellingPrice: roundedSellingPrice,
       lastUpdated: today
     };
   });

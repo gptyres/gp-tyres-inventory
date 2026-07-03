@@ -239,7 +239,7 @@ describe('TREAD ZONE supplier catalogue parsing', () => {
 });
 
 describe('SUMITOMO/DUNLOP supplier catalogue parsing', () => {
-  it('groups branch rows into one tyre item per SKU with supplier pricing', () => {
+  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest R50', () => {
     const [item] = parseSumitomoDunlopData([
       'SKU,Category,Brand,Pattern,Tyre Size,Stock Location,Stock Units Availability,Stock Units,Price',
       'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Cape Town,Available,18 units,R1870.62',
@@ -258,7 +258,7 @@ describe('SUMITOMO/DUNLOP supplier catalogue parsing', () => {
       pattern: 'EC300+',
       size: '185/60R16',
       quantity: 120,
-      sellingPrice: 1870.62,
+      sellingPrice: 2150,
       costPrice: 1870.62,
       imageDesignKey: 'EC300',
       imageFinishKey: 'DUNLOP'
