@@ -254,7 +254,7 @@ const App: React.FC = () => {
     return [];
   }, [currentView, activeSupplierCatalog]);
 
-  const supplierCatalogMeta: Record<SupplierCatalog, { label: string; note: string }> = {
+  const supplierCatalogMeta: Record<SupplierCatalog, { label: string; note: string; portalUrl?: string }> = {
     ALL_SUPPLIERS: {
       label: 'All Supplier Stock',
       note: 'Search every supplier catalogue at once. Enter at least 2 characters to show results; supplier names appear in the location field.'
@@ -265,15 +265,18 @@ const App: React.FC = () => {
     },
     EXCLUSIVE_TYRES: {
       label: 'EXCLUSIVE TYRES',
-      note: 'Viewing External Supplier Data. Prices use the Cost + VAT values from Exclusive Tyres.'
+      note: 'Viewing External Supplier Data. Prices use the Cost + VAT values from Exclusive Tyres.',
+      portalUrl: 'https://etonline.co.za/#/'
     },
     TYREWAREHOUSE: {
       label: 'TYREWAREHOUSE',
-      note: 'Viewing External Supplier Data. Prices use the discounted selling price from the latest TyreWarehouse file.'
+      note: 'Viewing External Supplier Data. Prices use the discounted selling price from the latest TyreWarehouse file.',
+      portalUrl: 'https://www.tyrewarehouse.co.za/eshop/index.html'
     },
     ATT: {
       label: 'ATT',
-      note: 'Viewing External Supplier Data. Prices use ATT selling prices.'
+      note: 'Viewing External Supplier Data. Prices use ATT selling prices.',
+      portalUrl: 'https://onlinestore.autoandtrucktyres.co.za/#!/evo-client-portal/dashboard'
     },
     SAFETY_GRIP: {
       label: 'SAFETY GRIP',
@@ -281,44 +284,54 @@ const App: React.FC = () => {
     },
     ALINE: {
       label: 'ALINE',
-      note: 'Viewing External Supplier Data. Prices already include VAT, with branch wheel stock shown in the location field.'
+      note: 'Viewing External Supplier Data. Prices already include VAT, with branch wheel stock shown in the location field.',
+      portalUrl: 'https://www.alinewheels.co.za/login-2/?arm_redirect=https%3A%2F%2Fwww.alinewheels.co.za%2Fedit_profile%2F'
     },
     STAMFORD: {
       label: 'STAMFORD',
-      note: 'Viewing External Supplier Data. Prices are matched by SKU, with branch stock shown in the location field.'
+      note: 'Viewing External Supplier Data. Prices are matched by SKU, with branch stock shown in the location field.',
+      portalUrl: 'https://orders.stamford.co.za/'
     },
     APEX: {
       label: 'APEX',
-      note: 'Viewing External Supplier Data. Prices use APEX selling prices, with lead time shown in the location field.'
+      note: 'Viewing External Supplier Data. Prices use APEX selling prices, with lead time shown in the location field.',
+      portalUrl: 'https://app.stockfinder.co.za/login'
     },
     TUBESTONE: {
       label: 'TUBESTONE',
-      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.'
+      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.',
+      portalUrl: 'https://portal.tubestone.co.za/index.php?c=website.account.home/dashboard'
     },
     TREAD_ZONE: {
       label: 'TREAD ZONE',
-      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.'
+      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.',
+      portalUrl: 'https://treadzone.b2b.storehub.io/'
     },
     SUMITOMO_DUNLOP: {
       label: 'SUMITOMO/DUNLOP',
-      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.'
+      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.',
+      portalUrl: 'https://sumitomorubbersouthafrica.my.site.com/sumitomorubbersouthafrica/B2BLoginPage?ec=302&startURL=%2Fsumitomorubbersouthafrica%2Fs%2F'
     },
     TREADS_UNLIMITED: {
       label: 'TREADS UNLIMITED',
-      note: 'Viewing External Supplier Data. Quantity uses national stock, with regional stock shown in the location field.'
+      note: 'Viewing External Supplier Data. Quantity uses national stock, with regional stock shown in the location field.',
+      portalUrl: 'https://xpress.treads.co.za/Account/Login?ReturnUrl=%2FTyres'
     },
     TYRE_LIFE: {
       label: 'TYRE LIFE',
-      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.'
+      note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.',
+      portalUrl: 'https://dealers.tyrelifesolutions.co.za/dealer/dashboard'
     },
     TYRE_LIFE_WHEELS: {
       label: 'TYRE LIFE WHEELS',
-      note: 'Viewing External Supplier Wheel Data. Prices already include VAT, with branch wheel stock shown in the location field.'
+      note: 'Viewing External Supplier Wheel Data. Prices already include VAT, with branch wheel stock shown in the location field.',
+      portalUrl: 'https://dealers.tyrelifesolutions.co.za/dealer/dashboard'
     }
   };
 
   const supplierCatalogLabel = supplierCatalogMeta[activeSupplierCatalog].label;
   const supplierCatalogNote = supplierCatalogMeta[activeSupplierCatalog].note;
+  const supplierPortalUrl = supplierCatalogMeta[activeSupplierCatalog].portalUrl;
 
   // Helper to determine transaction type based on amount and fields
   const inferTransactionType = (row: any): 'SALE' | 'RESERVE' | 'REFUND' => {
@@ -1625,9 +1638,21 @@ const App: React.FC = () => {
               </div>
               <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
                 {currentView === 'SUPPLIER_INVENTORY' && (
-                    <div className="bg-blue-900/10 border border-blue-900/30 p-3 mb-4 rounded flex items-center gap-3">
+                    <div className="bg-blue-900/10 border border-blue-900/30 p-3 mb-4 rounded flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-3">
                         <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <p className="text-xs text-blue-400"><strong>READ ONLY MODE:</strong> {supplierCatalogNote}</p>
+                      </div>
+                      {supplierPortalUrl && (
+                        <a
+                          href={supplierPortalUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex shrink-0 items-center justify-center rounded bg-gp-red px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gp-red/20 transition hover:bg-red-700"
+                        >
+                          Live Supplier Portal
+                        </a>
+                      )}
                     </div>
                 )}
                 <InventoryView 
