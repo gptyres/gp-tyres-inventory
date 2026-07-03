@@ -1001,6 +1001,8 @@ export const parseTreadZoneData = (rawCsv: string): InventoryItem[] => {
       .filter((branch) => branch in entry.branchStock)
       .map((branch) => `${branch}: ${entry.branchStock[branch]}`)
       .join(' | ');
+    const sellingPriceIncVat = entry.price * 1.15;
+    const roundedSellingPrice = Math.round(sellingPriceIncVat / 50) * 50;
 
     return {
       id: `treadzone-${index + 1}`,
@@ -1013,7 +1015,7 @@ export const parseTreadZoneData = (rawCsv: string): InventoryItem[] => {
       location: location || 'TREAD ZONE',
       quantity: entry.totalQuantity,
       costPrice: entry.price,
-      sellingPrice: entry.price,
+      sellingPrice: roundedSellingPrice,
       lastUpdated: today
     };
   });

@@ -209,7 +209,7 @@ describe('EXCLUSIVE TYRES supplier catalogue parsing', () => {
 });
 
 describe('TREAD ZONE supplier catalogue parsing', () => {
-  it('groups branch rows into one tyre item per SKU with supplier pricing', () => {
+  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest R50', () => {
     const [item] = parseTreadZoneData([
       'SKU,Category,Brand,Pattern,Tyre Size,Stock Location,Stock Units Availability,Stock Units,Price',
       '1.01.016.121,Agricultural > Bias,Farm Master,F2,6.00-16,Treadzone Cape Town,Available,30 units,R773.50',
@@ -226,7 +226,7 @@ describe('TREAD ZONE supplier catalogue parsing', () => {
       pattern: 'F2',
       size: '6.00-16',
       quantity: 177,
-      sellingPrice: 773.5,
+      sellingPrice: 900,
       costPrice: 773.5,
       imageDesignKey: 'F2',
       imageFinishKey: 'FARM MASTER'
