@@ -1624,17 +1624,6 @@ const App: React.FC = () => {
                     ? `${supplierCatalogLabel} Catalog (${filteredItems.length})` 
                     : activeFilter === 'ALL' ? 'Full Inventory' : `${activeFilter} Inventory (${filteredItems.length})`}
                 </h2>
-                <div className="flex bg-gp-input border border-gp-border rounded-lg p-1 gap-1 shadow-inner">
-                  <button onClick={() => setViewMode(ViewMode.TABLE)} className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${viewMode === ViewMode.TABLE ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}>
-                    <span className="hidden md:inline">Sheet</span>
-                  </button>
-                  <button onClick={() => setViewMode(ViewMode.GRID)} className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${viewMode === ViewMode.GRID ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}>
-                    <span className="hidden md:inline">Card</span>
-                  </button>
-                  <button onClick={() => setViewMode(ViewMode.LIST)} className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${viewMode === ViewMode.LIST ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}>
-                     <span className="hidden md:inline">List</span>
-                  </button>
-                </div>
               </div>
               <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
                 {currentView === 'SUPPLIER_INVENTORY' && (
@@ -1658,6 +1647,7 @@ const App: React.FC = () => {
                 <InventoryView 
                   items={filteredItems} 
                   viewMode={viewMode} 
+                  onViewModeChange={setViewMode}
                   isAdmin={isAdmin} 
                   onEdit={openEditModal}
                   onDelete={openDeleteModal}

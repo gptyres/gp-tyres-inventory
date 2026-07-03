@@ -8,6 +8,7 @@ import { buildSupplierImageMap, fetchSupplierStockImages, inventoryItemToSupplie
 interface InventoryViewProps {
   items: InventoryItem[];
   viewMode: ViewMode;
+  onViewModeChange: (mode: ViewMode) => void;
   isAdmin: boolean;
   onEdit: (item: InventoryItem) => void;
   onDelete: (item: InventoryItem) => void;
@@ -910,6 +911,27 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
                     </button>
                 </div>
             )}
+        </div>
+
+        <div className="flex bg-gp-input border border-gp-border rounded-lg p-1 gap-1 shadow-inner lg:mx-4">
+            <button
+                onClick={() => props.onViewModeChange(ViewMode.TABLE)}
+                className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${props.viewMode === ViewMode.TABLE ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+            >
+                <span>Sheet</span>
+            </button>
+            <button
+                onClick={() => props.onViewModeChange(ViewMode.GRID)}
+                className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${props.viewMode === ViewMode.GRID ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+            >
+                <span>Card</span>
+            </button>
+            <button
+                onClick={() => props.onViewModeChange(ViewMode.LIST)}
+                className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${props.viewMode === ViewMode.LIST ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+            >
+                <span>List</span>
+            </button>
         </div>
 
         {/* Filters & Toggles */}
