@@ -11,7 +11,7 @@ import {
   supplierTyreMatchesUploadKeys
 } from './supplierStockImages';
 import { ProductType } from './types';
-import { parseAttData, parseExclusiveTyresData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
+import { parseAttData, parseExoticData, parseExclusiveTyresData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
 
 describe('ALINE supplier image parsing', () => {
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
@@ -272,6 +272,34 @@ describe('SUMITOMO/DUNLOP supplier catalogue parsing', () => {
     expect(item.location).toContain('Eastport: 40');
     expect(item.location).toContain('Ladysmith: 17');
     expect(item.location).toContain('Port Elizabeth: 10');
+  });
+});
+
+describe('EXOTIC supplier catalogue parsing', () => {
+  it('ignores alloy wheels and groups tyre availability rows into one tyre item per SKU', () => {
+    const items = parseExoticData([
+      'Supplier,Brand,Product Name,Category,Size,Stock Location,Stock Units Availability,Stock Units,Selling Price,SKU,Product URL',
+      'Exotic,Evolution Racing,"15"" Cairo 4/100 8.25J ET15 CH73.1 Evolution Racing GomlL Wheel",Alloy Wheels,Unknown Size,Cape Town,Available,Not shown,R1249,EWT1203,https://example.test/wheel',
+      'Exotic,Accelera,155/65R14 Accelera Eco Plush 75H Tyre,Tyres,155/65R14,Cape Town,Available,Not shown,R585,A1556514ECOP75H,https://example.test/tyre',
+      'Exotic,Accelera,155/65R14 Accelera Eco Plush 75H Tyre,Tyres,155/65R14,Johannesburg,Available,Not shown,R585,A1556514ECOP75H,https://example.test/tyre'
+    ].join('\n'));
+
+    expect(items).toHaveLength(1);
+    expect(items[0]).toMatchObject({
+      type: ProductType.TYRE,
+      supplierName: 'EXOTIC',
+      supplierStockCode: 'A1556514ECOP75H',
+      brand: 'Accelera',
+      pattern: 'Eco Plush',
+      size: '155/65R14',
+      quantity: 2,
+      sellingPrice: 585,
+      costPrice: 585,
+      imageDesignKey: 'ECO PLUSH',
+      imageFinishKey: 'ACCELERA'
+    });
+    expect(items[0].location).toContain('Cape Town: Available');
+    expect(items[0].location).toContain('Johannesburg: Available');
   });
 });
 

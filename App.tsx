@@ -49,6 +49,7 @@ import { TREAD_ZONE_RAW_DATA } from './supplier_data/treadZoneData';
 import { SUMITOMO_DUNLOP_RAW_DATA } from './supplier_data/sumitomoDunlopData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
+import { EXOTIC_RAW_DATA } from './supplier_data/exoticData';
 import { SAFETY_GRIP_RAW_DATA } from './supplier_data/safetygripData';
 import { ALINE_RAW_DATA } from './supplier_data/alineData';
 import { customerRowToCustomerInfo, saveCRMDocumentFromPOS } from './crmSync';
@@ -67,6 +68,7 @@ import {
   parseStamfordData,
   parseApexData,
   parseTubestoneData,
+  parseExoticData,
   parseTreadsUnlimitedData,
   parseTreadZoneData,
   parseSumitomoDunlopData,
@@ -104,6 +106,7 @@ const getAllSupplierPOSItems = (): InventoryItem[] => [
   ...tagSupplierPOSItems('stamford', parseStamfordData(STAMFORD_RAW_DATA)),
   ...tagSupplierPOSItems('apex', parseApexData(APEX_RAW_DATA)),
   ...tagSupplierPOSItems('tubestone', parseTubestoneData(TUBESTONE_RAW_DATA)),
+  ...tagSupplierPOSItems('exotic', parseExoticData(EXOTIC_RAW_DATA)),
   ...tagSupplierPOSItems('treadzone', parseTreadZoneData(TREAD_ZONE_RAW_DATA)),
   ...tagSupplierPOSItems('sumitomo-dunlop', parseSumitomoDunlopData(SUMITOMO_DUNLOP_RAW_DATA)),
   ...tagSupplierPOSItems('treads', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
@@ -214,6 +217,7 @@ const App: React.FC = () => {
             ...tagSupplierItems('STAMFORD', parseStamfordData(STAMFORD_RAW_DATA)),
             ...tagSupplierItems('APEX', parseApexData(APEX_RAW_DATA)),
             ...tagSupplierItems('TUBESTONE', parseTubestoneData(TUBESTONE_RAW_DATA)),
+            ...tagSupplierItems('EXOTIC', parseExoticData(EXOTIC_RAW_DATA)),
             ...tagSupplierItems('TREAD ZONE', parseTreadZoneData(TREAD_ZONE_RAW_DATA)),
             ...tagSupplierItems('SUMITOMO/DUNLOP', parseSumitomoDunlopData(SUMITOMO_DUNLOP_RAW_DATA)),
             ...tagSupplierItems('TREADS UNLIMITED', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
@@ -236,6 +240,8 @@ const App: React.FC = () => {
           return parseApexData(APEX_RAW_DATA);
         case 'TUBESTONE':
           return parseTubestoneData(TUBESTONE_RAW_DATA);
+        case 'EXOTIC':
+          return parseExoticData(EXOTIC_RAW_DATA);
         case 'TREAD_ZONE':
           return parseTreadZoneData(TREAD_ZONE_RAW_DATA);
         case 'SUMITOMO_DUNLOP':
@@ -301,6 +307,11 @@ const App: React.FC = () => {
       label: 'TUBESTONE',
       note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.',
       portalUrl: 'https://portal.tubestone.co.za/index.php?c=website.account.home/dashboard'
+    },
+    EXOTIC: {
+      label: 'EXOTIC',
+      note: 'Viewing External Supplier Data. Alloy wheels are ignored; tyre stock uses branch availability from Exotic.',
+      portalUrl: 'https://exotic.ewtgroup.co.za/'
     },
     TREAD_ZONE: {
       label: 'TREAD ZONE',

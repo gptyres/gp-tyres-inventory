@@ -303,6 +303,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   TUBESTONE
                 </button>
                 <button
+                  onClick={() => handleSupplierClick('EXOTIC')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'EXOTIC' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  EXOTIC
+                </button>
+                <button
                   onClick={() => handleSupplierClick('TREAD_ZONE')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'TREAD_ZONE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >

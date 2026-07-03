@@ -981,6 +981,104 @@ export const parseApexData = (rawCsv: string): InventoryItem[] => {
   return parseSimpleSupplierCsv(rawCsv, 'apex', 'APEX');
 };
 
+
+const getAvailabilityQuantity = (availability: string, stockUnits: string): number => {
+  const parsedUnits = parseStockUnits(stockUnits);
+  if (parsedUnits > 0) return parsedUnits;
+  return /available/i.test(availability) ? 1 : 0;
+};
+
+const extractExoticPattern = (productName: string, size: string, brand: string): string => (
+  productName
+    .replace(new RegExp(escapeRegExp(size), 'i'), ' ')
+    .replace(new RegExp(`^\s*${escapeRegExp(brand)}\s+`, 'i'), ' ')
+    .replace(/\b(?:motorcycle\s+)?tyre\b/gi, ' ')
+    .replace(/\b(?:XL|TL|TT|RWL|OWL)\b/gi, ' ')
+    .replace(/\b\d+\s*PR\b/gi, ' ')
+    .replace(/\b\d{2,3}[A-Z](?:\/\d{2,3}[A-Z])?\b/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim() || productName || 'Standard'
+);
+
+// --- EXOTIC PARSER ---
+export const parseExoticData = (rawCsv: string): InventoryItem[] => {
+  const groupedItems = new Map<string, {
+    sku: string;
+    category: string;
+    brand: string;
+    pattern: string;
+    size: string;
+    branchAvailability: Record<string, string>;
+    totalQuantity: number;
+    sellingPrice: number;
+  }>();
+  const lines = rawCsv.split('\n');
+  const today = new Date().toISOString().split('T')[0];
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+
+    const cols = parseCSVLine(trimmed);
+    const supplier = cols[0]?.trim();
+    const brand = cols[1]?.trim();
+    const productName = cols[2]?.replace(/\s+/g, ' ').trim();
+    const category = cols[3]?.trim();
+    const size = cols[4]?.trim();
+    const stockLocation = cols[5]?.trim() || 'Supplier';
+    const availability = cols[6]?.trim() || 'Unknown';
+    const stockUnits = cols[7]?.trim() || '';
+    const sellingPrice = parseCurrencyString(cols[8]);
+    const sku = cols[9]?.trim();
+
+    if (index === 0 && supplier?.toUpperCase() === 'SUPPLIER') return;
+    if (/alloy\s+wheels/i.test(category || '')) return;
+    if (!sku || !brand || !productName || !size || !/tyres?/i.test(category || productName)) return;
+
+    const branchQuantity = getAvailabilityQuantity(availability, stockUnits);
+    const pattern = extractExoticPattern(productName, size, brand);
+    const existing = groupedItems.get(sku) ?? {
+      sku,
+      category: category || 'Tyres',
+      brand,
+      pattern,
+      size,
+      branchAvailability: {},
+      totalQuantity: 0,
+      sellingPrice
+    };
+
+    existing.branchAvailability[stockLocation] = availability;
+    existing.totalQuantity += branchQuantity;
+    if (!existing.sellingPrice && sellingPrice) existing.sellingPrice = sellingPrice;
+    groupedItems.set(sku, existing);
+  });
+
+  return Array.from(groupedItems.values()).map((entry, index) => {
+    const preferredBranches = ['Cape Town', 'Johannesburg', 'Durban', 'Port Elizabeth'];
+    const knownBranches = preferredBranches.filter((branch) => branch in entry.branchAvailability);
+    const otherBranches = Object.keys(entry.branchAvailability).filter((branch) => !preferredBranches.includes(branch)).sort();
+    const location = [...knownBranches, ...otherBranches]
+      .map((branch) => `${branch}: ${entry.branchAvailability[branch]}`)
+      .join(' | ');
+
+    return {
+      id: `exotic-${index + 1}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('EXOTIC', entry.brand, entry.pattern, entry.sku),
+      brand: entry.brand,
+      pattern: entry.pattern,
+      size: entry.size,
+      loadSpeedIndex: [entry.sku, entry.category, 'Availability only'].filter(Boolean).join(' | '),
+      location: location || 'EXOTIC',
+      quantity: entry.totalQuantity,
+      costPrice: entry.sellingPrice,
+      sellingPrice: entry.sellingPrice,
+      lastUpdated: today
+    };
+  });
+};
+
 // --- TUBESTONE PARSER ---
 export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
   const items: InventoryItem[] = [];
