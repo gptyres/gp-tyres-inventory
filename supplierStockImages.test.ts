@@ -148,7 +148,7 @@ describe('STAMFORD supplier catalogue parsing', () => {
 });
 
 describe('TYREWAREHOUSE supplier catalogue parsing', () => {
-  it('groups branch rows into one tyre item per SKU and adds VAT to the selling price', () => {
+  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest R50', () => {
     const [item] = parseTyreWarehouseData([
       'SKU,Size,Brand,Pattern,Category,Stock Location,Stock Units Availability,Stock Units,Selling Price',
       '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,JHB,Out of stock,0 units,R3350',
@@ -165,7 +165,7 @@ describe('TYREWAREHOUSE supplier catalogue parsing', () => {
       pattern: 'ContiCrossContact AT',
       size: '265/60R18',
       quantity: 4,
-      sellingPrice: 3852.5,
+      sellingPrice: 3850,
       costPrice: 3350,
       imageDesignKey: 'CONTICROSSCONTACT AT',
       imageFinishKey: 'CONTINENTAL'

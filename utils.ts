@@ -616,7 +616,8 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
       .map((branch) => `${branch}: ${entry.branchStock[branch]}`)
       .join(' | ');
 
-    const sellingPriceIncVat = Number((entry.price * 1.15).toFixed(2));
+    const sellingPriceIncVat = entry.price * 1.15;
+    const roundedSellingPrice = Math.round(sellingPriceIncVat / 50) * 50;
 
     return {
       id: `tyrewarehouse-${index + 1}`,
@@ -629,7 +630,7 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
       location: location || 'TYREWAREHOUSE',
       quantity: entry.totalQuantity,
       costPrice: entry.price,
-      sellingPrice: sellingPriceIncVat,
+      sellingPrice: roundedSellingPrice,
       lastUpdated: today
     };
   });
