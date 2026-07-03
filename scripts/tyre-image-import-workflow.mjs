@@ -111,7 +111,8 @@ const normalizeExclusiveTyrePattern = (brand, pattern) => {
     WINDFORCE: /\b(?:WINDFO|WINDFORC)\b/gi,
     CONTINENTAL: /\b(?:CON|CONTINETAL)\b/gi,
     DRIVEMASTER: /\b(?:DRIVE\s*MASTER|DRMASTER)\b/gi,
-    GENERAL: /\bGEN\b/gi
+    GENERAL: /\bGEN\b/gi,
+    ANCHEE: /\bACHEE\b/gi
   };
   let cleaned = String(pattern || '')
     .replace(/\bIMP\b/gi, ' ')
@@ -121,6 +122,8 @@ const normalizeExclusiveTyrePattern = (brand, pattern) => {
     .replace(brandCodeNoise[String(brand || '').toUpperCase()] ?? /$a/, ' ')
     .replace(/\b(?:XL|XLL|BSW|OWL|RWL|WWL|POR|TL|T\/L|TUBELESS|RFT|RUN\s*FLAT|RF|RSC|MIT|FP|WSW|MFS|MOE|MO|AO|NF0|RHD|LHD|RBT|OWT|STD)\b/gi, ' ')
     .replace(/\b(?:3PSF|3PMSF|M\+S|SAF)\b/gi, ' ')
+    .replace(/\bRENEGADE\s+A\s*T\s+5\b/gi, 'Renegade AT5')
+    .replace(/\bRENEGADE\s+AT\s+5\b/gi, 'Renegade AT5')
     .replace(/\b\d{1,2}\s*PR\b/gi, ' ')
     .replace(/\b\d{2,3}[A-Z]+XL\b/gi, ' ')
     .replace(/\b\d{2,3}\s*TR\d{2}\b/gi, ' ')
@@ -192,6 +195,8 @@ const normalizeExclusiveTyrePattern = (brand, pattern) => {
     .replace(/\bSPVAN01\b/gi, 'SP Van01')
     .replace(/\bRADIAL\s*913\s*FM\b/gi, 'FM913')
     .replace(/\bPC\s*5\b/gi, 'ContiPremiumContact 5')
+    .replace(/\bCONTIPREMIUMCONTACT\s+5\s+CONTIPREMIUM\s+CONTACT\s+5\b/gi, 'ContiPremiumContact 5')
+    .replace(/\bCONTIPREMIUMCONTACT\s+5\s+PINK\s+LINES\b/gi, 'ContiPremiumContact 5')
     .replace(/\bCCRX\s+CROSSCONTACT\s+RX\b/gi, 'CrossContact RX')
     .replace(/\bWORLDCONT\s+4X4\b/gi, 'WorldContact 4x4')
     .replace(/\bVANC100\s+CONTIVANCONTACT\b/gi, 'ContiVanContact 100')
@@ -199,11 +204,41 @@ const normalizeExclusiveTyrePattern = (brand, pattern) => {
     .replace(/\bST939\s+S\b/gi, 'ST939')
     .replace(/\bST969\s+D\b/gi, 'ST969')
     .replace(/\bST916\s+T\b/gi, 'ST916')
+    .replace(/\bD684\s+II\b/gi, 'Dueler HT 684 II')
+    .replace(/\bGRT800\s+S\b/gi, 'GRT800')
+    .replace(/\bGRT880S?\s+D\b/gi, 'GRT880')
+    .replace(/\bGRT901(?:\s+\d+PRPR)?\s+M\b/gi, 'GRT901')
+    .replace(/\bGRT916(?:\s+\d+PRPR)?\s+T\b/gi, 'GRT916')
+    .replace(/\bFM188\s+M\b/gi, 'FM188')
+    .replace(/\bFM330\s+MS\b/gi, 'FM330')
+    .replace(/\bFM350\s+S\b/gi, 'FM350')
+    .replace(/\bHS101\s+S\b/gi, 'HS101')
+    .replace(/\bHS268\s+M\b/gi, 'HS268')
+    .replace(/\bHS166\s+S\b/gi, 'HS166')
+    .replace(/\bS801\b/gi, 'ComfortMax S801')
+    .replace(/\bRF08\b/gi, 'Transporter RF08')
+    .replace(/\bRF09\b/gi, 'Transporter RF09')
+    .replace(/\bTRANSPORTER\s+TRANSPORTER\s+RF09\b/gi, 'Transporter RF09')
+    .replace(/\bECO\s+COMF\s+33\b/gi, 'ECO Comfort 33')
+    .replace(/\bECO\s+COMF\s+(52|53|55)\b/gi, 'ECO Comfort $1')
+    .replace(/\bECO\s+SPRT\s+(58|59)\b/gi, 'ECO Sport $1')
     .replace(/\bTM257\b/gi, 'TM257')
     .replace(/\bTM258\b/gi, 'TM258')
     .replace(/\b(?:PR)?(\d{3})\s+(WD20\d{2})\b/gi, '$2')
     .replace(/\s+/g, ' ')
     .trim();
+
+  if (/^KAPSEN$/i.test(String(brand || ''))) {
+    cleaned = cleaned.replace(/\bRS01\b/gi, 'DurableMax RS01');
+  }
+
+  if (/^CEAT$/i.test(String(brand || ''))) {
+    cleaned = cleaned
+      .replace(/^(?:\d+\s+)+MILAZE\b/gi, 'Milaze')
+      .replace(/^(?:\d+\s+)+SECURA\s+ZOOM\+?\b/gi, 'Secura Zoom+')
+      .replace(/^(?:\d+\s+)+SECURA\s+F(?:\s+85)?\b/gi, 'Secura F85')
+      .replace(/\+{2,}/g, '+');
+  }
 
   return cleaned || String(pattern || '').replace(/\bIMP\b/gi, ' ').replace(/\s+/g, ' ').trim() || 'Standard';
 };

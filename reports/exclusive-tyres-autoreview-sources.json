@@ -1,110 +1,50 @@
 [
   {
-    "brand": "TIMAX",
-    "pattern": "TM568",
+    "brand": "FIREMAX",
+    "pattern": "FM188",
     "confidence": "exact",
-    "imageUrl": "https://martines.co.za/wp-content/uploads/2023/04/JHJ.jpg",
-    "sourcePageUrl": "https://martines.co.za/product/155-80-13-eco32-timax/",
+    "imageUrl": "https://images.squarespace-cdn.com/content/v1/652cf7abaf95b56a1033b8e1/c58a101a-3095-4841-b4af-9ec7e699e8ff/firemax-fm188.png",
+    "sourcePageUrl": "https://www.protyre.co.zw/shop/p/firemax-fm188",
     "checkedSourceUrls": [
-      "https://martines.co.za/product/155-80-13-eco32-timax/"
+      "https://www.protyre.co.zw/shop/p/firemax-fm188"
     ],
     "source": "retailer",
     "reason": "Verified product reference page and product-image path match brand and pattern."
   },
   {
-    "brand": "CEAT",
-    "pattern": "ECODRIVE",
+    "brand": "KAPSEN",
+    "pattern": "HS166",
     "confidence": "exact",
-    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/120425_FLR.jpg",
-    "sourcePageUrl": "https://whattyre.com/products/ceat-eco-drive/",
+    "imageUrl": "https://www.terrakingtire.com/wp-content/uploads/sites/3/2019/03/HS166-1.png",
+    "sourcePageUrl": "https://www.terrakingtire.com/product/terraking-tyre-hs166/",
     "checkedSourceUrls": [
-      "https://whattyre.com/products/ceat-eco-drive/"
-    ],
-    "source": "whattyre",
-    "reason": "Verified product reference page and product-image path match brand and pattern."
-  },
-  {
-    "brand": "DUNLOP",
-    "pattern": "SP Van01",
-    "confidence": "exact",
-    "imageUrl": "https://www.dunloptyres.co.za/content/usercontent/images/FindATyre/single-tyres/medium/Van01.png",
-    "sourcePageUrl": "https://www.dunloptyres.co.za/Tyre-Range/LightTruck/%20SP%20VAN01?site=dunlop",
-    "checkedSourceUrls": [
-      "https://www.dunloptyres.co.za/Tyre-Range/LightTruck/%20SP%20VAN01?site=dunlop"
+      "https://www.terrakingtire.com/product/terraking-tyre-hs166/"
     ],
     "source": "official",
     "reason": "Official manufacturer page and product-image path match brand and pattern."
   },
   {
-    "brand": "TIMAX",
-    "pattern": "ECO SUV 71",
+    "brand": "TRACMAX",
+    "pattern": "Transporter RF08",
     "confidence": "exact",
-    "imageUrl": "https://www.timaxtyre.com/wp-content/uploads/2023/07/1-18.jpg",
-    "sourcePageUrl": "https://www.timaxtyre.com/product/eco-suv-71/",
+    "imageUrl": "https://www.rubbex.com/images/thumbs/082/0820348_Tracmax-155-R12C-88N-86N-RF08-15420159-main.jpg_550.webp",
+    "sourcePageUrl": "https://www.rubbex.com/en-be/1550-r12-88n-tracmax-rf08-6956647603620",
     "checkedSourceUrls": [
-      "https://www.timaxtyre.com/product/eco-suv-71/"
+      "https://www.rubbex.com/en-be/1550-r12-88n-tracmax-rf08-6956647603620"
     ],
-    "source": "official",
-    "reason": "Official manufacturer page and product-image path match brand and pattern."
-  },
-  {
-    "brand": "FIRESTONE",
-    "pattern": "DESTINATION AT GRIP",
-    "confidence": "exact",
-    "imageUrl": "https://ws-tires.s3.amazonaws.com/firestone/destination-at-grip/firestone-destination-at-1-600x826.jpg",
-    "sourcePageUrl": "https://tiresvote.com/catalog/firestone/destination-at-grip/",
-    "checkedSourceUrls": [
-      "https://tiresvote.com/catalog/firestone/destination-at-grip/"
-    ],
-    "source": "tiresvote",
-    "reason": "Verified product reference page and product-image path match brand and pattern."
-  },
-  {
-    "brand": "GOODYEAR",
-    "pattern": "EfficientGrip Performance ZAF",
-    "confidence": "exact",
-    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/103596_FTR-1.jpg",
-    "sourcePageUrl": "https://whattyre.com/products/goodyear-efficientgrip-performance/",
-    "checkedSourceUrls": [
-      "https://whattyre.com/products/goodyear-efficientgrip-performance/"
-    ],
-    "source": "whattyre",
+    "source": "retailer",
     "reason": "Verified product reference page and product-image path match brand and pattern."
   },
   {
     "brand": "CONTINENTAL",
-    "pattern": "ContiVanContact 100",
+    "pattern": "CROSSCONTACT LX 2",
     "confidence": "exact",
-    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/101530_FLR.jpg",
-    "sourcePageUrl": "https://whattyre.com/products/continental-contivancontact-100/",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/101527_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/continental-crosscontact-lx-2/",
     "checkedSourceUrls": [
-      "https://whattyre.com/products/continental-contivancontact-100/"
+      "https://whattyre.com/products/continental-crosscontact-lx-2/"
     ],
     "source": "whattyre",
-    "reason": "WhatTyre page title matched exactly: Continental Contivancontact 100"
-  },
-  {
-    "brand": "CONTINENTAL",
-    "pattern": "EcoCONT",
-    "confidence": "exact",
-    "imageUrl": "https://whattyre.com/wp-content/uploads/2021/03/ZuKtYJQMCYQH7kc6DVkeo2aZlybL46YFxDUAz8z2.png",
-    "sourcePageUrl": "https://whattyre.com/products/continental-ecocont/",
-    "checkedSourceUrls": [
-      "https://whattyre.com/products/continental-ecocont/"
-    ],
-    "source": "whattyre",
-    "reason": "WhatTyre page title matched exactly: Continental Ecocont6"
-  },
-  {
-    "brand": "CONTINENTAL",
-    "pattern": "CrossContact RX",
-    "confidence": "exact",
-    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/120660_FTR.jpg",
-    "sourcePageUrl": "https://whattyre.com/products/continental-crosscontact-rx/",
-    "checkedSourceUrls": [
-      "https://whattyre.com/products/continental-crosscontact-rx/"
-    ],
-    "source": "whattyre",
-    "reason": "Verified product reference page and product-image path match brand and pattern."
+    "reason": "WhatTyre page title matched exactly: Continental Crosscontact Lx 2"
   }
 ]
