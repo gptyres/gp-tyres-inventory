@@ -1,62 +1,17 @@
 {
-  "generatedAt": "2026-07-03T08:53:41.687Z",
+  "generatedAt": "2026-07-03T09:04:17.807Z",
   "rows": 1110,
-  "uniqueCandidates": 349,
-  "activeImageRows": 83,
-  "covered": 80,
-  "missing": 269,
+  "uniqueCandidates": 348,
+  "activeImageRows": 92,
+  "covered": 88,
+  "missing": 260,
   "candidates": [
     {
-      "id": "TIMAX::TM568",
-      "brand": "TIMAX",
-      "pattern": "TM568",
-      "brandKey": "TIMAX",
-      "patternKey": "TM568",
-      "totalAvailableStock": 116,
-      "covered": false
-    },
-    {
-      "id": "CEAT::ECODRIVE",
-      "brand": "CEAT",
-      "pattern": "ECODRIVE",
-      "brandKey": "CEAT",
-      "patternKey": "ECODRIVE",
-      "totalAvailableStock": 66,
-      "covered": false
-    },
-    {
-      "id": "TIMAX::ECO SUV 71",
-      "brand": "TIMAX",
-      "pattern": "ECO SUV 71",
-      "brandKey": "TIMAX",
-      "patternKey": "ECO SUV 71",
-      "totalAvailableStock": 60,
-      "covered": false
-    },
-    {
-      "id": "FIRESTONE::DESTINATION AT GRIP",
-      "brand": "FIRESTONE",
-      "pattern": "DESTINATION AT GRIP",
-      "brandKey": "FIRESTONE",
-      "patternKey": "DESTINATION AT GRIP",
-      "totalAvailableStock": 58,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::SP VAN01",
-      "brand": "DUNLOP",
-      "pattern": "SP Van01",
-      "brandKey": "DUNLOP",
-      "patternKey": "SP VAN01",
-      "totalAvailableStock": 55,
-      "covered": false
-    },
-    {
-      "id": "DRIVEMASTER::ST901 M",
+      "id": "DRIVEMASTER::ST901",
       "brand": "DRIVEMASTER",
-      "pattern": "ST901 M",
+      "pattern": "ST901",
       "brandKey": "DRIVEMASTER",
-      "patternKey": "ST901 M",
+      "patternKey": "ST901",
       "totalAvailableStock": 49,
       "covered": false
     },
@@ -84,15 +39,6 @@
       "pattern": "D684 II",
       "brandKey": "BRIDGESTONE",
       "patternKey": "D684 II",
-      "totalAvailableStock": 40,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::EFFICIENTGRIP PERFORMANCE ZAF",
-      "brand": "GOODYEAR",
-      "pattern": "EfficientGrip Performance ZAF",
-      "brandKey": "GOODYEAR",
-      "patternKey": "EFFICIENTGRIP PERFORMANCE ZAF",
       "totalAvailableStock": 40,
       "covered": false
     },
@@ -178,11 +124,11 @@
       "covered": false
     },
     {
-      "id": "DRIVEMASTER::ST939 S",
+      "id": "DRIVEMASTER::ST939",
       "brand": "DRIVEMASTER",
-      "pattern": "ST939 S",
+      "pattern": "ST939",
       "brandKey": "DRIVEMASTER",
-      "patternKey": "ST939 S",
+      "patternKey": "ST939",
       "totalAvailableStock": 21,
       "covered": false
     },
@@ -232,65 +178,47 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CONTINETAL CCRX CROSSCONTACT RX",
+      "id": "CONTINENTAL::CONTIPREMIUMCONTACT 5 CONTIPREMIUM CONTACT 5",
       "brand": "CONTINENTAL",
-      "pattern": "CON CONTINETAL CCRX CROSSCONTACT RX",
+      "pattern": "ContiPremiumContact 5 CONTIPREMIUM CONTACT 5",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CONTINETAL CCRX CROSSCONTACT RX",
+      "patternKey": "CONTIPREMIUMCONTACT 5 CONTIPREMIUM CONTACT 5",
       "totalAvailableStock": 20,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON PC 5 PINK LINES",
+      "id": "CONTINENTAL::CONTIPREMIUMCONTACT 5 PINK LINES",
       "brand": "CONTINENTAL",
-      "pattern": "CON PC 5 PINK LINES",
+      "pattern": "ContiPremiumContact 5 PINK LINES",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON PC 5 PINK LINES",
+      "patternKey": "CONTIPREMIUMCONTACT 5 PINK LINES",
       "totalAvailableStock": 20,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON PC5 CONTIPREMIUM CONTACT 5",
+      "id": "CONTINENTAL::WORLDCONTACT 4X4",
       "brand": "CONTINENTAL",
-      "pattern": "CON PC5 CONTIPREMIUM CONTACT 5",
+      "pattern": "WorldContact 4x4",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON PC5 CONTIPREMIUM CONTACT 5",
+      "patternKey": "WORLDCONTACT 4X4",
       "totalAvailableStock": 20,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON WORLDCONT 4X4",
-      "brand": "CONTINENTAL",
-      "pattern": "CON WorldCONT 4x4",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON WORLDCONT 4X4",
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "DRIVEMASTER::DRIVE MASTER ST969 D",
+      "id": "DRIVEMASTER::ST916",
       "brand": "DRIVEMASTER",
-      "pattern": "DRIVE MASTER ST969 D",
+      "pattern": "ST916",
       "brandKey": "DRIVEMASTER",
-      "patternKey": "DRIVE MASTER ST969 D",
+      "patternKey": "ST916",
       "totalAvailableStock": 20,
       "covered": false
     },
     {
-      "id": "DRIVEMASTER::DRMASTER ST916 T",
+      "id": "DRIVEMASTER::ST969",
       "brand": "DRIVEMASTER",
-      "pattern": "DRMASTER ST916 T",
+      "pattern": "ST969",
       "brandKey": "DRIVEMASTER",
-      "patternKey": "DRMASTER ST916 T",
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "DUNLOP::70TR14 SUMITOMO HTRT5 88",
-      "brand": "DUNLOP",
-      "pattern": "70TR14 SUMITOMO HTRT5 88",
-      "brandKey": "DUNLOP",
-      "patternKey": "70TR14 SUMITOMO HTRT5 88",
+      "patternKey": "ST969",
       "totalAvailableStock": 20,
       "covered": false
     },
@@ -309,6 +237,15 @@
       "pattern": "SUMITOMO HTRH5",
       "brandKey": "DUNLOP",
       "patternKey": "SUMITOMO HTRH5",
+      "totalAvailableStock": 20,
+      "covered": false
+    },
+    {
+      "id": "DUNLOP::SUMITOMO HTRT5 88",
+      "brand": "DUNLOP",
+      "pattern": "SUMITOMO HTRT5 88",
+      "brandKey": "DUNLOP",
+      "patternKey": "SUMITOMO HTRT5 88",
       "totalAvailableStock": 20,
       "covered": false
     },
@@ -358,11 +295,11 @@
       "covered": false
     },
     {
-      "id": "GENERAL::GEN 7. SUP AG",
+      "id": "GENERAL::SUP AG",
       "brand": "GENERAL",
-      "pattern": "GEN 7. SUP AG",
+      "pattern": "SUP AG",
       "brandKey": "GENERAL",
-      "patternKey": "GEN 7. SUP AG",
+      "patternKey": "SUP AG",
       "totalAvailableStock": 20,
       "covered": false
     },
@@ -408,15 +345,6 @@
       "pattern": "HS166 S",
       "brandKey": "KAPSEN",
       "patternKey": "HS166 S",
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "RADAR::RLT71 35MM",
-      "brand": "RADAR",
-      "pattern": "RLT71 35mm",
-      "brandKey": "RADAR",
-      "patternKey": "RLT71 35MM",
       "totalAvailableStock": 20,
       "covered": false
     },
@@ -583,29 +511,29 @@
       "covered": false
     },
     {
-      "id": "WINDFORCE::PR136 WD2020",
-      "brand": "WINDFORCE",
-      "pattern": "PR136 WD2020",
-      "brandKey": "WINDFORCE",
-      "patternKey": "PR136 WD2020",
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::PR148 WD2020 D",
-      "brand": "WINDFORCE",
-      "pattern": "PR148 WD2020 D",
-      "brandKey": "WINDFORCE",
-      "patternKey": "PR148 WD2020 D",
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
       "id": "WINDFORCE::TRANS MASTER GSR210",
       "brand": "WINDFORCE",
       "pattern": "TRANS MASTER GSR210",
       "brandKey": "WINDFORCE",
       "patternKey": "TRANS MASTER GSR210",
+      "totalAvailableStock": 20,
+      "covered": false
+    },
+    {
+      "id": "WINDFORCE::WD2020",
+      "brand": "WINDFORCE",
+      "pattern": "WD2020",
+      "brandKey": "WINDFORCE",
+      "patternKey": "WD2020",
+      "totalAvailableStock": 20,
+      "covered": false
+    },
+    {
+      "id": "WINDFORCE::WD2020 D",
+      "brand": "WINDFORCE",
+      "pattern": "WD2020 D",
+      "brandKey": "WINDFORCE",
+      "patternKey": "WD2020 D",
       "totalAvailableStock": 20,
       "covered": false
     },
@@ -661,15 +589,6 @@
       "brandKey": "DUNLOP",
       "patternKey": "SUMITOMO BC10",
       "totalAvailableStock": 18,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON VANC100 CONTIVANCONTACT",
-      "brand": "CONTINENTAL",
-      "pattern": "CON VANC100 ContiVanContact",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON VANC100 CONTIVANCONTACT",
-      "totalAvailableStock": 17,
       "covered": false
     },
     {
@@ -763,11 +682,11 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON FR SC5 SSR",
+      "id": "CONTINENTAL::FR SC5 SSR",
       "brand": "CONTINENTAL",
-      "pattern": "CON FR SC5 SSR",
+      "pattern": "FR SC5 SSR",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON FR SC5 SSR",
+      "patternKey": "FR SC5 SSR",
       "totalAvailableStock": 13,
       "covered": false
     },
@@ -781,20 +700,20 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CROSSCONT LX SP SIL",
+      "id": "CONTINENTAL::CROSSCONT LX SP SIL",
       "brand": "CONTINENTAL",
-      "pattern": "CON CrossCont LX Sp SIL",
+      "pattern": "CrossCont LX Sp SIL",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CROSSCONT LX SP SIL",
+      "patternKey": "CROSSCONT LX SP SIL",
       "totalAvailableStock": 12,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON FR CONTICROSSCONTACT LX 2",
+      "id": "CONTINENTAL::FR CONTICROSSCONTACT LX 2",
       "brand": "CONTINENTAL",
-      "pattern": "CON FR CONTICROSSCONTACT LX 2",
+      "pattern": "FR CONTICROSSCONTACT LX 2",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON FR CONTICROSSCONTACT LX 2",
+      "patternKey": "FR CONTICROSSCONTACT LX 2",
       "totalAvailableStock": 12,
       "covered": false
     },
@@ -808,11 +727,11 @@
       "covered": false
     },
     {
-      "id": "GENERAL::GEN GRAB AT3 TIRE GRABBER",
+      "id": "GENERAL::GRAB AT3 TIRE GRABBER",
       "brand": "GENERAL",
-      "pattern": "GEN GRAB AT3 TIRE GRABBER",
+      "pattern": "GRAB AT3 TIRE GRABBER",
       "brandKey": "GENERAL",
-      "patternKey": "GEN GRAB AT3 TIRE GRABBER",
+      "patternKey": "GRAB AT3 TIRE GRABBER",
       "totalAvailableStock": 12,
       "covered": false
     },
@@ -853,20 +772,20 @@
       "covered": false
     },
     {
-      "id": "WINDFORCE::PR158 WD2080",
-      "brand": "WINDFORCE",
-      "pattern": "PR158 WD2080",
-      "brandKey": "WINDFORCE",
-      "patternKey": "PR158 WD2080",
-      "totalAvailableStock": 12,
-      "covered": false
-    },
-    {
       "id": "WINDFORCE::TRANS MASTER GTM380 T",
       "brand": "WINDFORCE",
       "pattern": "TRANS MASTER GTM380 T",
       "brandKey": "WINDFORCE",
       "patternKey": "TRANS MASTER GTM380 T",
+      "totalAvailableStock": 12,
+      "covered": false
+    },
+    {
+      "id": "WINDFORCE::WD2080",
+      "brand": "WINDFORCE",
+      "pattern": "WD2080",
+      "brandKey": "WINDFORCE",
+      "patternKey": "WD2080",
       "totalAvailableStock": 12,
       "covered": false
     },
@@ -907,11 +826,11 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CROSSCONT UHP FR",
+      "id": "CONTINENTAL::CROSSCONT UHP FR",
       "brand": "CONTINENTAL",
-      "pattern": "CON CrossCont UHP FR",
+      "pattern": "CrossCont UHP FR",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CROSSCONT UHP FR",
+      "patternKey": "CROSSCONT UHP FR",
       "totalAvailableStock": 10,
       "covered": false
     },
@@ -979,29 +898,29 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CROSSCONT ATR LRE FR",
+      "id": "CONTINENTAL::CROSSCONT ATR LRE FR",
       "brand": "CONTINENTAL",
-      "pattern": "CON CROSSCONT ATR LRE FR",
+      "pattern": "CROSSCONT ATR LRE FR",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CROSSCONT ATR LRE FR",
+      "patternKey": "CROSSCONT ATR LRE FR",
       "totalAvailableStock": 9,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON SC5 FR SSR",
+      "id": "CONTINENTAL::SC5 FR SSR",
       "brand": "CONTINENTAL",
-      "pattern": "CON SC5 FR SSR",
+      "pattern": "SC5 FR SSR",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON SC5 FR SSR",
+      "patternKey": "SC5 FR SSR",
       "totalAvailableStock": 9,
       "covered": false
     },
     {
-      "id": "GENERAL::GEN VANC10",
+      "id": "GENERAL::VANC10",
       "brand": "GENERAL",
-      "pattern": "GEN VANC10",
+      "pattern": "VANC10",
       "brandKey": "GENERAL",
-      "patternKey": "GEN VANC10",
+      "patternKey": "VANC10",
       "totalAvailableStock": 9,
       "covered": false
     },
@@ -1033,56 +952,20 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CCART LRE FR",
+      "id": "CONTINENTAL::CCART LRE FR",
       "brand": "CONTINENTAL",
-      "pattern": "CON CCART# LRE FR",
+      "pattern": "CCART# LRE FR",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CCART LRE FR",
+      "patternKey": "CCART LRE FR",
       "totalAvailableStock": 8,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CCAT CONTICROSSCONTACT AT",
+      "id": "CONTINENTAL::CCAT CONTICROSSCONTACT AT",
       "brand": "CONTINENTAL",
-      "pattern": "CON CCAT CONTICROSSCONTACT AT",
+      "pattern": "CCAT CONTICROSSCONTACT AT",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CCAT CONTICROSSCONTACT AT",
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON CONTI FR PC7 PREMIUMCONTACT 7",
-      "brand": "CONTINENTAL",
-      "pattern": "CON CONTI FR PC7 PREMIUMCONTACT 7",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON CONTI FR PC7 PREMIUMCONTACT 7",
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON FR ECOCONTACT 6Q",
-      "brand": "CONTINENTAL",
-      "pattern": "CON FR * ECOCONTACT 6Q",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON FR ECOCONTACT 6Q",
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON FR CCATR CROSSCONTACT ATR",
-      "brand": "CONTINENTAL",
-      "pattern": "CON FR CCATR CROSSCONTACT ATR",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON FR CCATR CROSSCONTACT ATR",
-      "totalAvailableStock": 8,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON SC5 SUV CONTI SPORTCONTACT5",
-      "brand": "CONTINENTAL",
-      "pattern": "CON SC5 SUV CONTI SPORTCONTACT5",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON SC5 SUV CONTI SPORTCONTACT5",
+      "patternKey": "CCAT CONTICROSSCONTACT AT",
       "totalAvailableStock": 8,
       "covered": false
     },
@@ -1096,6 +979,42 @@
       "covered": false
     },
     {
+      "id": "CONTINENTAL::CONTI FR PC7 PREMIUMCONTACT 7",
+      "brand": "CONTINENTAL",
+      "pattern": "CONTI FR PC7 PREMIUMCONTACT 7",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "CONTI FR PC7 PREMIUMCONTACT 7",
+      "totalAvailableStock": 8,
+      "covered": false
+    },
+    {
+      "id": "CONTINENTAL::FR ECOCONTACT 6Q",
+      "brand": "CONTINENTAL",
+      "pattern": "FR * ECOCONTACT 6Q",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "FR ECOCONTACT 6Q",
+      "totalAvailableStock": 8,
+      "covered": false
+    },
+    {
+      "id": "CONTINENTAL::FR CCATR CROSSCONTACT ATR",
+      "brand": "CONTINENTAL",
+      "pattern": "FR CCATR CROSSCONTACT ATR",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "FR CCATR CROSSCONTACT ATR",
+      "totalAvailableStock": 8,
+      "covered": false
+    },
+    {
+      "id": "CONTINENTAL::SC5 SUV CONTI SPORTCONTACT5",
+      "brand": "CONTINENTAL",
+      "pattern": "SC5 SUV CONTI SPORTCONTACT5",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "SC5 SUV CONTI SPORTCONTACT5",
+      "totalAvailableStock": 8,
+      "covered": false
+    },
+    {
       "id": "DUNLOP::TRAKGRIP",
       "brand": "DUNLOP",
       "pattern": "TRAKGRIP",
@@ -1105,11 +1024,11 @@
       "covered": false
     },
     {
-      "id": "GENERAL::GEN FR SC5P",
+      "id": "GENERAL::FR SC5P",
       "brand": "GENERAL",
-      "pattern": "GEN FR SC5P",
+      "pattern": "FR SC5P",
       "brandKey": "GENERAL",
-      "patternKey": "GEN FR SC5P",
+      "patternKey": "FR SC5P",
       "totalAvailableStock": 8,
       "covered": false
     },
@@ -1186,11 +1105,11 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON FR CCATR",
+      "id": "CONTINENTAL::FR CCATR",
       "brand": "CONTINENTAL",
-      "pattern": "CON FR CCATR",
+      "pattern": "FR CCATR",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON FR CCATR",
+      "patternKey": "FR CCATR",
       "totalAvailableStock": 7,
       "covered": false
     },
@@ -1231,11 +1150,11 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON FR PC6 PREMIUMCONTACT 6",
+      "id": "CONTINENTAL::FR PC6 PREMIUMCONTACT 6",
       "brand": "CONTINENTAL",
-      "pattern": "CON FR PC6 PREMIUMCONTACT 6",
+      "pattern": "FR PC6 PREMIUMCONTACT 6",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON FR PC6 PREMIUMCONTACT 6",
+      "patternKey": "FR PC6 PREMIUMCONTACT 6",
       "totalAvailableStock": 6,
       "covered": false
     },
@@ -1357,11 +1276,11 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CCAT CONTICROSSCONTAC AT 8",
+      "id": "CONTINENTAL::CCAT CONTICROSSCONTAC AT 8",
       "brand": "CONTINENTAL",
-      "pattern": "CON CCAT CONTICROSSCONTAC AT 8",
+      "pattern": "CCAT CONTICROSSCONTAC AT 8",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CCAT CONTICROSSCONTAC AT 8",
+      "patternKey": "CCAT CONTICROSSCONTAC AT 8",
       "totalAvailableStock": 5,
       "covered": false
     },
@@ -1375,11 +1294,11 @@
       "covered": false
     },
     {
-      "id": "GENERAL::GEN GRABBER AT3 FR",
+      "id": "GENERAL::GRABBER AT3 FR",
       "brand": "GENERAL",
-      "pattern": "GEN GRABBER AT3 FR",
+      "pattern": "GRABBER AT3 FR",
       "brandKey": "GENERAL",
-      "patternKey": "GEN GRABBER AT3 FR",
+      "patternKey": "GRABBER AT3 FR",
       "totalAvailableStock": 5,
       "covered": false
     },
@@ -1447,92 +1366,56 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON 255 35YR19 XLFRSC5P CONTISPORTCONTACT5P",
+      "id": "CONTINENTAL::35YR19 XLFRSC5P CONTISPORTCONTACT5P",
       "brand": "CONTINENTAL",
-      "pattern": "CON 255 35YR19 XLFRSC5P CONTISPORTCONTACT5P",
+      "pattern": "35YR19 XLFRSC5P CONTISPORTCONTACT5P",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON 255 35YR19 XLFRSC5P CONTISPORTCONTACT5P",
+      "patternKey": "35YR19 XLFRSC5P CONTISPORTCONTACT5P",
       "totalAvailableStock": 4,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CROSSCONTACT LX 2",
+      "id": "CONTINENTAL::CROSSCONTACT LX 2",
       "brand": "CONTINENTAL",
-      "pattern": "CON CROSSCONTACT LX 2",
+      "pattern": "CROSSCONTACT LX 2",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CROSSCONTACT LX 2",
+      "patternKey": "CROSSCONTACT LX 2",
       "totalAvailableStock": 4,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON EC5 CONTIECOCONTACT 5",
+      "id": "CONTINENTAL::EC5 CONTIECOCONTACT 5",
       "brand": "CONTINENTAL",
-      "pattern": "CON EC5 CONTIECOCONTACT 5",
+      "pattern": "EC5 CONTIECOCONTACT 5",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON EC5 CONTIECOCONTACT 5",
+      "patternKey": "EC5 CONTIECOCONTACT 5",
       "totalAvailableStock": 4,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON ECOCONTACT6Q SIL",
+      "id": "CONTINENTAL::ECOCONTACT6Q SIL",
       "brand": "CONTINENTAL",
-      "pattern": "CON ECOCONTACT6Q SIL",
+      "pattern": "ECOCONTACT6Q SIL",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON ECOCONTACT6Q SIL",
+      "patternKey": "ECOCONTACT6Q SIL",
       "totalAvailableStock": 4,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON FR PREMIUMCONTACT 6",
+      "id": "CONTINENTAL::FR PREMIUMCONTACT 6",
       "brand": "CONTINENTAL",
-      "pattern": "CON FR PremiumContact 6",
+      "pattern": "FR PremiumContact 6",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON FR PREMIUMCONTACT 6",
+      "patternKey": "FR PREMIUMCONTACT 6",
       "totalAvailableStock": 4,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON FR SC5 CONTISPORTCONTACT 5",
+      "id": "CONTINENTAL::FR SC5 CONTISPORTCONTACT 5",
       "brand": "CONTINENTAL",
-      "pattern": "CON FR SC5 CONTISPORTCONTACT 5",
+      "pattern": "FR SC5 CONTISPORTCONTACT 5",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON FR SC5 CONTISPORTCONTACT 5",
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON GRABBER AT3 LRC",
-      "brand": "CONTINENTAL",
-      "pattern": "CON GRABBER AT3 LRC",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON GRABBER AT3 LRC",
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON SPORTCONTACT 5 SUV",
-      "brand": "CONTINENTAL",
-      "pattern": "CON SPORTCONTACT 5 SUV",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON SPORTCONTACT 5 SUV",
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON VANCONT",
-      "brand": "CONTINENTAL",
-      "pattern": "CON VanCONT",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON VANCONT",
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "CONTINENTAL::CON VANCONT 10",
-      "brand": "CONTINENTAL",
-      "pattern": "CON VanCONT 10",
-      "brandKey": "CONTINENTAL",
-      "patternKey": "CON VANCONT 10",
+      "patternKey": "FR SC5 CONTISPORTCONTACT 5",
       "totalAvailableStock": 4,
       "covered": false
     },
@@ -1546,11 +1429,38 @@
       "covered": false
     },
     {
-      "id": "DUNLOP::70HR14 SUMITOMO HTRH5 91",
-      "brand": "DUNLOP",
-      "pattern": "70HR14 SUMITOMO HTRH5 91",
-      "brandKey": "DUNLOP",
-      "patternKey": "70HR14 SUMITOMO HTRH5 91",
+      "id": "CONTINENTAL::GRABBER AT3 LRC",
+      "brand": "CONTINENTAL",
+      "pattern": "GRABBER AT3 LRC",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "GRABBER AT3 LRC",
+      "totalAvailableStock": 4,
+      "covered": false
+    },
+    {
+      "id": "CONTINENTAL::SPORTCONTACT 5 SUV",
+      "brand": "CONTINENTAL",
+      "pattern": "SPORTCONTACT 5 SUV",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "SPORTCONTACT 5 SUV",
+      "totalAvailableStock": 4,
+      "covered": false
+    },
+    {
+      "id": "CONTINENTAL::VANCONT",
+      "brand": "CONTINENTAL",
+      "pattern": "VanCONT",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "VANCONT",
+      "totalAvailableStock": 4,
+      "covered": false
+    },
+    {
+      "id": "CONTINENTAL::VANCONT 10",
+      "brand": "CONTINENTAL",
+      "pattern": "VanCONT 10",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "VANCONT 10",
       "totalAvailableStock": 4,
       "covered": false
     },
@@ -1591,38 +1501,47 @@
       "covered": false
     },
     {
-      "id": "GENERAL::GEN ALTIMAX COMFORT",
-      "brand": "GENERAL",
-      "pattern": "GEN Altimax Comfort",
-      "brandKey": "GENERAL",
-      "patternKey": "GEN ALTIMAX COMFORT",
+      "id": "DUNLOP::SUMITOMO HTRH5 91",
+      "brand": "DUNLOP",
+      "pattern": "SUMITOMO HTRH5 91",
+      "brandKey": "DUNLOP",
+      "patternKey": "SUMITOMO HTRH5 91",
       "totalAvailableStock": 4,
       "covered": false
     },
     {
-      "id": "GENERAL::GEN FR GENRAL GRABBER GT",
+      "id": "GENERAL::ALTIMAX COMFORT",
       "brand": "GENERAL",
-      "pattern": "GEN FR GENRAL GRABBER GT+",
+      "pattern": "Altimax Comfort",
       "brandKey": "GENERAL",
-      "patternKey": "GEN FR GENRAL GRABBER GT",
+      "patternKey": "ALTIMAX COMFORT",
       "totalAvailableStock": 4,
       "covered": false
     },
     {
-      "id": "GENERAL::GEN GRAB AT3 LRC FR",
+      "id": "GENERAL::FR GENRAL GRABBER GT",
       "brand": "GENERAL",
-      "pattern": "GEN GRAB AT3 LRC FR",
+      "pattern": "FR GENRAL GRABBER GT+",
       "brandKey": "GENERAL",
-      "patternKey": "GEN GRAB AT3 LRC FR",
+      "patternKey": "FR GENRAL GRABBER GT",
       "totalAvailableStock": 4,
       "covered": false
     },
     {
-      "id": "GENERAL::GEN LT245 GRAB AT3 LRD",
+      "id": "GENERAL::GRAB AT3 LRC FR",
       "brand": "GENERAL",
-      "pattern": "GEN LT245 GRAB AT3 LRD",
+      "pattern": "GRAB AT3 LRC FR",
       "brandKey": "GENERAL",
-      "patternKey": "GEN LT245 GRAB AT3 LRD",
+      "patternKey": "GRAB AT3 LRC FR",
+      "totalAvailableStock": 4,
+      "covered": false
+    },
+    {
+      "id": "GENERAL::LT245 GRAB AT3 LRD",
+      "brand": "GENERAL",
+      "pattern": "LT245 GRAB AT3 LRD",
+      "brandKey": "GENERAL",
+      "patternKey": "LT245 GRAB AT3 LRD",
       "totalAvailableStock": 4,
       "covered": false
     },
@@ -1960,83 +1879,83 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON 4X4SC NO 4X4SPORTCONTACT FR",
+      "id": "CONTINENTAL::CONTI FRSC5 SSR CONTISPORTCONT 5",
       "brand": "CONTINENTAL",
-      "pattern": "CON 4X4SC NO# 4X4SPORTCONTACT FR",
+      "pattern": "CONTI FRSC5 SSR CONTISPORTCONT 5",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON 4X4SC NO 4X4SPORTCONTACT FR",
+      "patternKey": "CONTI FRSC5 SSR CONTISPORTCONT 5",
       "totalAvailableStock": 2,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CONTI FRSC5 SSR CONTISPORTCONT 5",
+      "id": "CONTINENTAL::CROSSCONT AT FR",
       "brand": "CONTINENTAL",
-      "pattern": "CON CONTI FRSC5 SSR CONTISPORTCONT 5",
+      "pattern": "CROSSCONT AT FR",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CONTI FRSC5 SSR CONTISPORTCONT 5",
+      "patternKey": "CROSSCONT AT FR",
       "totalAvailableStock": 2,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CROSSCONT AT FR",
+      "id": "CONTINENTAL::CROSSCONT ATR FR",
       "brand": "CONTINENTAL",
-      "pattern": "CON CROSSCONT AT FR",
+      "pattern": "CROSSCONT ATR FR",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CROSSCONT AT FR",
+      "patternKey": "CROSSCONT ATR FR",
       "totalAvailableStock": 2,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON CROSSCONT ATR FR",
+      "id": "CONTINENTAL::EC6 ECOCONTACT 6",
       "brand": "CONTINENTAL",
-      "pattern": "CON CROSSCONT ATR FR",
+      "pattern": "EC6 EcoContact 6",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON CROSSCONT ATR FR",
+      "patternKey": "EC6 ECOCONTACT 6",
       "totalAvailableStock": 2,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON EC6 ECOCONTACT 6",
+      "id": "CONTINENTAL::FR GRAB GT GENERAL TIRE GRABBE",
       "brand": "CONTINENTAL",
-      "pattern": "CON EC6 EcoContact 6",
+      "pattern": "FR GRAB GT+ GENERAL TIRE GRABBE",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON EC6 ECOCONTACT 6",
+      "patternKey": "FR GRAB GT GENERAL TIRE GRABBE",
       "totalAvailableStock": 2,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON FR GRAB GT GENERAL TIRE GRABBE",
+      "id": "CONTINENTAL::FR SC5 CONTISPORTCONTACT 5 SSR",
       "brand": "CONTINENTAL",
-      "pattern": "CON FR GRAB GT+ GENERAL TIRE GRABBE",
+      "pattern": "FR SC5 ContiSportContact 5 SSR*",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON FR GRAB GT GENERAL TIRE GRABBE",
+      "patternKey": "FR SC5 CONTISPORTCONTACT 5 SSR",
       "totalAvailableStock": 2,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON FR SC5 CONTISPORTCONTACT 5 SSR",
+      "id": "CONTINENTAL::SC5",
       "brand": "CONTINENTAL",
-      "pattern": "CON FR SC5 ContiSportContact 5 SSR*",
+      "pattern": "SC5",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON FR SC5 CONTISPORTCONTACT 5 SSR",
+      "patternKey": "SC5",
       "totalAvailableStock": 2,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON SC5",
+      "id": "CONTINENTAL::SPORT CONTACT",
       "brand": "CONTINENTAL",
-      "pattern": "CON SC5",
+      "pattern": "Sport Contact",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON SC5",
+      "patternKey": "SPORT CONTACT",
       "totalAvailableStock": 2,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON SPORT CONTACT",
+      "id": "CONTINENTAL::X4SC NO 4X4SPORTCONTACT FR",
       "brand": "CONTINENTAL",
-      "pattern": "CON Sport Contact",
+      "pattern": "X4SC NO# 4X4SPORTCONTACT FR",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON SPORT CONTACT",
+      "patternKey": "X4SC NO 4X4SPORTCONTACT FR",
       "totalAvailableStock": 2,
       "covered": false
     },
@@ -2095,11 +2014,11 @@
       "covered": false
     },
     {
-      "id": "GENERAL::GEN FR GRABBER GT PLUS",
+      "id": "GENERAL::FR GRABBER GT PLUS",
       "brand": "GENERAL",
-      "pattern": "GEN FR GRABBER GT PLUS",
+      "pattern": "FR GRABBER GT PLUS",
       "brandKey": "GENERAL",
-      "patternKey": "GEN FR GRABBER GT PLUS",
+      "patternKey": "FR GRABBER GT PLUS",
       "totalAvailableStock": 2,
       "covered": false
     },
@@ -2203,29 +2122,29 @@
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON PREMCONT",
+      "id": "CONTINENTAL::PREMCONT",
       "brand": "CONTINENTAL",
-      "pattern": "CON PremCont",
+      "pattern": "PremCont",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON PREMCONT",
+      "patternKey": "PREMCONT",
       "totalAvailableStock": 1,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON SC5P SPORT CONTACT",
+      "id": "CONTINENTAL::SC5P SPORT CONTACT",
       "brand": "CONTINENTAL",
-      "pattern": "CON SC5P SPORT CONTACT",
+      "pattern": "SC5P SPORT CONTACT",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON SC5P SPORT CONTACT",
+      "patternKey": "SC5P SPORT CONTACT",
       "totalAvailableStock": 1,
       "covered": false
     },
     {
-      "id": "CONTINENTAL::CON SPORTCONT FR SUV VOL",
+      "id": "CONTINENTAL::SPORTCONT FR SUV VOL",
       "brand": "CONTINENTAL",
-      "pattern": "CON SportCONT FR SUV VOL",
+      "pattern": "SportCONT FR SUV VOL",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON SPORTCONT FR SUV VOL",
+      "patternKey": "SPORTCONT FR SUV VOL",
       "totalAvailableStock": 1,
       "covered": false
     },
@@ -2284,11 +2203,11 @@
       "covered": false
     },
     {
-      "id": "GENERAL::GEN VANC100",
+      "id": "GENERAL::VANC100",
       "brand": "GENERAL",
-      "pattern": "GEN VANC100",
+      "pattern": "VANC100",
       "brandKey": "GENERAL",
-      "patternKey": "GEN VANC100",
+      "patternKey": "VANC100",
       "totalAvailableStock": 1,
       "covered": false
     },
@@ -2581,6 +2500,15 @@
       "covered": true
     },
     {
+      "id": "TIMAX::TM568",
+      "brand": "TIMAX",
+      "pattern": "TM568",
+      "brandKey": "TIMAX",
+      "patternKey": "TM568",
+      "totalAvailableStock": 116,
+      "covered": true
+    },
+    {
       "id": "FIREMAX::FM518",
       "brand": "FIREMAX",
       "pattern": "FM518",
@@ -2680,12 +2608,57 @@
       "covered": true
     },
     {
+      "id": "CEAT::ECODRIVE",
+      "brand": "CEAT",
+      "pattern": "ECODRIVE",
+      "brandKey": "CEAT",
+      "patternKey": "ECODRIVE",
+      "totalAvailableStock": 66,
+      "covered": true
+    },
+    {
       "id": "LANDSAIL::LS288",
       "brand": "LANDSAIL",
       "pattern": "LS288",
       "brandKey": "LANDSAIL",
       "patternKey": "LS288",
       "totalAvailableStock": 61,
+      "covered": true
+    },
+    {
+      "id": "RADAR::RLT71",
+      "brand": "RADAR",
+      "pattern": "RLT71",
+      "brandKey": "RADAR",
+      "patternKey": "RLT71",
+      "totalAvailableStock": 60,
+      "covered": true
+    },
+    {
+      "id": "TIMAX::ECO SUV 71",
+      "brand": "TIMAX",
+      "pattern": "ECO SUV 71",
+      "brandKey": "TIMAX",
+      "patternKey": "ECO SUV 71",
+      "totalAvailableStock": 60,
+      "covered": true
+    },
+    {
+      "id": "FIRESTONE::DESTINATION AT GRIP",
+      "brand": "FIRESTONE",
+      "pattern": "DESTINATION AT GRIP",
+      "brandKey": "FIRESTONE",
+      "patternKey": "DESTINATION AT GRIP",
+      "totalAvailableStock": 58,
+      "covered": true
+    },
+    {
+      "id": "DUNLOP::SP VAN01",
+      "brand": "DUNLOP",
+      "pattern": "SP Van01",
+      "brandKey": "DUNLOP",
+      "patternKey": "SP VAN01",
+      "totalAvailableStock": 55,
       "covered": true
     },
     {
@@ -2788,11 +2761,11 @@
       "covered": true
     },
     {
-      "id": "RADAR::RLT71",
-      "brand": "RADAR",
-      "pattern": "RLT71",
-      "brandKey": "RADAR",
-      "patternKey": "RLT71",
+      "id": "GOODYEAR::EFFICIENTGRIP PERFORMANCE ZAF",
+      "brand": "GOODYEAR",
+      "pattern": "EfficientGrip Performance ZAF",
+      "brandKey": "GOODYEAR",
+      "patternKey": "EFFICIENTGRIP PERFORMANCE ZAF",
       "totalAvailableStock": 40,
       "covered": true
     },
@@ -2932,6 +2905,15 @@
       "covered": true
     },
     {
+      "id": "CONTINENTAL::CROSSCONTACT RX",
+      "brand": "CONTINENTAL",
+      "pattern": "CrossContact RX",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "CROSSCONTACT RX",
+      "totalAvailableStock": 20,
+      "covered": true
+    },
+    {
       "id": "WINDFORCE::CATCHFORS H",
       "brand": "WINDFORCE",
       "pattern": "CATCHFORS H",
@@ -3004,6 +2986,15 @@
       "covered": true
     },
     {
+      "id": "CONTINENTAL::CONTIVANCONTACT 100",
+      "brand": "CONTINENTAL",
+      "pattern": "ContiVanContact 100",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "CONTIVANCONTACT 100",
+      "totalAvailableStock": 17,
+      "covered": true
+    },
+    {
       "id": "BRIDGESTONE::TURANZA T005",
       "brand": "BRIDGESTONE",
       "pattern": "TURANZA T005",
@@ -3013,11 +3004,11 @@
       "covered": true
     },
     {
-      "id": "CONTINENTAL::CON ECOCONT",
+      "id": "CONTINENTAL::ECOCONT",
       "brand": "CONTINENTAL",
-      "pattern": "CON EcoCONT",
+      "pattern": "EcoCONT",
       "brandKey": "CONTINENTAL",
-      "patternKey": "CON ECOCONT",
+      "patternKey": "ECOCONT",
       "totalAvailableStock": 16,
       "covered": true
     },

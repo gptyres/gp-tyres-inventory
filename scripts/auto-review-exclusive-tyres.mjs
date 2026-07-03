@@ -31,7 +31,15 @@ const OFFICIAL_SOURCES = [
   ['FIREMAX', 'FM501 AT', 'https://fdflex.com/en/product/summer-tire-firemax-fm501/', 'https://fdflex.com/wp-content/uploads/2024/01/FM501_1.png'],
   ['WINDFORCE', 'ADVANFORS TOURING', 'https://www.landspidertire.com/product_detail/advanfors-touring.html', 'https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260202/e4b073f492d063a0aeab2b7f2e8ce089.webp', 'official'],
   ['WINDFORCE', 'ADVANFORS MAX', 'https://www.landspidertire.com/product_detail/advanfors-max.html', 'https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260119/f6e58d5c1ae99f32dfb5cf0021b35433.webp', 'official'],
-  ['WINDFORCE', 'CATCHFORS HP', 'https://www.rubbex.com/en-be/17565-r14-82h-windforce-catchfors-hp-6970004908791', 'https://www.rubbex.com/images/thumbs/075/0757092_Windforce-175-65-R14-82H-Catchfors-H-P-15344842-main.jpg_550.webp', 'retailer']
+  ['WINDFORCE', 'CATCHFORS HP', 'https://www.rubbex.com/en-be/17565-r14-82h-windforce-catchfors-hp-6970004908791', 'https://www.rubbex.com/images/thumbs/075/0757092_Windforce-175-65-R14-82H-Catchfors-H-P-15344842-main.jpg_550.webp', 'retailer'],
+  ['TIMAX', 'TM568', 'https://martines.co.za/product/155-80-13-eco32-timax/', 'https://martines.co.za/wp-content/uploads/2023/04/JHJ.jpg', 'retailer'],
+  ['TIMAX', 'ECO SUV 71', 'https://www.timaxtyre.com/product/eco-suv-71/', 'https://www.timaxtyre.com/wp-content/uploads/2023/07/1-18.jpg', 'official'],
+  ['CEAT', 'ECODRIVE', 'https://whattyre.com/products/ceat-eco-drive/', 'https://whattyre.com/wp-content/uploads/2020/01/120425_FLR.jpg', 'whattyre'],
+  ['DUNLOP', 'SP VAN01', 'https://www.dunloptyres.co.za/Tyre-Range/LightTruck/%20SP%20VAN01?site=dunlop', 'https://www.dunloptyres.co.za/content/usercontent/images/FindATyre/single-tyres/medium/Van01.png', 'official'],
+  ['FIRESTONE', 'DESTINATION AT GRIP', 'https://tiresvote.com/catalog/firestone/destination-at-grip/', 'https://ws-tires.s3.amazonaws.com/firestone/destination-at-grip/firestone-destination-at-1-600x826.jpg', 'tiresvote'],
+  ['GOODYEAR', 'EFFICIENTGRIP PERFORMANCE ZAF', 'https://whattyre.com/products/goodyear-efficientgrip-performance/', 'https://whattyre.com/wp-content/uploads/2020/01/103596_FTR-1.jpg', 'whattyre'],
+  ['CONTINENTAL', 'CONTIPREMIUMCONTACT 5', 'https://whattyre.com/products/continental-contipremiumcontact-5/', 'https://whattyre.com/wp-content/uploads/2020/01/101621_FTR.jpg', 'whattyre'],
+  ['CONTINENTAL', 'CROSSCONTACT RX', 'https://whattyre.com/products/continental-crosscontact-rx/', 'https://whattyre.com/wp-content/uploads/2020/01/120660_FTR.jpg', 'whattyre']
 ].map(([brand, pattern, sourcePageUrl, imageUrl, source = 'official']) => ({
   brand,
   pattern,
@@ -118,7 +126,7 @@ const resolveOfficial = (candidate) => {
     sourcePageUrl: source.sourcePageUrl,
     checkedSourceUrls: [source.sourcePageUrl],
     source: source.source,
-    reason: `${source.source === 'official' ? 'Official manufacturer' : 'Verified retailer'} page and product-image path match brand and pattern.`
+    reason: `${source.source === 'official' ? 'Official manufacturer' : 'Verified product reference'} page and product-image path match brand and pattern.`
   };
 };
 

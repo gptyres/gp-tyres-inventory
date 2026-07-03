@@ -259,7 +259,10 @@ const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
     DUNLOP: /\bDUN\b/gi,
     FIRESTONE: /\bFST\b/gi,
     GOODYEAR: /\b(?:GDY|GOODYE|GOODYEA)\b/gi,
-    WINDFORCE: /\b(?:WINDFO|WINDFORC)\b/gi
+    WINDFORCE: /\b(?:WINDFO|WINDFORC)\b/gi,
+    CONTINENTAL: /\b(?:CON|CONTINETAL)\b/gi,
+    DRIVEMASTER: /\b(?:DRIVE\s*MASTER|DRMASTER)\b/gi,
+    GENERAL: /\bGEN\b/gi
   };
   let cleaned = pattern
     .replace(/\bIMP\b/gi, ' ')
@@ -271,6 +274,9 @@ const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
     .replace(/\b(?:3PSF|3PMSF|M\+S|SAF)\b/gi, ' ')
     .replace(/\b\d{1,2}\s*PR\b/gi, ' ')
     .replace(/\b\d{2,3}[A-Z]+XL\b/gi, ' ')
+    .replace(/\b\d{2,3}\s*TR\d{2}\b/gi, ' ')
+    .replace(/\b\d{2,3}\s*HR\d{2}\b/gi, ' ')
+    .replace(/\bR\d{2}LT\b/gi, ' ')
     .replace(/\b\d{1,3}\s+\d{1,3}\s*[A-Z]\b/gi, ' ')
     .replace(/\b\d{2,3}\s*\/\s*\d{2,3}\s*[A-Z]\b/gi, ' ')
     .replace(/\b\d{2,3}\s+\d{2,3}R\d{2}\b/gi, ' ')
@@ -309,6 +315,7 @@ const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
     .replace(/\bX\s*PRIVILO\s*TX\s*([0-9])\b/gi, 'X Privilo TX$1')
     .replace(/\bRPX\s*[\-.]?\s*800\b/gi, 'RPX800')
     .replace(/\bRLT\s*[\-.]?\s*71\b/gi, 'RLT71')
+    .replace(/\bRLT71\s*35MM\b/gi, 'RLT71')
     .replace(/\bRT\++(?!\w)/gi, 'RT+')
     .replace(/\bRenegade\s*RT\++/gi, 'Renegade RT+')
     .replace(/\bRenegade\s*X\b/gi, 'Renegade X')
@@ -335,6 +342,17 @@ const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
     .replace(/\bDURAMAX\b/gi, 'DuraMax')
     .replace(/\bSPVAN01\b/gi, 'SP Van01')
     .replace(/\bRADIAL\s*913\s*FM\b/gi, 'FM913')
+    .replace(/\bPC\s*5\b/gi, 'ContiPremiumContact 5')
+    .replace(/\bCCRX\s+CROSSCONTACT\s+RX\b/gi, 'CrossContact RX')
+    .replace(/\bWORLDCONT\s+4X4\b/gi, 'WorldContact 4x4')
+    .replace(/\bVANC100\s+CONTIVANCONTACT\b/gi, 'ContiVanContact 100')
+    .replace(/\bST901\s+M\b/gi, 'ST901')
+    .replace(/\bST939\s+S\b/gi, 'ST939')
+    .replace(/\bST969\s+D\b/gi, 'ST969')
+    .replace(/\bST916\s+T\b/gi, 'ST916')
+    .replace(/\bTM257\b/gi, 'TM257')
+    .replace(/\bTM258\b/gi, 'TM258')
+    .replace(/\b(?:PR)?(\d{3})\s+(WD20\d{2})\b/gi, '$2')
     .replace(/\s+/g, ' ')
     .trim();
 
