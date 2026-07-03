@@ -106,7 +106,6 @@ const getDragFileName = (item: InventoryItem): string => (
 
 const SUPPLIER_IMAGE_IMPORT_FUNCTION = 'import-supplier-stock-image';
 const MAX_STAFF_UPLOAD_IMAGE_SIZE = 10 * 1024 * 1024;
-const STAFF_UPLOAD_TOKEN_STORAGE_KEY = 'gp-supplier-image-upload-token';
 const STAFF_UPLOAD_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 
 const fileToBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
@@ -288,9 +287,8 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
   const [pattern, setPattern] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState('');
-  const [uploadToken, setUploadToken] = useState('');
-  const [rememberToken, setRememberToken] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDropActive, setIsDropActive] = useState(false);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -305,7 +303,6 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
     setFile(initialFile ?? null);
     setPreviewUrl(initialFile ? URL.createObjectURL(initialFile) : '');
     setMessage('');
-    setUploadToken(sessionStorage.getItem(STAFF_UPLOAD_TOKEN_STORAGE_KEY) ?? '');
   }, [tyre, initialFile]);
 
   useEffect(() => () => {
@@ -314,12 +311,53 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
 
   if (!tyre || !item) return null;
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const nextFile = event.target.files?.[0] ?? null;
+  const selectImageFile = (nextFile: File | null) => {
+    if (!nextFile) {
+      setFile(null);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setPreviewUrl('');
+      setMessage('');
+      return;
+    }
+    if (!nextFile.type.startsWith('image/') || !STAFF_UPLOAD_IMAGE_TYPES.has(nextFile.type)) {
+      setMessage('Drop a valid tyre image file.');
+      return;
+    }
+    if (nextFile.size > MAX_STAFF_UPLOAD_IMAGE_SIZE) {
+      setMessage('Image is too large. Maximum upload size is 10MB.');
+      return;
+    }
     setFile(nextFile);
-    setMessage('');
     if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPreviewUrl(nextFile ? URL.createObjectURL(nextFile) : '');
+    setPreviewUrl(URL.createObjectURL(nextFile));
+    setMessage('Review the tyre visual, then confirm brand and tread pattern.');
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    selectImageFile(event.target.files?.[0] ?? null);
+  };
+
+  const handleDropZoneDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    setIsDropActive(true);
+  };
+
+  const handleDropZoneDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+    setIsDropActive(false);
+  };
+
+  const handleDropZoneDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDropActive(false);
+    const nextFile = Array.from(event.dataTransfer.files).find((candidate) => candidate.type.startsWith('image/')) ?? null;
+    if (!nextFile) {
+      setMessage('Drop a tyre image file to continue.');
+      return;
+    }
+    selectImageFile(nextFile);
   };
 
   const handleUpload = async (event: React.FormEvent) => {
@@ -340,10 +378,6 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
       setMessage('Confirm both tyre brand and tread/pattern.');
       return;
     }
-    if (!uploadToken.trim()) {
-      setMessage('Enter the supplier image upload code.');
-      return;
-    }
 
     setIsUploading(true);
     setMessage('Uploading confirmed tyre visual...');
@@ -362,20 +396,11 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
       });
 
       const { data, error } = await supabase.functions.invoke(SUPPLIER_IMAGE_IMPORT_FUNCTION, {
-        body: payload,
-        headers: {
-          'x-supplier-image-import-token': uploadToken.trim()
-        }
+        body: payload
       });
 
       if (error) throw error;
       if (!data?.ok) throw new Error(data?.error || 'Supplier image upload failed.');
-
-      if (rememberToken) {
-        sessionStorage.setItem(STAFF_UPLOAD_TOKEN_STORAGE_KEY, uploadToken.trim());
-      } else {
-        sessionStorage.removeItem(STAFF_UPLOAD_TOKEN_STORAGE_KEY);
-      }
 
       onUploaded(item, brand.trim(), pattern.trim(), data.publicImageUrl);
       setMessage('Uploaded. Matching supplier tyres now use this visual.');
@@ -409,14 +434,25 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
         </div>
 
         <div className="grid gap-5 p-5 md:grid-cols-[220px_1fr]">
-          <div className="min-h-[220px] rounded border border-gp-border bg-gp-black flex items-center justify-center overflow-hidden">
+          <div
+            onDragOver={handleDropZoneDragOver}
+            onDragEnter={handleDropZoneDragOver}
+            onDragLeave={handleDropZoneDragLeave}
+            onDrop={handleDropZoneDrop}
+            className={`relative min-h-[220px] rounded border bg-gp-black flex items-center justify-center overflow-hidden transition-colors ${isDropActive ? 'border-gp-red ring-2 ring-gp-red/70' : 'border-gp-border'}`}
+          >
             {previewUrl ? (
               <img src={previewUrl} alt="Selected tyre tread preview" className="h-full w-full object-contain bg-white p-2" />
             ) : (
               <div className="px-4 text-center text-xs font-bold uppercase tracking-wider text-gp-text-muted">
-                Image preview
+                Drop tyre image here or choose a file
               </div>
             )}
+            <div className={`pointer-events-none absolute inset-0 flex items-center justify-center bg-black/75 p-4 text-center transition-opacity ${isDropActive ? 'opacity-100' : 'opacity-0'}`}>
+              <div className="rounded border border-gp-red bg-gp-black/95 px-4 py-3 text-[11px] font-black uppercase tracking-wider text-white shadow-xl">
+                Drop to review and confirm
+              </div>
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -469,29 +505,10 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
                 accept="image/png,image/jpeg,image/webp,image/gif"
                 onChange={handleFileChange}
                 className="w-full rounded border border-gp-border bg-gp-input p-2 text-sm text-gp-text-main file:mr-3 file:rounded file:border-0 file:bg-gp-red file:px-3 file:py-1.5 file:text-xs file:font-black file:uppercase file:text-white"
-                required
               />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Upload Code</label>
-              <input
-                type="password"
-                value={uploadToken}
-                onChange={(event) => setUploadToken(event.target.value)}
-                className="w-full rounded border border-gp-border bg-gp-input p-2 text-sm font-bold text-gp-text-main focus:border-gp-red focus:outline-none"
-                placeholder="Supplier image upload code"
-                required
-              />
-              <label className="mt-2 flex items-center gap-2 text-xs font-bold text-gp-text-muted">
-                <input
-                  type="checkbox"
-                  checked={rememberToken}
-                  onChange={(event) => setRememberToken(event.target.checked)}
-                  className="rounded border-gp-border bg-gp-input text-gp-red focus:ring-gp-red"
-                />
-                Remember for this browser session
-              </label>
+              <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
+                You can also drag a tyre image into the preview box.
+              </p>
             </div>
 
             {message && (
@@ -628,7 +645,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                             isError={errorImages.has(item.id)}
                             onGenerate={() => onGenerateImage(item)}
                             canUploadImage={isSupplierTyre(item)}
-                            onUploadImage={() => onUploadSupplierTyreImage(item)}
+                            onUploadImage={(file) => onUploadSupplierTyreImage(item, file)}
                             aspectRatio={aspectRatio}
                         />
                     </div>
@@ -703,7 +720,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 isError={errorImages.has(item.id)}
                 onGenerate={() => onGenerateImage(item)}
                 canUploadImage={isSupplierTyre(item)}
-                onUploadImage={() => onUploadSupplierTyreImage(item)}
+                onUploadImage={(file) => onUploadSupplierTyreImage(item, file)}
                 aspectRatio={aspectRatio}
             />
           )}
@@ -861,7 +878,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                         isError={errorImages.has(item.id)}
                         onGenerate={() => onGenerateImage(item)}
                         canUploadImage={isSupplierTyre(item)}
-                        onUploadImage={() => onUploadSupplierTyreImage(item)}
+                        onUploadImage={(file) => onUploadSupplierTyreImage(item, file)}
                         aspectRatio={aspectRatio}
                     />
                  </div>

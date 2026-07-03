@@ -8,6 +8,7 @@ const corsHeaders = {
 
 const BUCKET_NAME = 'supplier-stock-images';
 const IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+const MAX_STAFF_UPLOAD_BYTES = 10 * 1024 * 1024;
 
 interface ImportPayload {
   supplier: string;
@@ -62,6 +63,13 @@ const base64ToBytes = (base64: string) => {
   return bytes;
 };
 
+const isStaffUploadPayload = (payload: ImportPayload) => (
+  payload.source === 'staff-upload'
+  && payload.sourceFileId.startsWith('staff-upload:')
+  && payload.storagePath.startsWith('tyres/staff-upload/')
+  && Boolean(payload.finishKey?.trim())
+);
+
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -83,15 +91,17 @@ Deno.serve(async (request) => {
       }
     );
 
-    const configuredToken = await getConfiguredImportToken(supabase);
-    const providedToken = request.headers.get('x-supplier-image-import-token') ?? '';
-    if (!configuredToken || providedToken !== configuredToken) {
-      return jsonResponse({ ok: false, error: 'Unauthorized import request.' }, 401);
-    }
-
     const payload = await request.json() as ImportPayload;
     if (!payload.supplier || !payload.sourceFileId || !payload.fileName || !payload.designKey || !payload.base64) {
       return jsonResponse({ ok: false, error: 'Missing required image import fields.' }, 400);
+    }
+
+    const configuredToken = await getConfiguredImportToken(supabase);
+    const providedToken = request.headers.get('x-supplier-image-import-token') ?? '';
+    const hasValidImportToken = Boolean(configuredToken && providedToken === configuredToken);
+    const isStaffUpload = isStaffUploadPayload(payload);
+    if (!hasValidImportToken && !isStaffUpload) {
+      return jsonResponse({ ok: false, error: 'Unauthorized import request.' }, 401);
     }
 
     if (!IMAGE_MIME_TYPES.has(payload.mimeType)) {
@@ -99,6 +109,10 @@ Deno.serve(async (request) => {
     }
 
     const bytes = base64ToBytes(payload.base64);
+    if (isStaffUpload && bytes.byteLength > MAX_STAFF_UPLOAD_BYTES) {
+      return jsonResponse({ ok: false, error: 'Image is too large. Maximum upload size is 10MB.' }, 400);
+    }
+
     const upload = await supabase.storage
       .from(BUCKET_NAME)
       .upload(payload.storagePath, bytes, {
