@@ -37,6 +37,20 @@ const getRequiredEnv = (name: string) => {
   return value;
 };
 
+const getConfiguredImportToken = async (supabase: ReturnType<typeof createClient>) => {
+  const envToken = Deno.env.get('SUPPLIER_IMAGE_IMPORT_TOKEN');
+  if (envToken) return envToken;
+
+  const { data, error } = await supabase
+    .from('app_private_import_secrets')
+    .select('secret_value')
+    .eq('name', 'SUPPLIER_IMAGE_IMPORT_TOKEN')
+    .maybeSingle();
+
+  if (error) throw error;
+  return data?.secret_value ?? '';
+};
+
 const base64ToBytes = (base64: string) => {
   const binary = atob(base64);
   const bytes = new Uint8Array(binary.length);
@@ -56,7 +70,18 @@ Deno.serve(async (request) => {
   }
 
   try {
-    const configuredToken = Deno.env.get('SUPPLIER_IMAGE_IMPORT_TOKEN');
+    const supabase = createClient(
+      getRequiredEnv('SUPABASE_URL'),
+      getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY'),
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false
+        }
+      }
+    );
+
+    const configuredToken = await getConfiguredImportToken(supabase);
     const providedToken = request.headers.get('x-supplier-image-import-token') ?? '';
     if (!configuredToken || providedToken !== configuredToken) {
       return jsonResponse({ ok: false, error: 'Unauthorized import request.' }, 401);
@@ -70,17 +95,6 @@ Deno.serve(async (request) => {
     if (!IMAGE_MIME_TYPES.has(payload.mimeType)) {
       return jsonResponse({ ok: false, error: `Unsupported image type: ${payload.mimeType}` }, 400);
     }
-
-    const supabase = createClient(
-      getRequiredEnv('SUPABASE_URL'),
-      getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY'),
-      {
-        auth: {
-          persistSession: false,
-          autoRefreshToken: false
-        }
-      }
-    );
 
     const bytes = base64ToBytes(payload.base64);
     const upload = await supabase.storage
@@ -117,9 +131,15 @@ Deno.serve(async (request) => {
 
     return jsonResponse({ ok: true, publicImageUrl: publicUrl });
   } catch (error) {
+    const errorMessage = error instanceof Error
+      ? error.message
+      : typeof error === 'object' && error !== null
+        ? JSON.stringify(error)
+        : String(error);
+
     return jsonResponse({
       ok: false,
-      error: error instanceof Error ? error.message : String(error)
+      error: errorMessage
     }, 500);
   }
 });

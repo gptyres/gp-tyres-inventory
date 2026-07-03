@@ -1,0 +1,202 @@
+[
+  {
+    "brand": "ANNAITE",
+    "pattern": "AN600",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/121550_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/annaite-an600/",
+    "checkedSourceUrls": ["https://whattyre.com/products/annaite-an600/"]
+  },
+  {
+    "brand": "ANNAITE",
+    "pattern": "AN900",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/122434_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/annaite-an900/",
+    "checkedSourceUrls": ["https://whattyre.com/products/annaite-an900/"]
+  },
+  {
+    "brand": "ANNAITE",
+    "pattern": "AN606",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/121547_FTR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/annaite-an606/",
+    "checkedSourceUrls": ["https://whattyre.com/products/annaite-an606/"]
+  },
+  {
+    "brand": "ANNAITE",
+    "pattern": "AN616",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/122433_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/annaite-an616/",
+    "checkedSourceUrls": ["https://whattyre.com/products/annaite-an616/"]
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "DIMAX R8+",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/107528_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/radar-dimax-r8/",
+    "checkedSourceUrls": ["https://whattyre.com/products/radar-dimax-r8/"]
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "Dimax R8 TL",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/107528_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/radar-dimax-r8/",
+    "checkedSourceUrls": ["https://whattyre.com/products/radar-dimax-r8/"]
+  },
+  {
+    "brand": "FIREMAX",
+    "pattern": "FM601",
+    "confidence": "exact",
+    "imageUrl": "https://fdflex.com/wp-content/uploads/2024/01/FM601_2-888x888.png",
+    "sourcePageUrl": "https://fdflex.com/en/product/firemax-fm601/",
+    "checkedSourceUrls": ["https://fdflex.com/en/product/firemax-fm601/"]
+  },
+  {
+    "brand": "TRACMAX",
+    "pattern": "X Privilo TX5",
+    "confidence": "exact",
+    "imageUrl": "https://www.autohero.com.au/content/images/Tracmax-XpriviloTX5-20240806095336.png?width=250",
+    "sourcePageUrl": "https://www.autohero.com.au/brand/tracmax/x-privilo-tx5/",
+    "checkedSourceUrls": ["https://www.autohero.com.au/brand/tracmax/x-privilo-tx5/"]
+  },
+  {
+    "brand": "TRACMAX",
+    "pattern": "X Privilo TX3",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/116973_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/tracmax-x-privilo-tx3/",
+    "checkedSourceUrls": ["https://whattyre.com/products/tracmax-x-privilo-tx3/"]
+  },
+  {
+    "brand": "ANCHEE",
+    "pattern": "AC808",
+    "confidence": "exact",
+    "imageUrl": "https://static.wixstatic.com/media/8116f4_0747bb3143fd401492d821ae803e7a85~mv2.png/v1/fill/w_320%2Ch_625%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/8116f4_0747bb3143fd401492d821ae803e7a85~mv2.png",
+    "sourcePageUrl": "https://www.ancheetyre.com/",
+    "checkedSourceUrls": ["https://www.ancheetyre.com/"]
+  },
+  {
+    "brand": "ANCHEE",
+    "pattern": "AC818",
+    "confidence": "exact",
+    "imageUrl": "https://static.wixstatic.com/media/8116f4_f061b864d1e44913bb90afd8a28d2fdc~mv2.png/v1/fill/w_320%2Ch_625%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/8116f4_f061b864d1e44913bb90afd8a28d2fdc~mv2.png",
+    "sourcePageUrl": "https://www.ancheetyre.com/",
+    "checkedSourceUrls": ["https://www.ancheetyre.com/"]
+  },
+  {
+    "brand": "LANDSAIL",
+    "pattern": "LS388",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/111572_FTR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/landsail-ls388/256282/",
+    "checkedSourceUrls": ["https://whattyre.com/products/landsail-ls388/256282/"]
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "RPX800+ TL",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/109252_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/radar-rpx-800-2/",
+    "checkedSourceUrls": ["https://whattyre.com/products/radar-rpx-800-2/"]
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "DMAX TOURING",
+    "confidence": "exact",
+    "imageUrl": "https://www.bobjane.com.au/cdn/shop/files/Radar_Dimax_Touring_1_668b1c62-9765-490a-bfa2-798e5b18cb47.png?v=1773200210&width=1200",
+    "sourcePageUrl": "https://www.bobjane.com.au/products/radar-dimax-touring-225-45r17-94y-xl-ev",
+    "checkedSourceUrls": ["https://www.bobjane.com.au/products/radar-dimax-touring-225-45r17-94y-xl-ev"]
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "DMAX SPRINT",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": ["https://www.radartyres.com/apac/radar/apac-dimax-sprint", "https://www.radartyres.com/eu/radar/eu-dimax-sprint"]
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "RPX800",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": ["https://www.radartyres.com/eu/radar/eu-rpx-800", "https://whattyre.com/products/radar-rpx-800/17141"]
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "DMAX SPORT",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": ["https://radar.com.sg/shop/radar/radar-dimax-sport/", "https://www.radartyres.com/"]
+  },
+  {
+    "brand": "WINDFORCE",
+    "pattern": "CATCHFORS H P",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": ["https://www.rubbex.com/en-be/17565-r14-82h-windforce-catchfors-hp-6970004908791", "https://www.tyreleader.ie/car-tyres/windforce/catchfors-h-p/"]
+  },
+  {
+    "brand": "FIREMAX",
+    "pattern": "FM518",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": []
+  },
+  {
+    "brand": "ANNAITE",
+    "pattern": "WSW AN900",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": ["https://whattyre.com/products/annaite-an900/"]
+  },
+  {
+    "brand": "LANDSAIL",
+    "pattern": "LS588",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": ["https://landsailtires.com/tires/ls588-uhp"]
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "RENEGADE AT5",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": ["https://www.radartyres.com/eu/radar/eu-renegade-at5", "https://radartires.com/us/radar/us-renegade-a-t5"]
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "RPX 800",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": ["https://radartyres.com/apac/radar/apac-rpx-800", "https://whattyre.com/products/radar-rpx-800/17141"]
+  },
+  {
+    "brand": "RADAR",
+    "pattern": "Renegade AT Sport",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": []
+  },
+  {
+    "brand": "KAPSEN",
+    "pattern": "H202",
+    "confidence": "missing",
+    "imageUrl": "",
+    "sourcePageUrl": "",
+    "checkedSourceUrls": []
+  }
+]
