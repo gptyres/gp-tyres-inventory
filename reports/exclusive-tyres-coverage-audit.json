@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-03T09:58:05.393Z",
+  "generatedAt": "2026-07-03T13:30:09.669Z",
   "supplier": "EXCLUSIVE TYRES",
   "uniqueCandidates": 340,
-  "activeImageRows": 127,
-  "covered": 123,
-  "missing": 217,
+  "activeImageRows": 137,
+  "covered": 133,
+  "missing": 207,
   "missingTop": [
     {
       "id": "TRACMAX::GRT880",
@@ -17,31 +17,11 @@
       "covered": false
     },
     {
-      "id": "FIREMAX::FM188",
-      "brand": "FIREMAX",
-      "pattern": "FM188",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM188",
-      "affectedSkus": 2,
-      "totalAvailableStock": 26,
-      "covered": false
-    },
-    {
       "id": "BRIDGESTONE::ALENZA X",
       "brand": "BRIDGESTONE",
       "pattern": "ALENZA X",
       "brandKey": "BRIDGESTONE",
       "patternKey": "ALENZA X",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::D693 II T9D",
-      "brand": "BRIDGESTONE",
-      "pattern": "D693 II T9D",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "D693 II T9D",
       "affectedSkus": 1,
       "totalAvailableStock": 20,
       "covered": false
@@ -107,41 +87,11 @@
       "covered": false
     },
     {
-      "id": "FIRESTONE::CV2020",
-      "brand": "FIRESTONE",
-      "pattern": "CV2020",
-      "brandKey": "FIRESTONE",
-      "patternKey": "CV2020",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
       "id": "GENERAL::SUP AG",
       "brand": "GENERAL",
       "pattern": "SUP AG",
       "brandKey": "GENERAL",
       "patternKey": "SUP AG",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::KELLY ARMORSTEEL KMS",
-      "brand": "GOODYEAR",
-      "pattern": "KELLY ARMORSTEEL KMS",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KELLY ARMORSTEEL KMS",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::KMAX S END 160K158L",
-      "brand": "GOODYEAR",
-      "pattern": "KMAX S END 160K158L",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KMAX S END 160K158L",
       "affectedSkus": 1,
       "totalAvailableStock": 20,
       "covered": false
@@ -297,16 +247,6 @@
       "covered": false
     },
     {
-      "id": "LANDSPIDER::WILDTRAXX AT",
-      "brand": "LANDSPIDER",
-      "pattern": "WILDTRAXX AT",
-      "brandKey": "LANDSPIDER",
-      "patternKey": "WILDTRAXX AT",
-      "affectedSkus": 3,
-      "totalAvailableStock": 19,
-      "covered": false
-    },
-    {
       "id": "DUNLOP::SUMITOMO BC10",
       "brand": "DUNLOP",
       "pattern": "SUMITOMO BC10",
@@ -314,16 +254,6 @@
       "patternKey": "SUMITOMO BC10",
       "affectedSkus": 3,
       "totalAvailableStock": 18,
-      "covered": false
-    },
-    {
-      "id": "FIREMAX::VAN 916FM",
-      "brand": "FIREMAX",
-      "pattern": "VAN 916FM",
-      "brandKey": "FIREMAX",
-      "patternKey": "VAN 916FM",
-      "affectedSkus": 2,
-      "totalAvailableStock": 17,
       "covered": false
     },
     {
@@ -343,26 +273,6 @@
       "brandKey": "BRIDGESTONE",
       "patternKey": "DUELER AT",
       "affectedSkus": 2,
-      "totalAvailableStock": 16,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::ADVANFORS SUV",
-      "brand": "WINDFORCE",
-      "pattern": "ADVANFORS SUV",
-      "brandKey": "WINDFORCE",
-      "patternKey": "ADVANFORS SUV",
-      "affectedSkus": 3,
-      "totalAvailableStock": 16,
-      "covered": false
-    },
-    {
-      "id": "XCENT::EL501",
-      "brand": "XCENT",
-      "pattern": "EL501",
-      "brandKey": "XCENT",
-      "patternKey": "EL501",
-      "affectedSkus": 1,
       "totalAvailableStock": 16,
       "covered": false
     },
@@ -805,6 +715,96 @@
       "affectedSkus": 1,
       "totalAvailableStock": 8,
       "covered": false
+    },
+    {
+      "id": "ANNAITE::CENTARA VANTI TOURING S1",
+      "brand": "ANNAITE",
+      "pattern": "CENTARA VANTI TOURING S1",
+      "brandKey": "ANNAITE",
+      "patternKey": "CENTARA VANTI TOURING S1",
+      "affectedSkus": 1,
+      "totalAvailableStock": 7,
+      "covered": false
+    },
+    {
+      "id": "BRIDGESTONE::DHP SP",
+      "brand": "BRIDGESTONE",
+      "pattern": "DHP SP",
+      "brandKey": "BRIDGESTONE",
+      "patternKey": "DHP SP",
+      "affectedSkus": 1,
+      "totalAvailableStock": 7,
+      "covered": false
+    },
+    {
+      "id": "CEAT::80 18 GRIPP",
+      "brand": "CEAT",
+      "pattern": "80 18 GRIPP",
+      "brandKey": "CEAT",
+      "patternKey": "80 18 GRIPP",
+      "affectedSkus": 1,
+      "totalAvailableStock": 7,
+      "covered": false
+    },
+    {
+      "id": "CONTINENTAL::FR CCATR",
+      "brand": "CONTINENTAL",
+      "pattern": "FR CCATR",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "FR CCATR",
+      "affectedSkus": 1,
+      "totalAvailableStock": 7,
+      "covered": false
+    },
+    {
+      "id": "DUNLOP::AT3GM",
+      "brand": "DUNLOP",
+      "pattern": "AT3GM",
+      "brandKey": "DUNLOP",
+      "patternKey": "AT3GM",
+      "affectedSkus": 1,
+      "totalAvailableStock": 7,
+      "covered": false
+    },
+    {
+      "id": "PIRELLI::P ZERO VOL",
+      "brand": "PIRELLI",
+      "pattern": "P ZERO VOL",
+      "brandKey": "PIRELLI",
+      "patternKey": "P ZERO VOL",
+      "affectedSkus": 2,
+      "totalAvailableStock": 7,
+      "covered": false
+    },
+    {
+      "id": "PIRELLI::S VERD",
+      "brand": "PIRELLI",
+      "pattern": "S VERD",
+      "brandKey": "PIRELLI",
+      "patternKey": "S VERD",
+      "affectedSkus": 3,
+      "totalAvailableStock": 7,
+      "covered": false
+    },
+    {
+      "id": "TRACMAX::X PRIVILO MT",
+      "brand": "TRACMAX",
+      "pattern": "X Privilo MT",
+      "brandKey": "TRACMAX",
+      "patternKey": "X PRIVILO MT",
+      "affectedSkus": 1,
+      "totalAvailableStock": 7,
+      "covered": false
+    },
+    {
+      "id": "CONTINENTAL::FR PC6 PREMIUMCONTACT 6",
+      "brand": "CONTINENTAL",
+      "pattern": "FR PC6 PREMIUMCONTACT 6",
+      "brandKey": "CONTINENTAL",
+      "patternKey": "FR PC6 PREMIUMCONTACT 6",
+      "affectedSkus": 2,
+      "totalAvailableStock": 6,
+      "covered": false
     }
   ],
   "candidates": [
@@ -819,31 +819,11 @@
       "covered": false
     },
     {
-      "id": "FIREMAX::FM188",
-      "brand": "FIREMAX",
-      "pattern": "FM188",
-      "brandKey": "FIREMAX",
-      "patternKey": "FM188",
-      "affectedSkus": 2,
-      "totalAvailableStock": 26,
-      "covered": false
-    },
-    {
       "id": "BRIDGESTONE::ALENZA X",
       "brand": "BRIDGESTONE",
       "pattern": "ALENZA X",
       "brandKey": "BRIDGESTONE",
       "patternKey": "ALENZA X",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "BRIDGESTONE::D693 II T9D",
-      "brand": "BRIDGESTONE",
-      "pattern": "D693 II T9D",
-      "brandKey": "BRIDGESTONE",
-      "patternKey": "D693 II T9D",
       "affectedSkus": 1,
       "totalAvailableStock": 20,
       "covered": false
@@ -909,41 +889,11 @@
       "covered": false
     },
     {
-      "id": "FIRESTONE::CV2020",
-      "brand": "FIRESTONE",
-      "pattern": "CV2020",
-      "brandKey": "FIRESTONE",
-      "patternKey": "CV2020",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
       "id": "GENERAL::SUP AG",
       "brand": "GENERAL",
       "pattern": "SUP AG",
       "brandKey": "GENERAL",
       "patternKey": "SUP AG",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::KELLY ARMORSTEEL KMS",
-      "brand": "GOODYEAR",
-      "pattern": "KELLY ARMORSTEEL KMS",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KELLY ARMORSTEEL KMS",
-      "affectedSkus": 1,
-      "totalAvailableStock": 20,
-      "covered": false
-    },
-    {
-      "id": "GOODYEAR::KMAX S END 160K158L",
-      "brand": "GOODYEAR",
-      "pattern": "KMAX S END 160K158L",
-      "brandKey": "GOODYEAR",
-      "patternKey": "KMAX S END 160K158L",
       "affectedSkus": 1,
       "totalAvailableStock": 20,
       "covered": false
@@ -1099,16 +1049,6 @@
       "covered": false
     },
     {
-      "id": "LANDSPIDER::WILDTRAXX AT",
-      "brand": "LANDSPIDER",
-      "pattern": "WILDTRAXX AT",
-      "brandKey": "LANDSPIDER",
-      "patternKey": "WILDTRAXX AT",
-      "affectedSkus": 3,
-      "totalAvailableStock": 19,
-      "covered": false
-    },
-    {
       "id": "DUNLOP::SUMITOMO BC10",
       "brand": "DUNLOP",
       "pattern": "SUMITOMO BC10",
@@ -1116,16 +1056,6 @@
       "patternKey": "SUMITOMO BC10",
       "affectedSkus": 3,
       "totalAvailableStock": 18,
-      "covered": false
-    },
-    {
-      "id": "FIREMAX::VAN 916FM",
-      "brand": "FIREMAX",
-      "pattern": "VAN 916FM",
-      "brandKey": "FIREMAX",
-      "patternKey": "VAN 916FM",
-      "affectedSkus": 2,
-      "totalAvailableStock": 17,
       "covered": false
     },
     {
@@ -1145,26 +1075,6 @@
       "brandKey": "BRIDGESTONE",
       "patternKey": "DUELER AT",
       "affectedSkus": 2,
-      "totalAvailableStock": 16,
-      "covered": false
-    },
-    {
-      "id": "WINDFORCE::ADVANFORS SUV",
-      "brand": "WINDFORCE",
-      "pattern": "ADVANFORS SUV",
-      "brandKey": "WINDFORCE",
-      "patternKey": "ADVANFORS SUV",
-      "affectedSkus": 3,
-      "totalAvailableStock": 16,
-      "covered": false
-    },
-    {
-      "id": "XCENT::EL501",
-      "brand": "XCENT",
-      "pattern": "EL501",
-      "brandKey": "XCENT",
-      "patternKey": "EL501",
-      "affectedSkus": 1,
       "totalAvailableStock": 16,
       "covered": false
     },
@@ -2324,16 +2234,6 @@
       "pattern": "RENEGADE A T5",
       "brandKey": "RADAR",
       "patternKey": "RENEGADE A T5",
-      "affectedSkus": 1,
-      "totalAvailableStock": 4,
-      "covered": false
-    },
-    {
-      "id": "RADAR::RIVERA PRO 2",
-      "brand": "RADAR",
-      "pattern": "RIVERA PRO 2",
-      "brandKey": "RADAR",
-      "patternKey": "RIVERA PRO 2",
       "affectedSkus": 1,
       "totalAvailableStock": 4,
       "covered": false
@@ -3619,6 +3519,16 @@
       "covered": true
     },
     {
+      "id": "FIREMAX::FM188",
+      "brand": "FIREMAX",
+      "pattern": "FM188",
+      "brandKey": "FIREMAX",
+      "patternKey": "FM188",
+      "affectedSkus": 2,
+      "totalAvailableStock": 26,
+      "covered": true
+    },
+    {
       "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 2 ROF",
       "brand": "GOODYEAR",
       "pattern": "Eagle F1 Asymmetric 2 ROF",
@@ -3719,6 +3629,16 @@
       "covered": true
     },
     {
+      "id": "BRIDGESTONE::DUELER AT D693 II",
+      "brand": "BRIDGESTONE",
+      "pattern": "Dueler AT D693 II",
+      "brandKey": "BRIDGESTONE",
+      "patternKey": "DUELER AT D693 II",
+      "affectedSkus": 1,
+      "totalAvailableStock": 20,
+      "covered": true
+    },
+    {
       "id": "BRIDGESTONE::POTENZA S001",
       "brand": "BRIDGESTONE",
       "pattern": "POTENZA S001",
@@ -3794,6 +3714,36 @@
       "pattern": "ST969",
       "brandKey": "DRIVEMASTER",
       "patternKey": "ST969",
+      "affectedSkus": 1,
+      "totalAvailableStock": 20,
+      "covered": true
+    },
+    {
+      "id": "FIRESTONE::CV2020",
+      "brand": "FIRESTONE",
+      "pattern": "CV2020",
+      "brandKey": "FIRESTONE",
+      "patternKey": "CV2020",
+      "affectedSkus": 1,
+      "totalAvailableStock": 20,
+      "covered": true
+    },
+    {
+      "id": "GOODYEAR::KELLY ARMORSTEEL KMS",
+      "brand": "GOODYEAR",
+      "pattern": "KELLY ARMORSTEEL KMS",
+      "brandKey": "GOODYEAR",
+      "patternKey": "KELLY ARMORSTEEL KMS",
+      "affectedSkus": 1,
+      "totalAvailableStock": 20,
+      "covered": true
+    },
+    {
+      "id": "GOODYEAR::KMAX S",
+      "brand": "GOODYEAR",
+      "pattern": "KMAX S",
+      "brandKey": "GOODYEAR",
+      "patternKey": "KMAX S",
       "affectedSkus": 1,
       "totalAvailableStock": 20,
       "covered": true
@@ -3969,6 +3919,16 @@
       "covered": true
     },
     {
+      "id": "LANDSPIDER::WILDTRAXX AT",
+      "brand": "LANDSPIDER",
+      "pattern": "WILDTRAXX AT",
+      "brandKey": "LANDSPIDER",
+      "patternKey": "WILDTRAXX AT",
+      "affectedSkus": 3,
+      "totalAvailableStock": 19,
+      "covered": true
+    },
+    {
       "id": "ANNAITE::AN616",
       "brand": "ANNAITE",
       "pattern": "AN616",
@@ -3999,6 +3959,16 @@
       "covered": true
     },
     {
+      "id": "FIREMAX::VAN 916FM",
+      "brand": "FIREMAX",
+      "pattern": "VAN 916FM",
+      "brandKey": "FIREMAX",
+      "patternKey": "VAN 916FM",
+      "affectedSkus": 2,
+      "totalAvailableStock": 17,
+      "covered": true
+    },
+    {
       "id": "BRIDGESTONE::TURANZA T005",
       "brand": "BRIDGESTONE",
       "pattern": "TURANZA T005",
@@ -4019,12 +3989,32 @@
       "covered": true
     },
     {
+      "id": "WINDFORCE::ADVANFORS SUV",
+      "brand": "WINDFORCE",
+      "pattern": "ADVANFORS SUV",
+      "brandKey": "WINDFORCE",
+      "patternKey": "ADVANFORS SUV",
+      "affectedSkus": 3,
+      "totalAvailableStock": 16,
+      "covered": true
+    },
+    {
       "id": "WINDFORCE::CATCHFORS PCR",
       "brand": "WINDFORCE",
       "pattern": "CATCHFORS PCR",
       "brandKey": "WINDFORCE",
       "patternKey": "CATCHFORS PCR",
       "affectedSkus": 3,
+      "totalAvailableStock": 16,
+      "covered": true
+    },
+    {
+      "id": "XCENT::EL501",
+      "brand": "XCENT",
+      "pattern": "EL501",
+      "brandKey": "XCENT",
+      "patternKey": "EL501",
+      "affectedSkus": 1,
       "totalAvailableStock": 16,
       "covered": true
     },
@@ -4205,6 +4195,16 @@
       "brandKey": "PIRELLI",
       "patternKey": "P7 CINT",
       "affectedSkus": 2,
+      "totalAvailableStock": 4,
+      "covered": true
+    },
+    {
+      "id": "RADAR::RIVERA PRO 2",
+      "brand": "RADAR",
+      "pattern": "RIVERA PRO 2",
+      "brandKey": "RADAR",
+      "patternKey": "RIVERA PRO 2",
+      "affectedSkus": 1,
       "totalAvailableStock": 4,
       "covered": true
     }

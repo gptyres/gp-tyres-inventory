@@ -1,13 +1,11 @@
 {
-  "generatedAt": "2026-07-03T09:56:15.528Z",
+  "generatedAt": "2026-07-03T13:28:21.106Z",
   "supplier": "EXCLUSIVE TYRES",
-  "inspectedCandidates": 120,
-  "exactCount": 4,
-  "missingCount": 116,
+  "inspectedCandidates": 210,
+  "exactCount": 3,
+  "missingCount": 207,
   "sourcesByType": {
-    "retailer": 2,
-    "official": 1,
-    "whattyre": 1
+    "official": 3
   },
   "review": [
     {
@@ -16,11 +14,11 @@
       "pattern": "D697",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/bridgestone-d697/",
-        "https://whattyre.com/products/bridgestone-d-697/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=BRIDGESTONE%20D697%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=BRIDGESTONE%20D697%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=BRIDGESTONE%20D697%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::AT5",
@@ -28,22 +26,18 @@
       "pattern": "AT5",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-at5/",
-        "https://whattyre.com/products/dunlop-at-5/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20AT5%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20AT5%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20AT5%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "LANDSPIDER::WILDTRAXX AT",
-      "brand": "LANDSPIDER",
-      "pattern": "WILDTRAXX AT",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://whattyre.com/products/landspider-wildtraxx-at/",
-        "https://www.errolstyres.co.za/tyres"
-      ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "status": "exact",
+      "source": "official",
+      "sourcePageUrl": "https://landspidertire.com/product_detail/wildtraxx-at.html",
+      "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260127/f3fb4a319a20d33a7ff1295ff99d56f3.webp"
     },
     {
       "id": "DUNLOP::SUMITOMO BC10",
@@ -51,22 +45,18 @@
       "pattern": "SUMITOMO BC10",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-sumitomo-bc10/",
-        "https://whattyre.com/products/dunlop-sumitomo-bc-10/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20SUMITOMO%20BC10%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20BC10%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20BC10%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::ADVANFORS SUV",
-      "brand": "WINDFORCE",
-      "pattern": "ADVANFORS SUV",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-advanfors-suv/",
-        "https://www.errolstyres.co.za/tyres"
-      ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "status": "exact",
+      "source": "official",
+      "sourcePageUrl": "https://landspidertire.com/product_detail/advanfors-suv.html",
+      "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260116/91fdafff69109182b5c3bd9acf9561a2.png"
     },
     {
       "id": "GOODYEAR::INTENSA UHP 2",
@@ -74,10 +64,11 @@
       "pattern": "INTENSA UHP 2",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-intensa-uhp-2/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20INTENSA%20UHP%202%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20INTENSA%20UHP%202%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20INTENSA%20UHP%202%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "PIRELLI::S VERD",
@@ -85,10 +76,11 @@
       "pattern": "S VERD",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/pirelli-s-verd/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20S%20VERD%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20S%20VERD%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20S%20VERD%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TRACMAX::GRT880",
@@ -96,18 +88,11 @@
       "pattern": "GRT880",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/tracmax-grt880/",
-        "https://whattyre.com/products/tracmax-grt-880/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TRACMAX%20GRT880%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TRACMAX%20GRT880%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TRACMAX%20GRT880%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
-    },
-    {
-      "id": "FIREMAX::FM188",
-      "status": "exact",
-      "source": "retailer",
-      "sourcePageUrl": "https://www.protyre.co.zw/shop/p/firemax-fm188",
-      "imageUrl": "https://images.squarespace-cdn.com/content/v1/652cf7abaf95b56a1033b8e1/c58a101a-3095-4841-b4af-9ec7e699e8ff/firemax-fm188.png"
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::SUMITOMO BC100",
@@ -115,22 +100,11 @@
       "pattern": "SUMITOMO BC100",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-sumitomo-bc100/",
-        "https://whattyre.com/products/dunlop-sumitomo-bc-100/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20SUMITOMO%20BC100%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20BC100%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20BC100%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
-    },
-    {
-      "id": "FIREMAX::VAN 916FM",
-      "brand": "FIREMAX",
-      "pattern": "VAN 916FM",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://whattyre.com/products/firemax-van-916fm/",
-        "https://www.errolstyres.co.za/tyres"
-      ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "BRIDGESTONE::DUELER AT",
@@ -138,10 +112,11 @@
       "pattern": "DUELER AT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/bridgestone-dueler-at/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=BRIDGESTONE%20DUELER%20AT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=BRIDGESTONE%20DUELER%20AT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=BRIDGESTONE%20DUELER%20AT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "WhatTyre page matched, but no product image was found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::AT20",
@@ -149,11 +124,11 @@
       "pattern": "AT20",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-at20/",
-        "https://whattyre.com/products/dunlop-at-20/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20AT20%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20AT20%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20AT20%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "LANDSAIL::CLX 10",
@@ -161,10 +136,11 @@
       "pattern": "CLX 10",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/landsail-clx-10/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=LANDSAIL%20CLX%2010%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=LANDSAIL%20CLX%2010%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=LANDSAIL%20CLX%2010%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "WhatTyre page matched, but no product image was found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::CROSSCONT UHP FR",
@@ -172,10 +148,11 @@
       "pattern": "CrossCont UHP FR",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-crosscont-uhp-fr/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CrossCont%20UHP%20FR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CrossCont%20UHP%20FR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CrossCont%20UHP%20FR%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::BC10",
@@ -183,11 +160,11 @@
       "pattern": "BC10",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-bc10/",
-        "https://whattyre.com/products/dunlop-bc-10/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20BC10%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20BC10%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20BC10%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "LANDSPIDER::LANDSPIDE WILDTRAXX AT",
@@ -195,10 +172,11 @@
       "pattern": "LANDSPIDE WILDTRAXX AT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/landspider-landspide-wildtraxx-at/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=LANDSPIDER%20LANDSPIDE%20WILDTRAXX%20AT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=LANDSPIDER%20LANDSPIDE%20WILDTRAXX%20AT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=LANDSPIDER%20LANDSPIDE%20WILDTRAXX%20AT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TRACMAX::X PRIVILOH",
@@ -206,10 +184,11 @@
       "pattern": "X priviloH",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/tracmax-x-priviloh/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TRACMAX%20X%20priviloH%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TRACMAX%20X%20priviloH%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TRACMAX%20X%20priviloH%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GENERAL::FR SC5P",
@@ -217,10 +196,11 @@
       "pattern": "FR SC5P",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/general-fr-sc5p/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20FR%20SC5P%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20FR%20SC5P%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20FR%20SC5P%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "PIRELLI::SZROAS LR",
@@ -228,10 +208,11 @@
       "pattern": "SZROAS LR",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/pirelli-szroas-lr/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20SZROAS%20LR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20SZROAS%20LR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20SZROAS%20LR%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "RADAR::DIMAX AS",
@@ -239,10 +220,11 @@
       "pattern": "Dimax AS",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/radar-dimax-as/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=RADAR%20Dimax%20AS%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=RADAR%20Dimax%20AS%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=RADAR%20Dimax%20AS%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "PIRELLI::P ZERO VOL",
@@ -250,10 +232,11 @@
       "pattern": "P ZERO VOL",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/pirelli-p-zero-vol/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20P%20ZERO%20VOL%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20P%20ZERO%20VOL%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20P%20ZERO%20VOL%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::FR PC6 PREMIUMCONTACT 6",
@@ -261,11 +244,11 @@
       "pattern": "FR PC6 PREMIUMCONTACT 6",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-fr-pc6-premiumcontact-6/",
-        "https://whattyre.com/products/continental-fr-pc-6-premiumcontact-6/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20PC6%20PREMIUMCONTACT%206%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20PC6%20PREMIUMCONTACT%206%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20PC6%20PREMIUMCONTACT%206%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GENERAL::GRABBER AT3 FR",
@@ -273,11 +256,11 @@
       "pattern": "GRABBER AT3 FR",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/general-grabber-at3-fr/",
-        "https://whattyre.com/products/general-grabber-at-3-fr/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20GRABBER%20AT3%20FR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20GRABBER%20AT3%20FR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20GRABBER%20AT3%20FR%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "PIRELLI::SZROAS LR NCS",
@@ -285,10 +268,11 @@
       "pattern": "SZROAS LR ncs",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/pirelli-szroas-lr-ncs/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20SZROAS%20LR%20ncs%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20SZROAS%20LR%20ncs%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20SZROAS%20LR%20ncs%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "BRIDGESTONE::ALENZA X",
@@ -296,22 +280,11 @@
       "pattern": "ALENZA X",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/bridgestone-alenza-x/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=BRIDGESTONE%20ALENZA%20X%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=BRIDGESTONE%20ALENZA%20X%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=BRIDGESTONE%20ALENZA%20X%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
-    },
-    {
-      "id": "BRIDGESTONE::D693 II T9D",
-      "brand": "BRIDGESTONE",
-      "pattern": "D693 II T9D",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://whattyre.com/products/bridgestone-d693-ii-t9d/",
-        "https://whattyre.com/products/bridgestone-d-693-ii-t9d/",
-        "https://www.errolstyres.co.za/tyres"
-      ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::SP431W",
@@ -319,10 +292,11 @@
       "pattern": "SP431W",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-sp431w/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20SP431W%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20SP431W%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20SP431W%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::SUMITOMO HTRH5",
@@ -330,11 +304,11 @@
       "pattern": "SUMITOMO HTRH5",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-sumitomo-htrh5/",
-        "https://whattyre.com/products/dunlop-sumitomo-htrh-5/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20SUMITOMO%20HTRH5%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20HTRH5%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20HTRH5%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::SUMITOMO HTRT5 88",
@@ -342,11 +316,11 @@
       "pattern": "SUMITOMO HTRT5 88",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-sumitomo-htrt5-88/",
-        "https://whattyre.com/products/dunlop-sumitomo-htrt-5-88/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20SUMITOMO%20HTRT5%2088%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20HTRT5%2088%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20HTRT5%2088%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "FIREMAX::FM330",
@@ -354,11 +328,11 @@
       "pattern": "FM330",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/firemax-fm330/",
-        "https://whattyre.com/products/firemax-fm-330/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=FIREMAX%20FM330%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=FIREMAX%20FM330%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=FIREMAX%20FM330%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "FIREMAX::FM350",
@@ -366,11 +340,11 @@
       "pattern": "FM350",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/firemax-fm350/",
-        "https://whattyre.com/products/firemax-fm-350/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=FIREMAX%20FM350%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=FIREMAX%20FM350%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=FIREMAX%20FM350%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "FIREMAX::TTF FM18 TUBE FLAP",
@@ -378,23 +352,11 @@
       "pattern": "TTF FM18 tube+flap",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/firemax-ttf-fm18-tube-flap/",
-        "https://whattyre.com/products/firemax-ttf-fm-18-tube-flap/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=FIREMAX%20TTF%20FM18%20tube%2Bflap%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=FIREMAX%20TTF%20FM18%20tube%2Bflap%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=FIREMAX%20TTF%20FM18%20tube%2Bflap%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
-    },
-    {
-      "id": "FIRESTONE::CV2020",
-      "brand": "FIRESTONE",
-      "pattern": "CV2020",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://whattyre.com/products/firestone-cv2020/",
-        "https://whattyre.com/products/firestone-cv-2020/",
-        "https://www.errolstyres.co.za/tyres"
-      ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GENERAL::SUP AG",
@@ -402,32 +364,11 @@
       "pattern": "SUP AG",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/general-sup-ag/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20SUP%20AG%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20SUP%20AG%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20SUP%20AG%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
-    },
-    {
-      "id": "GOODYEAR::KELLY ARMORSTEEL KMS",
-      "brand": "GOODYEAR",
-      "pattern": "KELLY ARMORSTEEL KMS",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-kelly-armorsteel-kms/",
-        "https://www.errolstyres.co.za/tyres"
-      ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
-    },
-    {
-      "id": "GOODYEAR::KMAX S END 160K158L",
-      "brand": "GOODYEAR",
-      "pattern": "KMAX S END 160K158L",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-kmax-s-end-160k158l/",
-        "https://www.errolstyres.co.za/tyres"
-      ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GOODYEAR::WRL AT",
@@ -435,10 +376,11 @@
       "pattern": "WRL AT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-wrl-at/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20WRL%20AT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20WRL%20AT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20WRL%20AT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "KAPSEN::AENEAS S01 S",
@@ -446,18 +388,11 @@
       "pattern": "AENEAS S01 S",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/kapsen-aeneas-s01-s/",
-        "https://whattyre.com/products/kapsen-aeneas-s-01-s/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=KAPSEN%20AENEAS%20S01%20S%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=KAPSEN%20AENEAS%20S01%20S%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=KAPSEN%20AENEAS%20S01%20S%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
-    },
-    {
-      "id": "KAPSEN::HS166",
-      "status": "exact",
-      "source": "official",
-      "sourcePageUrl": "https://www.terrakingtire.com/product/terraking-tyre-hs166/",
-      "imageUrl": "https://www.terrakingtire.com/wp-content/uploads/sites/3/2019/03/HS166-1.png"
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TIMAX::ECO 59",
@@ -465,10 +400,11 @@
       "pattern": "ECO 59",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/timax-eco-59/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TIMAX%20ECO%2059%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TIMAX%20ECO%2059%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TIMAX%20ECO%2059%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TIMAX::LTR28",
@@ -476,11 +412,11 @@
       "pattern": "LTR28",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/timax-ltr28/",
-        "https://whattyre.com/products/timax-ltr-28/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TIMAX%20LTR28%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TIMAX%20LTR28%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TIMAX%20LTR28%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TIMAX::R14LT TM257",
@@ -488,11 +424,11 @@
       "pattern": "R14LT TM257",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/timax-r14lt-tm257/",
-        "https://whattyre.com/products/timax-r14lt-tm-257/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TIMAX%20R14LT%20TM257%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TIMAX%20R14LT%20TM257%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TIMAX%20R14LT%20TM257%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TIMAX::R15LT TM257",
@@ -500,11 +436,11 @@
       "pattern": "R15LT TM257",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/timax-r15lt-tm257/",
-        "https://whattyre.com/products/timax-r15lt-tm-257/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TIMAX%20R15LT%20TM257%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TIMAX%20R15LT%20TM257%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TIMAX%20R15LT%20TM257%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TRACMAX::GRT916",
@@ -512,11 +448,11 @@
       "pattern": "GRT916",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/tracmax-grt916/",
-        "https://whattyre.com/products/tracmax-grt-916/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TRACMAX%20GRT916%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TRACMAX%20GRT916%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TRACMAX%20GRT916%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TRACMAX::GRT932 T",
@@ -524,18 +460,11 @@
       "pattern": "GRT932 T",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/tracmax-grt932-t/",
-        "https://whattyre.com/products/tracmax-grt-932-t/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TRACMAX%20GRT932%20T%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TRACMAX%20GRT932%20T%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TRACMAX%20GRT932%20T%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
-    },
-    {
-      "id": "TRACMAX::TRANSPORTER RF08",
-      "status": "exact",
-      "source": "retailer",
-      "sourcePageUrl": "https://www.rubbex.com/en-be/1550-r12-88n-tracmax-rf08-6956647603620",
-      "imageUrl": "https://www.rubbex.com/images/thumbs/082/0820348_Tracmax-155-R12C-88N-86N-RF08-15420159-main.jpg_550.webp"
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::TRANS MASTER GSR210",
@@ -543,11 +472,11 @@
       "pattern": "TRANS MASTER GSR210",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-trans-master-gsr210/",
-        "https://whattyre.com/products/windforce-trans-master-gsr-210/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20TRANS%20MASTER%20GSR210%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20TRANS%20MASTER%20GSR210%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20TRANS%20MASTER%20GSR210%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::WD2020",
@@ -555,11 +484,11 @@
       "pattern": "WD2020",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-wd2020/",
-        "https://whattyre.com/products/windforce-wd-2020/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WD2020%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20WD2020%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20WD2020%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::WD2020 D",
@@ -567,11 +496,11 @@
       "pattern": "WD2020 D",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-wd2020-d/",
-        "https://whattyre.com/products/windforce-wd-2020-d/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WD2020%20D%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20WD2020%20D%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20WD2020%20D%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::WINDFORCE152 WA1060",
@@ -579,11 +508,11 @@
       "pattern": "WINDFORCE152 WA1060",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-windforce152-wa1060/",
-        "https://whattyre.com/products/windforce-windforce-152-wa-1060/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WINDFORCE152%20WA1060%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20WINDFORCE152%20WA1060%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20WINDFORCE152%20WA1060%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::WT3000 T",
@@ -591,11 +520,11 @@
       "pattern": "WT3000 T",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-wt3000-t/",
-        "https://whattyre.com/products/windforce-wt-3000-t/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WT3000%20T%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20WT3000%20T%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20WT3000%20T%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::WT3020 T",
@@ -603,11 +532,11 @@
       "pattern": "WT3020 T",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-wt3020-t/",
-        "https://whattyre.com/products/windforce-wt-3020-t/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WT3020%20T%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20WT3020%20T%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20WT3020%20T%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GOODYEAR::SAVA CARGO MS",
@@ -615,22 +544,18 @@
       "pattern": "SAVA CARGO MS",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-sava-cargo-ms/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20SAVA%20CARGO%20MS%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20SAVA%20CARGO%20MS%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20SAVA%20CARGO%20MS%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "XCENT::EL501",
-      "brand": "XCENT",
-      "pattern": "EL501",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://whattyre.com/products/xcent-el501/",
-        "https://whattyre.com/products/xcent-el-501/",
-        "https://www.errolstyres.co.za/tyres"
-      ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "status": "exact",
+      "source": "official",
+      "sourcePageUrl": "https://www.macroyaltyre.com/product_detail/1234872633007616000.html",
+      "imageUrl": "https://omo-oss-image1.thefastimg.com/portal-saas/new2023103115235265202/cms/image/408b8144-b658-4899-a402-bf15ee0e7296.jpg?vf=B7gH3s"
     },
     {
       "id": "KAPSEN::65VR15 H202 96",
@@ -638,11 +563,11 @@
       "pattern": "65VR15 H202 96",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/kapsen-65vr15-h202-96/",
-        "https://whattyre.com/products/kapsen-65vr15-h-202-96/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=KAPSEN%2065VR15%20H202%2096%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=KAPSEN%2065VR15%20H202%2096%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=KAPSEN%2065VR15%20H202%2096%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TRACMAX::X PRIVILOAT01",
@@ -650,11 +575,11 @@
       "pattern": "X priviloAT01",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/tracmax-x-priviloat01/",
-        "https://whattyre.com/products/tracmax-x-priviloat-01/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TRACMAX%20X%20priviloAT01%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TRACMAX%20X%20priviloAT01%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TRACMAX%20X%20priviloAT01%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::WINDFORCE160 WD2068",
@@ -662,11 +587,11 @@
       "pattern": "WINDFORCE160 WD2068",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-windforce160-wd2068/",
-        "https://whattyre.com/products/windforce-windforce-160-wd-2068/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WINDFORCE160%20WD2068%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20WINDFORCE160%20WD2068%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20WINDFORCE160%20WD2068%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::FR SC5 SSR",
@@ -674,11 +599,11 @@
       "pattern": "FR SC5 SSR",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-fr-sc5-ssr/",
-        "https://whattyre.com/products/continental-fr-sc-5-ssr/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20SC5%20SSR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20SC5%20SSR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20SC5%20SSR%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "BRIDGESTONE::S001 EXT",
@@ -686,11 +611,11 @@
       "pattern": "S001 EXT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/bridgestone-s001-ext/",
-        "https://whattyre.com/products/bridgestone-s-001-ext/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=BRIDGESTONE%20S001%20EXT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=BRIDGESTONE%20S001%20EXT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=BRIDGESTONE%20S001%20EXT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::CROSSCONT LX SP SIL",
@@ -698,10 +623,11 @@
       "pattern": "CrossCont LX Sp SIL",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-crosscont-lx-sp-sil/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CrossCont%20LX%20Sp%20SIL%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CrossCont%20LX%20Sp%20SIL%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CrossCont%20LX%20Sp%20SIL%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::FR CONTICROSSCONTACT LX 2",
@@ -709,10 +635,11 @@
       "pattern": "FR CONTICROSSCONTACT LX 2",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-fr-conticrosscontact-lx-2/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20CONTICROSSCONTACT%20LX%202%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20CONTICROSSCONTACT%20LX%202%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20CONTICROSSCONTACT%20LX%202%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GENERAL::GRAB AT3 TIRE GRABBER",
@@ -720,11 +647,11 @@
       "pattern": "GRAB AT3 TIRE GRABBER",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/general-grab-at3-tire-grabber/",
-        "https://whattyre.com/products/general-grab-at-3-tire-grabber/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20GRAB%20AT3%20TIRE%20GRABBER%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20GRAB%20AT3%20TIRE%20GRABBER%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20GRAB%20AT3%20TIRE%20GRABBER%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "KAPSEN::HS102 D",
@@ -732,11 +659,11 @@
       "pattern": "HS102 D",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/kapsen-hs102-d/",
-        "https://whattyre.com/products/kapsen-hs-102-d/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=KAPSEN%20HS102%20D%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=KAPSEN%20HS102%20D%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=KAPSEN%20HS102%20D%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "LANDSPIDER::WILDTRAXX MT MI",
@@ -744,10 +671,11 @@
       "pattern": "WILDTRAXX MT MI",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/landspider-wildtraxx-mt-mi/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=LANDSPIDER%20WILDTRAXX%20MT%20MI%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=LANDSPIDER%20WILDTRAXX%20MT%20MI%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=LANDSPIDER%20WILDTRAXX%20MT%20MI%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::TRANS MASTER GTM380 T",
@@ -755,11 +683,11 @@
       "pattern": "TRANS MASTER GTM380 T",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-trans-master-gtm380-t/",
-        "https://whattyre.com/products/windforce-trans-master-gtm-380-t/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20TRANS%20MASTER%20GTM380%20T%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20TRANS%20MASTER%20GTM380%20T%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20TRANS%20MASTER%20GTM380%20T%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::WD2080",
@@ -767,11 +695,11 @@
       "pattern": "WD2080",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-wd2080/",
-        "https://whattyre.com/products/windforce-wd-2080/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WD2080%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20WD2080%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20WD2080%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CEAT::90 18 ZOOM PLUS TT",
@@ -779,10 +707,11 @@
       "pattern": "90 18 ZOOM PLUS TT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/ceat-90-18-zoom-plus-tt/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CEAT%2090%2018%20ZOOM%20PLUS%20TT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CEAT%2090%2018%20ZOOM%20PLUS%20TT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CEAT%2090%2018%20ZOOM%20PLUS%20TT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CEAT::PRO B10 D",
@@ -790,11 +719,11 @@
       "pattern": "PRO B10 D",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/ceat-pro-b10-d/",
-        "https://whattyre.com/products/ceat-pro-b-10-d/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CEAT%20PRO%20B10%20D%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CEAT%20PRO%20B10%20D%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CEAT%20PRO%20B10%20D%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CEAT::SECURA ZOOM TT",
@@ -802,10 +731,11 @@
       "pattern": "Secura Zoom+ TT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/ceat-secura-zoom-tt/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CEAT%20Secura%20Zoom%2B%20TT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CEAT%20Secura%20Zoom%2B%20TT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CEAT%20Secura%20Zoom%2B%20TT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GOODYEAR::KELLY ARMORSTEEL KMT",
@@ -813,10 +743,11 @@
       "pattern": "KELLY ARMORSTEEL KMT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-kelly-armorsteel-kmt/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20KELLY%20ARMORSTEEL%20KMT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20KELLY%20ARMORSTEEL%20KMT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20KELLY%20ARMORSTEEL%20KMT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GOODYEAR::KSM ARMSTEEL KELLY",
@@ -824,10 +755,11 @@
       "pattern": "KSM ARMSTEEL KELLY",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-ksm-armsteel-kelly/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20KSM%20ARMSTEEL%20KELLY%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20KSM%20ARMSTEEL%20KELLY%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20KSM%20ARMSTEEL%20KELLY%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GOODYEAR::SAVA AVANT A3",
@@ -835,11 +767,11 @@
       "pattern": "SAVA AVANT A3",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-sava-avant-a3/",
-        "https://whattyre.com/products/goodyear-sava-avant-a-3/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20SAVA%20AVANT%20A3%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20SAVA%20AVANT%20A3%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20SAVA%20AVANT%20A3%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CEAT::90 12 ZOOM D",
@@ -847,10 +779,11 @@
       "pattern": "90 12 ZOOM D",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/ceat-90-12-zoom-d/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CEAT%2090%2012%20ZOOM%20D%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CEAT%2090%2012%20ZOOM%20D%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CEAT%2090%2012%20ZOOM%20D%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::CROSSCONT ATR LRE FR",
@@ -858,10 +791,11 @@
       "pattern": "CROSSCONT ATR LRE FR",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-crosscont-atr-lre-fr/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CROSSCONT%20ATR%20LRE%20FR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CROSSCONT%20ATR%20LRE%20FR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CROSSCONT%20ATR%20LRE%20FR%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::SC5 FR SSR",
@@ -869,11 +803,11 @@
       "pattern": "SC5 FR SSR",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-sc5-fr-ssr/",
-        "https://whattyre.com/products/continental-sc-5-fr-ssr/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20SC5%20FR%20SSR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20SC5%20FR%20SSR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20SC5%20FR%20SSR%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GENERAL::VANC10",
@@ -881,11 +815,11 @@
       "pattern": "VANC10",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/general-vanc10/",
-        "https://whattyre.com/products/general-vanc-10/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20VANC10%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20VANC10%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20VANC10%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CEAT::PRO S10 RD SWR18PR154 150 MS",
@@ -893,11 +827,11 @@
       "pattern": "PRO S10 RD SWR18PR154 150 MS",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/ceat-pro-s10-rd-swr18pr154-150-ms/",
-        "https://whattyre.com/products/ceat-pro-s-10-rd-swr18pr154-150-ms/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CEAT%20PRO%20S10%20RD%20SWR18PR154%20150%20MS%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CEAT%20PRO%20S10%20RD%20SWR18PR154%20150%20MS%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CEAT%20PRO%20S10%20RD%20SWR18PR154%20150%20MS%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::CCART LRE FR",
@@ -905,10 +839,11 @@
       "pattern": "CCART# LRE FR",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-ccart-lre-fr/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CCART%23%20LRE%20FR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CCART%23%20LRE%20FR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CCART%23%20LRE%20FR%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::CCAT CONTICROSSCONTACT AT",
@@ -916,10 +851,11 @@
       "pattern": "CCAT CONTICROSSCONTACT AT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-ccat-conticrosscontact-at/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CCAT%20CONTICROSSCONTACT%20AT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CCAT%20CONTICROSSCONTACT%20AT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CCAT%20CONTICROSSCONTACT%20AT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::CON255 FR CCAT CROSSCONTACT",
@@ -927,11 +863,11 @@
       "pattern": "CON255 FR CCAT CROSSCONTACT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-con255-fr-ccat-crosscontact/",
-        "https://whattyre.com/products/continental-con-255-fr-ccat-crosscontact/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CON255%20FR%20CCAT%20CROSSCONTACT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CON255%20FR%20CCAT%20CROSSCONTACT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CON255%20FR%20CCAT%20CROSSCONTACT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::CONTI FR PC7 PREMIUMCONTACT 7",
@@ -939,11 +875,11 @@
       "pattern": "CONTI FR PC7 PREMIUMCONTACT 7",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-conti-fr-pc7-premiumcontact-7/",
-        "https://whattyre.com/products/continental-conti-fr-pc-7-premiumcontact-7/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CONTI%20FR%20PC7%20PREMIUMCONTACT%207%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CONTI%20FR%20PC7%20PREMIUMCONTACT%207%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CONTI%20FR%20PC7%20PREMIUMCONTACT%207%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::FR CCATR CROSSCONTACT ATR",
@@ -951,10 +887,11 @@
       "pattern": "FR CCATR CROSSCONTACT ATR",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-fr-ccatr-crosscontact-atr/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20CCATR%20CROSSCONTACT%20ATR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20CCATR%20CROSSCONTACT%20ATR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20CCATR%20CROSSCONTACT%20ATR%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::FR ECOCONTACT 6Q",
@@ -962,10 +899,11 @@
       "pattern": "FR * ECOCONTACT 6Q",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-fr-ecocontact-6q/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20*%20ECOCONTACT%206Q%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20*%20ECOCONTACT%206Q%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20*%20ECOCONTACT%206Q%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::SC5 SUV CONTI SPORTCONTACT5",
@@ -973,12 +911,11 @@
       "pattern": "SC5 SUV CONTI SPORTCONTACT5",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-sc5-suv-conti-sportcontact5/",
-        "https://whattyre.com/products/continental-sc-5-suv-conti-sportcontact-5/",
-        "https://whattyre.com/products/continental-sc-5-suv-conti-sportcontact5/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20SC5%20SUV%20CONTI%20SPORTCONTACT5%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20SC5%20SUV%20CONTI%20SPORTCONTACT5%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20SC5%20SUV%20CONTI%20SPORTCONTACT5%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::TRAKGRIP",
@@ -986,10 +923,11 @@
       "pattern": "TRAKGRIP",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-trakgrip/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20TRAKGRIP%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20TRAKGRIP%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20TRAKGRIP%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "RADAR::RENEGADE PRO",
@@ -997,10 +935,11 @@
       "pattern": "RENEGADE PRO",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/radar-renegade-pro/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=RADAR%20RENEGADE%20PRO%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=RADAR%20RENEGADE%20PRO%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=RADAR%20RENEGADE%20PRO%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "ANNAITE::CENTARA VANTI TOURING S1",
@@ -1008,11 +947,11 @@
       "pattern": "CENTARA VANTI TOURING S1",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/annaite-centara-vanti-touring-s1/",
-        "https://whattyre.com/products/annaite-centara-vanti-touring-s-1/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=ANNAITE%20CENTARA%20VANTI%20TOURING%20S1%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=ANNAITE%20CENTARA%20VANTI%20TOURING%20S1%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=ANNAITE%20CENTARA%20VANTI%20TOURING%20S1%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "BRIDGESTONE::DHP SP",
@@ -1020,10 +959,11 @@
       "pattern": "DHP SP",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/bridgestone-dhp-sp/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=BRIDGESTONE%20DHP%20SP%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=BRIDGESTONE%20DHP%20SP%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=BRIDGESTONE%20DHP%20SP%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CEAT::80 18 GRIPP",
@@ -1031,10 +971,11 @@
       "pattern": "80 18 GRIPP",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/ceat-80-18-gripp/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CEAT%2080%2018%20GRIPP%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CEAT%2080%2018%20GRIPP%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CEAT%2080%2018%20GRIPP%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::FR CCATR",
@@ -1042,10 +983,11 @@
       "pattern": "FR CCATR",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-fr-ccatr/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20CCATR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20CCATR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20CCATR%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::AT3GM",
@@ -1053,10 +995,11 @@
       "pattern": "AT3GM",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-at3gm/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20AT3GM%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20AT3GM%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20AT3GM%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TRACMAX::X PRIVILO MT",
@@ -1064,10 +1007,11 @@
       "pattern": "X Privilo MT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/tracmax-x-privilo-mt/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TRACMAX%20X%20Privilo%20MT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TRACMAX%20X%20Privilo%20MT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TRACMAX%20X%20Privilo%20MT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::GEN CONTI GENERAL GRAB GT",
@@ -1075,10 +1019,11 @@
       "pattern": "GEN CONTI GENERAL GRAB GT+",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-gen-conti-general-grab-gt/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20GEN%20CONTI%20GENERAL%20GRAB%20GT%2B%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20GEN%20CONTI%20GENERAL%20GRAB%20GT%2B%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20GEN%20CONTI%20GENERAL%20GRAB%20GT%2B%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::MAXX050 ROF",
@@ -1086,11 +1031,11 @@
       "pattern": "MAXX050+ ROF",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-maxx050-rof/",
-        "https://whattyre.com/products/dunlop-maxx-050-rof/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20MAXX050%2B%20ROF%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20MAXX050%2B%20ROF%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20MAXX050%2B%20ROF%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "DUNLOP::SP431W 54",
@@ -1098,10 +1043,11 @@
       "pattern": "SP431W 54",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/dunlop-sp431w-54/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20SP431W%2054%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20SP431W%2054%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20SP431W%2054%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GOODYEAR::5 II HCT",
@@ -1109,10 +1055,11 @@
       "pattern": "5 II HCT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-5-ii-hct/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%205%20II%20HCT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%205%20II%20HCT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%205%20II%20HCT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3 SUV XLROFF",
@@ -1120,11 +1067,11 @@
       "pattern": "Eagle F1 Asymmetric 3 SUV XLROFF",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-eagle-f1-asymmetric-3-suv-xlroff/",
-        "https://whattyre.com/products/goodyear-eagle-f-1-asymmetric-3-suv-xlroff/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20SUV%20XLROFF%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20SUV%20XLROFF%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20SUV%20XLROFF%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GOODYEAR::SAVA CARGO 4",
@@ -1132,10 +1079,11 @@
       "pattern": "SAVA CARGO 4",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-sava-cargo-4/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20SAVA%20CARGO%204%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20SAVA%20CARGO%204%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20SAVA%20CARGO%204%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "RADAR::DIMAX R8 LT",
@@ -1143,11 +1091,11 @@
       "pattern": "DIMAX R8+ LT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/radar-dimax-r8-lt/",
-        "https://whattyre.com/products/radar-dimax-r-8-lt/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=RADAR%20DIMAX%20R8%2B%20LT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=RADAR%20DIMAX%20R8%2B%20LT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=RADAR%20DIMAX%20R8%2B%20LT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::TOURINGMAX",
@@ -1155,10 +1103,11 @@
       "pattern": "TOURINGMAX",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-touringmax/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20TOURINGMAX%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20TOURINGMAX%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20TOURINGMAX%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "XCENT::RADIAL EL913",
@@ -1166,11 +1115,11 @@
       "pattern": "RADIAL EL913",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/xcent-radial-el913/",
-        "https://whattyre.com/products/xcent-radial-el-913/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=XCENT%20RADIAL%20EL913%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=XCENT%20RADIAL%20EL913%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=XCENT%20RADIAL%20EL913%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "YOKOHAMA::YOK Y360",
@@ -1178,11 +1127,11 @@
       "pattern": "YOK Y360",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/yokohama-yok-y360/",
-        "https://whattyre.com/products/yokohama-yok-y-360/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=YOKOHAMA%20YOK%20Y360%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=YOKOHAMA%20YOK%20Y360%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=YOKOHAMA%20YOK%20Y360%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "ANCHEE::AC898",
@@ -1190,11 +1139,11 @@
       "pattern": "AC898",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/anchee-ac898/",
-        "https://whattyre.com/products/anchee-ac-898/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=ANCHEE%20AC898%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=ANCHEE%20AC898%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=ANCHEE%20AC898%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "WhatTyre page matched, but no product image was found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::CCAT CONTICROSSCONTAC AT 8",
@@ -1202,10 +1151,11 @@
       "pattern": "CCAT CONTICROSSCONTAC AT 8",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-ccat-conticrosscontac-at-8/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CCAT%20CONTICROSSCONTAC%20AT%208%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CCAT%20CONTICROSSCONTAC%20AT%208%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CCAT%20CONTICROSSCONTAC%20AT%208%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3 SUV XLROF",
@@ -1213,11 +1163,11 @@
       "pattern": "Eagle F1 Asymmetric 3 SUV XLROF",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/goodyear-eagle-f1-asymmetric-3-suv-xlrof/",
-        "https://whattyre.com/products/goodyear-eagle-f-1-asymmetric-3-suv-xlrof/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20SUV%20XLROF%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20SUV%20XLROF%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20SUV%20XLROF%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "TIMAX::LTR18",
@@ -1225,11 +1175,11 @@
       "pattern": "LTR18",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/timax-ltr18/",
-        "https://whattyre.com/products/timax-ltr-18/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=TIMAX%20LTR18%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TIMAX%20LTR18%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TIMAX%20LTR18%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "WINDFORCE::PR143 WT3000",
@@ -1237,11 +1187,11 @@
       "pattern": "PR143 WT3000",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/windforce-pr143-wt3000/",
-        "https://whattyre.com/products/windforce-pr-143-wt-3000/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20PR143%20WT3000%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20PR143%20WT3000%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20PR143%20WT3000%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "BFGOODRICH::BFG ALLTERRAIN KO3",
@@ -1249,11 +1199,11 @@
       "pattern": "BFG ALLTERRAIN KO3",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/bfgoodrich-bfg-allterrain-ko3/",
-        "https://whattyre.com/products/bfgoodrich-bfg-allterrain-ko-3/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=BFGOODRICH%20BFG%20ALLTERRAIN%20KO3%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=BFGOODRICH%20BFG%20ALLTERRAIN%20KO3%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=BFGOODRICH%20BFG%20ALLTERRAIN%20KO3%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "BRIDGESTONE::BST BRIDGESTONE 623 106S",
@@ -1261,10 +1211,11 @@
       "pattern": "BST BRIDGESTONE 623 106S",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/bridgestone-bst-bridgestone-623-106s/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=BRIDGESTONE%20BST%20BRIDGESTONE%20623%20106S%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=BRIDGESTONE%20BST%20BRIDGESTONE%20623%20106S%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=BRIDGESTONE%20BST%20BRIDGESTONE%20623%20106S%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "BRIDGESTONE::HP SPORT",
@@ -1272,10 +1223,11 @@
       "pattern": "HP SPORT",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/bridgestone-hp-sport/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=BRIDGESTONE%20HP%20SPORT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=BRIDGESTONE%20HP%20SPORT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=BRIDGESTONE%20HP%20SPORT%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CEAT::WINMILE RTL 160 158KL",
@@ -1283,10 +1235,11 @@
       "pattern": "WINMILE RTL 160 158KL",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/ceat-winmile-rtl-160-158kl/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CEAT%20WINMILE%20RTL%20160%20158KL%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CEAT%20WINMILE%20RTL%20160%20158KL%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CEAT%20WINMILE%20RTL%20160%20158KL%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::35YR19 XLFRSC5P CONTISPORTCONTACT5P",
@@ -1294,17 +1247,11 @@
       "pattern": "35YR19 XLFRSC5P CONTISPORTCONTACT5P",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-35yr19-xlfrsc5p-contisportcontact5p/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%2035YR19%20XLFRSC5P%20CONTISPORTCONTACT5P%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%2035YR19%20XLFRSC5P%20CONTISPORTCONTACT5P%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%2035YR19%20XLFRSC5P%20CONTISPORTCONTACT5P%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
-    },
-    {
-      "id": "CONTINENTAL::CROSSCONTACT LX 2",
-      "status": "exact",
-      "source": "whattyre",
-      "sourcePageUrl": "https://whattyre.com/products/continental-crosscontact-lx-2/",
-      "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/101527_FLR.jpg"
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::EC5 CONTIECOCONTACT 5",
@@ -1312,11 +1259,11 @@
       "pattern": "EC5 CONTIECOCONTACT 5",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-ec5-contiecocontact-5/",
-        "https://whattyre.com/products/continental-ec-5-contiecocontact-5/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20EC5%20CONTIECOCONTACT%205%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20EC5%20CONTIECOCONTACT%205%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20EC5%20CONTIECOCONTACT%205%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::ECOCONTACT6Q SIL",
@@ -1324,10 +1271,11 @@
       "pattern": "ECOCONTACT6Q SIL",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-ecocontact6q-sil/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20ECOCONTACT6Q%20SIL%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20ECOCONTACT6Q%20SIL%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20ECOCONTACT6Q%20SIL%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::FR PREMIUMCONTACT 6",
@@ -1335,10 +1283,11 @@
       "pattern": "FR PremiumContact 6",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-fr-premiumcontact-6/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20PremiumContact%206%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20PremiumContact%206%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20PremiumContact%206%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::FR SC5 CONTISPORTCONTACT 5",
@@ -1346,11 +1295,11 @@
       "pattern": "FR SC5 CONTISPORTCONTACT 5",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-fr-sc5-contisportcontact-5/",
-        "https://whattyre.com/products/continental-fr-sc-5-contisportcontact-5/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20SC5%20CONTISPORTCONTACT%205%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20SC5%20CONTISPORTCONTACT%205%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20SC5%20CONTISPORTCONTACT%205%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::GEN FR GRABB GT PLUS",
@@ -1358,10 +1307,11 @@
       "pattern": "GEN FR GRABB GT PLUS",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-gen-fr-grabb-gt-plus/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20GEN%20FR%20GRABB%20GT%20PLUS%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20GEN%20FR%20GRABB%20GT%20PLUS%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20GEN%20FR%20GRABB%20GT%20PLUS%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "CONTINENTAL::GRABBER AT3 LRC",
@@ -1369,11 +1319,1199 @@
       "pattern": "GRABBER AT3 LRC",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://whattyre.com/products/continental-grabber-at3-lrc/",
-        "https://whattyre.com/products/continental-grabber-at-3-lrc/",
-        "https://www.errolstyres.co.za/tyres"
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20GRABBER%20AT3%20LRC%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20GRABBER%20AT3%20LRC%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20GRABBER%20AT3%20LRC%20tyre%20product%20image%20tyre%20retailer"
       ],
-      "reason": "No exact official, WhatTyre, or Errols source found."
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::SPORTCONTACT 5 SUV",
+      "brand": "CONTINENTAL",
+      "pattern": "SPORTCONTACT 5 SUV",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20SPORTCONTACT%205%20SUV%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20SPORTCONTACT%205%20SUV%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20SPORTCONTACT%205%20SUV%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::VANCONT",
+      "brand": "CONTINENTAL",
+      "pattern": "VanCONT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20VanCONT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20VanCONT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20VanCONT%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::VANCONT 10",
+      "brand": "CONTINENTAL",
+      "pattern": "VanCONT 10",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20VanCONT%2010%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20VanCONT%2010%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20VanCONT%2010%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::AT22",
+      "brand": "DUNLOP",
+      "pattern": "AT22",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20AT22%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20AT22%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20AT22%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::AT25",
+      "brand": "DUNLOP",
+      "pattern": "AT25",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20AT25%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20AT25%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20AT25%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::MAXX 060",
+      "brand": "DUNLOP",
+      "pattern": "MAXX 060+",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20MAXX%20060%2B%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20MAXX%20060%2B%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20MAXX%20060%2B%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::MT2",
+      "brand": "DUNLOP",
+      "pattern": "MT2",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20MT2%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20MT2%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20MT2%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::SUMITOMO HTRH5 91",
+      "brand": "DUNLOP",
+      "pattern": "SUMITOMO HTRH5 91",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20SUMITOMO%20HTRH5%2091%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20HTRH5%2091%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20HTRH5%2091%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GENERAL::ALTIMAX COMFORT",
+      "brand": "GENERAL",
+      "pattern": "Altimax Comfort",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20Altimax%20Comfort%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20Altimax%20Comfort%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20Altimax%20Comfort%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GENERAL::FR GENRAL GRABBER GT",
+      "brand": "GENERAL",
+      "pattern": "FR GENRAL GRABBER GT+",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20FR%20GENRAL%20GRABBER%20GT%2B%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20FR%20GENRAL%20GRABBER%20GT%2B%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20FR%20GENRAL%20GRABBER%20GT%2B%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GENERAL::GRAB AT3 LRC FR",
+      "brand": "GENERAL",
+      "pattern": "GRAB AT3 LRC FR",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20GRAB%20AT3%20LRC%20FR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20GRAB%20AT3%20LRC%20FR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20GRAB%20AT3%20LRC%20FR%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GENERAL::LT245 GRAB AT3 LRD",
+      "brand": "GENERAL",
+      "pattern": "LT245 GRAB AT3 LRD",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20LT245%20GRAB%20AT3%20LRD%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20LT245%20GRAB%20AT3%20LRD%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20LT245%20GRAB%20AT3%20LRD%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EAGLE F1 ASY SUV MO1",
+      "brand": "GOODYEAR",
+      "pattern": "Eagle F1 ASY SUV MO1",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20ASY%20SUV%20MO1%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20ASY%20SUV%20MO1%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20ASY%20SUV%20MO1%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3",
+      "brand": "GOODYEAR",
+      "pattern": "Eagle F1 Asymmetric 3",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EAGLE F1 SUPERSP",
+      "brand": "GOODYEAR",
+      "pattern": "Eagle F1 SUPERSP",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20SUPERSP%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20SUPERSP%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20SUPERSP%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EAGLE F1 SUPERSP R XLFPPC",
+      "brand": "GOODYEAR",
+      "pattern": "Eagle F1 SUPERSP R XLFPPC",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20SUPERSP%20R%20XLFPPC%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20SUPERSP%20R%20XLFPPC%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20SUPERSP%20R%20XLFPPC%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EAGLE F1 SUPERSPORT AOXLFP",
+      "brand": "GOODYEAR",
+      "pattern": "Eagle F1 SUPERSPORT AOXLFP",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20SUPERSPORT%20AOXLFP%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20SUPERSPORT%20AOXLFP%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20SUPERSPORT%20AOXLFP%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EAGLE F1 SUPERSPORT R0XLP",
+      "brand": "GOODYEAR",
+      "pattern": "Eagle F1 SUPERSPORT R0XLP",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20SUPERSPORT%20R0XLP%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20SUPERSPORT%20R0XLP%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20SUPERSPORT%20R0XLP%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EFFICIENTGRIP SUV",
+      "brand": "GOODYEAR",
+      "pattern": "EfficientGrip SUV",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20EfficientGrip%20SUV%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20EfficientGrip%20SUV%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20EfficientGrip%20SUV%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::KMAX D EXT 156L154M ME",
+      "brand": "GOODYEAR",
+      "pattern": "KMAX D EXT 156L154M ME",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20KMAX%20D%20EXT%20156L154M%20ME%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20KMAX%20D%20EXT%20156L154M%20ME%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20KMAX%20D%20EXT%20156L154M%20ME%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::OMN D HD",
+      "brand": "GOODYEAR",
+      "pattern": "OMN D HD",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20OMN%20D%20HD%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20OMN%20D%20HD%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20OMN%20D%20HD%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::VOYAGER ZA",
+      "brand": "GOODYEAR",
+      "pattern": "VOYAGER ZA",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20VOYAGER%20ZA%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20VOYAGER%20ZA%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20VOYAGER%20ZA%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::WRANGLER DURATRAC",
+      "brand": "GOODYEAR",
+      "pattern": "Wrangler DuraTrac",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Wrangler%20DuraTrac%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Wrangler%20DuraTrac%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Wrangler%20DuraTrac%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "KAPSEN::HS203 C",
+      "brand": "KAPSEN",
+      "pattern": "HS203 C",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=KAPSEN%20HS203%20C%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=KAPSEN%20HS203%20C%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=KAPSEN%20HS203%20C%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "LANDSAIL::LS188",
+      "brand": "LANDSAIL",
+      "pattern": "LS188",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=LANDSAIL%20LS188%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=LANDSAIL%20LS188%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=LANDSAIL%20LS188%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "PIRELLI::P ZERO K1",
+      "brand": "PIRELLI",
+      "pattern": "P ZERO K1",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20P%20ZERO%20K1%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20P%20ZERO%20K1%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20P%20ZERO%20K1%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "PIRELLI::P7CINT",
+      "brand": "PIRELLI",
+      "pattern": "P7cint *",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20P7cint%20*%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20P7cint%20*%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20P7cint%20*%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "PIRELLI::P7CINT K1",
+      "brand": "PIRELLI",
+      "pattern": "P7cint * K1",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20P7cint%20*%20K1%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20P7cint%20*%20K1%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20P7cint%20*%20K1%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "PIRELLI::PIR275 P ZERO KS NCS",
+      "brand": "PIRELLI",
+      "pattern": "PIR275 P ZERO * KS ncs",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20PIR275%20P%20ZERO%20*%20KS%20ncs%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20PIR275%20P%20ZERO%20*%20KS%20ncs%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20PIR275%20P%20ZERO%20*%20KS%20ncs%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "PIRELLI::S I P7CINT",
+      "brand": "PIRELLI",
+      "pattern": "s i P7cint",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20s%20i%20P7cint%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20s%20i%20P7cint%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20s%20i%20P7cint%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "PIRELLI::S VEAS LR",
+      "brand": "PIRELLI",
+      "pattern": "S VEas LR",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20S%20VEas%20LR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20S%20VEas%20LR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20S%20VEas%20LR%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "PIRELLI::SCORPN JP KS",
+      "brand": "PIRELLI",
+      "pattern": "SCORPN JP KS",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20SCORPN%20JP%20KS%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20SCORPN%20JP%20KS%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20SCORPN%20JP%20KS%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "PIRELLI::ZERO",
+      "brand": "PIRELLI",
+      "pattern": "ZERO",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=PIRELLI%20ZERO%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=PIRELLI%20ZERO%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=PIRELLI%20ZERO%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "RADAR::LT RENEGADE RT",
+      "brand": "RADAR",
+      "pattern": "LT Renegade RT+",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=RADAR%20LT%20Renegade%20RT%2B%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=RADAR%20LT%20Renegade%20RT%2B%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=RADAR%20LT%20Renegade%20RT%2B%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "RADAR::RENEGADE A T5",
+      "brand": "RADAR",
+      "pattern": "RENEGADE A T5",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=RADAR%20RENEGADE%20A%20T5%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=RADAR%20RENEGADE%20A%20T5%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=RADAR%20RENEGADE%20A%20T5%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "WINDFORCE::TRANS MASTER ESL220",
+      "brand": "WINDFORCE",
+      "pattern": "TRANS MASTER ESL220",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20TRANS%20MASTER%20ESL220%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20TRANS%20MASTER%20ESL220%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20TRANS%20MASTER%20ESL220%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "BRIDGESTONE::POTENZA SPORT",
+      "brand": "BRIDGESTONE",
+      "pattern": "POTENZA SPORT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=BRIDGESTONE%20POTENZA%20SPORT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=BRIDGESTONE%20POTENZA%20SPORT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=BRIDGESTONE%20POTENZA%20SPORT%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CEAT::90 19 ZOOM PLUS F",
+      "brand": "CEAT",
+      "pattern": "90 19 ZOOM PLUS F",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CEAT%2090%2019%20ZOOM%20PLUS%20F%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CEAT%2090%2019%20ZOOM%20PLUS%20F%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CEAT%2090%2019%20ZOOM%20PLUS%20F%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "FIREMAX::FM787 S",
+      "brand": "FIREMAX",
+      "pattern": "FM787 S",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=FIREMAX%20FM787%20S%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=FIREMAX%20FM787%20S%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=FIREMAX%20FM787%20S%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GENERAL::CON CONTINENTAL PREMCONT",
+      "brand": "GENERAL",
+      "pattern": "CON CONTINENTAL PREMCONT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20CON%20CONTINENTAL%20PREMCONT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20CON%20CONTINENTAL%20PREMCONT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20CON%20CONTINENTAL%20PREMCONT%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 3 ROF",
+      "brand": "GOODYEAR",
+      "pattern": "Eagle F1 Asymmetric 3 * ROF",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20*%20ROF%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20*%20ROF%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%203%20*%20ROF%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EFFICIENTGRIP",
+      "brand": "GOODYEAR",
+      "pattern": "EfficientGrip",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20EfficientGrip%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20EfficientGrip%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20EfficientGrip%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "KAPSEN::RS23",
+      "brand": "KAPSEN",
+      "pattern": "RS23",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=KAPSEN%20RS23%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=KAPSEN%20RS23%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=KAPSEN%20RS23%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "WINDFORCE::PR136 WT3000",
+      "brand": "WINDFORCE",
+      "pattern": "PR136 WT3000",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20PR136%20WT3000%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20PR136%20WT3000%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20PR136%20WT3000%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "ANNAITE::AN906",
+      "brand": "ANNAITE",
+      "pattern": "AN906",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=ANNAITE%20AN906%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=ANNAITE%20AN906%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=ANNAITE%20AN906%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "BRIDGESTONE::DHP SPORT N 0",
+      "brand": "BRIDGESTONE",
+      "pattern": "DHP SPORT N 0",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=BRIDGESTONE%20DHP%20SPORT%20N%200%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=BRIDGESTONE%20DHP%20SPORT%20N%200%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=BRIDGESTONE%20DHP%20SPORT%20N%200%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CEAT::00 18 GRIPP X5 TT",
+      "brand": "CEAT",
+      "pattern": "00 18 GRIPP X5 TT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CEAT%2000%2018%20GRIPP%20X5%20TT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CEAT%2000%2018%20GRIPP%20X5%20TT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CEAT%2000%2018%20GRIPP%20X5%20TT%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::CONTI FRSC5 SSR CONTISPORTCONT 5",
+      "brand": "CONTINENTAL",
+      "pattern": "CONTI FRSC5 SSR CONTISPORTCONT 5",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CONTI%20FRSC5%20SSR%20CONTISPORTCONT%205%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CONTI%20FRSC5%20SSR%20CONTISPORTCONT%205%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CONTI%20FRSC5%20SSR%20CONTISPORTCONT%205%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::CROSSCONT AT FR",
+      "brand": "CONTINENTAL",
+      "pattern": "CROSSCONT AT FR",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CROSSCONT%20AT%20FR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CROSSCONT%20AT%20FR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CROSSCONT%20AT%20FR%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::CROSSCONT ATR FR",
+      "brand": "CONTINENTAL",
+      "pattern": "CROSSCONT ATR FR",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CROSSCONT%20ATR%20FR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20CROSSCONT%20ATR%20FR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20CROSSCONT%20ATR%20FR%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::EC6 ECOCONTACT 6",
+      "brand": "CONTINENTAL",
+      "pattern": "EC6 EcoContact 6",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20EC6%20EcoContact%206%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20EC6%20EcoContact%206%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20EC6%20EcoContact%206%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::FR GRAB GT GENERAL TIRE GRABBE",
+      "brand": "CONTINENTAL",
+      "pattern": "FR GRAB GT+ GENERAL TIRE GRABBE",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20GRAB%20GT%2B%20GENERAL%20TIRE%20GRABBE%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20GRAB%20GT%2B%20GENERAL%20TIRE%20GRABBE%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20GRAB%20GT%2B%20GENERAL%20TIRE%20GRABBE%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::FR SC5 CONTISPORTCONTACT 5 SSR",
+      "brand": "CONTINENTAL",
+      "pattern": "FR SC5 ContiSportContact 5 SSR*",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20SC5%20ContiSportContact%205%20SSR*%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20SC5%20ContiSportContact%205%20SSR*%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20FR%20SC5%20ContiSportContact%205%20SSR*%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::SC5",
+      "brand": "CONTINENTAL",
+      "pattern": "SC5",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20SC5%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20SC5%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20SC5%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::SPORT CONTACT",
+      "brand": "CONTINENTAL",
+      "pattern": "Sport Contact",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20Sport%20Contact%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20Sport%20Contact%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20Sport%20Contact%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::X4SC NO 4X4SPORTCONTACT FR",
+      "brand": "CONTINENTAL",
+      "pattern": "X4SC NO# 4X4SPORTCONTACT FR",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20X4SC%20NO%23%204X4SPORTCONTACT%20FR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20X4SC%20NO%23%204X4SPORTCONTACT%20FR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20X4SC%20NO%23%204X4SPORTCONTACT%20FR%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DRIVEMASTER::ST936 S",
+      "brand": "DRIVEMASTER",
+      "pattern": "ST936 S",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DRIVEMASTER%20ST936%20S%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DRIVEMASTER%20ST936%20S%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DRIVEMASTER%20ST936%20S%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::45VR16 FM800 84",
+      "brand": "DUNLOP",
+      "pattern": "45VR16 FM800 84",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%2045VR16%20FM800%2084%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%2045VR16%20FM800%2084%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%2045VR16%20FM800%2084%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::AT3G WLT",
+      "brand": "DUNLOP",
+      "pattern": "AT3G\" WLT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20AT3G%22%20WLT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20AT3G%22%20WLT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20AT3G%22%20WLT%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::FM800",
+      "brand": "DUNLOP",
+      "pattern": "FM800",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20FM800%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20FM800%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20FM800%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::MAXX TT",
+      "brand": "DUNLOP",
+      "pattern": "MAXX TT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20MAXX%20TT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20MAXX%20TT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20MAXX%20TT%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GENERAL::CON CONTINENTAL CCLXSP",
+      "brand": "GENERAL",
+      "pattern": "CON CONTINENTAL CCLXSP",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20CON%20CONTINENTAL%20CCLXSP%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20CON%20CONTINENTAL%20CCLXSP%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20CON%20CONTINENTAL%20CCLXSP%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GENERAL::FR GRABBER GT PLUS",
+      "brand": "GENERAL",
+      "pattern": "FR GRABBER GT PLUS",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20FR%20GRABBER%20GT%20PLUS%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20FR%20GRABBER%20GT%20PLUS%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20FR%20GRABBER%20GT%20PLUS%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EAGLE F1 ASY SUV ROFFP",
+      "brand": "GOODYEAR",
+      "pattern": "Eagle F1 ASY SUV * ROFFP",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20ASY%20SUV%20*%20ROFFP%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20ASY%20SUV%20*%20ROFFP%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20ASY%20SUV%20*%20ROFFP%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 2 SUV XI",
+      "brand": "GOODYEAR",
+      "pattern": "Eagle F1 Asymmetric 2 SUV XI",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20Asymmetric%202%20SUV%20XI%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%202%20SUV%20XI%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%202%20SUV%20XI%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::SAVA ORJAK 4",
+      "brand": "GOODYEAR",
+      "pattern": "SAVA ORJAK 4",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20SAVA%20ORJAK%204%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20SAVA%20ORJAK%204%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20SAVA%20ORJAK%204%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::VOYAGER HP ZA",
+      "brand": "GOODYEAR",
+      "pattern": "VOYAGER HP ZA",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20VOYAGER%20HP%20ZA%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20VOYAGER%20HP%20ZA%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20VOYAGER%20HP%20ZA%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "KAPSEN::50VR16 S2000 88",
+      "brand": "KAPSEN",
+      "pattern": "50VR16 S2000 88",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=KAPSEN%2050VR16%20S2000%2088%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=KAPSEN%2050VR16%20S2000%2088%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=KAPSEN%2050VR16%20S2000%2088%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "KAPSEN::HS217 OR",
+      "brand": "KAPSEN",
+      "pattern": "HS217 OR",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=KAPSEN%20HS217%20OR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=KAPSEN%20HS217%20OR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=KAPSEN%20HS217%20OR%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "KAPSEN::RS21",
+      "brand": "KAPSEN",
+      "pattern": "RS21",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=KAPSEN%20RS21%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=KAPSEN%20RS21%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=KAPSEN%20RS21%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "RADAR::ARGONITE RV 4",
+      "brand": "RADAR",
+      "pattern": "Argonite RV 4",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=RADAR%20Argonite%20RV%204%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=RADAR%20Argonite%20RV%204%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=RADAR%20Argonite%20RV%204%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "RADAR::RENEGADE AT PRO",
+      "brand": "RADAR",
+      "pattern": "RENEGADE AT PRO",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=RADAR%20RENEGADE%20AT%20PRO%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=RADAR%20RENEGADE%20AT%20PRO%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=RADAR%20RENEGADE%20AT%20PRO%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "TRACMAX::X PRIVILORS01",
+      "brand": "TRACMAX",
+      "pattern": "X priviloRS01",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=TRACMAX%20X%20priviloRS01%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TRACMAX%20X%20priviloRS01%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TRACMAX%20X%20priviloRS01%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "WINDFORCE::CATCHFORS MT",
+      "brand": "WINDFORCE",
+      "pattern": "CATCHFORS MT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20CATCHFORS%20MT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20CATCHFORS%20MT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20CATCHFORS%20MT%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::PREMCONT",
+      "brand": "CONTINENTAL",
+      "pattern": "PremCont",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20PremCont%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20PremCont%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20PremCont%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::SC5P SPORT CONTACT",
+      "brand": "CONTINENTAL",
+      "pattern": "SC5P SPORT CONTACT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20SC5P%20SPORT%20CONTACT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20SC5P%20SPORT%20CONTACT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20SC5P%20SPORT%20CONTACT%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "CONTINENTAL::SPORTCONT FR SUV VOL",
+      "brand": "CONTINENTAL",
+      "pattern": "SportCONT FR SUV VOL",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20SportCONT%20FR%20SUV%20VOL%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=CONTINENTAL%20SportCONT%20FR%20SUV%20VOL%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=CONTINENTAL%20SportCONT%20FR%20SUV%20VOL%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DOUBLE KING::DOUBLE KING 558",
+      "brand": "DOUBLE KING",
+      "pattern": "DOUBLE KING 558",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DOUBLE%20KING%20DOUBLE%20KING%20558%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DOUBLE%20KING%20DOUBLE%20KING%20558%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DOUBLE%20KING%20DOUBLE%20KING%20558%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DRIVEMASTER::MACROYAL MR39",
+      "brand": "DRIVEMASTER",
+      "pattern": "MACROYAL MR39",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DRIVEMASTER%20MACROYAL%20MR39%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DRIVEMASTER%20MACROYAL%20MR39%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DRIVEMASTER%20MACROYAL%20MR39%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::GRANDTREK AT30",
+      "brand": "DUNLOP",
+      "pattern": "GRANDTREK AT30",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20GRANDTREK%20AT30%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20GRANDTREK%20AT30%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20GRANDTREK%20AT30%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::MAXX050",
+      "brand": "DUNLOP",
+      "pattern": "MAXX050+",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20MAXX050%2B%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20MAXX050%2B%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20MAXX050%2B%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::SPORT 560",
+      "brand": "DUNLOP",
+      "pattern": "SPORT 560",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20SPORT%20560%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20SPORT%20560%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20SPORT%20560%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "DUNLOP::TOURING R1",
+      "brand": "DUNLOP",
+      "pattern": "TOURING R1",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=DUNLOP%20TOURING%20R1%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=DUNLOP%20TOURING%20R1%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=DUNLOP%20TOURING%20R1%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GENERAL::VANC100",
+      "brand": "GENERAL",
+      "pattern": "VANC100",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GENERAL%20VANC100%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GENERAL%20VANC100%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GENERAL%20VANC100%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EAGLE F1 ASYMMETRIC 5 ROF",
+      "brand": "GOODYEAR",
+      "pattern": "Eagle F1 Asymmetric 5 * ROF",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Eagle%20F1%20Asymmetric%205%20*%20ROF%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%205%20*%20ROF%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Eagle%20F1%20Asymmetric%205%20*%20ROF%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EFFICIENTGRIP CARGO 2",
+      "brand": "GOODYEAR",
+      "pattern": "EfficientGrip CARGO 2",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20EfficientGrip%20CARGO%202%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20EfficientGrip%20CARGO%202%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20EfficientGrip%20CARGO%202%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::EFFICIENTGRIP PERFORMANCE",
+      "brand": "GOODYEAR",
+      "pattern": "EfficientGrip Performance",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20EfficientGrip%20Performance%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20EfficientGrip%20Performance%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20EfficientGrip%20Performance%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::REGIOFORCE 3 156L154M",
+      "brand": "GOODYEAR",
+      "pattern": "REGIOFORCE 3 156L154M",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20REGIOFORCE%203%20156L154M%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20REGIOFORCE%203%20156L154M%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20REGIOFORCE%203%20156L154M%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "GOODYEAR::WRANGLER AT ADVENTURE LR",
+      "brand": "GOODYEAR",
+      "pattern": "Wrangler AT Adventure LR",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20Wrangler%20AT%20Adventure%20LR%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=GOODYEAR%20Wrangler%20AT%20Adventure%20LR%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=GOODYEAR%20Wrangler%20AT%20Adventure%20LR%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "LANDSAIL::CLV2 101WZ",
+      "brand": "LANDSAIL",
+      "pattern": "CLV2 101WZ",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=LANDSAIL%20CLV2%20101WZ%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=LANDSAIL%20CLV2%20101WZ%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=LANDSAIL%20CLV2%20101WZ%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "LANDSAIL::CLV2 HT",
+      "brand": "LANDSAIL",
+      "pattern": "CLV2 HT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=LANDSAIL%20CLV2%20HT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=LANDSAIL%20CLV2%20HT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=LANDSAIL%20CLV2%20HT%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "RADAR::RIVERA PRO",
+      "brand": "RADAR",
+      "pattern": "RIVERA PRO",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=RADAR%20RIVERA%20PRO%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=RADAR%20RIVERA%20PRO%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=RADAR%20RIVERA%20PRO%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "TIMAX::MUGNUM",
+      "brand": "TIMAX",
+      "pattern": "MUGNUM",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=TIMAX%20MUGNUM%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TIMAX%20MUGNUM%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TIMAX%20MUGNUM%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "TIMAX::PEREFLY DK 558",
+      "brand": "TIMAX",
+      "pattern": "PEREFLY DK 558",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=TIMAX%20PEREFLY%20DK%20558%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TIMAX%20PEREFLY%20DK%20558%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TIMAX%20PEREFLY%20DK%20558%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "TRACMAX::ROADMAX",
+      "brand": "TRACMAX",
+      "pattern": "ROADMAX",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=TRACMAX%20ROADMAX%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TRACMAX%20ROADMAX%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TRACMAX%20ROADMAX%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "TRACMAX::X PRIVILO AT RF11",
+      "brand": "TRACMAX",
+      "pattern": "X Privilo AT RF11",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=TRACMAX%20X%20Privilo%20AT%20RF11%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TRACMAX%20X%20Privilo%20AT%20RF11%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TRACMAX%20X%20Privilo%20AT%20RF11%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "TRACMAX::X PRIVILO AT08",
+      "brand": "TRACMAX",
+      "pattern": "X Privilo AT08",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=TRACMAX%20X%20Privilo%20AT08%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=TRACMAX%20X%20Privilo%20AT08%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=TRACMAX%20X%20Privilo%20AT08%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "WINDFORCE::CATCHFORS AT",
+      "brand": "WINDFORCE",
+      "pattern": "CATCHFORS AT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20CATCHFORS%20AT%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20CATCHFORS%20AT%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20CATCHFORS%20AT%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
+    },
+    {
+      "id": "WINDFORCE::WT3030 MS",
+      "brand": "WINDFORCE",
+      "pattern": "WT3030 MS",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WT3030%20MS%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20WT3030%20MS%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20WT3030%20MS%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
     }
   ]
 }

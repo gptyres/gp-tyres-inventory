@@ -68,12 +68,19 @@ const OFFICIAL_SOURCES = [
   ['CEAT', 'MILAZE', 'https://www.ceat.com/scooter-tyres/scooter-product-listing/product-details/90-100-10-milaze-tl-53j-sw.html', 'https://www.ceat.com/content/dam/ceat/product-images/scooter/milaze/sku_0.png', 'official'],
   ['CEAT', 'SECURA ZOOM+', 'https://www.ceat.com/bike-tyres/bike-product-listing/product-details/90-90-18-secura-zoom-plus-tl-51p.html', 'https://www.ceat.com/content/dam/ceat/product-images/motorcycle/secura-zoom-/sku_0.png', 'official'],
   ['CEAT', 'SECURA F85', 'https://www.ceat.com/bike-tyres/bike-product-listing/product-details/2-75-18-secura-f85-tl-42p.html', 'https://www.ceat.com/content/dam/ceat/product-images/motorcycle/secura-f85/sku_0.png', 'official'],
-  ['CONTINENTAL', 'WORLDCONTACT 4X4', 'https://www.errolstyres.co.za/tyre/continental/worldcontact-4x4/6687/', 'https://www.errolstyres.co.za/images/cmsimages/big/product_6687_733_continentalworldcontact4x4.jpg', 'errols']
-  ,
+  ['CONTINENTAL', 'WORLDCONTACT 4X4', 'https://www.errolstyres.co.za/tyre/continental/worldcontact-4x4/6687/', 'https://www.errolstyres.co.za/images/cmsimages/big/product_6687_733_continentalworldcontact4x4.jpg', 'errols'],
   ['ANCHEE', 'AC808', 'https://whattyre.com/products/anchee-ac808/', 'https://whattyre.com/wp-content/uploads/2020/01/125954_FLR.jpg', 'whattyre'],
   ['KAPSEN', 'HS166', 'https://www.terrakingtire.com/product/terraking-tyre-hs166/', 'https://www.terrakingtire.com/wp-content/uploads/sites/3/2019/03/HS166-1.png', 'official'],
   ['TRACMAX', 'TRANSPORTER RF08', 'https://www.rubbex.com/en-be/1550-r12-88n-tracmax-rf08-6956647603620', 'https://www.rubbex.com/images/thumbs/082/0820348_Tracmax-155-R12C-88N-86N-RF08-15420159-main.jpg_550.webp', 'retailer'],
-  ['FIREMAX', 'FM188', 'https://www.protyre.co.zw/shop/p/firemax-fm188', 'https://images.squarespace-cdn.com/content/v1/652cf7abaf95b56a1033b8e1/c58a101a-3095-4841-b4af-9ec7e699e8ff/firemax-fm188.png', 'retailer']
+  ['FIREMAX', 'FM188', 'https://www.protyre.co.zw/shop/p/firemax-fm188', 'https://images.squarespace-cdn.com/content/v1/652cf7abaf95b56a1033b8e1/c58a101a-3095-4841-b4af-9ec7e699e8ff/firemax-fm188.png', 'retailer'],
+  ['BRIDGESTONE', 'DUELER AT D693 II', 'https://www.firestonecompleteautocare.com/tires/brands/bridgestone/dueleratd693ii/', 'https://s7d1.scene7.com/is/image/bridgestone/bridgestone-dueler-at-d693-ii-60-full-web-global-bsro', 'retailer'],
+  ['FIRESTONE', 'CV2020', 'https://www.firestone.co.za/products/4x4-tyres/cv2020', 'https://www1.bridgestone.co.za/images/products/big/FIRESTONE_cv2020_tyre_556.jpg', 'official'],
+  ['FIREMAX', 'VAN 916FM', 'https://en.firemaxtyre.com/products_details_TBR/237.html', 'https://omo-oss-image1.thefastimg.com/portal-saas/pg2025110319351580085/cms/image/e349647c-73f0-4356-a6f8-7c4bc24d4062.webp?vf=B7gH3s', 'official'],
+  ['GOODYEAR', 'KMAX S', 'https://www.goodyear.co.nz/tyres/goodyear-kmax-s', 'https://assets.goodyear.co.nz/uploads/2025/05/GY-KMAX-S-ANGLE.png', 'official'],
+  ['GOODYEAR', 'KELLY ARMORSTEEL KMS', 'https://www.bigtyres.co.uk/tyres/brands/kelly/armorsteel-kms/12r22-5-kelly-armorsteel-kms-tl-steer-152-148k', 'https://www.bigtyres.co.uk/media/landingpages/pattern/kelly_armorsteel-kms.jpg', 'retailer'],
+  ['LANDSPIDER', 'WILDTRAXX AT', 'https://landspidertire.com/product_detail/wildtraxx-at.html', 'https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260127/f3fb4a319a20d33a7ff1295ff99d56f3.webp', 'official'],
+  ['WINDFORCE', 'ADVANFORS SUV', 'https://landspidertire.com/product_detail/advanfors-suv.html', 'https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260116/91fdafff69109182b5c3bd9acf9561a2.png', 'official'],
+  ['XCENT', 'EL501', 'https://www.macroyaltyre.com/product_detail/1234872633007616000.html', 'https://omo-oss-image1.thefastimg.com/portal-saas/new2023103115235265202/cms/image/408b8144-b658-4899-a402-bf15ee0e7296.jpg?vf=B7gH3s', 'official']
 ].map(([brand, pattern, sourcePageUrl, imageUrl, source = 'official']) => ({
   brand,
   pattern,
@@ -247,6 +254,7 @@ const resolveErrols = async (candidate) => {
 
 const main = async () => {
   const batchSize = Number.parseInt(process.env.EXCLUSIVE_AUTOREVIEW_LIMIT || process.argv.find((arg) => arg.startsWith('--limit='))?.split('=')[1] || '120', 10);
+  const officialOnly = process.argv.includes('--official-only') || process.env.EXCLUSIVE_AUTOREVIEW_OFFICIAL_ONLY === '1';
   const raw = await readRawExport('supplier_data/exclusiveTyresData.ts');
   const rows = parseSupplierTyreRows(SUPPLIER, 'exclusive', raw);
   const existingCoverage = await fetchExistingCoverage();
@@ -262,6 +270,18 @@ const main = async () => {
     if (official) {
       sources.push(official);
       review.push({ id: candidate.id, status: 'exact', source: official.source, sourcePageUrl: official.sourcePageUrl, imageUrl: official.imageUrl });
+      continue;
+    }
+
+    if (officialOnly) {
+      review.push({
+        id: candidate.id,
+        brand: candidate.brand,
+        pattern: candidate.pattern,
+        status: 'missing',
+        checkedSourceUrls: candidate.searchQueries,
+        reason: 'No exact verified static source found in official-only autoreview mode.'
+      });
       continue;
     }
 

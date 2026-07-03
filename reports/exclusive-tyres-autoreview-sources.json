@@ -1,50 +1,38 @@
 [
   {
-    "brand": "FIREMAX",
-    "pattern": "FM188",
+    "brand": "LANDSPIDER",
+    "pattern": "WILDTRAXX AT",
     "confidence": "exact",
-    "imageUrl": "https://images.squarespace-cdn.com/content/v1/652cf7abaf95b56a1033b8e1/c58a101a-3095-4841-b4af-9ec7e699e8ff/firemax-fm188.png",
-    "sourcePageUrl": "https://www.protyre.co.zw/shop/p/firemax-fm188",
+    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260127/f3fb4a319a20d33a7ff1295ff99d56f3.webp",
+    "sourcePageUrl": "https://landspidertire.com/product_detail/wildtraxx-at.html",
     "checkedSourceUrls": [
-      "https://www.protyre.co.zw/shop/p/firemax-fm188"
-    ],
-    "source": "retailer",
-    "reason": "Verified product reference page and product-image path match brand and pattern."
-  },
-  {
-    "brand": "KAPSEN",
-    "pattern": "HS166",
-    "confidence": "exact",
-    "imageUrl": "https://www.terrakingtire.com/wp-content/uploads/sites/3/2019/03/HS166-1.png",
-    "sourcePageUrl": "https://www.terrakingtire.com/product/terraking-tyre-hs166/",
-    "checkedSourceUrls": [
-      "https://www.terrakingtire.com/product/terraking-tyre-hs166/"
+      "https://landspidertire.com/product_detail/wildtraxx-at.html"
     ],
     "source": "official",
     "reason": "Official manufacturer page and product-image path match brand and pattern."
   },
   {
-    "brand": "TRACMAX",
-    "pattern": "Transporter RF08",
+    "brand": "WINDFORCE",
+    "pattern": "ADVANFORS SUV",
     "confidence": "exact",
-    "imageUrl": "https://www.rubbex.com/images/thumbs/082/0820348_Tracmax-155-R12C-88N-86N-RF08-15420159-main.jpg_550.webp",
-    "sourcePageUrl": "https://www.rubbex.com/en-be/1550-r12-88n-tracmax-rf08-6956647603620",
+    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260116/91fdafff69109182b5c3bd9acf9561a2.png",
+    "sourcePageUrl": "https://landspidertire.com/product_detail/advanfors-suv.html",
     "checkedSourceUrls": [
-      "https://www.rubbex.com/en-be/1550-r12-88n-tracmax-rf08-6956647603620"
+      "https://landspidertire.com/product_detail/advanfors-suv.html"
     ],
-    "source": "retailer",
-    "reason": "Verified product reference page and product-image path match brand and pattern."
+    "source": "official",
+    "reason": "Official manufacturer page and product-image path match brand and pattern."
   },
   {
-    "brand": "CONTINENTAL",
-    "pattern": "CROSSCONTACT LX 2",
+    "brand": "XCENT",
+    "pattern": "EL501",
     "confidence": "exact",
-    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/101527_FLR.jpg",
-    "sourcePageUrl": "https://whattyre.com/products/continental-crosscontact-lx-2/",
+    "imageUrl": "https://omo-oss-image1.thefastimg.com/portal-saas/new2023103115235265202/cms/image/408b8144-b658-4899-a402-bf15ee0e7296.jpg?vf=B7gH3s",
+    "sourcePageUrl": "https://www.macroyaltyre.com/product_detail/1234872633007616000.html",
     "checkedSourceUrls": [
-      "https://whattyre.com/products/continental-crosscontact-lx-2/"
+      "https://www.macroyaltyre.com/product_detail/1234872633007616000.html"
     ],
-    "source": "whattyre",
-    "reason": "WhatTyre page title matched exactly: Continental Crosscontact Lx 2"
+    "source": "official",
+    "reason": "Official manufacturer page and product-image path match brand and pattern."
   }
 ]
