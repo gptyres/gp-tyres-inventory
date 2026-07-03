@@ -616,6 +616,8 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
       .map((branch) => `${branch}: ${entry.branchStock[branch]}`)
       .join(' | ');
 
+    const sellingPriceIncVat = Number((entry.price * 1.15).toFixed(2));
+
     return {
       id: `tyrewarehouse-${index + 1}`,
       type: ProductType.TYRE,
@@ -627,7 +629,7 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
       location: location || 'TYREWAREHOUSE',
       quantity: entry.totalQuantity,
       costPrice: entry.price,
-      sellingPrice: entry.price,
+      sellingPrice: sellingPriceIncVat,
       lastUpdated: today
     };
   });
