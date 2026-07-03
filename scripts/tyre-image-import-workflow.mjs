@@ -1,6 +1,9 @@
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { basename, extname, join } from 'node:path';
+import { promisify } from 'node:util';
 import { pathToFileURL } from 'node:url';
 
 export const BUCKET_NAME = 'supplier-stock-images';
@@ -30,6 +33,7 @@ const RAW_SUPPLIERS = [
 ];
 
 const STATUS_PRIORITY = new Set(['pending', 'failed']);
+const execFileAsync = promisify(execFile);
 
 export const normalizeToken = (value = '') => (
   String(value)
@@ -99,15 +103,33 @@ const splitBrandPattern = (brandPattern, fallbackBrand) => {
 
 const normalizeExclusiveTyrePattern = (brand, pattern) => {
   const brandKey = String(brand || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const brandCodeNoise = {
+    BRIDGESTONE: /\b(?:BST|BRIDGSTONE)\b/gi,
+    DUNLOP: /\bDUN\b/gi,
+    FIRESTONE: /\bFST\b/gi,
+    GOODYEAR: /\b(?:GDY|GOODYE|GOODYEA)\b/gi,
+    WINDFORCE: /\b(?:WINDFO|WINDFORC)\b/gi
+  };
   let cleaned = String(pattern || '')
     .replace(/\bIMP\b/gi, ' ')
     .replace(/\bTYRES?\b/gi, ' ')
     .replace(new RegExp(`^\\s*${brandKey}\\s+`, 'i'), ' ')
     .replace(new RegExp(`\\b${brandKey}\\b`, 'gi'), ' ')
-    .replace(/\b(?:XL|XLL|BSW|OWL|RWL|WWL|POR|TL|T\/L|TUBELESS|RFT|RUN\s*FLAT|RF|MIT|FP|WSW|MFS)\b/gi, ' ')
+    .replace(brandCodeNoise[String(brand || '').toUpperCase()] ?? /$a/, ' ')
+    .replace(/\b(?:XL|XLL|BSW|OWL|RWL|WWL|POR|TL|T\/L|TUBELESS|RFT|RUN\s*FLAT|RF|RSC|MIT|FP|WSW|MFS|MOE|MO|AO|NF0|RHD|LHD|RBT|OWT|STD)\b/gi, ' ')
+    .replace(/\b(?:3PSF|3PMSF|M\+S|SAF)\b/gi, ' ')
     .replace(/\b\d{1,2}\s*PR\b/gi, ' ')
+    .replace(/\b\d{2,3}[A-Z]+XL\b/gi, ' ')
     .replace(/\b\d{1,3}\s+\d{1,3}\s*[A-Z]\b/gi, ' ')
     .replace(/\b\d{2,3}\s*\/\s*\d{2,3}\s*[A-Z]\b/gi, ' ')
+    .replace(/\b\d{2,3}\s+\d{2,3}R\d{2}\b/gi, ' ')
+    .replace(/\b\d{2,3}\s+\d{2,3}RF\d{2}\b/gi, ' ')
+    .replace(/\b\d{2,3}\s+\d{2,3}ZR\d{2}\b/gi, ' ')
+    .replace(/\b\d{2,3}\/\d{2,3}R\d{2}(?:\.\d)?\b/gi, ' ')
+    .replace(/\b\d{2,3}\/\d{2,3}RF\d{2}\b/gi, ' ')
+    .replace(/\b\d{2,3}\/\d{2,3}ZR\d{2}\b/gi, ' ')
+    .replace(/\b\d{2,3}X\d{2}(?:\.\d+)?(?:R\d+)?(?:LT)?\b/gi, ' ')
+    .replace(/\b\d{2,3}\.\d{2}R\d{2}\b/gi, ' ')
     .replace(/\b\d{2,3}\s*[A-Z]\b/gi, ' ')
     .replace(/\b(?:E|Z)\b/gi, ' ')
     .replace(/\s+/g, ' ')
@@ -116,17 +138,52 @@ const normalizeExclusiveTyrePattern = (brand, pattern) => {
   cleaned = cleaned
     .replace(new RegExp(`^\\s*${brandKey}\\s+`, 'i'), ' ')
     .replace(new RegExp(`\\b${brandKey}\\b`, 'gi'), ' ')
+    .replace(brandCodeNoise[String(brand || '').toUpperCase()] ?? /$a/, ' ')
     .replace(/\b\d{2,3}\s*[A-Z]\b/gi, ' ')
     .replace(/\bPRIVILO\b/gi, 'Privilo')
+    .replace(/\bRENEG\.?AT\.?5\b/gi, 'Renegade AT5')
     .replace(/\bRENEG\.?AT\.?SPORT\b/gi, 'Renegade AT Sport')
+    .replace(/\bRENEG\.?RT\+?\b/gi, 'Renegade RT+')
     .replace(/\bDMAX\b/gi, 'DIMAX')
     .replace(/\bRENEG\.?\b/gi, 'Renegade')
     .replace(/\bA\s*T\b/gi, 'AT')
     .replace(/\bR\s*T\b/gi, 'RT')
     .replace(/\bM\s*T\b/gi, 'MT')
+    .replace(/\bAT\s+5\b/gi, 'AT5')
+    .replace(/\bR\s*F\b/gi, ' ')
+    .replace(/\b(?:C|D|E|F)\s+(Renegade)\b/gi, '$1')
+    .replace(/^[.\s]+/g, ' ')
+    .replace(/^\d+(?:[.\s]+)?/g, ' ')
+    .replace(/\b(?:H|V|W|Y|S|T|Q|R|L|K|J)\b$/gi, ' ')
     .replace(/\bX\s*PRIVILO\s*TX\s*([0-9])\b/gi, 'X Privilo TX$1')
     .replace(/\bRPX\s*[\-.]?\s*800\b/gi, 'RPX800')
+    .replace(/\bRLT\s*[\-.]?\s*71\b/gi, 'RLT71')
+    .replace(/\bRT\++(?!\w)/gi, 'RT+')
+    .replace(/\bRenegade\s*RT\++/gi, 'Renegade RT+')
+    .replace(/\bRenegade\s*X\b/gi, 'Renegade X')
+    .replace(/\bDIMAX\s*[\-.]\s*CLASSIC\b/gi, 'DIMAX CLASSIC')
+    .replace(/\bDIMAX\s*[\-.]\s*R8\b/gi, 'DIMAX R8')
     .replace(/\bDIMAX\s*R8\+?(?!\w)/gi, 'DIMAX R8+')
+    .replace(/\bCATCHFORS\s+H\s+P\b/gi, 'CATCHFORS HP')
+    .replace(/\bCATCHFORS\s+H\s+T\b/gi, 'CATCHFORS HT')
+    .replace(/\bCATCHFORS\s+A\s*T\s+II\b/gi, 'CATCHFORS AT II')
+    .replace(/\bLS588\s+(?:UHP|U|W|S|SUV)\b/gi, 'LS588')
+    .replace(/\bLS588\s+\d+[A-Z]*Z?\b/gi, 'LS588')
+    .replace(/\bEAG\s*F1\b/gi, 'Eagle F1')
+    .replace(/[()]/g, ' ')
+    .replace(/\bPIR\b/gi, ' ')
+    .replace(/\bASYMM?\b/gi, 'Asymmetric')
+    .replace(/\bASY\s*([2356])\+?\b/gi, 'Asymmetric $1')
+    .replace(/\bAST\s*3SUV\b/gi, 'Asymmetric 3 SUV')
+    .replace(/\bWRL?\s+AT\s+ADV(?:ENTURE)?\b/gi, 'Wrangler AT Adventure')
+    .replace(/\bWRL?\s+DURATRAC\s*RTFPOWL\b/gi, 'Wrangler DuraTrac RT')
+    .replace(/\bWRL?\s+DURATRACTFPOWL\b/gi, 'Wrangler DuraTrac')
+    .replace(/\bEFFICIENT\s*GRIP\b/gi, 'EfficientGrip')
+    .replace(/\bEFFIGRIP\b/gi, 'EfficientGrip')
+    .replace(/\bPERF\b/gi, 'Performance')
+    .replace(/\bDURAMAX\b/gi, 'DuraMax')
+    .replace(/\bSPVAN01\b/gi, 'SP Van01')
+    .replace(/\bRADIAL\s*913\s*FM\b/gi, 'FM913')
     .replace(/\s+/g, ' ')
     .trim();
 
@@ -384,18 +441,51 @@ const imageExtension = (mimeType, url) => {
   return fromMime || extname(new URL(url).pathname) || '.jpg';
 };
 
+const mimeTypeFromExtension = (url) => {
+  const ext = extname(new URL(url).pathname).toLowerCase();
+  return {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.webp': 'image/webp',
+    '.gif': 'image/gif'
+  }[ext] || 'application/octet-stream';
+};
+
+const downloadImageWithCurl = async (url) => {
+  const ext = extname(new URL(url).pathname) || '.img';
+  const outputPath = join(tmpdir(), `gp-tyres-image-${Date.now()}-${Math.random().toString(16).slice(2)}${ext}`);
+  try {
+    const curlBinary = process.platform === 'win32' ? 'curl.exe' : 'curl';
+    await execFileAsync(curlBinary, ['-L', '-sS', '--fail', '-A', 'GP Tyres image review importer/1.0', '-o', outputPath, url], { timeout: 60000 });
+    const buffer = await readFile(outputPath);
+    const mimeType = mimeTypeFromExtension(url);
+    if (!mimeType.startsWith('image/')) throw new Error(`Source is not an image: ${mimeType}`);
+    const hash = createHash('sha256').update(buffer).digest('hex');
+    return { buffer, hash, mimeType, ext: imageExtension(mimeType, url) };
+  } finally {
+    await unlink(outputPath).catch(() => undefined);
+  }
+};
+
 const downloadImage = async (url) => {
-  const response = await fetch(url, {
-    headers: {
-      'User-Agent': 'GP Tyres image review importer/1.0'
-    }
-  });
-  if (!response.ok) throw new Error(`Image download failed ${response.status}: ${url}`);
-  const mimeType = response.headers.get('content-type')?.split(';')[0] || 'application/octet-stream';
-  if (!mimeType.startsWith('image/')) throw new Error(`Source is not an image: ${mimeType}`);
-  const buffer = Buffer.from(await response.arrayBuffer());
-  const hash = createHash('sha256').update(buffer).digest('hex');
-  return { buffer, hash, mimeType, ext: imageExtension(mimeType, url) };
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'GP Tyres image review importer/1.0'
+      }
+    });
+    if (!response.ok) throw new Error(`Image download failed ${response.status}: ${url}`);
+    const mimeType = response.headers.get('content-type')?.split(';')[0] || 'application/octet-stream';
+    if (!mimeType.startsWith('image/')) throw new Error(`Source is not an image: ${mimeType}`);
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const hash = createHash('sha256').update(buffer).digest('hex');
+    return { buffer, hash, mimeType, ext: imageExtension(mimeType, url) };
+  } catch (error) {
+    return downloadImageWithCurl(url).catch(() => {
+      throw error;
+    });
+  }
 };
 
 const importImageForSuppliers = async (candidate, image) => {

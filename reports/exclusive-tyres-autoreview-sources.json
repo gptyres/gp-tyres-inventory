@@ -1,0 +1,27 @@
+[
+  {
+    "brand": "WINDFORCE",
+    "pattern": "CATCHFORS HP",
+    "confidence": "exact",
+    "imageUrl": "https://www.rubbex.com/images/thumbs/075/0757092_Windforce-175-65-R14-82H-Catchfors-H-P-15344842-main.jpg_550.webp",
+    "sourcePageUrl": "https://www.rubbex.com/en-be/17565-r14-82h-windforce-catchfors-hp-6970004908791",
+    "checkedSourceUrls": [
+      "https://www.rubbex.com/en-be/17565-r14-82h-windforce-catchfors-hp-6970004908791"
+    ],
+    "source": "retailer",
+    "reason": "Verified retailer page and product-image path match brand and pattern."
+  },
+  {
+    "brand": "FIREMAX",
+    "pattern": "FM316",
+    "confidence": "exact",
+    "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/103644_FLR.jpg",
+    "sourcePageUrl": "https://whattyre.com/products/firemax-fm-316/",
+    "checkedSourceUrls": [
+      "https://whattyre.com/products/firemax-fm316/",
+      "https://whattyre.com/products/firemax-fm-316/"
+    ],
+    "source": "whattyre",
+    "reason": "WhatTyre page title matched exactly: Firemax Fm-316"
+  }
+]

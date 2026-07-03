@@ -1,0 +1,924 @@
+{
+  "generatedAt": "2026-07-03T08:52:16.965Z",
+  "supplier": "EXCLUSIVE TYRES",
+  "inspectedCandidates": 80,
+  "exactCount": 2,
+  "missingCount": 78,
+  "sourcesByType": {
+    "retailer": 1,
+    "whattyre": 1
+  },
+  "review": [
+    {
+      "id": "WINDFORCE::CATCHFORS HP",
+      "status": "exact",
+      "source": "retailer",
+      "sourcePageUrl": "https://www.rubbex.com/en-be/17565-r14-82h-windforce-catchfors-hp-6970004908791",
+      "imageUrl": "https://www.rubbex.com/images/thumbs/075/0757092_Windforce-175-65-R14-82H-Catchfors-H-P-15344842-main.jpg_550.webp"
+    },
+    {
+      "id": "FIREMAX::FM316",
+      "status": "exact",
+      "source": "whattyre",
+      "sourcePageUrl": "https://whattyre.com/products/firemax-fm-316/",
+      "imageUrl": "https://whattyre.com/wp-content/uploads/2020/01/103644_FLR.jpg"
+    },
+    {
+      "id": "TIMAX::TM568",
+      "brand": "TIMAX",
+      "pattern": "TM568",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/timax-tm568/",
+        "https://whattyre.com/products/timax-tm-568/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "RADAR::RENEGADE AT",
+      "brand": "RADAR",
+      "pattern": "RENEGADE AT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/radar-renegade-at/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "CEAT::ECODRIVE",
+      "brand": "CEAT",
+      "pattern": "ECODRIVE",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/ceat-ecodrive/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DUNLOP::SP VAN01",
+      "brand": "DUNLOP",
+      "pattern": "SP Van01",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/dunlop-sp-van01/",
+        "https://whattyre.com/products/dunlop-sp-van-01/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "KAPSEN::RS01",
+      "brand": "KAPSEN",
+      "pattern": "RS01",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/kapsen-rs01/",
+        "https://whattyre.com/products/kapsen-rs-01/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "BRIDGESTONE::D697",
+      "brand": "BRIDGESTONE",
+      "pattern": "D697",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/bridgestone-d697/",
+        "https://whattyre.com/products/bridgestone-d-697/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DUNLOP::AT5",
+      "brand": "DUNLOP",
+      "pattern": "AT5",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/dunlop-at5/",
+        "https://whattyre.com/products/dunlop-at-5/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TIMAX::ECO SUV 71",
+      "brand": "TIMAX",
+      "pattern": "ECO SUV 71",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/timax-eco-suv-71/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "FIRESTONE::DESTINATION AT GRIP",
+      "brand": "FIRESTONE",
+      "pattern": "DESTINATION AT GRIP",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/firestone-destination-at-grip/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DRIVEMASTER::ST901 M",
+      "brand": "DRIVEMASTER",
+      "pattern": "ST901 M",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/drivemaster-st901-m/",
+        "https://whattyre.com/products/drivemaster-st-901-m/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TRACMAX::GRT800 S",
+      "brand": "TRACMAX",
+      "pattern": "GRT800 S",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/tracmax-grt800-s/",
+        "https://whattyre.com/products/tracmax-grt-800-s/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "LANDSPIDER::WILDTRAXX AT",
+      "brand": "LANDSPIDER",
+      "pattern": "WILDTRAXX AT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/landspider-wildtraxx-at/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DUNLOP::SUMITOMO BC10",
+      "brand": "DUNLOP",
+      "pattern": "SUMITOMO BC10",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/dunlop-sumitomo-bc10/",
+        "https://whattyre.com/products/dunlop-sumitomo-bc-10/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "WINDFORCE::ADVANFORS SUV",
+      "brand": "WINDFORCE",
+      "pattern": "ADVANFORS SUV",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/windforce-advanfors-suv/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "GOODYEAR::INTENSA UHP 2",
+      "brand": "GOODYEAR",
+      "pattern": "INTENSA UHP 2",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/goodyear-intensa-uhp-2/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "PIRELLI::S VERD",
+      "brand": "PIRELLI",
+      "pattern": "S VERD",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/pirelli-s-verd/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "BRIDGESTONE::D684 II",
+      "brand": "BRIDGESTONE",
+      "pattern": "D684 II",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/bridgestone-d684-ii/",
+        "https://whattyre.com/products/bridgestone-d-684-ii/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "GOODYEAR::EFFICIENTGRIP PERFORMANCE ZAF",
+      "brand": "GOODYEAR",
+      "pattern": "EfficientGrip Performance ZAF",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/goodyear-efficientgrip-performance-zaf/",
+        "https://whattyre.com/products/goodyear-efficientgrip-performance/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "WhatTyre title did not exactly match: Goodyear Efficientgrip Performance"
+    },
+    {
+      "id": "KAPSEN::HS268",
+      "brand": "KAPSEN",
+      "pattern": "HS268",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/kapsen-hs268/",
+        "https://whattyre.com/products/kapsen-hs-268/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TIMAX::ECO COMF 33",
+      "brand": "TIMAX",
+      "pattern": "ECO COMF 33",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/timax-eco-comf-33/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TIMAX::TM258",
+      "brand": "TIMAX",
+      "pattern": "TM258",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/timax-tm258/",
+        "https://whattyre.com/products/timax-tm-258/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TRACMAX::RF09",
+      "brand": "TRACMAX",
+      "pattern": "RF09",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/tracmax-rf09/",
+        "https://whattyre.com/products/tracmax-rf-09/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "RADAR::DIMAX AS 8",
+      "brand": "RADAR",
+      "pattern": "DIMAX AS 8",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/radar-dimax-as-8/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "RADAR::DIMAX AS 6",
+      "brand": "RADAR",
+      "pattern": "Dimax AS 6",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/radar-dimax-as-6/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "KAPSEN::HS101 S",
+      "brand": "KAPSEN",
+      "pattern": "HS101 S",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/kapsen-hs101-s/",
+        "https://whattyre.com/products/kapsen-hs-101-s/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "KAPSEN::S801",
+      "brand": "KAPSEN",
+      "pattern": "S801",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/kapsen-s801/",
+        "https://whattyre.com/products/kapsen-s-801/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DRIVEMASTER::ST939 S",
+      "brand": "DRIVEMASTER",
+      "pattern": "ST939 S",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/drivemaster-st939-s/",
+        "https://whattyre.com/products/drivemaster-st-939-s/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DUNLOP::SUMITOMO BC100",
+      "brand": "DUNLOP",
+      "pattern": "SUMITOMO BC100",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/dunlop-sumitomo-bc100/",
+        "https://whattyre.com/products/dunlop-sumitomo-bc-100/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "CONTINENTAL::CON VANC100 CONTIVANCONTACT",
+      "brand": "CONTINENTAL",
+      "pattern": "CON VANC100 ContiVanContact",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/continental-con-vanc100-contivancontact/",
+        "https://whattyre.com/products/continental-con-vanc-100-contivancontact/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "FIREMAX::VAN 916FM",
+      "brand": "FIREMAX",
+      "pattern": "VAN 916FM",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/firemax-van-916fm/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "BRIDGESTONE::DUELER AT",
+      "brand": "BRIDGESTONE",
+      "pattern": "DUELER AT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/bridgestone-dueler-at/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "WhatTyre page matched, but no product image was found."
+    },
+    {
+      "id": "DUNLOP::AT20",
+      "brand": "DUNLOP",
+      "pattern": "AT20",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/dunlop-at20/",
+        "https://whattyre.com/products/dunlop-at-20/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "KAPSEN::HS268 M",
+      "brand": "KAPSEN",
+      "pattern": "HS268 M",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/kapsen-hs268-m/",
+        "https://whattyre.com/products/kapsen-hs-268-m/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "LANDSAIL::CLX 10",
+      "brand": "LANDSAIL",
+      "pattern": "CLX 10",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/landsail-clx-10/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "WhatTyre page matched, but no product image was found."
+    },
+    {
+      "id": "CONTINENTAL::CON CROSSCONT UHP FR",
+      "brand": "CONTINENTAL",
+      "pattern": "CON CrossCont UHP FR",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/continental-con-crosscont-uhp-fr/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DUNLOP::BC10",
+      "brand": "DUNLOP",
+      "pattern": "BC10",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/dunlop-bc10/",
+        "https://whattyre.com/products/dunlop-bc-10/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "LANDSPIDER::LANDSPIDE WILDTRAXX AT",
+      "brand": "LANDSPIDER",
+      "pattern": "LANDSPIDE WILDTRAXX AT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/landspider-landspide-wildtraxx-at/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TRACMAX::GRT901 M",
+      "brand": "TRACMAX",
+      "pattern": "GRT901 M",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/tracmax-grt901-m/",
+        "https://whattyre.com/products/tracmax-grt-901-m/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TRACMAX::X PRIVILOH",
+      "brand": "TRACMAX",
+      "pattern": "X priviloH",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/tracmax-x-priviloh/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "GENERAL::GEN FR SC5P",
+      "brand": "GENERAL",
+      "pattern": "GEN FR SC5P",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/general-gen-fr-sc5p/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "PIRELLI::SZROAS LR",
+      "brand": "PIRELLI",
+      "pattern": "SZROAS LR",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/pirelli-szroas-lr/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "RADAR::DIMAX AS",
+      "brand": "RADAR",
+      "pattern": "Dimax AS",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/radar-dimax-as/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "PIRELLI::P ZERO VOL",
+      "brand": "PIRELLI",
+      "pattern": "P ZERO VOL",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/pirelli-p-zero-vol/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "CONTINENTAL::CON FR PC6 PREMIUMCONTACT 6",
+      "brand": "CONTINENTAL",
+      "pattern": "CON FR PC6 PREMIUMCONTACT 6",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/continental-con-fr-pc6-premiumcontact-6/",
+        "https://whattyre.com/products/continental-con-fr-pc-6-premiumcontact-6/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "GENERAL::GEN GRABBER AT3 FR",
+      "brand": "GENERAL",
+      "pattern": "GEN GRABBER AT3 FR",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/general-gen-grabber-at3-fr/",
+        "https://whattyre.com/products/general-gen-grabber-at-3-fr/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "PIRELLI::SZROAS LR NCS",
+      "brand": "PIRELLI",
+      "pattern": "SZROAS LR ncs",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/pirelli-szroas-lr-ncs/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "ANCHEE::ACHEE AC808",
+      "brand": "ANCHEE",
+      "pattern": "ACHEE AC808",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/anchee-achee-ac808/",
+        "https://whattyre.com/products/anchee-achee-ac-808/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "BRIDGESTONE::ALENZA X",
+      "brand": "BRIDGESTONE",
+      "pattern": "ALENZA X",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/bridgestone-alenza-x/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "BRIDGESTONE::D693 II T9D",
+      "brand": "BRIDGESTONE",
+      "pattern": "D693 II T9D",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/bridgestone-d693-ii-t9d/",
+        "https://whattyre.com/products/bridgestone-d-693-ii-t9d/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "CEAT::100 18 MILAZE",
+      "brand": "CEAT",
+      "pattern": "100 18 MILAZE",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/ceat-100-18-milaze/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "CEAT::90 18 SECURA ZOOM",
+      "brand": "CEAT",
+      "pattern": "90 18 SECURA ZOOM+",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/ceat-90-18-secura-zoom/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "CONTINENTAL::CON CONTINETAL CCRX CROSSCONTACT RX",
+      "brand": "CONTINENTAL",
+      "pattern": "CON CONTINETAL CCRX CROSSCONTACT RX",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/continental-con-continetal-ccrx-crosscontact-rx/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "CONTINENTAL::CON PC 5 PINK LINES",
+      "brand": "CONTINENTAL",
+      "pattern": "CON PC 5 PINK LINES",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/continental-con-pc-5-pink-lines/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "CONTINENTAL::CON PC5 CONTIPREMIUM CONTACT 5",
+      "brand": "CONTINENTAL",
+      "pattern": "CON PC5 CONTIPREMIUM CONTACT 5",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/continental-con-pc5-contipremium-contact-5/",
+        "https://whattyre.com/products/continental-con-pc-5-contipremium-contact-5/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "CONTINENTAL::CON WORLDCONT 4X4",
+      "brand": "CONTINENTAL",
+      "pattern": "CON WorldCONT 4x4",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/continental-con-worldcont-4x4/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DRIVEMASTER::DRIVE MASTER ST969 D",
+      "brand": "DRIVEMASTER",
+      "pattern": "DRIVE MASTER ST969 D",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/drivemaster-drive-master-st969-d/",
+        "https://whattyre.com/products/drivemaster-drive-master-st-969-d/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DRIVEMASTER::DRMASTER ST916 T",
+      "brand": "DRIVEMASTER",
+      "pattern": "DRMASTER ST916 T",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/drivemaster-drmaster-st916-t/",
+        "https://whattyre.com/products/drivemaster-drmaster-st-916-t/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DUNLOP::70TR14 SUMITOMO HTRT5 88",
+      "brand": "DUNLOP",
+      "pattern": "70TR14 SUMITOMO HTRT5 88",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/dunlop-70tr14-sumitomo-htrt5-88/",
+        "https://whattyre.com/products/dunlop-70tr14-sumitomo-htrt-5-88/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DUNLOP::SP431W",
+      "brand": "DUNLOP",
+      "pattern": "SP431W",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/dunlop-sp431w/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "DUNLOP::SUMITOMO HTRH5",
+      "brand": "DUNLOP",
+      "pattern": "SUMITOMO HTRH5",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/dunlop-sumitomo-htrh5/",
+        "https://whattyre.com/products/dunlop-sumitomo-htrh-5/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "FIREMAX::FM188 M",
+      "brand": "FIREMAX",
+      "pattern": "FM188 M",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/firemax-fm188-m/",
+        "https://whattyre.com/products/firemax-fm-188-m/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "FIREMAX::FM330 MS",
+      "brand": "FIREMAX",
+      "pattern": "FM330 MS",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/firemax-fm330-ms/",
+        "https://whattyre.com/products/firemax-fm-330-ms/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "FIREMAX::FM350 S",
+      "brand": "FIREMAX",
+      "pattern": "FM350 S",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/firemax-fm350-s/",
+        "https://whattyre.com/products/firemax-fm-350-s/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "FIREMAX::TTF FM18 TUBE FLAP",
+      "brand": "FIREMAX",
+      "pattern": "TTF FM18 tube+flap",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/firemax-ttf-fm18-tube-flap/",
+        "https://whattyre.com/products/firemax-ttf-fm-18-tube-flap/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "FIRESTONE::CV2020",
+      "brand": "FIRESTONE",
+      "pattern": "CV2020",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/firestone-cv2020/",
+        "https://whattyre.com/products/firestone-cv-2020/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "GENERAL::GEN 7. SUP AG",
+      "brand": "GENERAL",
+      "pattern": "GEN 7. SUP AG",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/general-gen-7-sup-ag/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "GOODYEAR::KELLY ARMORSTEEL KMS",
+      "brand": "GOODYEAR",
+      "pattern": "KELLY ARMORSTEEL KMS",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/goodyear-kelly-armorsteel-kms/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "GOODYEAR::KMAX S END 160K158L",
+      "brand": "GOODYEAR",
+      "pattern": "KMAX S END 160K158L",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/goodyear-kmax-s-end-160k158l/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "GOODYEAR::WRL AT",
+      "brand": "GOODYEAR",
+      "pattern": "WRL AT",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/goodyear-wrl-at/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "KAPSEN::AENEAS S01 S",
+      "brand": "KAPSEN",
+      "pattern": "AENEAS S01 S",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/kapsen-aeneas-s01-s/",
+        "https://whattyre.com/products/kapsen-aeneas-s-01-s/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "KAPSEN::HS166 S",
+      "brand": "KAPSEN",
+      "pattern": "HS166 S",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/kapsen-hs166-s/",
+        "https://whattyre.com/products/kapsen-hs-166-s/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "RADAR::RLT71 35MM",
+      "brand": "RADAR",
+      "pattern": "RLT71 35mm",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/radar-rlt71-35mm/",
+        "https://whattyre.com/products/radar-rlt-71-35mm/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TIMAX::ECO 59",
+      "brand": "TIMAX",
+      "pattern": "ECO 59",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/timax-eco-59/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TIMAX::ECO COMF 52",
+      "brand": "TIMAX",
+      "pattern": "ECO COMF 52",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/timax-eco-comf-52/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TIMAX::ECO COMF 53",
+      "brand": "TIMAX",
+      "pattern": "ECO COMF 53",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/timax-eco-comf-53/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TIMAX::ECO COMF 55",
+      "brand": "TIMAX",
+      "pattern": "ECO COMF 55",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/timax-eco-comf-55/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TIMAX::ECO COMFORT 34",
+      "brand": "TIMAX",
+      "pattern": "ECO COMFORT 34",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/timax-eco-comfort-34/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    },
+    {
+      "id": "TIMAX::ECO MAX 61",
+      "brand": "TIMAX",
+      "pattern": "ECO MAX 61",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://whattyre.com/products/timax-eco-max-61/",
+        "https://www.errolstyres.co.za/tyres"
+      ],
+      "reason": "No exact official, WhatTyre, or Errols source found."
+    }
+  ]
+}
