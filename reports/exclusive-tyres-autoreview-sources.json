@@ -1,36 +1,36 @@
 [
   {
-    "brand": "LANDSPIDER",
-    "pattern": "WILDTRAXX AT",
+    "brand": "TRACMAX",
+    "pattern": "GRT880",
     "confidence": "exact",
-    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260127/f3fb4a319a20d33a7ff1295ff99d56f3.webp",
-    "sourcePageUrl": "https://landspidertire.com/product_detail/wildtraxx-at.html",
+    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/photo/product/20200826145509.png",
+    "sourcePageUrl": "https://landspidertire.com/product_detail/grt880.html",
     "checkedSourceUrls": [
-      "https://landspidertire.com/product_detail/wildtraxx-at.html"
+      "https://landspidertire.com/product_detail/grt880.html"
+    ],
+    "source": "official",
+    "reason": "Official manufacturer page and product-image path match brand and pattern."
+  },
+  {
+    "brand": "TRACMAX",
+    "pattern": "GRT932",
+    "confidence": "exact",
+    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/photo/temp/upload20200619173506.png",
+    "sourcePageUrl": "https://landspidertire.com/product_detail/grt932.html",
+    "checkedSourceUrls": [
+      "https://landspidertire.com/product_detail/grt932.html"
     ],
     "source": "official",
     "reason": "Official manufacturer page and product-image path match brand and pattern."
   },
   {
     "brand": "WINDFORCE",
-    "pattern": "ADVANFORS SUV",
+    "pattern": "TRANS MASTER GTM380",
     "confidence": "exact",
-    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260116/91fdafff69109182b5c3bd9acf9561a2.png",
-    "sourcePageUrl": "https://landspidertire.com/product_detail/advanfors-suv.html",
+    "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260119/15d583685d57d37e57594c8b9987d78f.webp",
+    "sourcePageUrl": "https://landspidertire.com/product_detail/gtm380.html",
     "checkedSourceUrls": [
-      "https://landspidertire.com/product_detail/advanfors-suv.html"
-    ],
-    "source": "official",
-    "reason": "Official manufacturer page and product-image path match brand and pattern."
-  },
-  {
-    "brand": "XCENT",
-    "pattern": "EL501",
-    "confidence": "exact",
-    "imageUrl": "https://omo-oss-image1.thefastimg.com/portal-saas/new2023103115235265202/cms/image/408b8144-b658-4899-a402-bf15ee0e7296.jpg?vf=B7gH3s",
-    "sourcePageUrl": "https://www.macroyaltyre.com/product_detail/1234872633007616000.html",
-    "checkedSourceUrls": [
-      "https://www.macroyaltyre.com/product_detail/1234872633007616000.html"
+      "https://landspidertire.com/product_detail/gtm380.html"
     ],
     "source": "official",
     "reason": "Official manufacturer page and product-image path match brand and pattern."

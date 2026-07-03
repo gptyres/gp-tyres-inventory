@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-03T13:28:21.106Z",
+  "generatedAt": "2026-07-03T14:12:41.751Z",
   "supplier": "EXCLUSIVE TYRES",
-  "inspectedCandidates": 210,
+  "inspectedCandidates": 187,
   "exactCount": 3,
-  "missingCount": 207,
+  "missingCount": 184,
   "sourcesByType": {
     "official": 3
   },
@@ -33,13 +33,6 @@
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
-      "id": "LANDSPIDER::WILDTRAXX AT",
-      "status": "exact",
-      "source": "official",
-      "sourcePageUrl": "https://landspidertire.com/product_detail/wildtraxx-at.html",
-      "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260127/f3fb4a319a20d33a7ff1295ff99d56f3.webp"
-    },
-    {
       "id": "DUNLOP::SUMITOMO BC10",
       "brand": "DUNLOP",
       "pattern": "SUMITOMO BC10",
@@ -50,13 +43,6 @@
         "https://www.google.com/search?q=DUNLOP%20SUMITOMO%20BC10%20tyre%20product%20image%20tyre%20retailer"
       ],
       "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "WINDFORCE::ADVANFORS SUV",
-      "status": "exact",
-      "source": "official",
-      "sourcePageUrl": "https://landspidertire.com/product_detail/advanfors-suv.html",
-      "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260116/91fdafff69109182b5c3bd9acf9561a2.png"
     },
     {
       "id": "GOODYEAR::INTENSA UHP 2",
@@ -84,15 +70,10 @@
     },
     {
       "id": "TRACMAX::GRT880",
-      "brand": "TRACMAX",
-      "pattern": "GRT880",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=TRACMAX%20GRT880%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=TRACMAX%20GRT880%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=TRACMAX%20GRT880%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
+      "status": "exact",
+      "source": "official",
+      "sourcePageUrl": "https://landspidertire.com/product_detail/grt880.html",
+      "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/photo/product/20200826145509.png"
     },
     {
       "id": "DUNLOP::SUMITOMO BC100",
@@ -143,18 +124,6 @@
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
-      "id": "CONTINENTAL::CROSSCONT UHP FR",
-      "brand": "CONTINENTAL",
-      "pattern": "CrossCont UHP FR",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20CrossCont%20UHP%20FR%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=CONTINENTAL%20CrossCont%20UHP%20FR%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=CONTINENTAL%20CrossCont%20UHP%20FR%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
       "id": "DUNLOP::BC10",
       "brand": "DUNLOP",
       "pattern": "BC10",
@@ -163,18 +132,6 @@
         "https://www.google.com/search?tbm=isch&q=DUNLOP%20BC10%20tyre%20product%20image%20official",
         "https://www.google.com/search?q=DUNLOP%20BC10%20tyre%20product%20image%20official%20tyre",
         "https://www.google.com/search?q=DUNLOP%20BC10%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "LANDSPIDER::LANDSPIDE WILDTRAXX AT",
-      "brand": "LANDSPIDER",
-      "pattern": "LANDSPIDE WILDTRAXX AT",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=LANDSPIDER%20LANDSPIDE%20WILDTRAXX%20AT%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=LANDSPIDER%20LANDSPIDE%20WILDTRAXX%20AT%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=LANDSPIDER%20LANDSPIDE%20WILDTRAXX%20AT%20tyre%20product%20image%20tyre%20retailer"
       ],
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
@@ -251,18 +208,6 @@
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
-      "id": "GENERAL::GRABBER AT3 FR",
-      "brand": "GENERAL",
-      "pattern": "GRABBER AT3 FR",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=GENERAL%20GRABBER%20AT3%20FR%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=GENERAL%20GRABBER%20AT3%20FR%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=GENERAL%20GRABBER%20AT3%20FR%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
       "id": "PIRELLI::SZROAS LR NCS",
       "brand": "PIRELLI",
       "pattern": "SZROAS LR ncs",
@@ -271,30 +216,6 @@
         "https://www.google.com/search?tbm=isch&q=PIRELLI%20SZROAS%20LR%20ncs%20tyre%20product%20image%20official",
         "https://www.google.com/search?q=PIRELLI%20SZROAS%20LR%20ncs%20tyre%20product%20image%20official%20tyre",
         "https://www.google.com/search?q=PIRELLI%20SZROAS%20LR%20ncs%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "BRIDGESTONE::ALENZA X",
-      "brand": "BRIDGESTONE",
-      "pattern": "ALENZA X",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=BRIDGESTONE%20ALENZA%20X%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=BRIDGESTONE%20ALENZA%20X%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=BRIDGESTONE%20ALENZA%20X%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "DUNLOP::SP431W",
-      "brand": "DUNLOP",
-      "pattern": "SP431W",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=DUNLOP%20SP431W%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=DUNLOP%20SP431W%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=DUNLOP%20SP431W%20tyre%20product%20image%20tyre%20retailer"
       ],
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
@@ -407,155 +328,23 @@
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
-      "id": "TIMAX::LTR28",
-      "brand": "TIMAX",
-      "pattern": "LTR28",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=TIMAX%20LTR28%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=TIMAX%20LTR28%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=TIMAX%20LTR28%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "TIMAX::R14LT TM257",
-      "brand": "TIMAX",
-      "pattern": "R14LT TM257",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=TIMAX%20R14LT%20TM257%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=TIMAX%20R14LT%20TM257%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=TIMAX%20R14LT%20TM257%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "TIMAX::R15LT TM257",
-      "brand": "TIMAX",
-      "pattern": "R15LT TM257",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=TIMAX%20R15LT%20TM257%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=TIMAX%20R15LT%20TM257%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=TIMAX%20R15LT%20TM257%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "TRACMAX::GRT916",
-      "brand": "TRACMAX",
-      "pattern": "GRT916",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=TRACMAX%20GRT916%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=TRACMAX%20GRT916%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=TRACMAX%20GRT916%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "TRACMAX::GRT932 T",
-      "brand": "TRACMAX",
-      "pattern": "GRT932 T",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=TRACMAX%20GRT932%20T%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=TRACMAX%20GRT932%20T%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=TRACMAX%20GRT932%20T%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "WINDFORCE::TRANS MASTER GSR210",
-      "brand": "WINDFORCE",
-      "pattern": "TRANS MASTER GSR210",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20TRANS%20MASTER%20GSR210%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=WINDFORCE%20TRANS%20MASTER%20GSR210%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=WINDFORCE%20TRANS%20MASTER%20GSR210%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "WINDFORCE::WD2020",
-      "brand": "WINDFORCE",
-      "pattern": "WD2020",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WD2020%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=WINDFORCE%20WD2020%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=WINDFORCE%20WD2020%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "WINDFORCE::WD2020 D",
-      "brand": "WINDFORCE",
-      "pattern": "WD2020 D",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WD2020%20D%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=WINDFORCE%20WD2020%20D%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=WINDFORCE%20WD2020%20D%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "WINDFORCE::WINDFORCE152 WA1060",
-      "brand": "WINDFORCE",
-      "pattern": "WINDFORCE152 WA1060",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WINDFORCE152%20WA1060%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=WINDFORCE%20WINDFORCE152%20WA1060%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=WINDFORCE%20WINDFORCE152%20WA1060%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "WINDFORCE::WT3000 T",
-      "brand": "WINDFORCE",
-      "pattern": "WT3000 T",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WT3000%20T%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=WINDFORCE%20WT3000%20T%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=WINDFORCE%20WT3000%20T%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "WINDFORCE::WT3020 T",
-      "brand": "WINDFORCE",
-      "pattern": "WT3020 T",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WT3020%20T%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=WINDFORCE%20WT3020%20T%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=WINDFORCE%20WT3020%20T%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "GOODYEAR::SAVA CARGO MS",
-      "brand": "GOODYEAR",
-      "pattern": "SAVA CARGO MS",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20SAVA%20CARGO%20MS%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=GOODYEAR%20SAVA%20CARGO%20MS%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=GOODYEAR%20SAVA%20CARGO%20MS%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "XCENT::EL501",
+      "id": "TRACMAX::GRT932",
       "status": "exact",
       "source": "official",
-      "sourcePageUrl": "https://www.macroyaltyre.com/product_detail/1234872633007616000.html",
-      "imageUrl": "https://omo-oss-image1.thefastimg.com/portal-saas/new2023103115235265202/cms/image/408b8144-b658-4899-a402-bf15ee0e7296.jpg?vf=B7gH3s"
+      "sourcePageUrl": "https://landspidertire.com/product_detail/grt932.html",
+      "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/photo/temp/upload20200619173506.png"
+    },
+    {
+      "id": "WINDFORCE::WT3020",
+      "brand": "WINDFORCE",
+      "pattern": "WT3020",
+      "status": "missing",
+      "checkedSourceUrls": [
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WT3020%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20WT3020%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20WT3020%20tyre%20product%20image%20tyre%20retailer"
+      ],
+      "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
       "id": "KAPSEN::65VR15 H202 96",
@@ -582,14 +371,14 @@
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
-      "id": "WINDFORCE::WINDFORCE160 WD2068",
+      "id": "WINDFORCE::WD2068",
       "brand": "WINDFORCE",
-      "pattern": "WINDFORCE160 WD2068",
+      "pattern": "WD2068",
       "status": "missing",
       "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WINDFORCE160%20WD2068%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=WINDFORCE%20WINDFORCE160%20WD2068%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=WINDFORCE%20WINDFORCE160%20WD2068%20tyre%20product%20image%20tyre%20retailer"
+        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WD2068%20tyre%20product%20image%20official",
+        "https://www.google.com/search?q=WINDFORCE%20WD2068%20tyre%20product%20image%20official%20tyre",
+        "https://www.google.com/search?q=WINDFORCE%20WD2068%20tyre%20product%20image%20tyre%20retailer"
       ],
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
@@ -630,30 +419,6 @@
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
-      "id": "CONTINENTAL::FR CONTICROSSCONTACT LX 2",
-      "brand": "CONTINENTAL",
-      "pattern": "FR CONTICROSSCONTACT LX 2",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=CONTINENTAL%20FR%20CONTICROSSCONTACT%20LX%202%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=CONTINENTAL%20FR%20CONTICROSSCONTACT%20LX%202%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=CONTINENTAL%20FR%20CONTICROSSCONTACT%20LX%202%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "GENERAL::GRAB AT3 TIRE GRABBER",
-      "brand": "GENERAL",
-      "pattern": "GRAB AT3 TIRE GRABBER",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=GENERAL%20GRAB%20AT3%20TIRE%20GRABBER%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=GENERAL%20GRAB%20AT3%20TIRE%20GRABBER%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=GENERAL%20GRAB%20AT3%20TIRE%20GRABBER%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
       "id": "KAPSEN::HS102 D",
       "brand": "KAPSEN",
       "pattern": "HS102 D",
@@ -678,16 +443,11 @@
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
     {
-      "id": "WINDFORCE::TRANS MASTER GTM380 T",
-      "brand": "WINDFORCE",
-      "pattern": "TRANS MASTER GTM380 T",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=WINDFORCE%20TRANS%20MASTER%20GTM380%20T%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=WINDFORCE%20TRANS%20MASTER%20GTM380%20T%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=WINDFORCE%20TRANS%20MASTER%20GTM380%20T%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
+      "id": "WINDFORCE::TRANS MASTER GTM380",
+      "status": "exact",
+      "source": "official",
+      "sourcePageUrl": "https://landspidertire.com/product_detail/gtm380.html",
+      "imageUrl": "https://shengchi-test.oss-cn-qingdao.aliyuncs.com/portal/20260119/15d583685d57d37e57594c8b9987d78f.webp"
     },
     {
       "id": "WINDFORCE::WD2080",
@@ -698,18 +458,6 @@
         "https://www.google.com/search?tbm=isch&q=WINDFORCE%20WD2080%20tyre%20product%20image%20official",
         "https://www.google.com/search?q=WINDFORCE%20WD2080%20tyre%20product%20image%20official%20tyre",
         "https://www.google.com/search?q=WINDFORCE%20WD2080%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "CEAT::90 18 ZOOM PLUS TT",
-      "brand": "CEAT",
-      "pattern": "90 18 ZOOM PLUS TT",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=CEAT%2090%2018%20ZOOM%20PLUS%20TT%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=CEAT%2090%2018%20ZOOM%20PLUS%20TT%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=CEAT%2090%2018%20ZOOM%20PLUS%20TT%20tyre%20product%20image%20tyre%20retailer"
       ],
       "reason": "No exact verified static source found in official-only autoreview mode."
     },
@@ -746,30 +494,6 @@
         "https://www.google.com/search?tbm=isch&q=GOODYEAR%20KELLY%20ARMORSTEEL%20KMT%20tyre%20product%20image%20official",
         "https://www.google.com/search?q=GOODYEAR%20KELLY%20ARMORSTEEL%20KMT%20tyre%20product%20image%20official%20tyre",
         "https://www.google.com/search?q=GOODYEAR%20KELLY%20ARMORSTEEL%20KMT%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "GOODYEAR::KSM ARMSTEEL KELLY",
-      "brand": "GOODYEAR",
-      "pattern": "KSM ARMSTEEL KELLY",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20KSM%20ARMSTEEL%20KELLY%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=GOODYEAR%20KSM%20ARMSTEEL%20KELLY%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=GOODYEAR%20KSM%20ARMSTEEL%20KELLY%20tyre%20product%20image%20tyre%20retailer"
-      ],
-      "reason": "No exact verified static source found in official-only autoreview mode."
-    },
-    {
-      "id": "GOODYEAR::SAVA AVANT A3",
-      "brand": "GOODYEAR",
-      "pattern": "SAVA AVANT A3",
-      "status": "missing",
-      "checkedSourceUrls": [
-        "https://www.google.com/search?tbm=isch&q=GOODYEAR%20SAVA%20AVANT%20A3%20tyre%20product%20image%20official",
-        "https://www.google.com/search?q=GOODYEAR%20SAVA%20AVANT%20A3%20tyre%20product%20image%20official%20tyre",
-        "https://www.google.com/search?q=GOODYEAR%20SAVA%20AVANT%20A3%20tyre%20product%20image%20tyre%20retailer"
       ],
       "reason": "No exact verified static source found in official-only autoreview mode."
     },

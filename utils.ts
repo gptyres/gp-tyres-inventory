@@ -263,6 +263,7 @@ const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
     CONTINENTAL: /\b(?:CON|CONTINETAL)\b/gi,
     DRIVEMASTER: /\b(?:DRIVE\s*MASTER|DRMASTER)\b/gi,
     GENERAL: /\bGEN\b/gi,
+    LANDSPIDER: /\bLANDSPIDE\b/gi,
     ANCHEE: /\bACHEE\b/gi
   };
   let cleaned = pattern
@@ -350,6 +351,11 @@ const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
     .replace(/\bCONTIPREMIUMCONTACT\s+5\s+PINK\s+LINES\b/gi, 'ContiPremiumContact 5')
     .replace(/\bCCRX\s+CROSSCONTACT\s+RX\b/gi, 'CrossContact RX')
     .replace(/\bWORLDCONT\s+4X4\b/gi, 'WorldContact 4x4')
+    .replace(/\bALENZA\s+X\b/gi, 'Alenza 001')
+    .replace(/\bFR\s+CONTICROSSCONTACT\s+LX\s+2\b/gi, 'CrossContact LX 2')
+    .replace(/\bCROSSCONT\s+UHP\s+FR\b/gi, 'CrossContact UHP')
+    .replace(/\bGRAB\s+AT3\s+TIRE\s+GRABBER\b/gi, 'Grabber AT3')
+    .replace(/\bGRABBER\s+AT3\s+FR\b/gi, 'Grabber AT3')
     .replace(/\bVANC100\s+CONTIVANCONTACT\b/gi, 'ContiVanContact 100')
     .replace(/\bST901\s+M\b/gi, 'ST901')
     .replace(/\bST939\s+S\b/gi, 'ST939')
@@ -361,6 +367,7 @@ const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
     .replace(/\bGRT880S?\s+D\b/gi, 'GRT880')
     .replace(/\bGRT901(?:\s+\d+PRPR)?\s+M\b/gi, 'GRT901')
     .replace(/\bGRT916(?:\s+\d+PRPR)?\s+T\b/gi, 'GRT916')
+    .replace(/\bGRT932(?:\s+\d+PRPR)?\s+T\b/gi, 'GRT932')
     .replace(/\bFM188\s+M\b/gi, 'FM188')
     .replace(/\bFM330\s+MS\b/gi, 'FM330')
     .replace(/\bFM350\s+S\b/gi, 'FM350')
@@ -375,20 +382,32 @@ const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
     .replace(/\bECO\s+COMF\s+(52|53|55)\b/gi, 'ECO Comfort $1')
     .replace(/\bECO\s+SPRT\s+(58|59)\b/gi, 'ECO Sport $1')
     .replace(/\bKMAX\s+S\s+END\s+\d+[A-Z]\d+[A-Z]\b/gi, 'KMAX S')
+    .replace(/\bKSM\s+ARMSTEEL\s+KELLY\b/gi, 'Kelly Armorsteel KMS')
+    .replace(/\bR(?:14|15)LT\s+TM257\b/gi, 'TM257')
     .replace(/\bTM257\b/gi, 'TM257')
     .replace(/\bTM258\b/gi, 'TM258')
     .replace(/\b(?:PR)?(\d{3})\s+(WD20\d{2})\b/gi, '$2')
+    .replace(/\bWD2020\s+D\b/gi, 'WD2020')
+    .replace(/\bWT3000\s+T\b/gi, 'WT3000')
+    .replace(/\bWT3020\s+T\b/gi, 'WT3020')
+    .replace(/\bTRANS\s+MASTER\s+GTM380\s+T\b/gi, 'TRANS MASTER GTM380')
+    .replace(/\bWINDFORCE\d+\s+(WA1060)\b/gi, '$1')
+    .replace(/\bWINDFORCE\d+\s+(WD2068)\b/gi, '$1')
     .replace(/\s+/g, ' ')
     .trim();
 
   if (/^KAPSEN$/i.test(brand)) {
-    cleaned = cleaned.replace(/\bRS01\b/gi, 'DurableMax RS01');
+    cleaned = cleaned
+      .replace(/\bRS01\b/gi, 'DurableMax RS01')
+      .replace(/^(?:\d+\s+)*H202\b/gi, 'H202');
   }
 
   if (/^CEAT$/i.test(brand)) {
     cleaned = cleaned
       .replace(/^(?:\d+\s+)+MILAZE\b/gi, 'Milaze')
       .replace(/^(?:\d+\s+)+SECURA\s+ZOOM\+?\b/gi, 'Secura Zoom+')
+      .replace(/^(?:\d+\s+)+ZOOM\s+PLUS\s+TT\b/gi, 'Secura Zoom+')
+      .replace(/\bSECURA\s+ZOOM\s+TT\b/gi, 'Secura Zoom+')
       .replace(/^(?:\d+\s+)+SECURA\s+F(?:\s+85)?\b/gi, 'Secura F85')
       .replace(/\+{2,}/g, '+');
   }

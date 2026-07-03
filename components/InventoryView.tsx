@@ -144,11 +144,12 @@ interface ProductImageProps {
   isError: boolean;
   onGenerate: () => void;
   canUploadImage?: boolean;
-  onUploadImage?: () => void;
+  onUploadImage?: (file?: File) => void;
   aspectRatio: AspectRatio;
 }
 
 const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, isError, onGenerate, canUploadImage, onUploadImage, aspectRatio }) => {
+  const [isDragOver, setIsDragOver] = useState(false);
   // Calculate height based on aspect ratio for placeholder
   let aspectClass = 'aspect-square';
   if (aspectRatio === '16:9') aspectClass = 'aspect-video';
@@ -164,9 +165,36 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
     event.dataTransfer.setData('text/html', `<img src="${imageUrl}" alt="${label.replace(/"/g, '&quot;')}" />`);
     event.dataTransfer.setData('DownloadURL', `image/jpeg:${getDragFileName(item)}:${imageUrl}`);
   };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    if (!canUploadImage) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    if (!canUploadImage || event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    if (!canUploadImage) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragOver(false);
+    const droppedFile = Array.from(event.dataTransfer.files).find((candidate) => candidate.type.startsWith('image/'));
+    if (droppedFile) onUploadImage?.(droppedFile);
+  };
   
   return (
-    <div className={`w-full ${aspectClass} bg-gp-black border-b border-gp-border relative overflow-hidden group`}>
+    <div
+      className={`w-full ${aspectClass} bg-gp-black border-b border-gp-border relative overflow-hidden group ${isDragOver ? 'ring-2 ring-gp-red ring-inset' : ''}`}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       {imageUrl ? (
         <img 
           src={imageUrl} 
@@ -235,18 +263,26 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
           Replace
         </button>
       )}
+      {canUploadImage && (
+        <div className={`pointer-events-none absolute inset-0 flex items-center justify-center bg-black/75 p-3 text-center transition-opacity ${isDragOver ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="rounded border border-gp-red bg-gp-black/90 px-3 py-2 text-[10px] font-black uppercase tracking-wider text-white shadow-xl">
+            Drop tyre image to confirm upload
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 interface SupplierTyreImageUploadModalProps {
   item: InventoryItem | null;
+  initialFile?: File | null;
   currentUser?: string | null;
   onClose: () => void;
   onUploaded: (item: InventoryItem, brand: string, pattern: string, imageUrl: string) => void;
 }
 
-const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> = ({ item, currentUser, onClose, onUploaded }) => {
+const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> = ({ item, initialFile, currentUser, onClose, onUploaded }) => {
   const tyre = item?.type === ProductType.TYRE ? item as TyreProduct : null;
   const [brand, setBrand] = useState('');
   const [pattern, setPattern] = useState('');
@@ -258,14 +294,19 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (!tyre) return;
+    if (!tyre) {
+      setFile(null);
+      setPreviewUrl('');
+      setMessage('');
+      return;
+    }
     setBrand(tyre.brand || tyre.imageFinishKey || '');
     setPattern(tyre.pattern || tyre.imageDesignKey || '');
-    setFile(null);
-    setPreviewUrl('');
+    setFile(initialFile ?? null);
+    setPreviewUrl(initialFile ? URL.createObjectURL(initialFile) : '');
     setMessage('');
     setUploadToken(sessionStorage.getItem(STAFF_UPLOAD_TOKEN_STORAGE_KEY) ?? '');
-  }, [tyre]);
+  }, [tyre, initialFile]);
 
   useEffect(() => () => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -495,7 +536,7 @@ interface ViewComponentProps extends InventoryViewProps {
   loadingImages: Set<string>;
   errorImages: Set<string>;
   onGenerateImage: (item: InventoryItem) => void;
-  onUploadSupplierTyreImage: (item: InventoryItem) => void;
+  onUploadSupplierTyreImage: (item: InventoryItem, file?: File) => void;
 }
 
 const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, aspectRatio }) => {
@@ -905,6 +946,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
   const [errorImages, setErrorImages] = useState<Set<string>>(new Set());
   const [uploadImageItem, setUploadImageItem] = useState<InventoryItem | null>(null);
+  const [uploadImageInitialFile, setUploadImageInitialFile] = useState<File | null>(null);
   const [supplierImageRefreshKey, setSupplierImageRefreshKey] = useState(0);
   const supplierImageLookupItems = useMemo(
     () => props.items.filter((item) => inventoryItemToSupplierImageLookup(item)),
@@ -1043,6 +1085,16 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     setSupplierImageRefreshKey((value) => value + 1);
   };
 
+  const openSupplierTyreImageUploader = (item: InventoryItem, file?: File) => {
+    setUploadImageItem(item);
+    setUploadImageInitialFile(file ?? null);
+  };
+
+  const closeSupplierTyreImageUploader = () => {
+    setUploadImageItem(null);
+    setUploadImageInitialFile(null);
+  };
+
   const handleHeaderClick = (key: SortKey) => {
     setSortConfig(current => ({
       key,
@@ -1166,7 +1218,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         loadingImages,
         errorImages,
         onGenerateImage: handleGenerateImage,
-        onUploadSupplierTyreImage: (item: InventoryItem) => setUploadImageItem(item),
+        onUploadSupplierTyreImage: openSupplierTyreImageUploader,
         aspectRatio
     };
 
@@ -1182,8 +1234,9 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     <div className="flex flex-col gap-4 relative">
       <SupplierTyreImageUploadModal
         item={uploadImageItem}
+        initialFile={uploadImageInitialFile}
         currentUser={props.currentUser}
-        onClose={() => setUploadImageItem(null)}
+        onClose={closeSupplierTyreImageUploader}
         onUploaded={handleSupplierTyreImageUploaded}
       />
       
