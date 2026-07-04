@@ -1625,7 +1625,7 @@ const App: React.FC = () => {
                     ? `${supplierCatalogLabel} Catalog (${filteredItems.length})`
                     : activeFilter === 'ALL' ? 'Full Inventory' : `${activeFilter} Inventory (${filteredItems.length})`}
                 </h2>
-                {currentView === 'INVENTORY' && <SheetInventorySyncStatus visible={isAdmin} compact />}
+                {currentView === 'INVENTORY' && <SheetInventorySyncStatus visible compact />}
               </div>
               <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
                 {currentView === 'SUPPLIER_INVENTORY' && (
