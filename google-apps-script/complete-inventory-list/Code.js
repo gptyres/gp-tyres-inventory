@@ -84,6 +84,12 @@ function showWebAppUrl() {
   SpreadsheetApp.getUi().alert('Deploy this Apps Script as a Web App, then save that /exec URL in Supabase as SHEET_INVENTORY_APPS_SCRIPT_URL.');
 }
 
+function setSyncTokenForClasp(token) {
+  if (!token) throw new Error('Token is required.');
+  PropertiesService.getScriptProperties().setProperty(GP_SYNC_CONFIG.tokenPropertyName, String(token));
+  return { ok: true, propertyName: GP_SYNC_CONFIG.tokenPropertyName };
+}
+
 function doGet() {
   return jsonResponse_({
     ok: true,
@@ -95,7 +101,7 @@ function doGet() {
 function doPost(event) {
   try {
     const payload = JSON.parse(event.postData && event.postData.contents ? event.postData.contents : '{}');
-    const token = PropertiesService.getScriptProperties().getProperty(GP_SYNC_CONFIG.tokenPropertyName);
+    const token = getSyncToken_();
     if (!token || payload.token !== token) {
       return jsonResponse_({ ok: false, error: 'Unauthorized portal sheet sync.' });
     }
@@ -125,7 +131,7 @@ function syncInventoryRows_(sheet, startRow, rowCount, mode) {
     portalId: portalIds[index] && portalIds[index][0] ? String(portalIds[index][0]) : ''
   }));
 
-  const token = PropertiesService.getScriptProperties().getProperty(GP_SYNC_CONFIG.tokenPropertyName);
+  const token = getSyncToken_();
   if (!token) {
     throw new Error(`Missing script property ${GP_SYNC_CONFIG.tokenPropertyName}.`);
   }
@@ -258,6 +264,10 @@ function makePortalRowFingerprint_(rowValues) {
 
 function normalizePortalCell_(value) {
   return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+function getSyncToken_() {
+  return PropertiesService.getScriptProperties().getProperty(GP_SYNC_CONFIG.tokenPropertyName);
 }
 
 function ensureHelperHeaders_(sheet) {
