@@ -4,6 +4,7 @@ import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { InventoryView } from './components/InventoryView';
 import { StatsDashboard } from './components/StatsDashboard';
+import { SheetInventorySyncStatus } from './components/SheetInventorySyncStatus';
 import { DashboardView } from './components/DashboardView';
 import { OrdersView } from './components/OrdersView';
 import { BackordersView } from './components/BackordersView';
@@ -68,6 +69,15 @@ const LoadingPanel: React.FC<{ label?: string }> = ({ label = 'Loading...' }) =>
     </div>
   </div>
 );
+
+const hasSheetSyncedTyres = (inventoryItems: InventoryItem[]) => (
+  inventoryItems.some(item => item.type === ProductType.TYRE && Boolean(item.sheetSyncedAt))
+);
+
+const filterSheetManagedInventory = (inventoryItems: InventoryItem[]) => {
+  if (!hasSheetSyncedTyres(inventoryItems)) return inventoryItems;
+  return inventoryItems.filter(item => item.type !== ProductType.TYRE || Boolean(item.sheetSyncedAt));
+};
 
 const App: React.FC = () => {
   // --- AUTH STATE ---
@@ -418,7 +428,7 @@ const App: React.FC = () => {
 
     // 1. Load cached inventory immediately, then replace with Supabase source of truth.
     const cachedInventory = loadCachedInventory();
-    setItems(cachedInventory);
+    setItems(filterSheetManagedInventory(cachedInventory));
     localStorage.setItem('gp-inventory', JSON.stringify(cachedInventory));
     localStorage.setItem('gp-inventory-seed-version', INVENTORY_DATA_VERSION);
 
@@ -437,7 +447,7 @@ const App: React.FC = () => {
         }
 
         if (globalInventory.length > 0) {
-          setItems(globalInventory);
+          setItems(filterSheetManagedInventory(globalInventory));
         }
       } catch (error) {
         console.error('[SUPABASE] Inventory Fetch Error:', error);
@@ -517,7 +527,7 @@ const App: React.FC = () => {
 
                 if (payload.new) {
                   const changedItem = mapInventoryRowToItem(payload.new as InventoryItemRow);
-                  setItems(prev => mergeInventoryItems(prev, [changedItem]));
+                  setItems(prev => filterSheetManagedInventory(mergeInventoryItems(prev, [changedItem])));
                 }
             })
             .subscribe((status, error) => {
@@ -1583,7 +1593,12 @@ const App: React.FC = () => {
 
           {(currentView === 'INVENTORY' || currentView === 'SUPPLIER_INVENTORY' || currentView === 'WHEEL_CATALOG') && (
             <>
-              {currentView === 'INVENTORY' && <StatsDashboard stats={stats} visible={isAdmin} />}
+              {currentView === 'INVENTORY' && (
+                <>
+                  <StatsDashboard stats={stats} visible={isAdmin} />
+                  <SheetInventorySyncStatus visible={isAdmin} />
+                </>
+              )}
               
               <div className="max-w-7xl mx-auto px-4 mt-6 flex flex-col md:flex-row justify-between items-center border-b border-gp-border pb-4 gap-4">
                 <h2 className="text-gp-text-muted text-xs uppercase tracking-widest font-bold flex items-center gap-2">

@@ -28,6 +28,9 @@ export interface BaseProduct {
   supplierStockCode?: string;
   imageDesignKey?: string;
   imageFinishKey?: string;
+  sheetRowNumber?: number;
+  sheetFingerprint?: string;
+  sheetSyncedAt?: string;
 }
 
 export interface TyreProduct extends BaseProduct {
