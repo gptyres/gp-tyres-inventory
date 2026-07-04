@@ -69,6 +69,28 @@ function showLastInventorySync() {
   SpreadsheetApp.getUi().alert(lastSync);
 }
 
+function doPost(event) {
+  try {
+    const payload = JSON.parse(event.postData && event.postData.contents ? event.postData.contents : '{}');
+    const token = PropertiesService.getScriptProperties().getProperty(GP_SYNC_CONFIG.tokenPropertyName);
+    if (!token || payload.token !== token) {
+      return jsonResponse_({ ok: false, error: 'Unauthorized portal sheet sync.' }, 401);
+    }
+
+    if (payload.action !== 'portalToSheet') {
+      return jsonResponse_({ ok: false, error: 'Unsupported action.' }, 400);
+    }
+
+    const sheet = SpreadsheetApp.openById(GP_SYNC_CONFIG.spreadsheetId).getSheetByName(GP_SYNC_CONFIG.sheetName);
+    if (!sheet) throw new Error('INVENTORY sheet was not found.');
+
+    const result = syncPortalItemsToSheet_(sheet, payload.items || [], payload.reason || 'portal-to-sheet');
+    return jsonResponse_({ ok: true, ...result });
+  } catch (error) {
+    return jsonResponse_({ ok: false, error: error && error.message ? error.message : String(error) }, 500);
+  }
+}
+
 function syncInventoryRows_(sheet, startRow, rowCount, mode) {
   ensureHelperHeaders_(sheet);
 
@@ -128,6 +150,93 @@ function applySyncResults_(sheet, rowResults) {
   });
 }
 
+function syncPortalItemsToSheet_(sheet, items, reason) {
+  ensureHelperHeaders_(sheet);
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+
+  try {
+    const lastRow = Math.max(sheet.getLastRow(), GP_SYNC_CONFIG.firstDataRow);
+    const portalIdValues = sheet
+      .getRange(GP_SYNC_CONFIG.firstDataRow, GP_SYNC_CONFIG.portalIdColumn, Math.max(1, lastRow - GP_SYNC_CONFIG.firstDataRow + 1), 1)
+      .getValues();
+    const visibleValues = sheet
+      .getRange(GP_SYNC_CONFIG.firstDataRow, 1, Math.max(1, lastRow - GP_SYNC_CONFIG.firstDataRow + 1), GP_SYNC_CONFIG.readColumnCount)
+      .getValues();
+    const existingRowsByPortalId = {};
+    const existingRowsByFingerprint = {};
+    portalIdValues.forEach((row, index) => {
+      const portalId = row[0] ? String(row[0]).trim() : '';
+      if (portalId) existingRowsByPortalId[portalId] = GP_SYNC_CONFIG.firstDataRow + index;
+    });
+    visibleValues.forEach((row, index) => {
+      const fingerprint = makePortalRowFingerprint_(row);
+      if (fingerprint && !existingRowsByFingerprint[fingerprint]) {
+        existingRowsByFingerprint[fingerprint] = GP_SYNC_CONFIG.firstDataRow + index;
+      }
+    });
+
+    const now = new Date();
+    const results = [];
+    let updated = 0;
+    let appended = 0;
+    let skipped = 0;
+
+    items.forEach((item) => {
+      if (!item || !item.portalId || !Array.isArray(item.values) || item.values.length < GP_SYNC_CONFIG.readColumnCount) {
+        skipped += 1;
+        results.push({ portalId: item && item.portalId, status: 'skipped', message: 'Invalid portal item payload.' });
+        return;
+      }
+
+      const portalId = String(item.portalId).trim();
+      const rowValues = item.values.slice(0, GP_SYNC_CONFIG.readColumnCount);
+      if (item.operation === 'delete') {
+        rowValues[4] = 0;
+      }
+      const rowNumber = existingRowsByPortalId[portalId]
+        || existingRowsByFingerprint[makePortalRowFingerprint_(rowValues)]
+        || Math.max(sheet.getLastRow() + 1, GP_SYNC_CONFIG.firstDataRow);
+
+      sheet.getRange(rowNumber, 1, 1, GP_SYNC_CONFIG.readColumnCount).setValues([rowValues]);
+      sheet.getRange(rowNumber, GP_SYNC_CONFIG.portalIdColumn, 1, 3).setValues([[
+        portalId,
+        now,
+        `${item.operation || 'upsert'} from portal: ${reason}`
+      ]]);
+
+      existingRowsByPortalId[portalId] = rowNumber;
+      existingRowsByFingerprint[makePortalRowFingerprint_(rowValues)] = rowNumber;
+      if (rowNumber > lastRow) appended += 1;
+      else updated += 1;
+      results.push({ rowNumber, portalId, status: item.operation === 'delete' ? 'deleted' : 'upserted', message: 'Synced from portal.' });
+    });
+
+    PropertiesService.getDocumentProperties().setProperty(
+      'LAST_GP_PORTAL_SYNC',
+      `${now.toLocaleString('en-ZA')} - Portal updated ${updated}, appended ${appended}, skipped ${skipped}`
+    );
+
+    return { updated, appended, skipped, results };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function makePortalRowFingerprint_(rowValues) {
+  if (!rowValues || rowValues.length < 4) return '';
+  return [
+    normalizePortalCell_(rowValues[0]),
+    normalizePortalCell_(rowValues[2] || rowValues[1]),
+    normalizePortalCell_(rowValues[3])
+  ].join('|');
+}
+
+function normalizePortalCell_(value) {
+  return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
 function ensureHelperHeaders_(sheet) {
   if (sheet.getMaxColumns() < GP_SYNC_CONFIG.syncStatusColumn) {
     sheet.insertColumnsAfter(sheet.getMaxColumns(), GP_SYNC_CONFIG.syncStatusColumn - sheet.getMaxColumns());
@@ -139,4 +248,10 @@ function ensureHelperHeaders_(sheet) {
     'LAST_SYNC_STATUS'
   ]]);
   sheet.hideColumns(GP_SYNC_CONFIG.portalIdColumn, 3);
+}
+
+function jsonResponse_(body, statusCode) {
+  return ContentService
+    .createTextOutput(JSON.stringify({ statusCode: statusCode || 200, ...body }))
+    .setMimeType(ContentService.MimeType.JSON);
 }

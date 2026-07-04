@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import {
   fetchLatestSheetInventorySyncRun,
   SheetInventorySyncRun,
-  subscribeToSheetInventorySyncRuns
+  subscribeToSheetInventorySyncRuns,
+  triggerSheetInventorySyncNow
 } from '../sheetInventoryStatus';
 
 interface SheetInventorySyncStatusProps {
   visible: boolean;
+  compact?: boolean;
 }
 
 const formatSyncTime = (value?: string | null) => {
@@ -24,9 +26,10 @@ const getStatusClass = (status?: string) => {
   return 'text-gp-text-muted';
 };
 
-export const SheetInventorySyncStatus: React.FC<SheetInventorySyncStatusProps> = ({ visible }) => {
+export const SheetInventorySyncStatus: React.FC<SheetInventorySyncStatusProps> = ({ visible, compact = false }) => {
   const [syncRun, setSyncRun] = useState<SheetInventorySyncRun | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [error, setError] = useState('');
 
   const refresh = async () => {
@@ -56,6 +59,40 @@ export const SheetInventorySyncStatus: React.FC<SheetInventorySyncStatusProps> =
   }, [visible]);
 
   if (!visible) return null;
+
+  const syncNow = async () => {
+    setIsSyncing(true);
+    setError('');
+
+    try {
+      await triggerSheetInventorySyncNow();
+      setSyncRun(await fetchLatestSheetInventorySyncRun());
+    } catch (syncError) {
+      setError(syncError instanceof Error ? syncError.message : 'Google Sheet sync failed.');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  if (compact) {
+    return (
+      <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
+        <div className="text-[10px] font-black uppercase tracking-widest text-gp-text-muted sm:text-right">
+          <span className={`block ${getStatusClass(syncRun?.status)}`}>{syncRun?.status ?? 'No sync'}</span>
+          <span className="block">Last sync: {formatSyncTime(syncRun?.completed_at ?? syncRun?.started_at)}</span>
+          {error && <span className="block max-w-sm text-gp-red">{error}</span>}
+        </div>
+        <button
+          type="button"
+          onClick={() => void syncNow()}
+          disabled={isSyncing || isLoading}
+          className="inline-flex items-center justify-center rounded bg-gp-red px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gp-red/20 transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isSyncing ? 'Syncing...' : 'Sync Now'}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto mt-4 max-w-7xl px-4">

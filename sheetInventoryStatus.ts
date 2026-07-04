@@ -1,4 +1,6 @@
 import { supabase } from './supabaseClient';
+import { InventoryItem } from './types';
+import { buildSheetPortalItemPayloads, SheetPortalSyncOperation } from './sheetInventoryBridge';
 
 export interface SheetInventorySyncRun {
   id: string;
@@ -24,6 +26,38 @@ export const fetchLatestSheetInventorySyncRun = async (): Promise<SheetInventory
 
   if (error) throw new Error(error.message);
   return data as SheetInventorySyncRun | null;
+};
+
+export const triggerSheetInventorySyncNow = async () => {
+  const { data, error } = await (supabase.functions.invoke as any)('sync-sheet-inventory-now', {
+    body: {
+      requestedBy: 'portal'
+    }
+  });
+
+  if (error) throw new Error(error.message);
+  if (!data?.ok) throw new Error(data?.error || 'Google Sheet sync failed.');
+  return data;
+};
+
+export const syncPortalInventoryItemsToSheet = async (
+  items: InventoryItem[],
+  operation: SheetPortalSyncOperation = 'upsert',
+  reason = 'portal-stock-change'
+) => {
+  const payloadItems = buildSheetPortalItemPayloads(items, operation);
+  if (!payloadItems.length) return { ok: true, skipped: true, reason: 'No Sheet-managed tyre rows to sync.' };
+
+  const { data, error } = await (supabase.functions.invoke as any)('sync-portal-inventory-to-sheet', {
+    body: {
+      reason,
+      items: payloadItems
+    }
+  });
+
+  if (error) throw new Error(error.message);
+  if (!data?.ok) throw new Error(data?.error || 'Portal stock could not be mirrored to Google Sheet.');
+  return data;
 };
 
 export const subscribeToSheetInventorySyncRuns = (

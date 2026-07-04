@@ -41,6 +41,7 @@ import {
 } from './inventorySync';
 import { customerRowToCustomerInfo, saveCRMDocumentFromPOS } from './crmSync';
 import { loadAllSupplierPOSItems, loadSupplierCatalogItems } from './supplierCatalogLoader';
+import { syncPortalInventoryItemsToSheet } from './sheetInventoryStatus';
 
 import {
   searchInventory,
@@ -1081,6 +1082,16 @@ const App: React.FC = () => {
     setEditingPOSDocument(null);
   };
 
+  const mirrorInventoryToGoogleSheet = (
+    changedItems: InventoryItem[],
+    reason: string,
+    operation: 'upsert' | 'delete' = 'upsert'
+  ) => {
+    void syncPortalInventoryItemsToSheet(changedItems, operation, reason).catch((error) => {
+      console.warn('[GOOGLE SHEET] Portal stock saved, but Sheet mirror sync did not complete:', error);
+    });
+  };
+
   const handlePOSCompleteSale = async (staffName: StaffName) => {
     if (posCart.length === 0 || isCompletingPOS) return;
 
@@ -1159,6 +1170,7 @@ const App: React.FC = () => {
       const updatedInventory = await processInventoryTransaction(stockAdjustments, salesLogEntries);
       if (updatedInventory.length > 0) {
         setItems(prev => mergeInventoryItems(prev, updatedInventory));
+        mirrorInventoryToGoogleSheet(updatedInventory, 'pos-sale');
       }
 
       const newOrders: Order[] = soldCart.map((item, index) => {
@@ -1209,12 +1221,14 @@ const App: React.FC = () => {
       if (action === 'DELETE') {
         await deleteGlobalInventoryItem(item.id);
         setItems(prev => prev.filter(i => i.id !== item.id));
+        mirrorInventoryToGoogleSheet([item], 'portal-stock-delete', 'delete');
         await logAdminControlEvent(`STOCK_${action}_${item.id}`, staffName);
         return;
       }
 
       const savedItem = await upsertGlobalInventoryItem(item);
       setItems(prev => mergeInventoryItems(prev, [savedItem]));
+      mirrorInventoryToGoogleSheet([savedItem], `portal-stock-${action.toLowerCase()}`);
       await logAdminControlEvent(`STOCK_${action}_${item.id}`, staffName);
     } catch (error) {
       console.error('[SUPABASE] Stock action failed:', error);
@@ -1251,6 +1265,7 @@ const App: React.FC = () => {
       );
       if (updatedInventory.length > 0) {
         setItems(prev => mergeInventoryItems(prev, updatedInventory));
+        mirrorInventoryToGoogleSheet(updatedInventory, 'quick-sale');
       }
     } catch (error) {
       console.error('[SUPABASE] Sale transaction failed:', error);
@@ -1303,6 +1318,7 @@ const App: React.FC = () => {
       );
       if (updatedInventory.length > 0) {
         setItems(prev => mergeInventoryItems(prev, updatedInventory));
+        mirrorInventoryToGoogleSheet(updatedInventory, 'reserve-stock');
       }
     } catch (error) {
       console.error('[SUPABASE] Reserve transaction failed:', error);
@@ -1355,6 +1371,7 @@ const App: React.FC = () => {
             );
             if (updatedInventory.length > 0) {
                 setItems(prev => mergeInventoryItems(prev, updatedInventory));
+                mirrorInventoryToGoogleSheet(updatedInventory, 'refund-stock');
             }
         } catch (error) {
             console.error('[SUPABASE] Refund transaction failed:', error);
@@ -1380,8 +1397,10 @@ const App: React.FC = () => {
     if (!isAdmin) return;
     if (window.confirm(`Are you sure you want to delete ${ids.length} items? This cannot be undone.`)) {
       try {
+        const deletedItems = items.filter(item => ids.includes(item.id));
         await Promise.all(ids.map(id => deleteGlobalInventoryItem(id)));
         setItems(prev => prev.filter(item => !ids.includes(item.id)));
+        mirrorInventoryToGoogleSheet(deletedItems, 'portal-bulk-stock-delete', 'delete');
         await logAdminControlEvent(`BULK_STOCK_DELETE_${ids.length}`, currentUser || 'ADMIN');
       } catch (error) {
         console.error('[SUPABASE] Bulk delete failed:', error);
@@ -1594,10 +1613,7 @@ const App: React.FC = () => {
           {(currentView === 'INVENTORY' || currentView === 'SUPPLIER_INVENTORY' || currentView === 'WHEEL_CATALOG') && (
             <>
               {currentView === 'INVENTORY' && (
-                <>
-                  <StatsDashboard stats={stats} visible={isAdmin} />
-                  <SheetInventorySyncStatus visible={isAdmin} />
-                </>
+                <StatsDashboard stats={stats} visible={isAdmin} />
               )}
               
               <div className="max-w-7xl mx-auto px-4 mt-6 flex flex-col md:flex-row justify-between items-center border-b border-gp-border pb-4 gap-4">
@@ -1609,6 +1625,7 @@ const App: React.FC = () => {
                     ? `${supplierCatalogLabel} Catalog (${filteredItems.length})`
                     : activeFilter === 'ALL' ? 'Full Inventory' : `${activeFilter} Inventory (${filteredItems.length})`}
                 </h2>
+                {currentView === 'INVENTORY' && <SheetInventorySyncStatus visible={isAdmin} compact />}
               </div>
               <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
                 {currentView === 'SUPPLIER_INVENTORY' && (
