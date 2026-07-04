@@ -252,7 +252,13 @@ const resolvePortalId = (
   usedIds: Set<string>,
   nextNumericId: { value: number }
 ) => {
-  if (parsed.portalId && existingRows.some((row) => row.id === parsed.portalId)) return parsed.portalId;
+  if (
+    parsed.portalId
+    && !usedIds.has(parsed.portalId)
+    && existingRows.some((row) => row.id === parsed.portalId)
+  ) {
+    return parsed.portalId;
+  }
 
   const exact = existingRows.find((row) => (
     row.type === 'TYRE'
