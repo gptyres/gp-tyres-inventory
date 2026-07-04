@@ -5,9 +5,13 @@ import {
   TRAINING_TASKS,
   TrainingProgressStore,
   getStaffTrainingProgress,
+  refreshTrainingProgressFromSupabase,
   loadTrainingProgressStore,
   notifyTrainingProgressChanged,
-  saveTrainingProgressStore
+  resetStaffTrainingProgressInSupabase,
+  saveStaffTrainingProgressToSupabase,
+  saveTrainingProgressStore,
+  subscribeToTrainingProgressChanges
 } from '../trainingProgress';
 
 interface TrainingPortalViewProps {
@@ -27,14 +31,15 @@ const trainingSections: TrainingSection[] = [
   {
     id: 'intro',
     navLabel: 'Overview',
-    title: 'GP Tyres & Mags SOP',
-    summary: 'Use this portal as the live operating guide for daily inventory, quote, sales and admin workflows.',
+    title: 'GP Tyres & Mags Simple Staff Guide',
+    summary: 'This is the simple guide for daily stock, quotes, sales, customer records, supplier visuals and admin work.',
     steps: [
-      'Use GP internal available stock as the first source for customers.',
-      'Use supplier stock as secondary stock when GP stock is not available.',
-      'Quotes do not move stock. Completed sales and refunds must create a stock movement.',
-      'Customer-facing quote and invoice lines must not mention supplier names.',
-      'Admin-only controls are reserved for stock corrections, reporting and system logs.'
+      'Start with GP available stock first.',
+      'Use supplier stock second when GP stock is not available.',
+      'A quote is only a price document. It does not remove stock.',
+      'A completed sale removes stock and saves the sale.',
+      'Customer quotes and invoices must not show supplier names or stock location.',
+      'Training progress is saved online so all portals show the same progress.'
     ],
     checks: [
       'Confirm the logged-in terminal before taking action.',
@@ -46,11 +51,11 @@ const trainingSections: TrainingSection[] = [
     id: 'login',
     navLabel: 'Login & Dashboard',
     title: 'Login And Dashboard Flow',
-    summary: 'Staff should start on the dashboard, confirm system status, then move into stock, sales or training from the side menu.',
+    summary: 'Start here every day. The dashboard shows the main stock numbers, quick buttons and staff training progress.',
     steps: [
       'Enter the assigned terminal ID and access code.',
       'Check total stock, low stock alerts and quick access cards.',
-      'Use the sidebar for Products, Supplier Catalogues, Orders and Training Portal.',
+      'Use the sidebar for Products, Supplier Catalogues, Quote Module, Training Portal and Customer Hub.',
       'Admin users can unlock restricted controls only when required.'
     ],
     checks: [
@@ -63,12 +68,12 @@ const trainingSections: TrainingSection[] = [
     id: 'stock',
     navLabel: 'Stock Search',
     title: 'Searching Internal And Supplier Stock',
-    summary: 'Search available stock first, then supplier stock. Keep supplier source details internal to staff.',
+    summary: 'Search GP stock first. If GP stock is not enough, search supplier stock next.',
     steps: [
       'Search by tyre size, brand, wheel code, PCD, location or pattern.',
       'Confirm quantity and location before promising stock to a customer.',
       'Open All Supplier Stock when GP available stock does not have the item.',
-      'Use the Quick POS supplier source for quote-only lines or supplier-assisted sales.'
+      'Use supplier stock in Quick POS when quoting, but keep supplier details internal.'
     ],
     checks: [
       'Internal stock appears above supplier stock in POS.',
@@ -80,18 +85,91 @@ const trainingSections: TrainingSection[] = [
     id: 'sales',
     navLabel: 'Quotes & Sales',
     title: 'Quotes, Sales And Invoice Rules',
-    summary: 'The Quick POS is the main staff flow for building quotes, adding services and completing sales.',
+    summary: 'Quick POS is where staff create quotes, invoices and sales.',
     steps: [
       'Open Quick POS with the red plus button.',
       'Capture full name, contact detail and vehicle details where applicable.',
       'Add internal stock, supplier stock, services or manual lines.',
       'Generate Quote to create a PDF without changing stock.',
-      'Complete Sale only when the customer has paid and stock should move.'
+      'Complete Sale only when the customer has paid and stock must be deducted.',
+      'Use Download PDF when the customer needs a saved copy.'
     ],
     checks: [
       'Fitment, balancing, wheel alignment and coilover installation can be added.',
       'Line totals and discounts are checked before generating documents.',
       'Sale processing deducts stock and logs the order.'
+    ]
+  },
+  {
+    id: 'quote-module',
+    navLabel: 'Quote Module',
+    title: 'Quote Module And Pricing Processor',
+    summary: 'Use the Quote Module when supplier prices arrive as messy pasted text and need to become clean quote lines.',
+    steps: [
+      'Open Quote Module from the app navigation.',
+      'Paste the supplier price text into the processor.',
+      'Check the tyre size, brand, pattern, stock and price that the app finds.',
+      'Edit any line that looks wrong before using it.',
+      'Push selected lines into Quick POS to generate a quote PDF.'
+    ],
+    checks: [
+      'The tyre size and pattern are correct.',
+      'The selling price is correct before pushing to POS.',
+      'Only customer-ready lines are sent into the quote.'
+    ]
+  },
+  {
+    id: 'customer-hub',
+    navLabel: 'Customer Hub',
+    title: 'Customer Hub And Saved Documents',
+    summary: 'Customer Hub keeps customer details, uploaded customer lists, quotes and invoices in one place.',
+    steps: [
+      'Search for an existing customer before creating a new one.',
+      'Add the customer name, phone or email and vehicle details.',
+      'Upload customer CSV or Excel files when importing old customer data.',
+      'Open a customer to view saved quotes and invoices.',
+      'Reprint, download or edit saved documents when needed.'
+    ],
+    checks: [
+      'Full name and contact detail are captured.',
+      'Vehicle details are added when useful.',
+      'Saved quotes and invoices can be found again later.'
+    ]
+  },
+  {
+    id: 'visuals',
+    navLabel: 'Visuals',
+    title: 'Supplier Tyre And Wheel Visuals',
+    summary: 'Visuals help staff show customers the right tyre tread or wheel design.',
+    steps: [
+      'Turn on Enable Visuals in supplier stock or wheel catalogues.',
+      'If an image is available, the card will show it automatically.',
+      'If an image is missing, use Load Visual or upload the correct image.',
+      'Use Replace when an image is wrong.',
+      'When replacing a tyre image, confirm the brand and tread pattern so the same tyre updates everywhere.'
+    ],
+    checks: [
+      'The image matches the tyre brand and tread pattern.',
+      'The image is not a logo, advert or wrong product.',
+      'The same pattern shows the replacement image across that supplier catalogue.'
+    ]
+  },
+  {
+    id: 'wheel-catalog',
+    navLabel: 'Wheel Catalogue',
+    title: 'Wheel Catalogue And Customer Visuals',
+    summary: 'Use the wheel catalogue to find real wheel photos by size, PCD, supplier and design name.',
+    steps: [
+      'Open Wheel Catalog from the sidebar.',
+      'Search by size, PCD, wheel name or supplier.',
+      'Turn on visuals to show the correct wheel image.',
+      'Use the image when helping customers compare designs.',
+      'Do not duplicate images when the same wheel appears in different sizes.'
+    ],
+    checks: [
+      'The wheel design name matches the image.',
+      'The PCD and size are checked before quoting.',
+      'Missing images are reported or uploaded for later use.'
     ]
   },
   {
@@ -149,14 +227,15 @@ const trainingSections: TrainingSection[] = [
     id: 'checklist',
     navLabel: 'Checklist',
     title: 'Training Completion Checklist',
-    summary: 'Tick each item as the staff member completes it. Progress is saved on this browser.',
+    summary: 'Tick each item as the staff member completes it. Progress is saved online and syncs across all portals.',
     steps: [
       'Work through the checklist in order during onboarding.',
       'Use the dashboard to see each staff member progress at a glance.',
-      'Reset only the current staff member if training needs to be repeated.'
+      'Reset only the current staff member if training needs to be repeated.',
+      'If the internet is slow, the app saves locally first and syncs again when Supabase responds.'
     ],
     checks: [
-      'All ten training tasks are completed.',
+      'All training tasks are completed.',
       'Staff member can quote, sell, reserve and cash up without guidance.',
       'Admin users understand restricted controls before receiving access.'
     ]
@@ -176,6 +255,8 @@ export const TrainingPortalView: React.FC<TrainingPortalViewProps> = ({ currentU
   const [activeSectionId, setActiveSectionId] = useState('intro');
   const [searchQuery, setSearchQuery] = useState('');
   const [progressStore, setProgressStore] = useState<TrainingProgressStore>(() => loadTrainingProgressStore());
+  const [syncStatus, setSyncStatus] = useState<'syncing' | 'synced' | 'local' | 'error'>('local');
+  const [syncMessage, setSyncMessage] = useState('Saved on this device until Supabase syncs.');
 
   const staffName = TERMINAL_STAFF_NAMES[currentUser] || currentUser || 'Staff';
   const currentProgress = useMemo(
@@ -214,6 +295,19 @@ export const TrainingPortalView: React.FC<TrainingPortalViewProps> = ({ currentU
       ...progressStore,
       [staffName]: nextStaffTasks
     });
+
+    setSyncStatus('syncing');
+    setSyncMessage('Saving progress online...');
+    saveStaffTrainingProgressToSupabase(staffName, nextStaffTasks, currentUser)
+      .then(() => {
+        setSyncStatus('synced');
+        setSyncMessage('Progress synced across all portals.');
+      })
+      .catch((error) => {
+        console.error('Training progress sync failed', error);
+        setSyncStatus('error');
+        setSyncMessage('Saved here, but online sync failed. It will try again when reopened.');
+      });
   };
 
   const handleResetProgress = () => {
@@ -223,6 +317,19 @@ export const TrainingPortalView: React.FC<TrainingPortalViewProps> = ({ currentU
     const nextStore = { ...progressStore };
     delete nextStore[staffName];
     updateProgressStore(nextStore);
+
+    setSyncStatus('syncing');
+    setSyncMessage('Resetting online progress...');
+    resetStaffTrainingProgressInSupabase(staffName)
+      .then(() => {
+        setSyncStatus('synced');
+        setSyncMessage('Progress reset and synced across all portals.');
+      })
+      .catch((error) => {
+        console.error('Training progress reset sync failed', error);
+        setSyncStatus('error');
+        setSyncMessage('Reset locally, but online reset failed.');
+      });
   };
 
   React.useEffect(() => {
@@ -233,6 +340,55 @@ export const TrainingPortalView: React.FC<TrainingPortalViewProps> = ({ currentU
     return () => {
       window.removeEventListener('storage', refreshProgress);
       window.removeEventListener(TRAINING_PROGRESS_EVENT, refreshProgress);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    const refreshRemoteProgress = async () => {
+      setSyncStatus('syncing');
+      setSyncMessage('Loading synced training progress...');
+
+      try {
+        const remoteStore = await refreshTrainingProgressFromSupabase();
+        if (!isMounted) return;
+        if (remoteStore) {
+          setProgressStore(remoteStore);
+          setSyncStatus('synced');
+          setSyncMessage('Progress synced across all portals.');
+        } else {
+          setSyncStatus('local');
+          setSyncMessage('Supabase is not configured, using local progress only.');
+        }
+      } catch (error) {
+        console.error('Training progress remote load failed', error);
+        if (!isMounted) return;
+        setSyncStatus('error');
+        setSyncMessage('Using local progress. Online sync could not load.');
+      }
+    };
+
+    void refreshRemoteProgress();
+
+    const unsubscribe = subscribeToTrainingProgressChanges(
+      (remoteStore) => {
+        if (!isMounted) return;
+        setProgressStore(remoteStore);
+        setSyncStatus('synced');
+        setSyncMessage('Progress synced from another portal.');
+      },
+      (error) => {
+        console.error('Training progress realtime sync failed', error);
+        if (!isMounted) return;
+        setSyncStatus('error');
+        setSyncMessage('Live sync paused. Local progress is still saved.');
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
     };
   }, []);
 
@@ -264,6 +420,17 @@ export const TrainingPortalView: React.FC<TrainingPortalViewProps> = ({ currentU
               <p className="mt-2 text-xs font-bold uppercase tracking-wide text-gp-text-muted">
                 {currentProgress.completed} of {currentProgress.total} tasks complete
               </p>
+              <div className={`mt-3 rounded border px-3 py-2 text-xs font-bold ${
+                syncStatus === 'synced'
+                  ? 'border-green-500/30 bg-green-500/10 text-green-300'
+                  : syncStatus === 'syncing'
+                    ? 'border-blue-500/30 bg-blue-500/10 text-blue-300'
+                    : syncStatus === 'error'
+                      ? 'border-yellow-500/30 bg-yellow-500/10 text-yellow-300'
+                      : 'border-gp-border bg-gp-input text-gp-text-muted'
+              }`}>
+                {syncMessage}
+              </div>
             </div>
 
             <div className="border-b border-gp-border p-4">

@@ -7,8 +7,10 @@ import {
   TERMINAL_STAFF_NAMES,
   TRAINING_PROGRESS_EVENT,
   TrainingProgressSummary,
+  refreshTrainingProgressFromSupabase,
   getAllStaffTrainingProgress,
-  loadTrainingProgressStore
+  loadTrainingProgressStore,
+  subscribeToTrainingProgressChanges
 } from '../trainingProgress';
 
 interface DashboardViewProps {
@@ -50,13 +52,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       setTrainingProgress(getAllStaffTrainingProgress(STAFF_NAMES, loadTrainingProgressStore()));
     };
 
+    const refreshRemoteTrainingProgress = async () => {
+      try {
+        const remoteStore = await refreshTrainingProgressFromSupabase();
+        if (remoteStore) {
+          setTrainingProgress(getAllStaffTrainingProgress(STAFF_NAMES, remoteStore));
+        }
+      } catch (error) {
+        console.error('Dashboard training progress sync failed', error);
+      }
+    };
+
     refreshTrainingProgress();
+    void refreshRemoteTrainingProgress();
     window.addEventListener('storage', refreshTrainingProgress);
     window.addEventListener(TRAINING_PROGRESS_EVENT, refreshTrainingProgress);
+    const unsubscribe = subscribeToTrainingProgressChanges((remoteStore) => {
+      setTrainingProgress(getAllStaffTrainingProgress(STAFF_NAMES, remoteStore));
+    }, (error) => {
+      console.error('Dashboard training progress realtime failed', error);
+    });
 
     return () => {
       window.removeEventListener('storage', refreshTrainingProgress);
       window.removeEventListener(TRAINING_PROGRESS_EVENT, refreshTrainingProgress);
+      unsubscribe();
     };
   }, []);
 
@@ -187,7 +207,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between mb-4">
           <div>
             <h2 className="text-sm font-bold text-gp-text-muted uppercase tracking-widest">Staff Training Progress</h2>
-            <p className="text-sm text-gp-text-muted mt-1">Checklist progress saved in the Training Portal for each staff member.</p>
+            <p className="text-sm text-gp-text-muted mt-1">Checklist progress syncs from the Training Portal across all staff devices.</p>
           </div>
           <button
             type="button"
