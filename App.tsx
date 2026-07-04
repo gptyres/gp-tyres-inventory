@@ -50,6 +50,7 @@ import { SUMITOMO_DUNLOP_RAW_DATA } from './supplier_data/sumitomoDunlopData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
 import { EXOTIC_RAW_DATA } from './supplier_data/exoticData';
+import { ARC_RAW_DATA } from './supplier_data/arcData';
 import { SAFETY_GRIP_RAW_DATA } from './supplier_data/safetygripData';
 import { ALINE_RAW_DATA } from './supplier_data/alineData';
 import { customerRowToCustomerInfo, saveCRMDocumentFromPOS } from './crmSync';
@@ -69,6 +70,7 @@ import {
   parseApexData,
   parseTubestoneData,
   parseExoticData,
+  parseArcData,
   parseTreadsUnlimitedData,
   parseTreadZoneData,
   parseSumitomoDunlopData,
@@ -107,6 +109,7 @@ const getAllSupplierPOSItems = (): InventoryItem[] => [
   ...tagSupplierPOSItems('apex', parseApexData(APEX_RAW_DATA)),
   ...tagSupplierPOSItems('tubestone', parseTubestoneData(TUBESTONE_RAW_DATA)),
   ...tagSupplierPOSItems('exotic', parseExoticData(EXOTIC_RAW_DATA)),
+  ...tagSupplierPOSItems('arc', parseArcData(ARC_RAW_DATA)),
   ...tagSupplierPOSItems('treadzone', parseTreadZoneData(TREAD_ZONE_RAW_DATA)),
   ...tagSupplierPOSItems('sumitomo-dunlop', parseSumitomoDunlopData(SUMITOMO_DUNLOP_RAW_DATA)),
   ...tagSupplierPOSItems('treads', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
@@ -218,6 +221,7 @@ const App: React.FC = () => {
             ...tagSupplierItems('APEX', parseApexData(APEX_RAW_DATA)),
             ...tagSupplierItems('TUBESTONE', parseTubestoneData(TUBESTONE_RAW_DATA)),
             ...tagSupplierItems('EXOTIC', parseExoticData(EXOTIC_RAW_DATA)),
+            ...tagSupplierItems('ARC', parseArcData(ARC_RAW_DATA)),
             ...tagSupplierItems('TREAD ZONE', parseTreadZoneData(TREAD_ZONE_RAW_DATA)),
             ...tagSupplierItems('SUMITOMO/DUNLOP', parseSumitomoDunlopData(SUMITOMO_DUNLOP_RAW_DATA)),
             ...tagSupplierItems('TREADS UNLIMITED', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
@@ -242,6 +246,8 @@ const App: React.FC = () => {
           return parseTubestoneData(TUBESTONE_RAW_DATA);
         case 'EXOTIC':
           return parseExoticData(EXOTIC_RAW_DATA);
+        case 'ARC':
+          return parseArcData(ARC_RAW_DATA);
         case 'TREAD_ZONE':
           return parseTreadZoneData(TREAD_ZONE_RAW_DATA);
         case 'SUMITOMO_DUNLOP':
@@ -312,6 +318,10 @@ const App: React.FC = () => {
       label: 'EXOTIC',
       note: 'Viewing External Supplier Data. Alloy wheels are ignored; tyre stock uses branch availability from Exotic.',
       portalUrl: 'https://exotic.ewtgroup.co.za/'
+    },
+    ARC: {
+      label: 'ARC',
+      note: 'Viewing External Supplier Suspension Data. Prices use the supplied lowest selling price; exact unit counts are not provided in the supplier file.'
     },
     TREAD_ZONE: {
       label: 'TREAD ZONE',

@@ -309,6 +309,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   EXOTIC
                 </button>
                 <button
+                  onClick={() => handleSupplierClick('ARC')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ARC' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  ARC
+                </button>
+                <button
                   onClick={() => handleSupplierClick('TREAD_ZONE')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'TREAD_ZONE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >

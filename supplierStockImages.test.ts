@@ -11,7 +11,7 @@ import {
   supplierTyreMatchesUploadKeys
 } from './supplierStockImages';
 import { ProductType } from './types';
-import { parseAttData, parseExoticData, parseExclusiveTyresData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
+import { parseArcData, parseAttData, parseExoticData, parseExclusiveTyresData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
 
 describe('ALINE supplier image parsing', () => {
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
@@ -300,6 +300,37 @@ describe('EXOTIC supplier catalogue parsing', () => {
     });
     expect(items[0].location).toContain('Cape Town: Available');
     expect(items[0].location).toContain('Johannesburg: Available');
+  });
+});
+
+describe('ARC supplier catalogue parsing', () => {
+  it('parses suspension rows as supplier coilover stock and ignores alloy wheel rows', () => {
+    const items = parseArcData([
+      'BRAND,SERIES,VECHILE DESCRIPTION,SELLING PRICE (USE THE LOWEST PRICE)',
+      'ARC,ARC HEIGHT ADJUSTABLE COILOVER SET,VW GOLF MK7,6600.00',
+      'JOM,JOM COILOVER KIT,MERCEDES BENZ W203,6999.00',
+      'ARC,ARC ALLOY WHEEL,15X8 4/100,3999.00'
+    ].join('\n'));
+
+    expect(items).toHaveLength(2);
+    expect(items[0]).toMatchObject({
+      type: ProductType.COILOVER,
+      supplierName: 'ARC',
+      brand: 'ARC',
+      series: 'ARC HEIGHT ADJUSTABLE COILOVER SET',
+      vehicleCompatibility: 'VW GOLF MK7',
+      quantity: 1,
+      sellingPrice: 6600,
+      costPrice: 6600
+    });
+    expect(items[1]).toMatchObject({
+      type: ProductType.COILOVER,
+      supplierName: 'ARC',
+      brand: 'JOM',
+      series: 'JOM COILOVER KIT',
+      vehicleCompatibility: 'MERCEDES BENZ W203',
+      sellingPrice: 6999
+    });
   });
 });
 

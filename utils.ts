@@ -1183,6 +1183,44 @@ export const parseExoticData = (rawCsv: string): InventoryItem[] => {
   });
 };
 
+// --- ARC SUSPENSION PARSER ---
+export const parseArcData = (rawCsv: string): InventoryItem[] => {
+  const items: CoiloverProduct[] = [];
+  const lines = rawCsv.split('\n');
+  const today = new Date().toISOString().split('T')[0];
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed || index === 0) return;
+
+    const cols = parseCSVLine(trimmed);
+    const brand = cols[0]?.trim() || 'ARC';
+    const series = cols[1]?.trim() || 'Suspension';
+    const vehicleCompatibility = cols[2]?.trim() || 'Universal';
+    const price = parseCurrencyString(cols[3]);
+    const searchBlob = `${brand} ${series} ${vehicleCompatibility}`;
+
+    if (/alloy\s+wheels?|mag\s+wheels?|\brims?\b/i.test(searchBlob)) return;
+    if (!vehicleCompatibility || price <= 0) return;
+
+    items.push({
+      id: `arc-${index}-${normalizeString(`${brand}-${series}-${vehicleCompatibility}`)}`,
+      type: ProductType.COILOVER,
+      brand,
+      series,
+      vehicleCompatibility,
+      quantity: 1,
+      sellingPrice: price,
+      costPrice: price,
+      supplierName: 'ARC',
+      supplierStockCode: normalizeString(`${brand}-${series}-${vehicleCompatibility}`).toUpperCase(),
+      lastUpdated: today
+    });
+  });
+
+  return items;
+};
+
 // --- TUBESTONE PARSER ---
 export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
   const items: InventoryItem[] = [];

@@ -112,6 +112,7 @@ export const OEM_MARKERS = ['MO1', 'MO', 'AO1', 'AO', 'RO1', 'RO2', 'N0', 'N1', 
 
 export const SUPPLIER_HINTS = [
   'APEX TYRES',
+  'ARC',
   'EXOTIC',
   'EXCLUSIVE TYRES',
   'SAILUN',
