@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { lazy, Suspense, useState, useMemo, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { InventoryView } from './components/InventoryView';
@@ -16,13 +16,13 @@ import { DataSyncModal } from './components/DataSyncModal';
 import { ReserveModal } from './components/ReserveModal';
 import { ShiftReconciliationModal } from './components/ShiftReconciliationModal';
 import { LoginScreen } from './components/LoginScreen';
-import { ChatBot } from './components/ChatBot';
-import { WheelCatalogView } from './components/WheelCatalogView';
-import { POSModal } from './components/POSModal';
-import { InvoiceModal } from './components/InvoiceModal';
-import { QuoteModuleView } from './components/QuoteModuleView';
-import { TrainingPortalView } from './components/TrainingPortalView';
-import { CustomerHubView } from './components/CustomerHubView';
+const ChatBot = lazy(() => import('./components/ChatBot').then((module) => ({ default: module.ChatBot })));
+const WheelCatalogView = lazy(() => import('./components/WheelCatalogView').then((module) => ({ default: module.WheelCatalogView })));
+const POSModal = lazy(() => import('./components/POSModal').then((module) => ({ default: module.POSModal })));
+const InvoiceModal = lazy(() => import('./components/InvoiceModal').then((module) => ({ default: module.InvoiceModal })));
+const QuoteModuleView = lazy(() => import('./components/QuoteModuleView').then((module) => ({ default: module.QuoteModuleView })));
+const TrainingPortalView = lazy(() => import('./components/TrainingPortalView').then((module) => ({ default: module.TrainingPortalView })));
+const CustomerHubView = lazy(() => import('./components/CustomerHubView').then((module) => ({ default: module.CustomerHubView })));
 import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { PricingPOSQuoteLine } from './pricing-processor/types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
@@ -38,44 +38,13 @@ import {
   StockAdjustment,
   upsertGlobalInventoryItem
 } from './inventorySync';
-import { SAILUN_RAW_DATA } from './supplier_data/sailunData';
-import { EXCLUSIVE_TYRES_RAW_DATA } from './supplier_data/exclusiveTyresData';
-import { TYRE_WAREHOUSE_RAW_DATA } from './supplier_data/tyreWarehouseData';
-import { ATT_RAW_DATA } from './supplier_data/attData';
-import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
-import { TYRE_LIFE_RAW_DATA } from './supplier_data/tyreLifeData';
-import { TYRE_LIFE_WHEELS_RAW_DATA } from './supplier_data/tyreLifeWheelsData';
-import { TREAD_ZONE_RAW_DATA } from './supplier_data/treadZoneData';
-import { SUMITOMO_DUNLOP_RAW_DATA } from './supplier_data/sumitomoDunlopData';
-import { APEX_RAW_DATA } from './supplier_data/apexData';
-import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
-import { EXOTIC_RAW_DATA } from './supplier_data/exoticData';
-import { ARC_RAW_DATA } from './supplier_data/arcData';
-import { SAFETY_GRIP_RAW_DATA } from './supplier_data/safetygripData';
-import { ALINE_RAW_DATA } from './supplier_data/alineData';
 import { customerRowToCustomerInfo, saveCRMDocumentFromPOS } from './crmSync';
-import { STAMFORD_RAW_DATA } from './supplier_data/stamfordData';
+import { loadAllSupplierPOSItems, loadSupplierCatalogItems } from './supplierCatalogLoader';
 
 import {
   searchInventory,
   searchOrders,
-  searchBackorders,
-  parseSailunData,
-  parseExclusiveTyresData,
-  parseTyreWarehouseData,
-  parseAttData,
-  parseSafetyGripData,
-  parseAlineData,
-  parseStamfordData,
-  parseApexData,
-  parseTubestoneData,
-  parseExoticData,
-  parseArcData,
-  parseTreadsUnlimitedData,
-  parseTreadZoneData,
-  parseSumitomoDunlopData,
-  parseTyreLifeData,
-  parseTyreLifeWheelsData
+  searchBackorders
 } from './utils';
 
 const POS_REFERENCE_COUNTERS: Record<InvoiceDocument['documentType'], { storageKey: string; startAt: number }> = {
@@ -91,31 +60,14 @@ const POS_REFERENCE_COUNTERS: Record<InvoiceDocument['documentType'], { storageK
 
 const formatPOSReferenceNumber = (value: number) => String(value).padStart(6, '0');
 
-const tagSupplierPOSItems = (supplierKey: string, supplierItems: InventoryItem[]): InventoryItem[] => {
-  return supplierItems.map((item) => ({
-    ...item,
-    id: `supplier-${supplierKey}-${item.id}`
-  } as InventoryItem));
-};
-
-const getAllSupplierPOSItems = (): InventoryItem[] => [
-  ...tagSupplierPOSItems('sailun', parseSailunData(SAILUN_RAW_DATA)),
-  ...tagSupplierPOSItems('exclusive', parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA)),
-  ...tagSupplierPOSItems('tyrewarehouse', parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA)),
-  ...tagSupplierPOSItems('att', parseAttData(ATT_RAW_DATA)),
-  ...tagSupplierPOSItems('safetygrip', parseSafetyGripData(SAFETY_GRIP_RAW_DATA)),
-  ...tagSupplierPOSItems('aline', parseAlineData(ALINE_RAW_DATA)),
-  ...tagSupplierPOSItems('stamford', parseStamfordData(STAMFORD_RAW_DATA)),
-  ...tagSupplierPOSItems('apex', parseApexData(APEX_RAW_DATA)),
-  ...tagSupplierPOSItems('tubestone', parseTubestoneData(TUBESTONE_RAW_DATA)),
-  ...tagSupplierPOSItems('exotic', parseExoticData(EXOTIC_RAW_DATA)),
-  ...tagSupplierPOSItems('arc', parseArcData(ARC_RAW_DATA)),
-  ...tagSupplierPOSItems('treadzone', parseTreadZoneData(TREAD_ZONE_RAW_DATA)),
-  ...tagSupplierPOSItems('sumitomo-dunlop', parseSumitomoDunlopData(SUMITOMO_DUNLOP_RAW_DATA)),
-  ...tagSupplierPOSItems('treads', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
-  ...tagSupplierPOSItems('tyrelife', parseTyreLifeData(TYRE_LIFE_RAW_DATA)),
-  ...tagSupplierPOSItems('tyrelifewheels', parseTyreLifeWheelsData(TYRE_LIFE_WHEELS_RAW_DATA))
-];
+const LoadingPanel: React.FC<{ label?: string }> = ({ label = 'Loading...' }) => (
+  <div className="flex min-h-64 items-center justify-center p-6 text-gp-text-muted">
+    <div className="flex items-center gap-3 rounded-lg border border-gp-border bg-gp-panel px-4 py-3 text-xs font-black uppercase tracking-wider">
+      <span className="h-4 w-4 animate-spin rounded-full border-2 border-gp-red border-t-transparent" />
+      {label}
+    </div>
+  </div>
+);
 
 const App: React.FC = () => {
   // --- AUTH STATE ---
@@ -131,6 +83,7 @@ const App: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>('');
   
   // Portal State
   const [currentPortal, setCurrentPortal] = useState<{name: string, url: string} | null>(null);
@@ -172,6 +125,11 @@ const App: React.FC = () => {
   const [invoiceDocument, setInvoiceDocument] = useState<InvoiceDocument | null>(null);
   const [editingPOSDocument, setEditingPOSDocument] = useState<InvoiceDocument | null>(null);
   const [isCompletingPOS, setIsCompletingPOS] = useState(false);
+  const [supplierItems, setSupplierItems] = useState<InventoryItem[]>([]);
+  const [isSupplierCatalogLoading, setIsSupplierCatalogLoading] = useState(false);
+  const [supplierCatalogError, setSupplierCatalogError] = useState('');
+  const [allSupplierPOSItems, setAllSupplierPOSItems] = useState<InventoryItem[]>([]);
+  const [isSupplierPOSLoading, setIsSupplierPOSLoading] = useState(false);
   const [posCustomerInfo, setPOSCustomerInfo] = useState<CustomerInfo>({
     fullName: '',
     contactDetail: '',
@@ -181,90 +139,75 @@ const App: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | undefined>(undefined);
   const [selectedBackorder, setSelectedBackorder] = useState<Backorder | undefined>(undefined);
 
-  // --- SUPPLIER DATA MEMO ---
-  const allSupplierPOSItems = useMemo(() => getAllSupplierPOSItems(), []);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedSearchQuery(searchQuery), 150);
+    return () => window.clearTimeout(timer);
+  }, [searchQuery]);
 
-  const supplierItems = useMemo(() => {
-    const tagSupplierItems = (supplierName: string, supplierItems: InventoryItem[]): InventoryItem[] => {
-      return supplierItems.map((item) => {
-        if (item.type === ProductType.WHEEL) {
-          const wheel = item as WheelProduct;
-          return {
-            ...wheel,
-            id: `${supplierName}-${wheel.id}`,
-            location: `${supplierName}: ${wheel.location || 'Supplier'}`
-          };
+  const shouldLoadSupplierCatalog = (
+    currentView === 'SUPPLIER_INVENTORY'
+    && (activeSupplierCatalog !== 'ALL_SUPPLIERS' || debouncedSearchQuery.trim().length >= 2)
+  );
+
+  // --- SUPPLIER DATA: lazy loaded and cached by supplierCatalogLoader ---
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadSupplierItems = async () => {
+      if (currentView !== 'SUPPLIER_INVENTORY') return;
+
+      if (!shouldLoadSupplierCatalog) {
+        setSupplierItems([]);
+        setIsSupplierCatalogLoading(false);
+        setSupplierCatalogError('');
+        return;
+      }
+
+      setIsSupplierCatalogLoading(true);
+      setSupplierCatalogError('');
+
+      try {
+        const loadedItems = await loadSupplierCatalogItems(activeSupplierCatalog);
+        if (!cancelled) setSupplierItems(loadedItems);
+      } catch (error) {
+        console.error('Supplier catalogue load failed', error);
+        if (!cancelled) {
+          setSupplierItems([]);
+          setSupplierCatalogError('Could not load this supplier catalogue. Please try again.');
         }
-
-        if (item.type !== ProductType.TYRE) return { ...item, id: `${supplierName}-${item.id}` };
-
-        const tyre = item as TyreProduct;
-        return {
-          ...tyre,
-          id: `${supplierName}-${tyre.id}`,
-          location: `${supplierName}: ${tyre.location || 'Supplier'}`
-        };
-      });
+      } finally {
+        if (!cancelled) setIsSupplierCatalogLoading(false);
+      }
     };
 
-    if (currentView === 'SUPPLIER_INVENTORY') {
-      switch (activeSupplierCatalog) {
-        case 'ALL_SUPPLIERS':
-          return [
-            ...tagSupplierItems('SAILUN', parseSailunData(SAILUN_RAW_DATA)),
-            ...tagSupplierItems('EXCLUSIVE TYRES', parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA)),
-            ...tagSupplierItems('TYREWAREHOUSE', parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA)),
-            ...tagSupplierItems('ATT', parseAttData(ATT_RAW_DATA)),
-            ...tagSupplierItems('SAFETY GRIP', parseSafetyGripData(SAFETY_GRIP_RAW_DATA)),
-            ...tagSupplierItems('ALINE', parseAlineData(ALINE_RAW_DATA)),
-            ...tagSupplierItems('STAMFORD', parseStamfordData(STAMFORD_RAW_DATA)),
-            ...tagSupplierItems('APEX', parseApexData(APEX_RAW_DATA)),
-            ...tagSupplierItems('TUBESTONE', parseTubestoneData(TUBESTONE_RAW_DATA)),
-            ...tagSupplierItems('EXOTIC', parseExoticData(EXOTIC_RAW_DATA)),
-            ...tagSupplierItems('ARC', parseArcData(ARC_RAW_DATA)),
-            ...tagSupplierItems('TREAD ZONE', parseTreadZoneData(TREAD_ZONE_RAW_DATA)),
-            ...tagSupplierItems('SUMITOMO/DUNLOP', parseSumitomoDunlopData(SUMITOMO_DUNLOP_RAW_DATA)),
-            ...tagSupplierItems('TREADS UNLIMITED', parseTreadsUnlimitedData(TREADS_RAW_DATA)),
-            ...tagSupplierItems('TYRE LIFE', parseTyreLifeData(TYRE_LIFE_RAW_DATA)),
-            ...tagSupplierItems('TYRE LIFE WHEELS', parseTyreLifeWheelsData(TYRE_LIFE_WHEELS_RAW_DATA))
-          ];
-        case 'EXCLUSIVE_TYRES':
-          return parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA);
-        case 'TYREWAREHOUSE':
-          return parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA);
-        case 'ATT':
-          return parseAttData(ATT_RAW_DATA);
-        case 'SAFETY_GRIP':
-          return parseSafetyGripData(SAFETY_GRIP_RAW_DATA);
-        case 'ALINE':
-          return parseAlineData(ALINE_RAW_DATA);
-        case 'STAMFORD':
-          return parseStamfordData(STAMFORD_RAW_DATA);
-        case 'APEX':
-          return parseApexData(APEX_RAW_DATA);
-        case 'TUBESTONE':
-          return parseTubestoneData(TUBESTONE_RAW_DATA);
-        case 'EXOTIC':
-          return parseExoticData(EXOTIC_RAW_DATA);
-        case 'ARC':
-          return parseArcData(ARC_RAW_DATA);
-        case 'TREAD_ZONE':
-          return parseTreadZoneData(TREAD_ZONE_RAW_DATA);
-        case 'SUMITOMO_DUNLOP':
-          return parseSumitomoDunlopData(SUMITOMO_DUNLOP_RAW_DATA);
-        case 'TREADS_UNLIMITED':
-          return parseTreadsUnlimitedData(TREADS_RAW_DATA);
-        case 'TYRE_LIFE':
-          return parseTyreLifeData(TYRE_LIFE_RAW_DATA);
-        case 'TYRE_LIFE_WHEELS':
-          return parseTyreLifeWheelsData(TYRE_LIFE_WHEELS_RAW_DATA);
-        case 'SAILUN':
-        default:
-          return parseSailunData(SAILUN_RAW_DATA);
+    void loadSupplierItems();
+    return () => {
+      cancelled = true;
+    };
+  }, [currentView, activeSupplierCatalog, shouldLoadSupplierCatalog]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadPOSSupplierItems = async () => {
+      if (!isPOSOpen || allSupplierPOSItems.length > 0) return;
+      setIsSupplierPOSLoading(true);
+
+      try {
+        const loadedItems = await loadAllSupplierPOSItems();
+        if (!cancelled) setAllSupplierPOSItems(loadedItems);
+      } catch (error) {
+        console.error('Quick POS supplier catalogue load failed', error);
+      } finally {
+        if (!cancelled) setIsSupplierPOSLoading(false);
       }
-    }
-    return [];
-  }, [currentView, activeSupplierCatalog]);
+    };
+
+    void loadPOSSupplierItems();
+    return () => {
+      cancelled = true;
+    };
+  }, [isPOSOpen, allSupplierPOSItems.length]);
 
   const supplierCatalogMeta: Record<SupplierCatalog, { label: string; note: string; portalUrl?: string }> = {
     ALL_SUPPLIERS: {
@@ -672,24 +615,24 @@ const App: React.FC = () => {
     if (
       currentView === 'SUPPLIER_INVENTORY' &&
       activeSupplierCatalog === 'ALL_SUPPLIERS' &&
-      searchQuery.trim().length < 2
+      debouncedSearchQuery.trim().length < 2
     ) {
       return [];
     }
     if (activeFilter !== 'ALL' && currentView !== 'SUPPLIER_INVENTORY') {
       result = result.filter(item => item.type === activeFilter);
     }
-    result = searchInventory(result, searchQuery);
+    result = searchInventory(result, debouncedSearchQuery);
     return result;
-  }, [items, supplierItems, activeFilter, searchQuery, currentView, activeSupplierCatalog]);
+  }, [items, supplierItems, activeFilter, debouncedSearchQuery, currentView, activeSupplierCatalog]);
 
   const filteredOrders = useMemo(() => {
-    return searchOrders(orders, searchQuery);
-  }, [orders, searchQuery]);
+    return searchOrders(orders, debouncedSearchQuery);
+  }, [orders, debouncedSearchQuery]);
 
   const filteredBackorders = useMemo(() => {
-    return searchBackorders(backorders, searchQuery);
-  }, [backorders, searchQuery]);
+    return searchBackorders(backorders, debouncedSearchQuery);
+  }, [backorders, debouncedSearchQuery]);
 
   // --- STATS ---
   const stats: InventoryStats = useMemo(() => {
@@ -1558,7 +1501,11 @@ const App: React.FC = () => {
   };
 
   if (!currentUser) {
-    return <LoginScreen onLogin={handleLoginSuccess} onAttempt={handleLoginAttempt} />;
+    return (
+      <div className="min-h-[100dvh] bg-gp-black text-gp-text-main">
+        <LoginScreen onLogin={handleLoginSuccess} onAttempt={handleLoginAttempt} />
+      </div>
+    );
   }
 
   let searchPlaceholder = "Search inventory (e.g. 195 40 17, Dunlop...)";
@@ -1623,7 +1570,7 @@ const App: React.FC = () => {
           pageTitle={topNavTitle}
         />
 
-        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHEEL_CATALOG' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB') ? '' : 'pb-20'}`}>
+        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB') ? '' : 'pb-20'}`}>
           {currentView === 'DASHBOARD' && (
             <DashboardView 
               currentUser={currentUser}
@@ -1634,15 +1581,17 @@ const App: React.FC = () => {
             />
           )}
 
-          {(currentView === 'INVENTORY' || currentView === 'SUPPLIER_INVENTORY') && (
+          {(currentView === 'INVENTORY' || currentView === 'SUPPLIER_INVENTORY' || currentView === 'WHEEL_CATALOG') && (
             <>
               {currentView === 'INVENTORY' && <StatsDashboard stats={stats} visible={isAdmin} />}
               
               <div className="max-w-7xl mx-auto px-4 mt-6 flex flex-col md:flex-row justify-between items-center border-b border-gp-border pb-4 gap-4">
                 <h2 className="text-gp-text-muted text-xs uppercase tracking-widest font-bold flex items-center gap-2">
                   <span className={`w-2 h-2 rounded-full animate-pulse ${currentView === 'SUPPLIER_INVENTORY' ? 'bg-blue-500' : 'bg-gp-red'}`}></span>
-                  {currentView === 'SUPPLIER_INVENTORY' 
-                    ? `${supplierCatalogLabel} Catalog (${filteredItems.length})` 
+                  {currentView === 'WHEEL_CATALOG'
+                    ? 'Wheel Catalogue'
+                    : currentView === 'SUPPLIER_INVENTORY'
+                    ? `${supplierCatalogLabel} Catalog (${filteredItems.length})`
                     : activeFilter === 'ALL' ? 'Full Inventory' : `${activeFilter} Inventory (${filteredItems.length})`}
                 </h2>
               </div>
@@ -1665,18 +1614,30 @@ const App: React.FC = () => {
                       )}
                     </div>
                 )}
-                <InventoryView 
-                  items={filteredItems} 
-                  viewMode={viewMode} 
-                  onViewModeChange={setViewMode}
-                  isAdmin={isAdmin} 
-                  onEdit={openEditModal}
-                  onDelete={openDeleteModal}
-                  onSell={openSellModal}
-                  onReserve={openReserveModal}
-                  onBulkDelete={handleBulkDelete}
-                  isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
-                />
+                {currentView === 'WHEEL_CATALOG' ? (
+                  <Suspense fallback={<LoadingPanel label="Loading wheel catalogue..." />}>
+                    <WheelCatalogView searchQuery={debouncedSearchQuery} />
+                  </Suspense>
+                ) : isSupplierCatalogLoading ? (
+                  <LoadingPanel label={`Loading ${supplierCatalogLabel} stock...`} />
+                ) : supplierCatalogError ? (
+                  <div className="m-4 rounded-lg border border-gp-red/40 bg-gp-red/10 p-4 text-sm font-bold text-gp-red">
+                    {supplierCatalogError}
+                  </div>
+                ) : (
+                  <InventoryView
+                    items={filteredItems}
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
+                    isAdmin={isAdmin}
+                    onEdit={openEditModal}
+                    onDelete={openDeleteModal}
+                    onSell={openSellModal}
+                    onReserve={openReserveModal}
+                    onBulkDelete={handleBulkDelete}
+                    isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
+                  />
+                )}
               </div>
             </>
           )}
@@ -1694,34 +1655,34 @@ const App: React.FC = () => {
             />
           )}
 
-          {currentView === 'WHEEL_CATALOG' && (
-            <div className="h-full">
-                <WheelCatalogView searchQuery={searchQuery} />
-            </div>
-          )}
-
           {currentView === 'SYSTEM_LOGS' && isAdmin && (
             <SystemLogsView logs={loginLogs} />
           )}
 
           {currentView === 'QUOTE_MODULE' && (
-            <QuoteModuleView onPushToPOSQuote={handleQuoteModulePushToPOS} />
+            <Suspense fallback={<LoadingPanel label="Loading quote module..." />}>
+              <QuoteModuleView onPushToPOSQuote={handleQuoteModulePushToPOS} />
+            </Suspense>
           )}
 
           {currentView === 'TRAINING_PORTAL' && (
-            <TrainingPortalView currentUser={currentUser} />
+            <Suspense fallback={<LoadingPanel label="Loading training portal..." />}>
+              <TrainingPortalView currentUser={currentUser} />
+            </Suspense>
           )}
 
           {currentView === 'CUSTOMER_HUB' && (
-            <CustomerHubView
-              currentUser={currentUser}
-              onOpenDocument={handleOpenCRMDocument}
-              onEditDocument={handleEditCRMDocument}
-              onCreateQuoteForCustomer={handleCreateQuoteForCustomer}
-            />
+            <Suspense fallback={<LoadingPanel label="Loading customer hub..." />}>
+              <CustomerHubView
+                currentUser={currentUser}
+                onOpenDocument={handleOpenCRMDocument}
+                onEditDocument={handleEditCRMDocument}
+                onCreateQuoteForCustomer={handleCreateQuoteForCustomer}
+              />
+            </Suspense>
           )}
 
-          {(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHEEL_CATALOG' || currentView === 'WHATSAPP_PORTAL') && currentPortal && (
+          {(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL') && currentPortal && (
             <div className="w-full h-full flex flex-col bg-gp-black relative">
               <div className="bg-gp-input border-b border-gp-border p-2 flex items-center gap-2 sticky top-0 z-10 shadow-sm">
                 <div className="flex-1 bg-gp-panel border border-gp-border rounded flex items-center px-3 py-1.5 gap-2 overflow-hidden mx-2">
@@ -1738,7 +1699,11 @@ const App: React.FC = () => {
           )}
         </main>
 
-        <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} onMinimize={() => setIsChatOpen(false)} />
+        {isChatOpen && (
+          <Suspense fallback={null}>
+            <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} onMinimize={() => setIsChatOpen(false)} />
+          </Suspense>
+        )}
 
         <button
           onClick={() => {
@@ -1770,36 +1735,44 @@ const App: React.FC = () => {
       <DataSyncModal isOpen={isDataSyncModalOpen} onClose={() => setIsDataSyncModalOpen(false)} onExport={handleExportData} onImport={handleImportData} />
       <ReserveModal isOpen={isReserveModalOpen} onClose={() => setIsReserveModalOpen(false)} onReserve={handleReserveConfirm} item={selectedItem} />
       <ShiftReconciliationModal isOpen={isCashUpModalOpen} onClose={() => setIsCashUpModalOpen(false)} orders={orders} />
-      <POSModal
-        isOpen={isPOSOpen}
-        onClose={() => {
-          setIsPOSOpen(false);
-          setEditingPOSDocument(null);
-        }}
-        items={items}
-        supplierItems={allSupplierPOSItems}
-        cart={posCart}
-        customerInfo={posCustomerInfo}
-        onCustomerInfoChange={setPOSCustomerInfo}
-        onAddItem={handlePOSAddItem}
-        onAddSupplierItem={handlePOSAddSupplierItem}
-        onAddService={handlePOSAddService}
-        onAddManualLine={handlePOSAddManualLine}
-        onRemoveItem={handlePOSRemoveItem}
-        onUpdateQuantity={handlePOSUpdateQuantity}
-        onUpdateDiscount={handlePOSUpdateDiscount}
-        onUpdateLineTotal={handlePOSUpdateLineTotal}
-        onCompleteSale={handlePOSCompleteSale}
-        onGenerateQuote={handlePOSGenerateQuote}
-        isCompletingSale={isCompletingPOS}
-        quoteActionLabel={editingPOSDocument?.documentType === 'QUOTE' ? 'Update Quote' : 'Generate Quote'}
-        saleActionLabel={editingPOSDocument?.documentType === 'INVOICE' ? 'Save Invoice' : 'Complete Sale'}
-      />
-      <InvoiceModal
-        isOpen={isInvoiceModalOpen}
-        document={invoiceDocument}
-        onClose={() => setIsInvoiceModalOpen(false)}
-      />
+      {isPOSOpen && (
+        <Suspense fallback={<LoadingPanel label="Opening Quick POS..." />}>
+          <POSModal
+            isOpen={isPOSOpen}
+            onClose={() => {
+              setIsPOSOpen(false);
+              setEditingPOSDocument(null);
+            }}
+            items={items}
+            supplierItems={allSupplierPOSItems}
+            cart={posCart}
+            customerInfo={posCustomerInfo}
+            onCustomerInfoChange={setPOSCustomerInfo}
+            onAddItem={handlePOSAddItem}
+            onAddSupplierItem={handlePOSAddSupplierItem}
+            onAddService={handlePOSAddService}
+            onAddManualLine={handlePOSAddManualLine}
+            onRemoveItem={handlePOSRemoveItem}
+            onUpdateQuantity={handlePOSUpdateQuantity}
+            onUpdateDiscount={handlePOSUpdateDiscount}
+            onUpdateLineTotal={handlePOSUpdateLineTotal}
+            onCompleteSale={handlePOSCompleteSale}
+            onGenerateQuote={handlePOSGenerateQuote}
+            isCompletingSale={isCompletingPOS || isSupplierPOSLoading}
+            quoteActionLabel={editingPOSDocument?.documentType === 'QUOTE' ? 'Update Quote' : 'Generate Quote'}
+            saleActionLabel={editingPOSDocument?.documentType === 'INVOICE' ? 'Save Invoice' : 'Complete Sale'}
+          />
+        </Suspense>
+      )}
+      {isInvoiceModalOpen && (
+        <Suspense fallback={<LoadingPanel label="Loading invoice..." />}>
+          <InvoiceModal
+            isOpen={isInvoiceModalOpen}
+            document={invoiceDocument}
+            onClose={() => setIsInvoiceModalOpen(false)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };

@@ -2,7 +2,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { InventoryItem, ProductType, TyreProduct, WheelProduct, CoiloverProduct, ViewMode } from '../types';
 import { formatCurrency, getStatusColor } from '../utils';
-import { GoogleGenAI } from "@google/genai";
 import {
   buildStaffSupplierTyreImageUploadPayload,
   buildSupplierImageMap,
@@ -32,6 +31,7 @@ type SortKey = 'brand' | 'size' | 'quantity' | 'price' | 'location';
 type SortDirection = 'asc' | 'desc';
 type GroupMode = 'none' | 'location' | 'brand' | 'type';
 type AspectRatio = '1:1' | '2:3' | '3:2' | '3:4' | '4:3' | '9:16' | '16:9' | '21:9';
+const RENDER_CHUNK_SIZE = 120;
 
 interface VisibleColumns {
   specs: boolean;
@@ -1027,9 +1027,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [uploadImageInitialFile, setUploadImageInitialFile] = useState<File | null>(null);
   const [supplierImageRefreshKey, setSupplierImageRefreshKey] = useState(0);
   const [clipboardNotice, setClipboardNotice] = useState('');
+  const [visibleCount, setVisibleCount] = useState(RENDER_CHUNK_SIZE);
   const supplierImageLookupItems = useMemo(
-    () => props.items.filter((item) => inventoryItemToSupplierImageLookup(item)),
-    [props.items]
+    () => props.items.slice(0, visibleCount).filter((item) => inventoryItemToSupplierImageLookup(item)),
+    [props.items, visibleCount]
   );
   const supplierImageLookupSignature = useMemo(
     () => supplierImageLookupItems
@@ -1091,6 +1092,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     });
 
     try {
+        const { GoogleGenAI } = await import('@google/genai');
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         
         let prompt = '';
@@ -1286,7 +1288,25 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   // Clear selection if items change significantly (e.g. filter change)
   useEffect(() => {
     setSelectedIds(new Set());
+    setVisibleCount(RENDER_CHUNK_SIZE);
   }, [props.items]);
+
+  useEffect(() => {
+    setVisibleCount(RENDER_CHUNK_SIZE);
+  }, [groupBy, hideLowStock, sortConfig]);
+
+  const visibleItems = useMemo(() => sortedItems.slice(0, visibleCount), [sortedItems, visibleCount]);
+  const visibleGroupedItems: Record<string, InventoryItem[]> = useMemo(() => {
+    if (groupBy === 'none') return { 'All Items': visibleItems };
+
+    const visibleIds = new Set(visibleItems.map((item) => item.id));
+    return Object.entries(groupedItems).reduce<Record<string, InventoryItem[]>>((groups, [groupTitle, groupItems]) => {
+      const visibleGroupItems = groupItems.filter((item) => visibleIds.has(item.id));
+      if (visibleGroupItems.length) groups[groupTitle] = visibleGroupItems;
+      return groups;
+    }, {});
+  }, [groupBy, groupedItems, visibleItems]);
+  const hasMoreItems = visibleCount < sortedItems.length;
 
   if (props.items.length === 0) {
     return (
@@ -1531,7 +1551,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       )}
 
       {/* Grouped Render */}
-      {Object.entries(groupedItems).map(([groupTitle, groupItems]) => {
+      {Object.entries(visibleGroupedItems).map(([groupTitle, groupItems]) => {
         const isCollapsed = collapsedGroups[groupTitle];
         return (
             <div key={groupTitle} className="flex flex-col gap-2">
@@ -1557,6 +1577,21 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
             </div>
         );
       })}
+
+      {hasMoreItems && (
+        <div className="flex flex-col items-center gap-2 py-6">
+          <p className="text-xs font-bold uppercase tracking-wider text-gp-text-muted">
+            Showing {Math.min(visibleCount, sortedItems.length)} of {sortedItems.length} matching items
+          </p>
+          <button
+            type="button"
+            onClick={() => setVisibleCount((count) => count + RENDER_CHUNK_SIZE)}
+            className="rounded-lg border border-gp-border bg-gp-panel px-5 py-2 text-xs font-black uppercase tracking-wider text-gp-text-main transition-colors hover:border-gp-red hover:text-gp-red"
+          >
+            Load More
+          </button>
+        </div>
+      )}
 
     </div>
   );

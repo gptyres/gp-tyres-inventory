@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
 
 interface ChatBotProps {
   isOpen: boolean;
@@ -26,8 +25,12 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize })
   const chatSessionRef = useRef<any>(null);
 
   useEffect(() => {
-    if (!aiRef.current) {
+    let cancelled = false;
+    const initializeAI = async () => {
+      if (!aiRef.current) {
         try {
+            const { GoogleGenAI } = await import('@google/genai');
+            if (cancelled) return;
             aiRef.current = new GoogleGenAI({ apiKey: process.env.API_KEY });
             chatSessionRef.current = aiRef.current.chats.create({
                 model: 'gemini-3-flash-preview',
@@ -47,7 +50,13 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize })
         } catch (error) {
             console.error("Failed to initialize AI", error);
         }
-    }
+      }
+    };
+
+    void initializeAI();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const scrollToBottom = () => {

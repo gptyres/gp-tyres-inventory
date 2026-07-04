@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { GoogleGenAI } from "@google/genai";
 
 interface NavbarProps {
   isAdmin: boolean;
@@ -45,6 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     setAiResult(null);
 
     try {
+        const { GoogleGenAI } = await import('@google/genai');
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         
         const prompt = `You are an expert automotive inventory assistant for 'GP Tyres & Mags'. 

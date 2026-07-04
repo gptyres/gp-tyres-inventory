@@ -1,7 +1,6 @@
 
 import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
 import { parseAlineStockImageKeys, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
-import { STAMFORD_PRICE_BY_SKU } from './supplier_data/stamfordData';
 
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-ZA', {
@@ -34,6 +33,83 @@ const normalizeSearchTerm = (str: string) => {
     .replace(/[^a-z0-9\s]/g, ' '); // remove special chars to create clean tokens
 };
 
+interface InventorySearchIndex {
+  fullBlob: string;
+  variantText: string;
+}
+
+const inventorySearchIndexCache = new WeakMap<InventoryItem, InventorySearchIndex>();
+
+const getInventorySearchIndex = (item: InventoryItem): InventorySearchIndex => {
+  const cached = inventorySearchIndexCache.get(item);
+  if (cached) return cached;
+
+  let searchableParts: (string | number | undefined)[] = [];
+  const variants: string[] = [];
+
+  if (item.type === ProductType.TYRE) {
+    const tyre = item as TyreProduct;
+    searchableParts = [
+      tyre.brand,
+      tyre.pattern,
+      tyre.size,
+      tyre.loadSpeedIndex,
+      tyre.location,
+      'Tyre'
+    ];
+
+    if (tyre.size) {
+      variants.push(tyre.size);
+      variants.push(tyre.size.replace(/[^a-zA-Z0-9]/g, ''));
+      variants.push(tyre.size.replace(/[^0-9]/g, ''));
+      if (tyre.size.includes('R')) variants.push(tyre.size.replace('R', ' '));
+    }
+  } else if (item.type === ProductType.WHEEL) {
+    const wheel = item as WheelProduct;
+    searchableParts = [
+      wheel.code,
+      wheel.size,
+      wheel.pcd,
+      wheel.colour,
+      wheel.offset,
+      wheel.centerBore,
+      'Wheel'
+    ];
+
+    if (wheel.size) {
+      variants.push(wheel.size.replace(/[^a-zA-Z0-9]/g, ''));
+      variants.push(wheel.size.replace(/[^0-9]/g, ''));
+    }
+    if (wheel.pcd) {
+      variants.push(wheel.pcd.replace(/[^a-zA-Z0-9]/g, ''));
+      variants.push(wheel.pcd.replace(/[^0-9]/g, ''));
+    }
+  } else if (item.type === ProductType.COILOVER) {
+    const coilover = item as CoiloverProduct;
+    searchableParts = [
+      coilover.brand,
+      coilover.series,
+      coilover.vehicleCompatibility,
+      'Coilover'
+    ];
+
+    if (coilover.vehicleCompatibility) {
+      variants.push(coilover.vehicleCompatibility.replace(/[^a-zA-Z0-9]/g, ''));
+      variants.push(coilover.vehicleCompatibility.replace(/\s+/g, ''));
+    }
+  }
+
+  const mainText = normalizeSearchTerm(searchableParts.join(' '));
+  const variantText = variants.join(' ').toLowerCase();
+  const index = {
+    fullBlob: `${mainText} ${variantText}`,
+    variantText
+  };
+
+  inventorySearchIndexCache.set(item, index);
+  return index;
+};
+
 /**
  * Robust fuzzy search for inventory items.
  * Handles:
@@ -52,77 +128,7 @@ export const searchInventory = (items: InventoryItem[], query: string): Inventor
   const numericQuery = query.replace(/[^0-9]/g, '');
 
   return items.filter((item) => {
-    let searchableParts: (string | number | undefined)[] = [];
-    let variants: string[] = []; 
-
-    // 2. Build Search Blob based on Product Type
-    if (item.type === ProductType.TYRE) {
-      const t = item as TyreProduct;
-      searchableParts = [
-        t.brand,
-        t.pattern,
-        t.size,
-        t.loadSpeedIndex,
-        t.location,
-        'Tyre'
-      ];
-      
-      // Generate variations for Size (e.g. 265/65R17)
-      if (t.size) {
-        variants.push(t.size); // Original
-        variants.push(t.size.replace(/[^a-zA-Z0-9]/g, '')); // "26565R17"
-        variants.push(t.size.replace(/[^0-9]/g, ''));       // "2656517" (Digits only)
-        // Add specific parsing for R sizes (e.g. R17 -> 17)
-        if (t.size.includes('R')) variants.push(t.size.replace('R', ' '));
-      }
-
-    } else if (item.type === ProductType.WHEEL) {
-      const w = item as WheelProduct;
-      searchableParts = [
-        w.code,
-        w.size,
-        w.pcd,
-        w.colour,
-        w.offset,
-        w.centerBore,
-        'Wheel'
-      ];
-      
-      // Variations for Size (e.g. 15x6.5)
-      if (w.size) {
-        variants.push(w.size.replace(/[^a-zA-Z0-9]/g, '')); 
-        variants.push(w.size.replace(/[^0-9]/g, ''));
-      }
-      // Variations for PCD (e.g. 5/100 -> 5100)
-      if (w.pcd) {
-        variants.push(w.pcd.replace(/[^a-zA-Z0-9]/g, ''));
-        variants.push(w.pcd.replace(/[^0-9]/g, ''));
-      }
-
-    } else if (item.type === ProductType.COILOVER) {
-      const c = item as CoiloverProduct;
-      searchableParts = [
-        c.brand,
-        c.series,
-        c.vehicleCompatibility,
-        'Coilover'
-      ];
-      
-      // Variations for Compatibility (e.g. Golf 7 -> Golf7)
-      if (c.vehicleCompatibility) {
-        variants.push(c.vehicleCompatibility.replace(/[^a-zA-Z0-9]/g, ''));
-        variants.push(c.vehicleCompatibility.replace(/\s+/g, ''));
-      }
-    }
-
-    // 3. Combine Data into a searchable "Blob"
-    // Join standard parts and normalize them
-    const mainText = normalizeSearchTerm(searchableParts.join(' '));
-    // Join variants (keep them raw and lowercased as they are specifically formatted)
-    const variantText = variants.join(' ').toLowerCase();
-    
-    // The "Blob" contains the cleaned text plus specific variations
-    const fullBlob = `${mainText} ${variantText}`;
+    const { fullBlob, variantText } = getInventorySearchIndex(item);
 
     // 4. Check Matches
     // Strategy A: All terms from query must be present in the full blob (AND logic)
@@ -951,7 +957,7 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
 // --- STAMFORD PARSER ---
 export const parseStamfordData = (
   rawCsv: string,
-  priceBySku: Record<string, number> = STAMFORD_PRICE_BY_SKU
+  priceBySku: Record<string, number> = {}
 ): InventoryItem[] => {
   const groupedItems = new Map<string, {
     sku: string;

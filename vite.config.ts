@@ -18,6 +18,21 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         }
+      },
+      build: {
+        rollupOptions: {
+          output: {
+            manualChunks(id) {
+              if (!id.includes('node_modules')) return undefined;
+              if (id.includes('react') || id.includes('react-dom')) return 'vendor-react';
+              if (id.includes('@supabase')) return 'vendor-supabase';
+              if (id.includes('jspdf') || id.includes('html2canvas') || id.includes('dompurify')) return 'vendor-pdf';
+              if (id.includes('@google/genai')) return 'vendor-ai';
+              if (id.includes('read-excel-file')) return 'vendor-spreadsheet';
+              return undefined;
+            }
+          }
+        }
       }
     };
 });
