@@ -104,6 +104,55 @@ const getDragFileName = (item: InventoryItem): string => (
   `${getItemDisplayName(item).replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() || 'gp-wheel'}.jpg`
 );
 
+const getTyreClipboardText = (item: InventoryItem): string => {
+  if (item.type !== ProductType.TYRE) return '';
+  const tyre = item as TyreProduct;
+  return [tyre.size, tyre.brand, tyre.pattern]
+    .map((part) => String(part || '').trim())
+    .filter(Boolean)
+    .join(' ');
+};
+
+const copyTextToClipboard = async (value: string) => {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = value;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+};
+
+const CopyTyreButton = ({ item, onCopyItem, className = '' }: { item: InventoryItem; onCopyItem: (item: InventoryItem) => void; className?: string }) => {
+  if (item.type !== ProductType.TYRE) return null;
+
+  return (
+    <button
+      type="button"
+      onClick={(event) => {
+        event.stopPropagation();
+        onCopyItem(item);
+      }}
+      className={`inline-flex items-center justify-center gap-2 rounded border border-gp-red/50 bg-gp-red text-white px-3 py-2 text-[10px] font-black uppercase tracking-wider shadow-[0_0_14px_rgba(255,0,0,0.18)] transition-all hover:bg-red-700 hover:border-red-500 active:scale-95 ${className}`}
+      title="Copy tyre size, brand and pattern"
+      aria-label="Copy tyre size, brand and pattern"
+    >
+      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8 8h10v12H8z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 16H5a2 2 0 01-2-2V5a2 2 0 012-2h9a2 2 0 012 2v1" />
+      </svg>
+      Copy
+    </button>
+  );
+};
+
 const SUPPLIER_IMAGE_IMPORT_FUNCTION = 'import-supplier-stock-image';
 const MAX_STAFF_UPLOAD_IMAGE_SIZE = 10 * 1024 * 1024;
 const STAFF_UPLOAD_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
@@ -554,9 +603,10 @@ interface ViewComponentProps extends InventoryViewProps {
   errorImages: Set<string>;
   onGenerateImage: (item: InventoryItem) => void;
   onUploadSupplierTyreImage: (item: InventoryItem, file?: File) => void;
+  onCopyItem: (item: InventoryItem) => void;
 }
 
-const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, aspectRatio }) => {
+const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
   
   const SortIcon = ({ colKey }: { colKey: SortKey }) => (
     <span className={`ml-1 inline-block transition-opacity ${sortConfig.key === colKey ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`}>
@@ -582,6 +632,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
           <tr className="bg-gp-dark text-gp-text-muted uppercase text-[10px] tracking-wider font-bold">
             {isAdmin && !isReadOnly && <th className="p-3 border-r border-b border-gp-border w-10 text-center">✓</th>}
             {!isReadOnly && <th className="p-3 border-r border-b border-gp-border w-32 text-center">Actions</th>}
+            <th className="p-3 border-r border-b border-gp-border w-20 text-center">Copy</th>
             {showImages && <th className="p-3 border-r border-b border-gp-border w-24 text-center">Visual</th>}
             <th className="p-3 border-r border-b border-gp-border w-16 text-center">Type</th>
             <Header label="Main Spec" colKey="size" />
@@ -634,6 +685,10 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                   </div>
                 </td>
               )}
+
+              <td className="p-2 border-r border-gp-border text-center">
+                <CopyTyreButton item={item} onCopyItem={onCopyItem} className="px-2 py-1 text-[9px]" />
+              </td>
 
               {showImages && (
                 <td className="p-1 border-r border-gp-border w-24">
@@ -706,7 +761,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
   );
 };
 
-const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, aspectRatio }) => {
+const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
       {items.map((item) => (
@@ -822,8 +877,10 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                         <span className="text-xl font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
                     </div>
 
-                    {!isReadOnly && (
-                        <div className="flex gap-1">
+                    <div className="flex justify-end gap-1">
+                      <CopyTyreButton item={item} onCopyItem={onCopyItem} className="min-h-9 flex-1 max-w-[120px]" />
+                      {!isReadOnly && (
+                        <>
                             <button 
                                 onClick={() => onReserve(item)}
                                 className="w-8 flex items-center justify-center bg-blue-900/20 text-blue-500 border border-blue-900/50 rounded hover:bg-blue-900/40 transition-colors"
@@ -840,8 +897,9 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                             >
                                 SELL
                             </button>
-                        </div>
-                    )}
+                        </>
+                      )}
+                    </div>
                 </div>
             )}
           </div>
@@ -851,7 +909,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
   );
 };
 
-const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, aspectRatio }) => {
+const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
   return (
     <div className="flex flex-col divide-y divide-gp-border p-2 mb-6">
       {items.map((item) => (
@@ -917,8 +975,10 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
 
               {visibleColumns.price && <span className="text-base font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>}
               
-              {!isReadOnly && (
-                <div className="flex gap-2">
+              <div className="flex gap-2">
+                <CopyTyreButton item={item} onCopyItem={onCopyItem} />
+                {!isReadOnly && (
+                  <>
                     <button 
                         onClick={() => onReserve(item)}
                         className="px-3 py-1.5 rounded text-xs font-bold uppercase bg-blue-900/20 text-blue-500 border border-blue-900/50 hover:bg-blue-900/40 transition-colors"
@@ -932,8 +992,9 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                     >
                         Sell
                     </button>
-                </div>
-              )}
+                  </>
+                )}
+              </div>
            </div>
         </div>
       ))}
@@ -965,6 +1026,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [uploadImageItem, setUploadImageItem] = useState<InventoryItem | null>(null);
   const [uploadImageInitialFile, setUploadImageInitialFile] = useState<File | null>(null);
   const [supplierImageRefreshKey, setSupplierImageRefreshKey] = useState(0);
+  const [clipboardNotice, setClipboardNotice] = useState('');
   const supplierImageLookupItems = useMemo(
     () => props.items.filter((item) => inventoryItemToSupplierImageLookup(item)),
     [props.items]
@@ -1089,29 +1151,14 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
   const handleSupplierTyreImageUploaded = (item: InventoryItem, brand: string, pattern: string, imageUrl: string) => {
     const tyre = item as TyreProduct;
-    const supplierName = tyre.supplierName ?? '';
-    const matchingItemIds = props.items
-      .filter((candidate) => supplierTyreMatchesUploadKeys(candidate, supplierName, brand, pattern))
-      .map((candidate) => candidate.id);
-
-    clearSupplierStockImageCache(supplierName);
+    clearSupplierStockImageCache(tyre.supplierName);
     setSupplierImages((previous) => {
       const next = { ...previous };
-      matchingItemIds.forEach((itemId) => {
-        next[itemId] = imageUrl;
+      props.items.forEach((candidate) => {
+        if (supplierTyreMatchesUploadKeys(candidate, tyre.supplierName ?? '', brand, pattern)) {
+          next[candidate.id] = imageUrl;
+        }
       });
-      return next;
-    });
-    setGeneratedImages((previous) => {
-      const next = { ...previous };
-      matchingItemIds.forEach((itemId) => {
-        delete next[itemId];
-      });
-      return next;
-    });
-    setErrorImages((previous) => {
-      const next = new Set(previous);
-      matchingItemIds.forEach((itemId) => next.delete(itemId));
       return next;
     });
     setSupplierImageRefreshKey((value) => value + 1);
@@ -1164,6 +1211,25 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         setSelectedIds(new Set()); // Clear selection after action
     }
   };
+
+  const handleCopyItem = async (item: InventoryItem) => {
+    const clipboardText = getTyreClipboardText(item);
+    if (!clipboardText) return;
+
+    try {
+      await copyTextToClipboard(clipboardText);
+      setClipboardNotice(`Copied: ${clipboardText}`);
+    } catch (error) {
+      console.error('Clipboard copy failed', error);
+      setClipboardNotice('Could not copy to clipboard.');
+    }
+  };
+
+  useEffect(() => {
+    if (!clipboardNotice) return;
+    const timer = window.setTimeout(() => setClipboardNotice(''), 2200);
+    return () => window.clearTimeout(timer);
+  }, [clipboardNotice]);
 
   // 1. Filter Items based on local view settings
   const viewFilteredItems = useMemo(() => {
@@ -1251,6 +1317,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         errorImages,
         onGenerateImage: handleGenerateImage,
         onUploadSupplierTyreImage: openSupplierTyreImageUploader,
+        onCopyItem: handleCopyItem,
         aspectRatio
     };
 
@@ -1264,6 +1331,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
   return (
     <div className="flex flex-col gap-4 relative">
+      {clipboardNotice && (
+        <div className="fixed right-5 top-20 z-[90] max-w-sm rounded border border-green-500/40 bg-green-950/95 px-4 py-3 text-xs font-bold uppercase tracking-wider text-green-300 shadow-2xl backdrop-blur">
+          {clipboardNotice}
+        </div>
+      )}
+
       <SupplierTyreImageUploadModal
         item={uploadImageItem}
         initialFile={uploadImageInitialFile}
