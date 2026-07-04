@@ -1089,14 +1089,29 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
   const handleSupplierTyreImageUploaded = (item: InventoryItem, brand: string, pattern: string, imageUrl: string) => {
     const tyre = item as TyreProduct;
-    clearSupplierStockImageCache(tyre.supplierName);
+    const supplierName = tyre.supplierName ?? '';
+    const matchingItemIds = props.items
+      .filter((candidate) => supplierTyreMatchesUploadKeys(candidate, supplierName, brand, pattern))
+      .map((candidate) => candidate.id);
+
+    clearSupplierStockImageCache(supplierName);
     setSupplierImages((previous) => {
       const next = { ...previous };
-      props.items.forEach((candidate) => {
-        if (supplierTyreMatchesUploadKeys(candidate, tyre.supplierName ?? '', brand, pattern)) {
-          next[candidate.id] = imageUrl;
-        }
+      matchingItemIds.forEach((itemId) => {
+        next[itemId] = imageUrl;
       });
+      return next;
+    });
+    setGeneratedImages((previous) => {
+      const next = { ...previous };
+      matchingItemIds.forEach((itemId) => {
+        delete next[itemId];
+      });
+      return next;
+    });
+    setErrorImages((previous) => {
+      const next = new Set(previous);
+      matchingItemIds.forEach((itemId) => next.delete(itemId));
       return next;
     });
     setSupplierImageRefreshKey((value) => value + 1);

@@ -23,12 +23,16 @@ export interface SupplierStockImageRow {
 
 export interface SupplierImageMatchCandidate {
   supplierName?: string | null;
+  source?: string | null;
+  sourceFileId?: string | null;
   designKey: string;
   finishKey?: string | null;
   rimSize?: string | null;
   pcd?: string | null;
   publicImageUrl: string;
   fileName: string;
+  importedAt?: string | null;
+  updatedAt?: string | null;
 }
 
 export interface SupplierImageLookupItem {
@@ -336,12 +340,20 @@ export const supplierTyreMatchesUploadKeys = (
   if (normalizeSupplierImageToken(tyre.supplierName) !== normalizeSupplierImageToken(supplier)) return false;
 
   const targetKeys = parseSupplierTyreImageKeys(brand, pattern);
+  const rawTyreKeys = parseSupplierTyreImageKeys(tyre.brand, tyre.pattern);
   const itemKeys = inventoryItemToSupplierImageLookup(item);
-  return Boolean(
-    itemKeys
-    && normalizeSupplierImageToken(itemKeys.imageDesignKey) === targetKeys.designKey
-    && normalizeSupplierImageToken(itemKeys.imageFinishKey) === targetKeys.finishKey
-  );
+  const designCandidates = new Set([
+    rawTyreKeys.designKey,
+    normalizeSupplierImageToken(tyre.imageDesignKey),
+    normalizeSupplierImageToken(itemKeys?.imageDesignKey)
+  ].filter(Boolean));
+  const finishCandidates = new Set([
+    rawTyreKeys.finishKey,
+    normalizeSupplierImageToken(tyre.imageFinishKey),
+    normalizeSupplierImageToken(itemKeys?.imageFinishKey)
+  ].filter(Boolean));
+
+  return designCandidates.has(targetKeys.designKey) && finishCandidates.has(targetKeys.finishKey);
 };
 
 export const parseSupplierWheelImageKeys = (brand: string, wheelName: string, finish: string, stockCode = '') => {
@@ -391,6 +403,16 @@ const normalizePcd = (value: string | undefined | null): string => (
   normalizeSupplierImageToken(value).replace(/\s*X\s*/g, '/')
 );
 
+const isStaffUploadedSupplierImage = (candidate: SupplierImageMatchCandidate): boolean => (
+  normalizeSupplierImageToken(candidate.source) === 'STAFF UPLOAD'
+  || (candidate.sourceFileId ?? '').toLowerCase().startsWith('staff-upload:')
+);
+
+const supplierImageTimestamp = (candidate: SupplierImageMatchCandidate): number => {
+  const timestamp = Date.parse(candidate.updatedAt ?? candidate.importedAt ?? '');
+  return Number.isFinite(timestamp) ? timestamp : 0;
+};
+
 export const findBestSupplierStockImage = (
   item: SupplierImageLookupItem,
   candidates: SupplierImageMatchCandidate[]
@@ -420,10 +442,14 @@ export const findBestSupplierStockImage = (
       if (itemRim && candidate.rimSize === itemRim) score += 10;
       if (itemPcd && normalizePcd(candidate.pcd) === itemPcd) score += 8;
       if (!candidate.finishKey && itemFinish) score -= 5;
+      if (isStaffUploadedSupplierImage(candidate)) score += 60;
       return { candidate, score };
     })
     .sort((first, second) => {
       if (second.score !== first.score) return second.score - first.score;
+      const secondTimestamp = supplierImageTimestamp(second.candidate);
+      const firstTimestamp = supplierImageTimestamp(first.candidate);
+      if (secondTimestamp !== firstTimestamp) return secondTimestamp - firstTimestamp;
       return first.candidate.fileName.localeCompare(second.candidate.fileName, undefined, { numeric: true });
     });
 
@@ -486,7 +512,7 @@ export const fetchSupplierStockImages = async (supplier?: string): Promise<Suppl
     supplierImageCache.set(cacheKey, (async () => {
       let query = (supabase as any)
         .from('supplier_stock_images')
-        .select('id,supplier,design_key,finish_key,rim_size,pcd,tags,file_name,storage_bucket,storage_path,public_image_url,mime_type,active,imported_at,updated_at')
+        .select('id,supplier,source,source_file_id,design_key,finish_key,rim_size,pcd,tags,file_name,storage_bucket,storage_path,public_image_url,mime_type,active,imported_at,updated_at')
         .eq('active', true);
 
       if (supplier) {
@@ -526,12 +552,16 @@ export const buildSupplierImageMap = (
     groups[groupKey] = groups[groupKey] ?? [];
     groups[groupKey].push({
       supplierName: row.supplier,
+      source: row.source,
+      sourceFileId: row.source_file_id,
       designKey: row.design_key,
       finishKey: row.finish_key,
       rimSize: row.rim_size,
       pcd: row.pcd,
       publicImageUrl: row.public_image_url,
-      fileName: row.file_name
+      fileName: row.file_name,
+      importedAt: row.imported_at,
+      updatedAt: row.updated_at
     });
     return groups;
   }, {});

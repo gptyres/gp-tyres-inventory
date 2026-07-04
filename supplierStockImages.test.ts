@@ -591,4 +591,105 @@ describe('supplier tyre image parsing and matching', () => {
     expect(imageMap[second.id]).toBe('https://example.test/grandtrek-at3g.jpg');
     expect(imageMap[otherSupplier.id]).toBeUndefined();
   });
+
+  it('matches supplier tyre replacements by brand and pattern while ignoring stock codes', () => {
+    const [first, second] = parseTyreWarehouseData([
+      'SKU,Size,Brand,Pattern,Category,Stock Location,Stock Units Availability,Stock Units,Selling Price',
+      'tw-100,265/65R17,Dunlop,Grandtrek AT3G,Passenger / SUV Tyres,JHB,Available,3 units,R2500',
+      'tw-200,245/70R16,Dunlop,Grandtrek AT3G,Passenger / SUV Tyres,GLK,Available,6 units,R2400'
+    ].join('\n'));
+
+    expect(first.supplierStockCode).not.toBe(second.supplierStockCode);
+    expect(supplierTyreMatchesUploadKeys(first, 'TYREWAREHOUSE', 'Dunlop', 'Grandtrek AT3G')).toBe(true);
+    expect(supplierTyreMatchesUploadKeys(second, 'TYREWAREHOUSE', 'Dunlop', 'Grandtrek AT3G')).toBe(true);
+  });
+
+  it('prefers staff replacement images over older imported supplier tyre images', () => {
+    const match = findBestSupplierStockImage({
+      id: 'exclusive-1',
+      productType: ProductType.TYRE,
+      supplierName: 'EXCLUSIVE TYRES',
+      imageDesignKey: 'DIMAX R8',
+      imageFinishKey: 'RADAR',
+      size: '235/45R18'
+    }, [
+      {
+        supplierName: 'EXCLUSIVE TYRES',
+        source: 'official',
+        sourceFileId: 'official:radar:dimax-r8',
+        designKey: 'DIMAX R8',
+        finishKey: 'RADAR',
+        rimSize: null,
+        pcd: null,
+        publicImageUrl: 'https://example.test/old-dimax-r8.jpg',
+        fileName: 'old-dimax-r8.jpg',
+        importedAt: '2026-07-01T00:00:00.000Z'
+      },
+      {
+        supplierName: 'EXCLUSIVE TYRES',
+        source: 'staff-upload',
+        sourceFileId: 'staff-upload:exclusive-tyres:radar:dimax-r8',
+        designKey: 'DIMAX R8',
+        finishKey: 'RADAR',
+        rimSize: null,
+        pcd: null,
+        publicImageUrl: 'https://example.test/replacement-dimax-r8.jpg',
+        fileName: 'replacement-dimax-r8.jpg',
+        importedAt: '2026-07-03T00:00:00.000Z'
+      }
+    ]);
+
+    expect(match.confidence).toBe('exact');
+    expect(match.imageUrl).toBe('https://example.test/replacement-dimax-r8.jpg');
+  });
+
+  it('maps staff replacement rows across same supplier tyre pattern in the image map', () => {
+    const [first, second] = parseTyreWarehouseData([
+      'SKU,Size,Brand,Pattern,Category,Stock Location,Stock Units Availability,Stock Units,Selling Price',
+      'tw-100,265/65R17,Dunlop,Grandtrek AT3G,Passenger / SUV Tyres,JHB,Available,3 units,R2500',
+      'tw-200,245/70R16,Dunlop,Grandtrek AT3G,Passenger / SUV Tyres,GLK,Available,6 units,R2400'
+    ].join('\n'));
+
+    const imageMap = buildSupplierImageMap([first, second], [
+      {
+        id: 'official-image',
+        supplier: 'TYREWAREHOUSE',
+        source: 'official',
+        source_file_id: 'official:dunlop:grandtrek-at3g',
+        file_name: 'official-grandtrek-at3g.jpg',
+        storage_bucket: 'supplier-stock-images',
+        storage_path: 'tyres/dunlop/grandtrek-at3g/official.jpg',
+        public_image_url: 'https://example.test/official-grandtrek-at3g.jpg',
+        mime_type: 'image/jpeg',
+        design_key: 'GRANDTREK AT3G',
+        finish_key: 'DUNLOP',
+        rim_size: null,
+        pcd: null,
+        tags: [],
+        active: true,
+        imported_at: '2026-07-01T00:00:00.000Z'
+      },
+      {
+        id: 'staff-image',
+        supplier: 'TYREWAREHOUSE',
+        source: 'staff-upload',
+        source_file_id: 'staff-upload:tyrewarehouse:dunlop:grandtrek-at3g',
+        file_name: 'replacement-grandtrek-at3g.jpg',
+        storage_bucket: 'supplier-stock-images',
+        storage_path: 'tyres/staff-upload/tyrewarehouse/dunlop/grandtrek-at3g/replacement.jpg',
+        public_image_url: 'https://example.test/replacement-grandtrek-at3g.jpg',
+        mime_type: 'image/jpeg',
+        design_key: 'GRANDTREK AT3G',
+        finish_key: 'DUNLOP',
+        rim_size: null,
+        pcd: null,
+        tags: ['staff-upload'],
+        active: true,
+        imported_at: '2026-07-03T00:00:00.000Z'
+      }
+    ]);
+
+    expect(imageMap[first.id]).toBe('https://example.test/replacement-grandtrek-at3g.jpg');
+    expect(imageMap[second.id]).toBe('https://example.test/replacement-grandtrek-at3g.jpg');
+  });
 });
