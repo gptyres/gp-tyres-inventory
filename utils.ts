@@ -517,6 +517,16 @@ const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
       .replace(/^ZERO$/i, 'P Zero');
   }
 
+  cleaned = cleaned
+    .replace(/^\(?\d{2,3}[A-Z]\)?\s+(?:XL\s+)?(?:FR\s+)?(?:TL\s+)?/gi, ' ')
+    .replace(/\b(?:XL|FR|TL|T\/L|STD|FP|RFT|ROF|MI|RWL|OWL)\b/gi, ' ')
+    .replace(/\b\d{2,3}[A-Z](?:XL)?\b/gi, ' ')
+    .replace(/\b\d{2,3}\/\d{2,3}[A-Z]\b/gi, ' ')
+    .replace(/\b\d+\s*PR\b/gi, ' ')
+    .replace(/\s+-\s*E\b/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
   return cleaned || pattern.replace(/\bIMP\b/gi, ' ').replace(/\s+/g, ' ').trim() || 'Standard';
 };
 
@@ -761,7 +771,12 @@ export const parseExclusiveTyresData = (rawCsv: string): InventoryItem[] => {
   return items;
 };
 
-const parseSimpleSupplierCsv = (rawCsv: string, idPrefix: string, supplierName: string): InventoryItem[] => {
+const parseSimpleSupplierCsv = (
+  rawCsv: string,
+  idPrefix: string,
+  supplierName: string,
+  options: { normalizePattern?: boolean } = {}
+): InventoryItem[] => {
   const items: InventoryItem[] = [];
   const lines = rawCsv.split('\n');
   const today = new Date().toISOString().split('T')[0];
@@ -778,7 +793,8 @@ const parseSimpleSupplierCsv = (rawCsv: string, idPrefix: string, supplierName: 
     if (index === 0 && size?.toUpperCase() === 'SIZE') return;
     if (!size || !brandPattern) return;
 
-    const { brand, pattern } = splitBrandPattern(brandPattern, supplierName);
+    const { brand, pattern: rawPattern } = splitBrandPattern(brandPattern, supplierName);
+    const pattern = options.normalizePattern ? normalizeExclusiveTyrePattern(brand, rawPattern) : rawPattern;
     const category = cols[2]?.trim() || supplierName;
     const priceIncVat = parseCurrencyString(cols[3]);
     const quantity = parseStockUnits(cols[4]);
@@ -1083,7 +1099,7 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
 
 // --- APEX PARSER ---
 export const parseApexData = (rawCsv: string): InventoryItem[] => {
-  return parseSimpleSupplierCsv(rawCsv, 'apex', 'APEX');
+  return parseSimpleSupplierCsv(rawCsv, 'apex', 'APEX', { normalizePattern: true });
 };
 
 const getAvailabilityQuantity = (availability: string, stockUnits: string): number => {

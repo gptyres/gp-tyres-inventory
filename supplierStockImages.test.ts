@@ -11,7 +11,7 @@ import {
   supplierTyreMatchesUploadKeys
 } from './supplierStockImages';
 import { ProductType } from './types';
-import { parseArcData, parseAttData, parseExoticData, parseExclusiveTyresData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
+import { parseApexData, parseArcData, parseAttData, parseExoticData, parseExclusiveTyresData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
 
 describe('ALINE supplier image parsing', () => {
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
@@ -331,6 +331,28 @@ describe('ARC supplier catalogue parsing', () => {
       vehicleCompatibility: 'MERCEDES BENZ W203',
       sellingPrice: 6999
     });
+  });
+});
+
+describe('APEX supplier catalogue parsing', () => {
+  it('removes load, speed and supplier clutter from tyre visual keys', () => {
+    const items = parseApexData([
+      'Size,Brand & Pattern,Lead Time,Selling Price,Stock Units',
+      '225/45R17,DUNLOP 97Y MAXX060+ XL,7 Days,R2300,20 units',
+      '235/55R19,CONTINENTAL (97Y) XL FR SPORTCONTACT 7,7 Days,R3950,20 units',
+      '245/45R20,BRIDGESTONE POTENZA SPORT 101Y STD,7 Days,R4550,20 units'
+    ].join('\n'));
+
+    expect(items.map((item) => item.pattern)).toEqual([
+      'MAXX060+',
+      'SPORTCONTACT 7',
+      'POTENZA SPORT'
+    ]);
+    expect(items.map((item) => item.imageDesignKey)).toEqual([
+      'MAXX060',
+      'SPORTCONTACT 7',
+      'POTENZA SPORT'
+    ]);
   });
 });
 

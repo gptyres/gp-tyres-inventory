@@ -24,7 +24,7 @@ const RAW_SUPPLIERS = [
   { supplier: 'ATT', file: 'supplier_data/attData.ts', parser: 'simple' },
   { supplier: 'SAFETY GRIP', file: 'supplier_data/safetygripData.ts', parser: 'safetyGrip' },
   { supplier: 'STAMFORD', file: 'supplier_data/stamfordData.ts', parser: 'stamford' },
-  { supplier: 'APEX', file: 'supplier_data/apexData.ts', parser: 'simple' },
+  { supplier: 'APEX', file: 'supplier_data/apexData.ts', parser: 'apex' },
   { supplier: 'TUBESTONE', file: 'supplier_data/tubestoneData.ts', parser: 'tubestone' },
   { supplier: 'TREAD ZONE', file: 'supplier_data/treadZoneData.ts', parser: 'branchRows' },
   { supplier: 'SUMITOMO/DUNLOP', file: 'supplier_data/sumitomoDunlopData.ts', parser: 'branchRows' },
@@ -366,6 +366,16 @@ const normalizeExclusiveTyrePattern = (brand, pattern) => {
       .replace(/^ZERO$/i, 'P Zero');
   }
 
+  cleaned = cleaned
+    .replace(/^\(?\d{2,3}[A-Z]\)?\s+(?:XL\s+)?(?:FR\s+)?(?:TL\s+)?/gi, ' ')
+    .replace(/\b(?:XL|FR|TL|T\/L|STD|FP|RFT|ROF|MI|RWL|OWL)\b/gi, ' ')
+    .replace(/\b\d{2,3}[A-Z](?:XL)?\b/gi, ' ')
+    .replace(/\b\d{2,3}\/\d{2,3}[A-Z]\b/gi, ' ')
+    .replace(/\b\d+\s*PR\b/gi, ' ')
+    .replace(/\s+-\s*E\b/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
   return cleaned || String(pattern || '').replace(/\bIMP\b/gi, ' ').replace(/\s+/g, ' ').trim() || 'Standard';
 };
 
@@ -433,6 +443,15 @@ export const parseSupplierTyreRows = (supplier, parser, raw) => {
       if (!size || !brandPattern) continue;
       const { brand, pattern } = splitBrandPattern(brandPattern, supplier);
       addItem(items, supplier, `${slugify(supplier)}-${idCounter++}`, brand, pattern, parseStockUnits(cols[4]), `${slugify(supplier)}-${idCounter}`);
+    }
+
+    if (parser === 'apex') {
+      const size = cols[0]?.trim();
+      const brandPattern = cols[1]?.trim();
+      if (!size || !brandPattern) continue;
+      const { brand, pattern: rawPattern } = splitBrandPattern(brandPattern, supplier);
+      const pattern = normalizeExclusiveTyrePattern(brand, rawPattern);
+      addItem(items, supplier, `apex-${idCounter++}`, brand, pattern, parseStockUnits(cols[4]), `apex-${idCounter}`);
     }
 
     if (parser === 'exclusive') {
