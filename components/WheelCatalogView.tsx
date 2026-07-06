@@ -733,7 +733,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     }
 
     if (importToken !== WHEEL_CATALOG_REPLACE_FOLDER_PIN) {
-      setError('Enter the wheel upload PIN 786 before confirming.');
+      setError('Use the admin passcode before confirming.');
       return;
     }
 
@@ -1247,11 +1247,11 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                   value={staffUploadToken}
                   onChange={(event) => setStaffUploadToken(event.target.value)}
                   disabled={isStaffUploading}
-                  placeholder="Enter PIN 786"
+                  placeholder="Use admin passcode"
                   className="mt-2 min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-3 py-2 text-sm font-bold text-gp-text-main outline-none focus:border-gp-red"
                 />
                 <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
-                  Replace Wheel Folder PIN: 786
+                  REPLACE WHEEL FOLDER PIN: USE ADMIN PASSCODE
                 </p>
               </label>
 
