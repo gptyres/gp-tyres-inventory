@@ -61,3 +61,11 @@ node scripts/analyze-wheel-catalog-images.mjs
 ```
 
 The analysis script reads active wheel catalog rows, sends each image to Gemini for visible wheel text/spec extraction, then updates the row through the secured `import-wheel-catalog-local` Edge Function using the private wheel import token.
+
+Rows with `image_analysis_status = completed` are skipped, so reruns continue from the remaining pending images. Gemini free-tier limits are usually too low for the full catalog in one day; if quota is reached, the script stops safely and leaves the rest pending. Rerun after quota resets, or use a paid/project quota and optionally tune:
+
+```powershell
+$env:WHEEL_CATALOG_ANALYSIS_CONCURRENCY='2'
+$env:WHEEL_CATALOG_ANALYSIS_DELAY_MS='12000'
+node scripts/analyze-wheel-catalog-images.mjs
+```

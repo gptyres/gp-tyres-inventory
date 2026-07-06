@@ -23,6 +23,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.API_KEY;
 const MODEL = process.env.WHEEL_CATALOG_ANALYSIS_MODEL || 'gemini-2.5-flash';
 const LIMIT = Number.parseInt(process.env.WHEEL_CATALOG_ANALYSIS_LIMIT || '0', 10);
 const CONCURRENCY = Math.max(1, Number.parseInt(process.env.WHEEL_CATALOG_ANALYSIS_CONCURRENCY || '2', 10));
+const DELAY_MS = Math.max(0, Number.parseInt(process.env.WHEEL_CATALOG_ANALYSIS_DELAY_MS || '0', 10));
 const PAGE_SIZE = 1000;
 
 if (!IMPORT_TOKEN) {
@@ -36,6 +37,31 @@ if (!GEMINI_API_KEY) {
 }
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+
+class QuotaExhaustedError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'QuotaExhaustedError';
+  }
+}
+
+const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+const isQuotaError = (error) => {
+  const message = String(error?.message ?? error ?? '');
+  return message.includes('RESOURCE_EXHAUSTED') || message.toLowerCase().includes('quota exceeded');
+};
+
+const summarizeQuotaError = (error) => {
+  const message = String(error?.message ?? error ?? '');
+  const limit = message.match(/limit:\s*([^,\n]+)/i)?.[1]?.trim();
+  const retry = message.match(/retry in\s*([^.]+\w)/i)?.[1]?.trim();
+  return [
+    'Gemini quota reached; stopping so pending images can be resumed later.',
+    limit ? `Limit: ${limit}.` : '',
+    retry ? `Retry: ${retry}.` : ''
+  ].filter(Boolean).join(' ');
+};
 
 const supabaseFetch = async (path, options = {}) => {
   const response = await fetch(`${SUPABASE_URL}${path}`, {
@@ -112,15 +138,23 @@ const analyzeRow = async (row) => {
     'Use short uppercase tags. Do not invent specs that are not visible.'
   ].join('\n');
 
-  const response = await ai.models.generateContent({
-    model: MODEL,
-    contents: {
-      parts: [
-        { text: prompt },
-        { inlineData }
-      ]
+  let response;
+  try {
+    response = await ai.models.generateContent({
+      model: MODEL,
+      contents: {
+        parts: [
+          { text: prompt },
+          { inlineData }
+        ]
+      }
+    });
+  } catch (error) {
+    if (isQuotaError(error)) {
+      throw new QuotaExhaustedError(summarizeQuotaError(error));
     }
-  });
+    throw error;
+  }
   const parsed = extractJson(await responseText(response));
   const tags = Array.from(new Set([
     ...(row.tags ?? []),
@@ -159,13 +193,17 @@ if (LIMIT > 0) rows = rows.slice(0, LIMIT);
 console.log(`Found ${rows.length} wheel catalog image(s) to analyze.`);
 console.log(`Model: ${MODEL}`);
 console.log(`Concurrency: ${CONCURRENCY}`);
+if (DELAY_MS) console.log(`Delay between worker jobs: ${DELAY_MS}ms`);
 
 let completed = 0;
 let failed = 0;
+let stoppedForQuota = false;
+let quotaMessage = '';
 let nextIndex = 0;
 
 const worker = async () => {
   while (nextIndex < rows.length) {
+    if (stoppedForQuota) break;
     const index = nextIndex;
     nextIndex += 1;
     const row = rows[index];
@@ -173,16 +211,23 @@ const worker = async () => {
       await analyzeRow(row);
       completed += 1;
     } catch (error) {
+      if (error instanceof QuotaExhaustedError) {
+        stoppedForQuota = true;
+        quotaMessage = error.message;
+        console.warn(quotaMessage);
+        break;
+      }
       failed += 1;
       console.error(`Failed ${row.folder_path}/${row.file_name}: ${error.message}`);
     }
     if ((completed + failed) % 10 === 0 || completed + failed === rows.length) {
       console.log(`Analyzed ${completed + failed}/${rows.length} (${failed} failed)`);
     }
+    if (DELAY_MS && !stoppedForQuota) await sleep(DELAY_MS);
   }
 };
 
 await Promise.all(Array.from({ length: Math.min(CONCURRENCY, rows.length) }, () => worker()));
 
-console.log(JSON.stringify({ ok: failed === 0, completed, failed }, null, 2));
-process.exit(failed === 0 ? 0 : 1);
+console.log(JSON.stringify({ ok: failed === 0 && !stoppedForQuota, completed, failed, stoppedForQuota, quotaMessage }, null, 2));
+process.exit(failed === 0 || stoppedForQuota ? 0 : 1);

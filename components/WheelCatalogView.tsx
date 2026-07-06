@@ -205,10 +205,17 @@ const itemMatchesSearch = (item: WheelCatalogItemRow, query: string) => {
   return haystack.includes(query);
 };
 
+const normalizePcdForMatch = (value: string) => (
+  value.toUpperCase().replace(/\//g, 'X').replace(/\s+/g, '')
+);
+
 const pcdMatchesVehicle = (itemPcd: string | null | undefined, vehiclePcds: string[]) => {
   if (!vehiclePcds.length) return true;
-  const normalized = (itemPcd ?? '').toUpperCase();
-  return vehiclePcds.some((pcd) => normalized === pcd || normalized.replace('.3', '') === pcd.replace('.3', ''));
+  const normalized = normalizePcdForMatch(itemPcd ?? '');
+  return vehiclePcds.some((pcd) => {
+    const candidate = normalizePcdForMatch(pcd);
+    return normalized === candidate || normalized.replace('.3', '') === candidate.replace('.3', '') || normalized.replace('.7', '') === candidate.replace('.7', '');
+  });
 };
 
 const sanitizeName = (value: string) => value.replace(/[<>:"/\\|?*\u0000-\u001f]+/g, '-').replace(/\s+/g, ' ').trim() || 'wheel';
@@ -829,7 +836,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
           </div>
 
           <div>
-            <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-gp-text-muted">Vehicle PCD Lookup</p>
+            <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-gp-text-muted">Vehicle Wheel Database</p>
             <div className="grid gap-2 sm:grid-cols-2">
               <select
                 value={selectedVehicleBrand}
@@ -849,15 +856,20 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                 <option value="ALL">All models</option>
                 {vehicleModels.map((vehicle) => (
                   <option key={`${vehicle.brand}|||${vehicle.model}`} value={`${vehicle.brand}|||${vehicle.model}`}>
-                    {vehicle.model} ({vehicle.pcds.join(' / ')})
+                    {vehicle.model} ({vehicle.pcdKey.toUpperCase()})
                   </option>
                 ))}
               </select>
             </div>
             {selectedVehicle && (
-              <p className="mt-2 text-[11px] font-bold uppercase tracking-wide text-green-400">
-                Showing PCD {selectedVehicle.pcds.join(' / ')} for {selectedVehicle.brand} {selectedVehicle.model}
-              </p>
+              <div className="mt-2 space-y-1 text-[11px] font-bold uppercase tracking-wide">
+                <p className="text-green-400">
+                  Showing {selectedVehicle.pcdKey.toUpperCase()} wheels for {selectedVehicle.brand} {selectedVehicle.model}
+                </p>
+                <p className="text-gp-text-muted">
+                  {selectedVehicle.segment} • {selectedVehicle.priorityLevel} priority • confirm bore, ET, width, hardware and load rating before fitting
+                </p>
+              </div>
             )}
           </div>
         </div>
