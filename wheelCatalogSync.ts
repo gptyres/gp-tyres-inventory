@@ -2,6 +2,8 @@ import { supabase, WheelCatalogItemRow, WheelCatalogSyncRunRow } from './supabas
 
 export const WHEEL_CATALOG_SOURCE_LABEL = 'WHEEL CATALOG 2026 Q3_LIVE';
 export const WHEEL_CATALOG_SOURCE_ROOT_ID = 'local-wheel-catalog-2026-q3-live';
+export const WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_LABEL = 'Staff Wheel Uploads';
+export const WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_ROOT_ID = 'staff-wheel-catalog-uploads';
 const PAGE_SIZE = 1000;
 
 export interface WheelCatalogSyncResult {
@@ -10,6 +12,7 @@ export interface WheelCatalogSyncResult {
   sourceRootFolderId?: string;
   seen?: number;
   deactivated?: number;
+  storageDeleted?: number;
   filesScanned?: number;
   filesUploaded?: number;
   filesSkipped?: number;
@@ -94,11 +97,12 @@ export const fetchLatestWheelCatalogSyncRun = async (): Promise<WheelCatalogSync
 
 export const startLocalWheelCatalogSync = async (
   importToken: string,
-  sourceLabel = WHEEL_CATALOG_SOURCE_LABEL
+  sourceLabel = WHEEL_CATALOG_SOURCE_LABEL,
+  sourceRootFolderId = WHEEL_CATALOG_SOURCE_ROOT_ID
 ): Promise<WheelCatalogSyncResult> => {
   return invokeLocalImport({
     action: 'start',
-    sourceRootFolderId: WHEEL_CATALOG_SOURCE_ROOT_ID,
+    sourceRootFolderId,
     sourceLabel
   }, importToken);
 };
@@ -131,5 +135,17 @@ export const finalizeLocalWheelCatalogSync = async (
     sourceRootFolderId: WHEEL_CATALOG_SOURCE_ROOT_ID,
     seenDriveFileIds,
     ...counts
+  }, importToken);
+};
+
+export const replaceWheelCatalogFolder = async (
+  importToken: string,
+  folderPath: string,
+  seenDriveFileIds: string[]
+): Promise<WheelCatalogSyncResult> => {
+  return invokeLocalImport({
+    action: 'replace-folder',
+    folderPath,
+    seenDriveFileIds
   }, importToken);
 };

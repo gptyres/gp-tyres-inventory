@@ -62,7 +62,13 @@ interface EnrichPayload {
   status?: 'completed' | 'failed';
 }
 
-type Payload = StartPayload | ImportPayload | FinalizePayload | EnrichPayload;
+interface ReplaceFolderPayload {
+  action: 'replace-folder';
+  folderPath: string;
+  seenDriveFileIds: string[];
+}
+
+type Payload = StartPayload | ImportPayload | FinalizePayload | EnrichPayload | ReplaceFolderPayload;
 
 const jsonResponse = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -122,6 +128,7 @@ const base64ToBytes = (base64: string) => {
 const isStartPayload = (payload: Payload): payload is StartPayload => payload.action === 'start';
 const isFinalizePayload = (payload: Payload): payload is FinalizePayload => payload.action === 'finalize';
 const isEnrichPayload = (payload: Payload): payload is EnrichPayload => payload.action === 'enrich';
+const isReplaceFolderPayload = (payload: Payload): payload is ReplaceFolderPayload => payload.action === 'replace-folder';
 
 const validateImportPayload = (payload: ImportPayload) => {
   if (
@@ -326,6 +333,59 @@ const enrichImport = async (supabase: ReturnType<typeof createClient>, payload: 
   });
 };
 
+const replaceFolder = async (supabase: ReturnType<typeof createClient>, payload: ReplaceFolderPayload) => {
+  const folderPath = String(payload.folderPath ?? '').trim();
+  if (!folderPath || !Array.isArray(payload.seenDriveFileIds)) {
+    return jsonResponse({ ok: false, error: 'Missing replace folder fields.' }, 400);
+  }
+
+  const seenIds = new Set(payload.seenDriveFileIds.filter((id) => id.startsWith(LOCAL_SOURCE_PREFIX)));
+  const { data, error } = await supabase
+    .from('wheel_catalog_items')
+    .select('drive_file_id, storage_path')
+    .eq('folder_path', folderPath)
+    .eq('active', true);
+
+  if (error) throw error;
+
+  const staleRows = (data ?? [])
+    .map((row) => ({
+      driveFileId: row.drive_file_id as string,
+      storagePath: row.storage_path as string | null
+    }))
+    .filter((row) => row.driveFileId.startsWith(LOCAL_SOURCE_PREFIX) && !seenIds.has(row.driveFileId));
+
+  const staleIds = staleRows.map((row) => row.driveFileId);
+  for (const staleChunk of chunk(staleIds, 100)) {
+    const { error: updateError } = await supabase
+      .from('wheel_catalog_items')
+      .update({ active: false })
+      .in('drive_file_id', staleChunk);
+    if (updateError) throw updateError;
+  }
+
+  const staleStoragePaths = Array.from(new Set(
+    staleRows
+      .map((row) => row.storagePath)
+      .filter((path): path is string => Boolean(path))
+  ));
+
+  for (const pathChunk of chunk(staleStoragePaths, 100)) {
+    const { error: removeError } = await supabase.storage
+      .from(BUCKET_NAME)
+      .remove(pathChunk);
+    if (removeError) throw removeError;
+  }
+
+  return jsonResponse({
+    ok: true,
+    folderPath,
+    seen: seenIds.size,
+    deactivated: staleIds.length,
+    storageDeleted: staleStoragePaths.length
+  });
+};
+
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -364,6 +424,10 @@ Deno.serve(async (request) => {
 
     if (isEnrichPayload(payload)) {
       return await enrichImport(supabase, payload);
+    }
+
+    if (isReplaceFolderPayload(payload)) {
+      return await replaceFolder(supabase, payload);
     }
 
     return await importOne(supabase, payload);

@@ -5,9 +5,12 @@ import {
   finalizeLocalWheelCatalogSync,
   importLocalWheelCatalogImage,
   LocalWheelCatalogImportPayload,
+  replaceWheelCatalogFolder,
   startLocalWheelCatalogSync,
   WHEEL_CATALOG_SOURCE_LABEL,
-  WHEEL_CATALOG_SOURCE_ROOT_ID
+  WHEEL_CATALOG_SOURCE_ROOT_ID,
+  WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_LABEL,
+  WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_ROOT_ID
 } from '../wheelCatalogSync';
 import { WheelCatalogItemRow, WheelCatalogSyncRunRow } from '../supabaseClient';
 import { SOUTH_AFRICA_VEHICLE_PCD_MODELS } from '../vehiclePcdData';
@@ -218,6 +221,9 @@ const pcdMatchesVehicle = (itemPcd: string | null | undefined, vehiclePcds: stri
   });
 };
 
+const normalizeStaffUploadPcd = (value: string) => normalizePcdForMatch(value).replace(/^([456])(\d{3})/, '$1X$2');
+const STAFF_UPLOAD_RIM_SIZES = Array.from({ length: 14 }, (_, index) => String(index + 13));
+
 const sanitizeName = (value: string) => value.replace(/[<>:"/\\|?*\u0000-\u001f]+/g, '-').replace(/\s+/g, ' ').trim() || 'wheel';
 
 const makeZipPath = (item: WheelCatalogItemRow, index: number) => {
@@ -417,6 +423,12 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   const [syncRun, setSyncRun] = useState<WheelCatalogSyncRunRow | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isStaffUploadModalOpen, setIsStaffUploadModalOpen] = useState(false);
+  const [isStaffUploading, setIsStaffUploading] = useState(false);
+  const [staffUploadFiles, setStaffUploadFiles] = useState<File[]>([]);
+  const [staffUploadRimSize, setStaffUploadRimSize] = useState('');
+  const [staffUploadPcd, setStaffUploadPcd] = useState('');
+  const [staffUploadToken, setStaffUploadToken] = useState('');
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [selectedSize, setSelectedSize] = useState('ALL');
@@ -427,6 +439,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [syncProgress, setSyncProgress] = useState<SyncProgress>({ scanned: 0, uploaded: 0, skipped: 0, failed: 0, deactivated: 0, total: 0 });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const staffUploadInputRef = useRef<HTMLInputElement | null>(null);
   const syncTokenRef = useRef('');
 
   const loadCatalog = async () => {
@@ -667,6 +680,167 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     })), importToken);
   };
 
+  const resetStaffUpload = () => {
+    setIsStaffUploadModalOpen(false);
+    setStaffUploadFiles([]);
+    setStaffUploadRimSize('');
+    setStaffUploadPcd('');
+    setStaffUploadToken('');
+  };
+
+  const handleStaffUploadClick = () => {
+    if (isSyncing || isStaffUploading) return;
+    staffUploadInputRef.current?.click();
+  };
+
+  const handleStaffUploadFilesSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []).filter((file) => IMAGE_EXTENSIONS.has(extensionFor(file.name)));
+    event.target.value = '';
+
+    if (!files.length) {
+      setStatus('Choose one or more wheel image files to upload.');
+      return;
+    }
+
+    setStaffUploadFiles(files);
+    setStaffUploadRimSize(selectedSize !== 'ALL' ? selectedSize : '');
+    setStaffUploadPcd(selectedPcd !== 'ALL' ? selectedPcd : '');
+    setStaffUploadToken('');
+    setError('');
+    setIsStaffUploadModalOpen(true);
+  };
+
+  const handleConfirmStaffUpload = async () => {
+    const importToken = staffUploadToken.trim();
+    const rimSize = staffUploadRimSize.trim();
+    const pcd = normalizeStaffUploadPcd(staffUploadPcd);
+    const uploadFiles = staffUploadFiles.filter((file) => IMAGE_EXTENSIONS.has(extensionFor(file.name)));
+
+    if (!uploadFiles.length) {
+      setError('Select one or more wheel image files before uploading.');
+      return;
+    }
+
+    if (!rimSize || !STAFF_UPLOAD_RIM_SIZES.includes(rimSize)) {
+      setError('Choose the wheel inch for this upload group.');
+      return;
+    }
+
+    if (!/^[456]X\d{3}(?:\.\d)?$/.test(pcd)) {
+      setError('Enter the wheel PCD in a format like 5X100, 5X112, 5X114.3 or 6X139.');
+      return;
+    }
+
+    if (!importToken) {
+      setError('Enter the wheel upload PIN before confirming.');
+      return;
+    }
+
+    const oversized = uploadFiles.find((file) => file.size > 10 * 1024 * 1024);
+    if (oversized) {
+      setError(`${oversized.name} is larger than 10MB. Please resize it before uploading.`);
+      return;
+    }
+
+    const folderPath = `${rimSize} ${pcd}`;
+    const folderPathParts = [folderPath];
+    const sourceLabel = `${WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_LABEL} - ${folderPath}`;
+    const importRunId = `staff-upload-${Date.now()}`;
+    const folderSlug = sanitizeName(folderPath).replace(/\s+/g, '-').toUpperCase();
+    const seenDriveFileIds: string[] = [];
+    let uploaded = 0;
+    let failed = 0;
+    let nextIndex = 0;
+
+    setIsStaffUploading(true);
+    setError('');
+    setSelectedIds(new Set());
+    setSyncProgress({ scanned: uploadFiles.length, uploaded: 0, skipped: 0, failed: 0, deactivated: 0, total: uploadFiles.length });
+    setStatus(`Uploading ${uploadFiles.length} wheel image${uploadFiles.length === 1 ? '' : 's'} to ${folderPath}...`);
+
+    try {
+      const worker = async () => {
+        while (nextIndex < uploadFiles.length) {
+          const index = nextIndex;
+          nextIndex += 1;
+          const file = uploadFiles[index];
+
+          try {
+            const buffer = await file.arrayBuffer();
+            const contentSha256 = await sha256Hex(buffer);
+            const idSha256 = await sha256Hex(`staff-upload/${folderPath}/${file.name}/${contentSha256}`);
+            const extension = extensionFor(file.name) || 'jpg';
+            const relativePath = `staff-upload/${folderPath}/${file.name}`;
+            const tags = Array.from(new Set([
+              'STAFF-UPLOAD',
+              `${rimSize}IN`,
+              pcd,
+              folderPath,
+              ...file.name.replace(/\.[^.]+$/, '').split(/[\s_-]+/).map((tag) => tag.replace(/[^a-z0-9.]+/gi, '').toUpperCase()).filter((tag) => tag.length > 1)
+            ]));
+            const payload: LocalWheelCatalogImportPayload = {
+              importRunId,
+              sourceRootFolderId: WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_ROOT_ID,
+              sourceLabel,
+              driveFileId: `local-staff-${idSha256}`,
+              driveFolderId: null,
+              folderPath,
+              folderPathParts,
+              category: folderPath,
+              rimSize,
+              pcd,
+              tags,
+              fileName: file.name,
+              driveUrl: `local://${relativePath}`,
+              storagePath: `local-import/staff-upload/${folderSlug}/${idSha256.slice(0, 24)}/${contentSha256}.${extension}`,
+              mimeType: mimeFor(file),
+              localRelativePath: relativePath,
+              sourceSizeBytes: file.size,
+              contentSha256,
+              sourceModifiedAt: file.lastModified ? new Date(file.lastModified).toISOString() : null,
+              base64: arrayBufferToBase64(buffer)
+            };
+
+            const importResult = await importLocalWheelCatalogImage(payload, importToken);
+            if (!importResult.ok) throw new Error(importResult.error || 'Image upload failed.');
+            seenDriveFileIds.push(payload.driveFileId);
+            uploaded += 1;
+          } catch (uploadError) {
+            failed += 1;
+            console.error(uploadError);
+          } finally {
+            setSyncProgress((current) => ({ ...current, uploaded, failed }));
+            setStatus(`Uploading ${folderPath}... ${uploaded + failed}/${uploadFiles.length} images processed.`);
+          }
+        }
+      };
+
+      await Promise.all(Array.from({ length: Math.min(3, uploadFiles.length) }, () => worker()));
+
+      if (failed) {
+        throw new Error(`${failed} image${failed === 1 ? '' : 's'} failed. The old ${folderPath} folder was not cleared.`);
+      }
+
+      const replaceResult = await replaceWheelCatalogFolder(importToken, folderPath, seenDriveFileIds);
+      if (!replaceResult.ok) {
+        throw new Error(replaceResult.error || 'The upload saved, but the old folder could not be cleared.');
+      }
+
+      setSyncProgress((current) => ({ ...current, deactivated: replaceResult.deactivated ?? 0 }));
+      await loadCatalog();
+      setSelectedSize(rimSize);
+      setSelectedPcd(pcd);
+      setSelectedFolder(folderPath);
+      resetStaffUpload();
+      setStatus(`${folderPath} replaced. Uploaded ${uploaded} image${uploaded === 1 ? '' : 's'} and removed ${replaceResult.deactivated ?? 0} previous image${replaceResult.deactivated === 1 ? '' : 's'} from that folder.`);
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : 'Wheel upload failed.');
+    } finally {
+      setIsStaffUploading(false);
+      setStaffUploadToken('');
+    }
+  };
+
   const handleCopySelected = async () => {
     if (!selectedItems.length) {
       setStatus('Select at least one image first.');
@@ -737,6 +911,14 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
         onChange={handleFallbackFilesSelected}
         {...{ webkitdirectory: 'true' }}
       />
+      <input
+        ref={staffUploadInputRef}
+        type="file"
+        multiple
+        className="hidden"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        onChange={handleStaffUploadFilesSelected}
+      />
 
       <header className="border-b border-gp-border bg-gp-panel px-4 py-4 md:px-6">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
@@ -765,23 +947,31 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                   </p>
                 )}
               </div>
+              <button
+                type="button"
+                onClick={handleStaffUploadClick}
+                disabled={isSyncing || isStaffUploading}
+                className={`${buttonBase} border border-green-700 bg-gp-input text-green-400 hover:bg-green-950/40`}
+              >
+                {isStaffUploading ? 'Uploading...' : 'Upload Wheels'}
+              </button>
               {isAdmin && (
                 <button
                   type="button"
                   onClick={() => void handleSyncClick()}
-                  disabled={isSyncing}
+                  disabled={isSyncing || isStaffUploading}
                   className={`${buttonBase} bg-gp-red text-white hover:bg-red-700`}
                 >
                   {isSyncing ? 'Syncing...' : 'Sync Local Folder'}
                 </button>
               )}
             </div>
-            {isSyncing && (
+            {(isSyncing || isStaffUploading) && (
               <div className="mt-3 rounded border border-gp-border bg-gp-panel px-3 py-2 font-bold uppercase tracking-wider">
                 Scanned {syncProgress.scanned} | Uploaded {syncProgress.uploaded}/{syncProgress.total} | Skipped {syncProgress.skipped} | Failed {syncProgress.failed}
               </div>
             )}
-            {!isAdmin && <p className="mt-2 text-[11px]">Browse, copy, and download are available to staff. Sync is admin-only.</p>}
+            {!isAdmin && <p className="mt-2 text-[11px]">Staff can browse, copy, download, and upload wheel batches. Full local-folder sync is admin-only.</p>}
           </div>
         </div>
       </header>
@@ -882,6 +1072,14 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
             {error ? <span className="whitespace-pre-line font-bold text-gp-red">{error}</span> : <span className="text-gp-text-muted">{status}</span>}
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <button
+              type="button"
+              onClick={handleStaffUploadClick}
+              disabled={isSyncing || isStaffUploading}
+              className={`${buttonBase} border border-green-700 bg-gp-input text-green-400 hover:bg-green-950/40`}
+            >
+              {isStaffUploading ? 'Uploading...' : 'Upload Wheels'}
+            </button>
             <button
               type="button"
               onClick={handleSelectFiltered}
@@ -993,6 +1191,105 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
           </div>
         )}
       </main>
+
+      {isStaffUploadModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-sm">
+          <div className="w-full max-w-2xl rounded-xl border border-gp-border bg-gp-panel shadow-2xl">
+            <div className="border-b border-gp-border px-5 py-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-green-400">Supabase Wheel Upload</p>
+              <h2 className="mt-1 text-2xl font-black uppercase text-gp-text-main">Replace Wheel Folder</h2>
+              <p className="mt-2 text-sm text-gp-text-muted">
+                Confirm the shared wheel specs for this batch. After upload, previous active images inside the same folder will be removed from the portal.
+              </p>
+            </div>
+
+            <div className="space-y-4 px-5 py-4">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="block">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-gp-text-muted">Wheel Inch</span>
+                  <select
+                    value={staffUploadRimSize}
+                    onChange={(event) => setStaffUploadRimSize(event.target.value)}
+                    disabled={isStaffUploading}
+                    className="mt-2 min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-3 py-2 text-sm font-bold text-gp-text-main outline-none focus:border-gp-red"
+                  >
+                    <option value="">Select inch</option>
+                    {STAFF_UPLOAD_RIM_SIZES.map((size) => (
+                      <option key={size} value={size}>{size}"</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="block">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-gp-text-muted">Wheel PCD</span>
+                  <input
+                    list="wheel-upload-pcd-options"
+                    value={staffUploadPcd}
+                    onChange={(event) => setStaffUploadPcd(event.target.value.toUpperCase())}
+                    onBlur={() => setStaffUploadPcd((value) => normalizeStaffUploadPcd(value))}
+                    disabled={isStaffUploading}
+                    placeholder="Example: 5X100"
+                    className="mt-2 min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-3 py-2 text-sm font-bold uppercase text-gp-text-main outline-none focus:border-gp-red"
+                  />
+                  <datalist id="wheel-upload-pcd-options">
+                    {pcds.map((pcd) => (
+                      <option key={pcd} value={pcd} />
+                    ))}
+                  </datalist>
+                </label>
+              </div>
+
+              <label className="block">
+                <span className="text-[10px] font-black uppercase tracking-widest text-gp-text-muted">Upload PIN</span>
+                <input
+                  type="password"
+                  value={staffUploadToken}
+                  onChange={(event) => setStaffUploadToken(event.target.value)}
+                  disabled={isStaffUploading}
+                  placeholder="Enter wheel upload PIN"
+                  className="mt-2 min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-3 py-2 text-sm font-bold text-gp-text-main outline-none focus:border-gp-red"
+                />
+              </label>
+
+              <div className="rounded-lg border border-gp-border bg-gp-black/60 p-3 text-sm text-gp-text-muted">
+                <p className="font-bold text-gp-text-main">{staffUploadFiles.length} image{staffUploadFiles.length === 1 ? '' : 's'} selected</p>
+                <p className="mt-1">
+                  Target folder: <span className="font-bold text-green-400">{staffUploadRimSize && staffUploadPcd ? `${staffUploadRimSize} ${normalizeStaffUploadPcd(staffUploadPcd)}` : 'Choose inch and PCD'}</span>
+                </p>
+                <div className="mt-2 max-h-28 overflow-y-auto text-xs">
+                  {staffUploadFiles.slice(0, 8).map((file) => (
+                    <p key={`${file.name}-${file.size}`} className="truncate">{file.name}</p>
+                  ))}
+                  {staffUploadFiles.length > 8 && <p>+{staffUploadFiles.length - 8} more</p>}
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-yellow-700/50 bg-yellow-950/20 p-3 text-xs font-bold uppercase tracking-wide text-yellow-200">
+                This replaces the active portal images in the matching folder only. It does not run a full local-folder sync.
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 border-t border-gp-border px-5 py-4 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={resetStaffUpload}
+                disabled={isStaffUploading}
+                className={`${buttonBase} border border-gp-border bg-transparent text-gp-text-muted hover:text-gp-text-main`}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleConfirmStaffUpload()}
+                disabled={isStaffUploading}
+                className={`${buttonBase} bg-gp-red text-white hover:bg-red-700`}
+              >
+                {isStaffUploading ? 'Uploading...' : 'Confirm Replace Upload'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {selectedItems.length > 0 && (
         <aside className="fixed bottom-0 left-0 right-0 z-40 border-t border-gp-border bg-gp-panel/95 px-4 py-3 shadow-2xl backdrop-blur md:left-72">
