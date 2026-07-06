@@ -6,6 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS'
 };
 
+const WHEEL_CATALOG_IMPORT_PIN = '786';
 const BUCKET_NAME = 'wheel-catalog-images';
 const IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
@@ -112,7 +113,7 @@ const getConfiguredImportToken = async (supabase: ReturnType<typeof createClient
   if (error) throw error;
   if (data?.secret_value) return data.secret_value;
 
-  return Deno.env.get('WHEEL_CATALOG_IMPORT_TOKEN') ?? '';
+  return Deno.env.get('WHEEL_CATALOG_IMPORT_TOKEN') ?? WHEEL_CATALOG_IMPORT_PIN;
 };
 
 const base64ToBytes = (base64: string) => {
