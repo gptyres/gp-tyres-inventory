@@ -56,6 +56,7 @@ const chipBase = 'min-h-9 rounded-lg border px-3 py-2 text-xs font-bold uppercas
 const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif']);
 const CATEGORY_FOLDER_PATTERN = /^(1[3-9]|2[0-6])\s+[456]X\d{3}(?:\.\d)?$/i;
 const SYNC_CONCURRENCY = 4;
+const WHEEL_CATALOG_REPLACE_FOLDER_PIN = '786';
 
 const normalizeText = (value: string) => value.trim().toLowerCase();
 const normalizePath = (value: string) => value.replaceAll('\\', '/').split('/').map((part) => part.replace(/\s+/g, ' ').trim()).filter(Boolean).join('/');
@@ -428,7 +429,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   const [staffUploadFiles, setStaffUploadFiles] = useState<File[]>([]);
   const [staffUploadRimSize, setStaffUploadRimSize] = useState('');
   const [staffUploadPcd, setStaffUploadPcd] = useState('');
-  const [staffUploadToken, setStaffUploadToken] = useState('');
+  const [staffUploadToken, setStaffUploadToken] = useState(WHEEL_CATALOG_REPLACE_FOLDER_PIN);
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [selectedSize, setSelectedSize] = useState('ALL');
@@ -685,7 +686,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     setStaffUploadFiles([]);
     setStaffUploadRimSize('');
     setStaffUploadPcd('');
-    setStaffUploadToken('');
+    setStaffUploadToken(WHEEL_CATALOG_REPLACE_FOLDER_PIN);
   };
 
   const handleStaffUploadClick = () => {
@@ -705,7 +706,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     setStaffUploadFiles(files);
     setStaffUploadRimSize(selectedSize !== 'ALL' ? selectedSize : '');
     setStaffUploadPcd(selectedPcd !== 'ALL' ? selectedPcd : '');
-    setStaffUploadToken('');
+    setStaffUploadToken(WHEEL_CATALOG_REPLACE_FOLDER_PIN);
     setError('');
     setIsStaffUploadModalOpen(true);
   };
@@ -731,8 +732,8 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
       return;
     }
 
-    if (!importToken) {
-      setError('Enter the wheel upload PIN before confirming.');
+    if (importToken !== WHEEL_CATALOG_REPLACE_FOLDER_PIN) {
+      setError('Enter the wheel upload PIN 786 before confirming.');
       return;
     }
 
@@ -837,7 +838,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
       setError(uploadError instanceof Error ? uploadError.message : 'Wheel upload failed.');
     } finally {
       setIsStaffUploading(false);
-      setStaffUploadToken('');
+      setStaffUploadToken(WHEEL_CATALOG_REPLACE_FOLDER_PIN);
     }
   };
 
@@ -1246,9 +1247,12 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                   value={staffUploadToken}
                   onChange={(event) => setStaffUploadToken(event.target.value)}
                   disabled={isStaffUploading}
-                  placeholder="Enter wheel upload PIN"
+                  placeholder="Enter PIN 786"
                   className="mt-2 min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-3 py-2 text-sm font-bold text-gp-text-main outline-none focus:border-gp-red"
                 />
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
+                  Replace Wheel Folder PIN: 786
+                </p>
               </label>
 
               <div className="rounded-lg border border-gp-border bg-gp-black/60 p-3 text-sm text-gp-text-muted">

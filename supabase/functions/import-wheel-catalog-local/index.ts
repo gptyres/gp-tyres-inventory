@@ -103,9 +103,6 @@ const normalizeRimSize = (value?: string | null) => {
 };
 
 const getConfiguredImportToken = async (supabase: ReturnType<typeof createClient>) => {
-  const envToken = Deno.env.get('WHEEL_CATALOG_IMPORT_TOKEN');
-  if (envToken) return envToken;
-
   const { data, error } = await supabase
     .from('app_private_import_secrets')
     .select('secret_value')
@@ -113,7 +110,9 @@ const getConfiguredImportToken = async (supabase: ReturnType<typeof createClient
     .maybeSingle();
 
   if (error) throw error;
-  return data?.secret_value ?? '';
+  if (data?.secret_value) return data.secret_value;
+
+  return Deno.env.get('WHEEL_CATALOG_IMPORT_TOKEN') ?? '';
 };
 
 const base64ToBytes = (base64: string) => {
