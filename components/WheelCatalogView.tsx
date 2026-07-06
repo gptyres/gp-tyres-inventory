@@ -786,7 +786,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
         </div>
       </header>
 
-      <section className="sticky top-0 z-30 border-b border-gp-border bg-gp-panel/95 px-4 py-4 shadow-2xl shadow-black/30 backdrop-blur md:px-6">
+      <section className="border-b border-gp-border bg-gp-bg px-4 py-4 md:px-6">
         <div className="grid gap-4 xl:grid-cols-[0.9fr_1fr_1.2fr_1.4fr]">
           <div>
             <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-gp-text-muted">Size</p>
@@ -874,7 +874,10 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
           </div>
         </div>
 
-        <div className="mt-4 flex flex-col gap-3 border-t border-gp-border pt-4 lg:flex-row lg:items-center lg:justify-between">
+      </section>
+
+      <section className="sticky top-0 z-40 border-y border-gp-border bg-[#06101a] px-4 py-3 shadow-2xl shadow-black/60 md:px-6">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-h-5 text-sm">
             {error ? <span className="whitespace-pre-line font-bold text-gp-red">{error}</span> : <span className="text-gp-text-muted">{status}</span>}
           </div>
