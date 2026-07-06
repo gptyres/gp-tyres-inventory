@@ -639,7 +639,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   };
 
   const handleSyncClick = async () => {
-    if (!isAdmin || isSyncing) return;
+    if (isSyncing) return;
     const importToken = window.prompt('Enter the wheel catalog sync token/PIN.');
     if (!importToken) {
       setStatus('Sync cancelled.');
@@ -956,23 +956,21 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
               >
                 {isStaffUploading ? 'Uploading...' : 'Upload Wheels'}
               </button>
-              {isAdmin && (
-                <button
-                  type="button"
-                  onClick={() => void handleSyncClick()}
-                  disabled={isSyncing || isStaffUploading}
-                  className={`${buttonBase} bg-gp-red text-white hover:bg-red-700`}
-                >
-                  {isSyncing ? 'Syncing...' : 'Sync Local Folder'}
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => void handleSyncClick()}
+                disabled={isSyncing || isStaffUploading}
+                className={`${buttonBase} bg-gp-red text-white hover:bg-red-700`}
+              >
+                {isSyncing ? 'Syncing...' : 'Sync Local Folder'}
+              </button>
             </div>
             {(isSyncing || isStaffUploading) && (
               <div className="mt-3 rounded border border-gp-border bg-gp-panel px-3 py-2 font-bold uppercase tracking-wider">
                 Scanned {syncProgress.scanned} | Uploaded {syncProgress.uploaded}/{syncProgress.total} | Skipped {syncProgress.skipped} | Failed {syncProgress.failed}
               </div>
             )}
-            {!isAdmin && <p className="mt-2 text-[11px]">Staff can browse, copy, download, and upload wheel batches. Full local-folder sync is admin-only.</p>}
+            {!isAdmin && <p className="mt-2 text-[11px]">Staff can browse, copy, download, upload wheel batches, and sync local folders.</p>}
           </div>
         </div>
       </header>
