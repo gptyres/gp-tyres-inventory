@@ -134,6 +134,55 @@ export type CRMCustomerEventInsert = Omit<CRMCustomerEventRow, 'id' | 'created_a
   id?: string;
 };
 
+export interface WheelCatalogItemRow {
+  id: string;
+  source_root_folder_id: string;
+  drive_file_id: string;
+  drive_folder_id?: string | null;
+  folder_path: string;
+  folder_path_parts: string[];
+  category?: string | null;
+  rim_size?: string | null;
+  pcd?: string | null;
+  tags: string[];
+  file_name: string;
+  drive_url: string;
+  storage_bucket: string;
+  storage_path: string;
+  public_image_url: string;
+  mime_type: string;
+  local_relative_path?: string | null;
+  source_size_bytes?: number | null;
+  content_sha256?: string | null;
+  source_modified_at?: string | null;
+  active: boolean;
+  imported_at: string;
+  updated_at?: string;
+}
+
+export type WheelCatalogItemInsert = Omit<WheelCatalogItemRow, 'id' | 'updated_at'> & {
+  id?: string;
+};
+
+export interface WheelCatalogSyncRunRow {
+  id: string;
+  status: 'started' | 'completed' | 'failed';
+  started_at: string;
+  completed_at?: string | null;
+  source_label: string;
+  files_scanned: number;
+  files_uploaded: number;
+  files_skipped: number;
+  files_failed: number;
+  rows_deactivated: number;
+  error_message?: string | null;
+}
+
+export type WheelCatalogSyncRunInsert = Omit<WheelCatalogSyncRunRow, 'id' | 'started_at'> & {
+  id?: string;
+  started_at?: string;
+};
+
 interface Database {
   public: {
     Tables: {
@@ -177,6 +226,18 @@ interface Database {
         Row: CRMCustomerEventRow;
         Insert: CRMCustomerEventInsert;
         Update: Partial<CRMCustomerEventInsert>;
+        Relationships: [];
+      };
+      wheel_catalog_items: {
+        Row: WheelCatalogItemRow;
+        Insert: WheelCatalogItemInsert;
+        Update: Partial<Omit<WheelCatalogItemRow, 'id' | 'drive_file_id'>>;
+        Relationships: [];
+      };
+      wheel_catalog_sync_runs: {
+        Row: WheelCatalogSyncRunRow;
+        Insert: WheelCatalogSyncRunInsert;
+        Update: Partial<Omit<WheelCatalogSyncRunRow, 'id'>>;
         Relationships: [];
       };
     };

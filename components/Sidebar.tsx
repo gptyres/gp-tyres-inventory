@@ -219,7 +219,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onClick={handleWheelCatalogClick}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors border-l-2 ${currentView === 'WHEEL_CATALOG' ? 'border-gp-red text-gp-text-main bg-gp-input' : 'border-transparent text-gp-text-muted hover:text-gp-text-main'}`}
                 >
-                  Wheel Catalog <span className="text-[9px] bg-gp-red text-white px-1 ml-1 rounded">DRIVE</span>
+                  Wheel Catalogue
                 </button>
               </div>
             )}

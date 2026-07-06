@@ -1648,7 +1648,7 @@ const App: React.FC = () => {
                 )}
                 {currentView === 'WHEEL_CATALOG' ? (
                   <Suspense fallback={<LoadingPanel label="Loading wheel catalogue..." />}>
-                    <WheelCatalogView searchQuery={debouncedSearchQuery} />
+                    <WheelCatalogView searchQuery={debouncedSearchQuery} isAdmin={isAdmin} />
                   </Suspense>
                 ) : isSupplierCatalogLoading ? (
                   <LoadingPanel label={`Loading ${supplierCatalogLabel} stock...`} />
