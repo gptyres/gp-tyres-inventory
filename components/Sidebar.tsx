@@ -204,12 +204,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   Tyres
                 </button>
                 <button 
-                  onClick={() => handleProductClick(ProductType.WHEEL)}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'INVENTORY' && activeFilter === ProductType.WHEEL ? 'text-gp-red bg-gp-red/10' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  Wheels
-                </button>
-                <button 
                   onClick={() => handleProductClick(ProductType.COILOVER)}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'INVENTORY' && activeFilter === ProductType.COILOVER ? 'text-gp-red bg-gp-red/10' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >
