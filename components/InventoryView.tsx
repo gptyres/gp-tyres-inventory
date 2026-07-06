@@ -146,11 +146,12 @@ const getWheelClipboardText = (item: InventoryItem): string => {
   const pcd = formatWheelPcd(wheel.pcd);
   const widthText = width ? `${width}J` : '';
   const offset = formatWheelOffset(wheel.offset);
+  const detailLine = [widthText, offset, wheel.centerBore].filter(Boolean).join(' | ');
 
   return [
     [wheelName, finish].filter(Boolean).join(' '),
     [diameterText, pcd].filter(Boolean).join(' '),
-    `${widthText} | ${offset} | ${wheel.centerBore || ''}`
+    detailLine
   ].join('\n');
 };
 
@@ -881,7 +882,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
 
           {/* Specs Area */}
           {visibleColumns.specs && (
-            <div className="p-3 grid grid-cols-3 gap-2 flex-grow content-start bg-gradient-to-b from-gp-panel to-gp-overlay">
+            <div className={`p-3 grid gap-2 flex-grow content-start bg-gradient-to-b from-gp-panel to-gp-overlay ${item.type === ProductType.WHEEL ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-3'}`}>
                 {item.type === ProductType.TYRE && (
                     <>
                     <SpecBadge label="Index" value={(item as TyreProduct).loadSpeedIndex || '-'} />
@@ -894,7 +895,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     <SpecBadge label="Size" value={(item as WheelProduct).size} />
                     <SpecBadge label="PCD" value={(item as WheelProduct).pcd} />
                     <SpecBadge label="ET" value={(item as WheelProduct).offset} />
-                    {(item as WheelProduct).centerBore && <SpecBadge label="CB" value={(item as WheelProduct).centerBore} />}
+                    <SpecBadge label="CB" value={(item as WheelProduct).centerBore || '-'} />
                     {(item as WheelProduct).location && (
                        <div className="col-span-full mt-1 flex flex-col bg-black/10 p-1.5 rounded border border-gp-border/50">
                            <span className="text-[9px] text-gp-text-muted uppercase font-bold tracking-wider">Warehouse Stock</span>
