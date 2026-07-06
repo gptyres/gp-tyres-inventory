@@ -67,6 +67,7 @@ export interface SupplierImageMatchResult {
 }
 
 const supplierImageCache = new Map<string, Promise<SupplierStockImageRow[]>>();
+const SUPPLIER_STOCK_IMAGE_PAGE_SIZE = 1000;
 
 export const normalizeSupplierImageToken = (value: string | undefined | null): string => (
   (value ?? '')
@@ -252,8 +253,35 @@ export const parseAlineStockImageKeys = (description: string) => {
   };
 };
 
+const cleanSupplierTyrePatternKey = (brand: string, pattern: string): string => {
+  const brandKey = normalizeSupplierImageToken(brand);
+  let patternKey = normalizeSupplierImageToken(pattern || brand || 'TYRE');
+
+  if (brandKey) {
+    const escapedBrandKey = brandKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    patternKey = patternKey.replace(new RegExp(`\\b${escapedBrandKey}\\b`, 'g'), ' ');
+  }
+
+  patternKey = patternKey
+    .replace(/\b(?:LT|P)?\d{3}\s*\/\s*\d{2}\s*R?\s*\d{2}(?:C|LT)?\b/g, ' ')
+    .replace(/\b\d{3}\s*\/\s*\d{2}\s*\/\s*\d{2}\b/g, ' ')
+    .replace(/\b\d{3}\s+\d{2}\s*R?\s*\d{2}(?:C|LT)?\b/g, ' ')
+    .replace(/\b\d{3}\s+\d{2}\s+\d{2}\b/g, ' ')
+    .replace(/\b\d{2,3}\s*R\s*\d{2}(?:C|LT)?\b/g, ' ')
+    .replace(/\b\d{2,3}\s+R\s*\d{2}(?:C|LT)?\b/g, ' ')
+    .replace(/\b\d{2,3}\s*\/\s*\d{2,3}\b/g, ' ')
+    .replace(/\b\d{2,3}\s*[A-Z]\b/g, ' ')
+    .replace(/\b(?:LOAD|SPEED|INDEX|IDX)\s+\d+\b/g, ' ')
+    .replace(/\b(?:LOAD|SPEED|INDEX|IDX|SIZE|SKU|STOCK|CODE|TYRE|TYRES|TIRE|TIRES|IMP)\b/g, ' ')
+    .replace(/\b(?:XL|RF|RFT|RUN FLAT|STD|TL|TT|PR|PLY|OWL|RWL|BSW|RPB|FR)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return patternKey || brandKey || 'TYRE';
+};
+
 export const parseSupplierTyreImageKeys = (brand: string, pattern: string) => ({
-  designKey: normalizeSupplierImageToken(pattern || brand || 'TYRE'),
+  designKey: cleanSupplierTyrePatternKey(brand, pattern),
   finishKey: normalizeSupplierImageToken(brand)
 });
 
@@ -341,15 +369,16 @@ export const supplierTyreMatchesUploadKeys = (
 
   const targetKeys = parseSupplierTyreImageKeys(brand, pattern);
   const rawTyreKeys = parseSupplierTyreImageKeys(tyre.brand, tyre.pattern);
+  const storedTyreKeys = parseSupplierTyreImageKeys(tyre.imageFinishKey || tyre.brand, tyre.imageDesignKey || '');
   const itemKeys = inventoryItemToSupplierImageLookup(item);
   const designCandidates = new Set([
     rawTyreKeys.designKey,
-    normalizeSupplierImageToken(tyre.imageDesignKey),
+    storedTyreKeys.designKey,
     normalizeSupplierImageToken(itemKeys?.imageDesignKey)
   ].filter(Boolean));
   const finishCandidates = new Set([
     rawTyreKeys.finishKey,
-    normalizeSupplierImageToken(tyre.imageFinishKey),
+    storedTyreKeys.finishKey,
     normalizeSupplierImageToken(itemKeys?.imageFinishKey)
   ].filter(Boolean));
 
@@ -490,14 +519,17 @@ export const inventoryItemToSupplierImageLookup = (item: InventoryItem): Supplie
     const tyre = item as TyreProduct;
     if (!tyre.supplierName) return null;
 
-    const imageKeys = parseSupplierTyreImageKeys(tyre.brand, tyre.pattern);
+    const imageKeys = parseSupplierTyreImageKeys(
+      tyre.brand || tyre.imageFinishKey || '',
+      tyre.pattern || tyre.imageDesignKey || ''
+    );
     return {
       id: item.id,
       productType: ProductType.TYRE,
       supplierName: tyre.supplierName,
       supplierStockCode: tyre.supplierStockCode,
-      imageDesignKey: tyre.imageDesignKey || imageKeys.designKey,
-      imageFinishKey: tyre.imageFinishKey || imageKeys.finishKey,
+      imageDesignKey: imageKeys.designKey,
+      imageFinishKey: imageKeys.finishKey || normalizeSupplierImageToken(tyre.imageFinishKey),
       size: tyre.size
     };
   }
@@ -510,21 +542,34 @@ export const fetchSupplierStockImages = async (supplier?: string): Promise<Suppl
 
   if (!supplierImageCache.has(cacheKey)) {
     supplierImageCache.set(cacheKey, (async () => {
-      let query = (supabase as any)
-        .from('supplier_stock_images')
-        .select('id,supplier,source,source_file_id,design_key,finish_key,rim_size,pcd,tags,file_name,storage_bucket,storage_path,public_image_url,mime_type,active,imported_at,updated_at')
-        .eq('active', true);
+      const rows: SupplierStockImageRow[] = [];
+      let from = 0;
 
-      if (supplier) {
-        query = query.eq('supplier', supplier);
+      while (true) {
+        let query = (supabase as any)
+          .from('supplier_stock_images')
+          .select('id,supplier,source,source_file_id,design_key,finish_key,rim_size,pcd,tags,file_name,storage_bucket,storage_path,public_image_url,mime_type,active,imported_at,updated_at')
+          .eq('active', true);
+
+        if (supplier) {
+          query = query.eq('supplier', supplier);
+        }
+
+        const { data, error } = await query
+          .order('design_key', { ascending: true })
+          .order('file_name', { ascending: true })
+          .range(from, from + SUPPLIER_STOCK_IMAGE_PAGE_SIZE - 1);
+
+        if (error) throw error;
+
+        const page = data ?? [];
+        rows.push(...page);
+
+        if (page.length < SUPPLIER_STOCK_IMAGE_PAGE_SIZE) break;
+        from += SUPPLIER_STOCK_IMAGE_PAGE_SIZE;
       }
 
-      const { data, error } = await query
-        .order('design_key', { ascending: true })
-        .order('file_name', { ascending: true });
-
-      if (error) throw error;
-      return data ?? [];
+      return rows;
     })());
   }
 

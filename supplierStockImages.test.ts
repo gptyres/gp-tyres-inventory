@@ -1,7 +1,39 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const supabaseMockState = vi.hoisted(() => ({
+  pages: [] as unknown[][],
+  rangeCalls: [] as Array<{ from: number; to: number }>,
+  eqCalls: [] as Array<{ column: string; value: unknown }>
+}));
+
+vi.mock('./supabaseClient', () => ({
+  supabase: {
+    from: vi.fn(() => {
+      const builder = {
+        select: vi.fn(() => builder),
+        eq: vi.fn((column: string, value: unknown) => {
+          supabaseMockState.eqCalls.push({ column, value });
+          return builder;
+        }),
+        order: vi.fn(() => builder),
+        range: vi.fn(async (from: number, to: number) => {
+          supabaseMockState.rangeCalls.push({ from, to });
+          return {
+            data: supabaseMockState.pages.shift() ?? [],
+            error: null
+          };
+        })
+      };
+      return builder;
+    })
+  }
+}));
+
 import {
   buildStaffSupplierTyreImageUploadPayload,
   buildSupplierImageMap,
+  clearSupplierStockImageCache,
+  fetchSupplierStockImages,
   findBestSupplierStockImage,
   inventoryItemToSupplierImageLookup,
   parseAlineImageFileName,
@@ -12,6 +44,13 @@ import {
 } from './supplierStockImages';
 import { ProductType } from './types';
 import { parseApexData, parseArcData, parseAttData, parseExoticData, parseExclusiveTyresData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
+
+beforeEach(() => {
+  supabaseMockState.pages = [];
+  supabaseMockState.rangeCalls = [];
+  supabaseMockState.eqCalls = [];
+  clearSupplierStockImageCache();
+});
 
 describe('ALINE supplier image parsing', () => {
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
@@ -492,6 +531,18 @@ describe('supplier tyre image parsing and matching', () => {
     });
   });
 
+  it('strips tyre size and load index clutter from replacement image keys', () => {
+    expect(parseSupplierTyreImageKeys('Dunlop', '265/65R17 Dunlop Grandtrek AT3G 112T index 4')).toEqual({
+      designKey: 'GRANDTREK AT3G',
+      finishKey: 'DUNLOP'
+    });
+
+    expect(parseSupplierTyreImageKeys('Radar', '235/45/18 Radar Dimax R8+ 105Y XL tyre index')).toEqual({
+      designKey: 'DIMAX R8',
+      finishKey: 'RADAR'
+    });
+  });
+
   it('keeps supplier tyre image matches inside the same supplier', () => {
     const match = findBestSupplierStockImage({
       id: 'sailun-1',
@@ -624,6 +675,38 @@ describe('supplier tyre image parsing and matching', () => {
     expect(first.supplierStockCode).not.toBe(second.supplierStockCode);
     expect(supplierTyreMatchesUploadKeys(first, 'TYREWAREHOUSE', 'Dunlop', 'Grandtrek AT3G')).toBe(true);
     expect(supplierTyreMatchesUploadKeys(second, 'TYREWAREHOUSE', 'Dunlop', 'Grandtrek AT3G')).toBe(true);
+    expect(supplierTyreMatchesUploadKeys(first, 'TYREWAREHOUSE', 'Dunlop', '265/65R17 Dunlop Grandtrek AT3G 112T index 4')).toBe(true);
+    expect(supplierTyreMatchesUploadKeys(second, 'TYREWAREHOUSE', 'Dunlop', '245/70R16 Dunlop Grandtrek AT3G 108T index 7')).toBe(true);
+  });
+
+  it('uses the same staff replacement key when upload confirmation includes tyre index details', () => {
+    const [item] = parseAttData([
+      'SIZE,BRAND_PATTERN,CATEGORY,PRICE,QTY',
+      '265/65R17,Dunlop - Grandtrek AT3G,SUV,R2999,4'
+    ].join('\n'));
+
+    const cleanPayload = buildStaffSupplierTyreImageUploadPayload({
+      item,
+      brand: 'Dunlop',
+      pattern: 'Grandtrek AT3G',
+      fileName: 'clean.jpg',
+      mimeType: 'image/jpeg',
+      base64: 'abc123',
+      hash: 'cleanhash'
+    });
+    const dirtyPayload = buildStaffSupplierTyreImageUploadPayload({
+      item,
+      brand: 'Dunlop',
+      pattern: '265/65R17 Dunlop Grandtrek AT3G 112T index 4',
+      fileName: 'replacement.jpg',
+      mimeType: 'image/jpeg',
+      base64: 'abc123',
+      hash: 'replacementhash'
+    });
+
+    expect(dirtyPayload.sourceFileId).toBe(cleanPayload.sourceFileId);
+    expect(dirtyPayload.designKey).toBe(cleanPayload.designKey);
+    expect(dirtyPayload.storagePath).toBe('tyres/staff-upload/att/dunlop/grandtrek-at3g/replacementhash.jpg');
   });
 
   it('prefers staff replacement images over older imported supplier tyre images', () => {
@@ -713,5 +796,41 @@ describe('supplier tyre image parsing and matching', () => {
 
     expect(imageMap[first.id]).toBe('https://example.test/replacement-grandtrek-at3g.jpg');
     expect(imageMap[second.id]).toBe('https://example.test/replacement-grandtrek-at3g.jpg');
+  });
+
+  it('loads supplier image rows beyond the first Supabase page', async () => {
+    const makeRow = (index: number) => ({
+      id: `image-${index}`,
+      supplier: 'APEX',
+      source: 'staff-upload',
+      source_file_id: `staff-upload:apex:dunlop:test-${index}`,
+      file_name: `test-${index}.jpg`,
+      storage_bucket: 'supplier-stock-images',
+      storage_path: `tyres/staff-upload/apex/dunlop/test-${index}.jpg`,
+      public_image_url: `https://example.test/test-${index}.jpg`,
+      mime_type: 'image/jpeg',
+      design_key: `TEST ${index}`,
+      finish_key: 'DUNLOP',
+      rim_size: null,
+      pcd: null,
+      tags: ['staff-upload'],
+      active: true,
+      imported_at: '2026-07-03T00:00:00.000Z'
+    });
+
+    supabaseMockState.pages = [
+      Array.from({ length: 1000 }, (_value, index) => makeRow(index)),
+      [makeRow(1000)]
+    ];
+
+    const rows = await fetchSupplierStockImages('APEX');
+
+    expect(rows).toHaveLength(1001);
+    expect(rows.at(-1)?.public_image_url).toBe('https://example.test/test-1000.jpg');
+    expect(supabaseMockState.rangeCalls).toEqual([
+      { from: 0, to: 999 },
+      { from: 1000, to: 1999 }
+    ]);
+    expect(supabaseMockState.eqCalls).toContainEqual({ column: 'supplier', value: 'APEX' });
   });
 });

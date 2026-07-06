@@ -327,7 +327,7 @@ interface SupplierTyreImageUploadModalProps {
   initialFile?: File | null;
   currentUser?: string | null;
   onClose: () => void;
-  onUploaded: (item: InventoryItem, brand: string, pattern: string, imageUrl: string) => void;
+  onUploaded: (item: InventoryItem, supplier: string, brand: string, pattern: string, imageUrl: string) => void;
 }
 
 const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> = ({ item, initialFile, currentUser, onClose, onUploaded }) => {
@@ -451,7 +451,13 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
       if (error) throw error;
       if (!data?.ok) throw new Error(data?.error || 'Supplier image upload failed.');
 
-      onUploaded(item, brand.trim(), pattern.trim(), data.publicImageUrl);
+      onUploaded(
+        item,
+        data.supplier || payload.supplier,
+        data.finishKey || payload.finishKey,
+        data.designKey || payload.designKey,
+        data.publicImageUrl
+      );
       setMessage('Uploaded. Matching supplier tyres now use this visual.');
       onClose();
     } catch (error) {
@@ -1027,58 +1033,8 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [uploadImageInitialFile, setUploadImageInitialFile] = useState<File | null>(null);
   const [supplierImageRefreshKey, setSupplierImageRefreshKey] = useState(0);
   const [clipboardNotice, setClipboardNotice] = useState('');
+  const [uploadNotice, setUploadNotice] = useState('');
   const [visibleCount, setVisibleCount] = useState(RENDER_CHUNK_SIZE);
-  const supplierImageLookupItems = useMemo(
-    () => props.items.slice(0, visibleCount).filter((item) => inventoryItemToSupplierImageLookup(item)),
-    [props.items, visibleCount]
-  );
-  const supplierImageLookupSignature = useMemo(
-    () => supplierImageLookupItems
-      .map((item) => {
-        const lookupItem = inventoryItemToSupplierImageLookup(item);
-        if (!lookupItem) return '';
-        return [
-          lookupItem.id,
-          lookupItem.productType,
-          lookupItem.supplierName ?? '',
-          lookupItem.supplierStockCode ?? '',
-          lookupItem.imageDesignKey ?? '',
-          lookupItem.imageFinishKey ?? '',
-          lookupItem.size ?? '',
-          lookupItem.pcd ?? ''
-        ].join(':');
-      })
-      .join('|'),
-    [supplierImageLookupItems]
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadSupplierImages = async () => {
-      if (!showImages) {
-        setSupplierImages({});
-        return;
-      }
-      if (!supplierImageLookupItems.length) {
-        setSupplierImages({});
-        return;
-      }
-
-      try {
-        const rows = await fetchSupplierStockImages();
-        if (!cancelled) setSupplierImages(buildSupplierImageMap(supplierImageLookupItems, rows));
-      } catch (error) {
-        console.error('Supplier image lookup failed', error);
-        if (!cancelled) setSupplierImages({});
-      }
-    };
-
-    void loadSupplierImages();
-    return () => {
-      cancelled = true;
-    };
-  }, [showImages, supplierImageLookupSignature, supplierImageRefreshKey]);
 
   // Function to generate image using Gemini
   const handleGenerateImage = async (item: InventoryItem) => {
@@ -1151,18 +1107,35 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     }
   };
 
-  const handleSupplierTyreImageUploaded = (item: InventoryItem, brand: string, pattern: string, imageUrl: string) => {
-    const tyre = item as TyreProduct;
-    clearSupplierStockImageCache(tyre.supplierName);
+  const handleSupplierTyreImageUploaded = (item: InventoryItem, supplier: string, brand: string, pattern: string, imageUrl: string) => {
+    clearSupplierStockImageCache(supplier);
+    const matchingIds = new Set<string>([item.id]);
+    props.items.forEach((candidate) => {
+      if (supplierTyreMatchesUploadKeys(candidate, supplier, brand, pattern)) {
+        matchingIds.add(candidate.id);
+      }
+    });
+
     setSupplierImages((previous) => {
       const next = { ...previous };
-      props.items.forEach((candidate) => {
-        if (supplierTyreMatchesUploadKeys(candidate, tyre.supplierName ?? '', brand, pattern)) {
-          next[candidate.id] = imageUrl;
-        }
+      matchingIds.forEach((id) => {
+        next[id] = imageUrl;
       });
       return next;
     });
+    setGeneratedImages((previous) => {
+      const next = { ...previous };
+      matchingIds.forEach((id) => {
+        delete next[id];
+      });
+      return next;
+    });
+    setErrorImages((previous) => {
+      const next = new Set(previous);
+      matchingIds.forEach((id) => next.delete(id));
+      return next;
+    });
+    setUploadNotice(`Tyre visual replaced for ${matchingIds.size} matching stock item${matchingIds.size === 1 ? '' : 's'}.`);
     setSupplierImageRefreshKey((value) => value + 1);
   };
 
@@ -1233,6 +1206,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     return () => window.clearTimeout(timer);
   }, [clipboardNotice]);
 
+  useEffect(() => {
+    if (!uploadNotice) return;
+    const timer = window.setTimeout(() => setUploadNotice(''), 2600);
+    return () => window.clearTimeout(timer);
+  }, [uploadNotice]);
+
   // 1. Filter Items based on local view settings
   const viewFilteredItems = useMemo(() => {
     if (hideLowStock) {
@@ -1296,6 +1275,57 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   }, [groupBy, hideLowStock, sortConfig]);
 
   const visibleItems = useMemo(() => sortedItems.slice(0, visibleCount), [sortedItems, visibleCount]);
+  const supplierImageLookupItems = useMemo(
+    () => visibleItems.filter((item) => inventoryItemToSupplierImageLookup(item)),
+    [visibleItems]
+  );
+  const supplierImageLookupSignature = useMemo(
+    () => supplierImageLookupItems
+      .map((item) => {
+        const lookupItem = inventoryItemToSupplierImageLookup(item);
+        if (!lookupItem) return '';
+        return [
+          lookupItem.id,
+          lookupItem.productType,
+          lookupItem.supplierName ?? '',
+          lookupItem.supplierStockCode ?? '',
+          lookupItem.imageDesignKey ?? '',
+          lookupItem.imageFinishKey ?? '',
+          lookupItem.size ?? '',
+          lookupItem.pcd ?? ''
+        ].join(':');
+      })
+      .join('|'),
+    [supplierImageLookupItems]
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadSupplierImages = async () => {
+      if (!showImages) {
+        setSupplierImages({});
+        return;
+      }
+      if (!supplierImageLookupItems.length) {
+        setSupplierImages({});
+        return;
+      }
+
+      try {
+        const rows = await fetchSupplierStockImages();
+        if (!cancelled) setSupplierImages(buildSupplierImageMap(supplierImageLookupItems, rows));
+      } catch (error) {
+        console.error('Supplier image lookup failed', error);
+        if (!cancelled) setSupplierImages({});
+      }
+    };
+
+    void loadSupplierImages();
+    return () => {
+      cancelled = true;
+    };
+  }, [showImages, supplierImageLookupSignature, supplierImageRefreshKey]);
   const visibleGroupedItems: Record<string, InventoryItem[]> = useMemo(() => {
     if (groupBy === 'none') return { 'All Items': visibleItems };
 
@@ -1354,6 +1384,11 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       {clipboardNotice && (
         <div className="fixed right-5 top-20 z-[90] max-w-sm rounded border border-green-500/40 bg-green-950/95 px-4 py-3 text-xs font-bold uppercase tracking-wider text-green-300 shadow-2xl backdrop-blur">
           {clipboardNotice}
+        </div>
+      )}
+      {uploadNotice && (
+        <div className="fixed right-5 top-20 z-[90] max-w-sm rounded border border-green-500/40 bg-green-950/95 px-4 py-3 text-xs font-bold uppercase tracking-wider text-green-300 shadow-2xl backdrop-blur">
+          {uploadNotice}
         </div>
       )}
 

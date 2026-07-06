@@ -123,6 +123,23 @@ Deno.serve(async (request) => {
     if (upload.error) throw upload.error;
 
     const publicUrl = supabase.storage.from(BUCKET_NAME).getPublicUrl(payload.storagePath).data.publicUrl;
+    let replacedStaffUploadRows = 0;
+
+    if (isStaffUpload) {
+      const { data: replacedRows, error: replaceError } = await supabase
+        .from('supplier_stock_images')
+        .update({ active: false })
+        .eq('supplier', payload.supplier)
+        .eq('source', 'staff-upload')
+        .eq('design_key', payload.designKey)
+        .eq('finish_key', payload.finishKey!.trim())
+        .neq('source_file_id', payload.sourceFileId)
+        .select('id');
+
+      if (replaceError) throw replaceError;
+      replacedStaffUploadRows = replacedRows?.length ?? 0;
+    }
+
     const { error } = await supabase
       .from('supplier_stock_images')
       .upsert({
@@ -148,7 +165,17 @@ Deno.serve(async (request) => {
 
     if (error) throw error;
 
-    return jsonResponse({ ok: true, publicImageUrl: publicUrl });
+    return jsonResponse({
+      ok: true,
+      supplier: payload.supplier,
+      source: payload.source?.trim() || 'local-import',
+      sourceFileId: payload.sourceFileId,
+      designKey: payload.designKey,
+      finishKey: payload.finishKey ?? null,
+      storagePath: payload.storagePath,
+      publicImageUrl: publicUrl,
+      replacedStaffUploadRows
+    });
   } catch (error) {
     const errorMessage = error instanceof Error
       ? error.message
