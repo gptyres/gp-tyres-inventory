@@ -53,7 +53,16 @@ interface FinalizePayload {
   errorMessage?: string | null;
 }
 
-type Payload = StartPayload | ImportPayload | FinalizePayload;
+interface EnrichPayload {
+  action: 'enrich';
+  driveFileId: string;
+  imageOcrText?: string | null;
+  imageSpecText?: string | null;
+  tags?: string[];
+  status?: 'completed' | 'failed';
+}
+
+type Payload = StartPayload | ImportPayload | FinalizePayload | EnrichPayload;
 
 const jsonResponse = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -112,6 +121,7 @@ const base64ToBytes = (base64: string) => {
 
 const isStartPayload = (payload: Payload): payload is StartPayload => payload.action === 'start';
 const isFinalizePayload = (payload: Payload): payload is FinalizePayload => payload.action === 'finalize';
+const isEnrichPayload = (payload: Payload): payload is EnrichPayload => payload.action === 'enrich';
 
 const validateImportPayload = (payload: ImportPayload) => {
   if (
@@ -279,6 +289,43 @@ const finalizeImport = async (supabase: ReturnType<typeof createClient>, payload
   }, status === 'completed' ? 200 : 207);
 };
 
+const enrichImport = async (supabase: ReturnType<typeof createClient>, payload: EnrichPayload) => {
+  if (!payload.driveFileId || !payload.driveFileId.startsWith(LOCAL_SOURCE_PREFIX)) {
+    return jsonResponse({ ok: false, error: 'Missing or invalid local wheel catalog row ID.' }, 400);
+  }
+
+  const status = payload.status ?? 'completed';
+  const { data: existing, error: existingError } = await supabase
+    .from('wheel_catalog_items')
+    .select('tags')
+    .eq('drive_file_id', payload.driveFileId)
+    .maybeSingle();
+
+  if (existingError) throw existingError;
+
+  const { error } = await supabase
+    .from('wheel_catalog_items')
+    .update({
+      image_ocr_text: payload.imageOcrText ?? null,
+      image_spec_text: payload.imageSpecText ?? null,
+      image_analysis_status: status,
+      image_analyzed_at: new Date().toISOString(),
+      tags: Array.from(new Set([
+        ...((existing?.tags as string[] | null) ?? []),
+        ...(payload.tags ?? [])
+      ].map((tag) => String(tag).trim().toUpperCase()).filter(Boolean)))
+    })
+    .eq('drive_file_id', payload.driveFileId);
+
+  if (error) throw error;
+
+  return jsonResponse({
+    ok: true,
+    driveFileId: payload.driveFileId,
+    status
+  });
+};
+
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -313,6 +360,10 @@ Deno.serve(async (request) => {
 
     if (isFinalizePayload(payload)) {
       return await finalizeImport(supabase, payload);
+    }
+
+    if (isEnrichPayload(payload)) {
+      return await enrichImport(supabase, payload);
     }
 
     return await importOne(supabase, payload);

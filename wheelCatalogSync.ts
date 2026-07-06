@@ -2,6 +2,7 @@ import { supabase, WheelCatalogItemRow, WheelCatalogSyncRunRow } from './supabas
 
 export const WHEEL_CATALOG_SOURCE_LABEL = 'WHEEL CATALOG 2026 Q3_LIVE';
 export const WHEEL_CATALOG_SOURCE_ROOT_ID = 'local-wheel-catalog-2026-q3-live';
+const PAGE_SIZE = 1000;
 
 export interface WheelCatalogSyncResult {
   ok: boolean;
@@ -58,17 +59,25 @@ const invokeLocalImport = async (body: Record<string, unknown>, importToken: str
 };
 
 export const fetchWheelCatalogItems = async (): Promise<WheelCatalogItemRow[]> => {
-  const { data, error } = await supabase
-    .from('wheel_catalog_items')
-    .select('*')
-    .eq('active', true)
-    .order('rim_size', { ascending: true, nullsFirst: false })
-    .order('pcd', { ascending: true, nullsFirst: false })
-    .order('folder_path', { ascending: true })
-    .order('file_name', { ascending: true });
+  const rows: WheelCatalogItemRow[] = [];
 
-  if (error) throw error;
-  return data ?? [];
+  for (let from = 0; ; from += PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from('wheel_catalog_items')
+      .select('*')
+      .eq('active', true)
+      .order('rim_size', { ascending: true, nullsFirst: false })
+      .order('pcd', { ascending: true, nullsFirst: false })
+      .order('folder_path', { ascending: true })
+      .order('file_name', { ascending: true })
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error) throw error;
+    rows.push(...(data ?? []));
+    if (!data || data.length < PAGE_SIZE) break;
+  }
+
+  return rows;
 };
 
 export const fetchLatestWheelCatalogSyncRun = async (): Promise<WheelCatalogSyncRunRow | null> => {

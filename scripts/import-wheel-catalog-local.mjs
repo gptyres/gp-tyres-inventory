@@ -1,7 +1,21 @@
 import { createHash } from 'node:crypto';
 import { readFile, stat } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { glob } from 'node:fs/promises';
+
+const loadLocalEnv = async () => {
+  const envPath = resolve('.env.local');
+  if (!existsSync(envPath)) return;
+  const text = await readFile(envPath, 'utf8');
+  text.split(/\r?\n/).forEach((line) => {
+    const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)=(.*)\s*$/);
+    if (!match || process.env[match[1]]) return;
+    process.env[match[1]] = match[2].replace(/^['"]|['"]$/g, '');
+  });
+};
+
+await loadLocalEnv();
 
 const DEFAULT_ROOT = 'C:/Users/User/Desktop/WHEEL CATALOG 2026 Q3_LIVE';
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://moiybakshvuvppesbnpt.supabase.co';

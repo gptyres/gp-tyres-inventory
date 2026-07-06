@@ -10,6 +10,7 @@ import {
   WHEEL_CATALOG_SOURCE_ROOT_ID
 } from '../wheelCatalogSync';
 import { WheelCatalogItemRow, WheelCatalogSyncRunRow } from '../supabaseClient';
+import { SOUTH_AFRICA_VEHICLE_PCD_MODELS } from '../vehiclePcdData';
 
 interface WheelCatalogViewProps {
   searchQuery?: string;
@@ -197,9 +198,17 @@ const itemMatchesSearch = (item: WheelCatalogItemRow, query: string) => {
     item.rim_size ?? '',
     item.pcd ?? '',
     item.local_relative_path ?? '',
+    item.image_ocr_text ?? '',
+    item.image_spec_text ?? '',
     ...(item.tags ?? [])
   ].join(' ').toLowerCase();
   return haystack.includes(query);
+};
+
+const pcdMatchesVehicle = (itemPcd: string | null | undefined, vehiclePcds: string[]) => {
+  if (!vehiclePcds.length) return true;
+  const normalized = (itemPcd ?? '').toUpperCase();
+  return vehiclePcds.some((pcd) => normalized === pcd || normalized.replace('.3', '') === pcd.replace('.3', ''));
 };
 
 const sanitizeName = (value: string) => value.replace(/[<>:"/\\|?*\u0000-\u001f]+/g, '-').replace(/\s+/g, ' ').trim() || 'wheel';
@@ -406,6 +415,8 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   const [selectedSize, setSelectedSize] = useState('ALL');
   const [selectedPcd, setSelectedPcd] = useState('ALL');
   const [selectedFolder, setSelectedFolder] = useState('ALL');
+  const [selectedVehicleBrand, setSelectedVehicleBrand] = useState('ALL');
+  const [selectedVehicleModel, setSelectedVehicleModel] = useState('ALL');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [syncProgress, setSyncProgress] = useState<SyncProgress>({ scanned: 0, uploaded: 0, skipped: 0, failed: 0, deactivated: 0, total: 0 });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -433,21 +444,37 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     void loadCatalog();
   }, []);
 
+  useEffect(() => {
+    setSelectedVehicleModel('ALL');
+  }, [selectedVehicleBrand]);
+
   const sizes = useMemo(() => sortSizes(Array.from(new Set(items.map((item) => item.rim_size).filter(Boolean) as string[]))), [items]);
   const pcds = useMemo(() => sortPcds(Array.from(new Set(items.map((item) => item.pcd).filter(Boolean) as string[]))), [items]);
   const folders = useMemo(() => (
     Array.from(new Set(items.map((item) => item.folder_path || 'Unsorted catalog'))).sort((first, second) => first.localeCompare(second, undefined, { numeric: true }))
   ), [items]);
+  const vehicleBrands = useMemo(() => (
+    Array.from(new Set(SOUTH_AFRICA_VEHICLE_PCD_MODELS.map((vehicle) => vehicle.brand))).sort()
+  ), []);
+  const vehicleModels = useMemo(() => (
+    SOUTH_AFRICA_VEHICLE_PCD_MODELS
+      .filter((vehicle) => selectedVehicleBrand === 'ALL' || vehicle.brand === selectedVehicleBrand)
+      .sort((first, second) => first.model.localeCompare(second.model))
+  ), [selectedVehicleBrand]);
+  const selectedVehicle = useMemo(() => (
+    SOUTH_AFRICA_VEHICLE_PCD_MODELS.find((vehicle) => `${vehicle.brand}|||${vehicle.model}` === selectedVehicleModel) ?? null
+  ), [selectedVehicleModel]);
 
   const filteredItems = useMemo(() => {
     const query = normalizeText(searchQuery);
     return items.filter((item) => (
       (selectedSize === 'ALL' || item.rim_size === selectedSize)
       && (selectedPcd === 'ALL' || item.pcd === selectedPcd)
+      && pcdMatchesVehicle(item.pcd, selectedVehicle?.pcds ?? [])
       && (selectedFolder === 'ALL' || (item.folder_path || 'Unsorted catalog') === selectedFolder)
       && itemMatchesSearch(item, query)
     ));
-  }, [items, searchQuery, selectedFolder, selectedPcd, selectedSize]);
+  }, [items, searchQuery, selectedFolder, selectedPcd, selectedSize, selectedVehicle]);
 
   const groupedItems = useMemo(() => {
     const groups = new Map<string, WheelCatalogItemRow[]>();
@@ -752,8 +779,8 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
         </div>
       </header>
 
-      <section className="border-b border-gp-border bg-gp-panel/70 px-4 py-4 md:px-6">
-        <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1.5fr]">
+      <section className="sticky top-0 z-30 border-b border-gp-border bg-gp-panel/95 px-4 py-4 shadow-2xl shadow-black/30 backdrop-blur md:px-6">
+        <div className="grid gap-4 xl:grid-cols-[0.9fr_1fr_1.2fr_1.4fr]">
           <div>
             <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-gp-text-muted">Size</p>
             <div className="flex flex-wrap gap-2">
@@ -799,6 +826,39 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                 <option key={folder} value={folder}>{folder}</option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <p className="mb-2 text-[10px] font-black uppercase tracking-widest text-gp-text-muted">Vehicle PCD Lookup</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <select
+                value={selectedVehicleBrand}
+                onChange={(event) => setSelectedVehicleBrand(event.target.value)}
+                className="min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-3 py-2 text-sm font-bold text-gp-text-main outline-none focus:border-gp-red"
+              >
+                <option value="ALL">All brands</option>
+                {vehicleBrands.map((brand) => (
+                  <option key={brand} value={brand}>{brand}</option>
+                ))}
+              </select>
+              <select
+                value={selectedVehicleModel}
+                onChange={(event) => setSelectedVehicleModel(event.target.value)}
+                className="min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-3 py-2 text-sm font-bold text-gp-text-main outline-none focus:border-gp-red"
+              >
+                <option value="ALL">All models</option>
+                {vehicleModels.map((vehicle) => (
+                  <option key={`${vehicle.brand}|||${vehicle.model}`} value={`${vehicle.brand}|||${vehicle.model}`}>
+                    {vehicle.model} ({vehicle.pcds.join(' / ')})
+                  </option>
+                ))}
+              </select>
+            </div>
+            {selectedVehicle && (
+              <p className="mt-2 text-[11px] font-bold uppercase tracking-wide text-green-400">
+                Showing PCD {selectedVehicle.pcds.join(' / ')} for {selectedVehicle.brand} {selectedVehicle.model}
+              </p>
+            )}
           </div>
         </div>
 
@@ -884,25 +944,21 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                         key={item.id}
                         type="button"
                         onClick={() => toggleItem(item.id)}
-                        className={`group flex min-h-[260px] flex-col overflow-hidden rounded-lg border text-left transition-all ${selected ? 'border-gp-red bg-gp-red/10 shadow-[0_0_0_1px_rgba(255,0,0,0.45)]' : 'border-gp-border bg-gp-panel hover:border-gp-red/70'}`}
+                        className={`group aspect-square overflow-hidden rounded-lg border text-left transition-all ${selected ? 'border-gp-red bg-gp-red/10 shadow-[0_0_0_1px_rgba(255,0,0,0.45)]' : 'border-gp-border bg-gp-panel hover:border-gp-red/70'}`}
                       >
-                        <div className="relative aspect-square w-full bg-white">
+                        <div className="relative h-full w-full bg-white">
                           <img
                             src={item.public_image_url}
                             alt={item.file_name}
                             loading="lazy"
                             className="h-full w-full object-contain"
                           />
+                          <span className="absolute left-2 top-2 rounded border border-black/20 bg-white/90 px-2 py-1 text-[10px] font-black uppercase text-black">
+                            {[item.rim_size ? `${item.rim_size}"` : '', item.pcd ?? ''].filter(Boolean).join(' ') || folder}
+                          </span>
                           <span className={`absolute right-2 top-2 rounded border px-2 py-1 text-[10px] font-black uppercase ${selected ? 'border-gp-red bg-gp-red text-white' : 'border-black/20 bg-white/90 text-black'}`}>
                             {selected ? 'Selected' : 'Pick'}
                           </span>
-                        </div>
-                        <div className="flex min-h-[104px] flex-1 flex-col justify-between p-3">
-                          <div className="flex flex-wrap gap-2">
-                            <span className="rounded border border-gp-border px-2 py-1 text-[10px] font-black uppercase text-gp-text-main">{item.rim_size ? `${item.rim_size}"` : 'Size?'}</span>
-                            <span className="rounded border border-gp-border px-2 py-1 text-[10px] font-black uppercase text-gp-text-main">{item.pcd ?? 'PCD?'}</span>
-                          </div>
-                          <p className="mt-2 break-words text-xs font-bold text-gp-text-muted">{item.file_name}</p>
                         </div>
                       </button>
                     );

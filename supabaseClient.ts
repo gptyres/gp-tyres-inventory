@@ -154,6 +154,10 @@ export interface WheelCatalogItemRow {
   local_relative_path?: string | null;
   source_size_bytes?: number | null;
   content_sha256?: string | null;
+  image_ocr_text?: string | null;
+  image_spec_text?: string | null;
+  image_analysis_status?: 'pending' | 'completed' | 'failed' | null;
+  image_analyzed_at?: string | null;
   source_modified_at?: string | null;
   active: boolean;
   imported_at: string;

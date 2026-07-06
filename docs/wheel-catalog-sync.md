@@ -50,3 +50,14 @@ supabase secrets set WHEEL_CATALOG_IMPORT_TOKEN='your-token'
 ```
 
 The function accepts `start`, `import`, and `finalize` actions and authenticates with `x-wheel-catalog-import-token`. The token must stay server/admin-side; do not add it as a public `VITE_` environment variable.
+
+## Image Text Analysis
+
+Visible text on catalog images can be indexed for live search with:
+
+```powershell
+$env:GEMINI_API_KEY='your-gemini-key'
+node scripts/analyze-wheel-catalog-images.mjs
+```
+
+The analysis script reads active wheel catalog rows, sends each image to Gemini for visible wheel text/spec extraction, then updates the row through the secured `import-wheel-catalog-local` Edge Function using the private wheel import token.
