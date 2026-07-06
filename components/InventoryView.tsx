@@ -94,7 +94,7 @@ const getItemSecondaryLine = (item: InventoryItem): string => {
   }
   if (item.type === ProductType.WHEEL) {
     const wheel = item as WheelProduct;
-    return [wheel.size, wheel.pcd, wheel.offset ? `ET${wheel.offset}` : ''].filter(Boolean).join(' / ');
+    return [wheel.size, wheel.pcd, formatWheelOffset(wheel.offset), wheel.centerBore ? `CB ${wheel.centerBore}` : ''].filter(Boolean).join(' / ');
   }
   const coilover = item as CoiloverProduct;
   return `${coilover.brand} ${coilover.series}`.trim();
@@ -113,6 +113,51 @@ const getTyreClipboardText = (item: InventoryItem): string => {
     .join(' ');
 };
 
+const formatWheelPcd = (value: string | undefined): string => (
+  String(value || '').trim().replace(/\//g, 'X').replace(/\s+/g, '').toUpperCase()
+);
+
+const formatWheelOffset = (value: string | undefined): string => {
+  const offset = String(value || '').trim().replace(/^ET\s*/i, '').replace(/^--/, '-');
+  return offset ? `ET${offset}` : '';
+};
+
+const splitWheelSize = (value: string | undefined): { diameter: string; width: string } => {
+  const match = String(value || '').trim().match(/(\d{2}(?:\.\d+)?)\s*(?:x|X)\s*(\d+(?:\.\d+)?)/);
+  return {
+    diameter: match?.[1] ?? '',
+    width: match?.[2] ?? ''
+  };
+};
+
+const getWheelFinish = (wheel: WheelProduct): string => {
+  const colourParts = String(wheel.colour || '').split('|').map((part) => part.trim()).filter(Boolean);
+  if (wheel.supplierName === 'TYRE LIFE WHEELS' && colourParts[1]) return colourParts[1].toUpperCase();
+  return (wheel.imageFinishKey || colourParts[1] || wheel.colour || '').trim().toUpperCase();
+};
+
+const getWheelClipboardText = (item: InventoryItem): string => {
+  if (item.type !== ProductType.WHEEL) return '';
+  const wheel = item as WheelProduct;
+  const { diameter, width } = splitWheelSize(wheel.size);
+  const wheelName = getWheelDisplayName(wheel).toUpperCase();
+  const finish = getWheelFinish(wheel);
+  const diameterText = diameter ? `${diameter} INCH` : wheel.size.toUpperCase();
+  const pcd = formatWheelPcd(wheel.pcd);
+  const widthText = width ? `${width}J` : '';
+  const offset = formatWheelOffset(wheel.offset);
+
+  return [
+    [wheelName, finish].filter(Boolean).join(' '),
+    [diameterText, pcd].filter(Boolean).join(' '),
+    `${widthText} | ${offset} | ${wheel.centerBore || ''}`
+  ].join('\n');
+};
+
+const getItemClipboardText = (item: InventoryItem): string => (
+  item.type === ProductType.WHEEL ? getWheelClipboardText(item) : getTyreClipboardText(item)
+);
+
 const copyTextToClipboard = async (value: string) => {
   if (navigator.clipboard?.writeText) {
     await navigator.clipboard.writeText(value);
@@ -130,8 +175,8 @@ const copyTextToClipboard = async (value: string) => {
   document.body.removeChild(textarea);
 };
 
-const CopyTyreButton = ({ item, onCopyItem, className = '' }: { item: InventoryItem; onCopyItem: (item: InventoryItem) => void; className?: string }) => {
-  if (item.type !== ProductType.TYRE) return null;
+const CopyItemButton = ({ item, onCopyItem, className = '' }: { item: InventoryItem; onCopyItem: (item: InventoryItem) => void; className?: string }) => {
+  if (item.type !== ProductType.TYRE && item.type !== ProductType.WHEEL) return null;
 
   return (
     <button
@@ -141,8 +186,8 @@ const CopyTyreButton = ({ item, onCopyItem, className = '' }: { item: InventoryI
         onCopyItem(item);
       }}
       className={`inline-flex items-center justify-center gap-2 rounded border border-gp-red/50 bg-gp-red text-white px-3 py-2 text-[10px] font-black uppercase tracking-wider shadow-[0_0_14px_rgba(255,0,0,0.18)] transition-all hover:bg-red-700 hover:border-red-500 active:scale-95 ${className}`}
-      title="Copy tyre size, brand and pattern"
-      aria-label="Copy tyre size, brand and pattern"
+      title={item.type === ProductType.WHEEL ? 'Copy wheel details' : 'Copy tyre size, brand and pattern'}
+      aria-label={item.type === ProductType.WHEEL ? 'Copy wheel details' : 'Copy tyre size, brand and pattern'}
     >
       <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M8 8h10v12H8z" />
@@ -693,7 +738,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               )}
 
               <td className="p-2 border-r border-gp-border text-center">
-                <CopyTyreButton item={item} onCopyItem={onCopyItem} className="px-2 py-1 text-[9px]" />
+                <CopyItemButton item={item} onCopyItem={onCopyItem} className="px-2 py-1 text-[9px]" />
               </td>
 
               {showImages && (
@@ -849,8 +894,9 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     <SpecBadge label="Size" value={(item as WheelProduct).size} />
                     <SpecBadge label="PCD" value={(item as WheelProduct).pcd} />
                     <SpecBadge label="ET" value={(item as WheelProduct).offset} />
+                    {(item as WheelProduct).centerBore && <SpecBadge label="CB" value={(item as WheelProduct).centerBore} />}
                     {(item as WheelProduct).location && (
-                       <div className="col-span-3 mt-1 flex flex-col bg-black/10 p-1.5 rounded border border-gp-border/50">
+                       <div className="col-span-full mt-1 flex flex-col bg-black/10 p-1.5 rounded border border-gp-border/50">
                            <span className="text-[9px] text-gp-text-muted uppercase font-bold tracking-wider">Warehouse Stock</span>
                            <span className="text-[10px] font-mono font-bold text-gp-text-main truncate">{(item as WheelProduct).location}</span>
                        </div>
@@ -884,7 +930,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     </div>
 
                     <div className="flex justify-end gap-1">
-                      <CopyTyreButton item={item} onCopyItem={onCopyItem} className="min-h-9 flex-1 max-w-[120px]" />
+                      <CopyItemButton item={item} onCopyItem={onCopyItem} className="min-h-9 flex-1 max-w-[120px]" />
                       {!isReadOnly && (
                         <>
                             <button 
@@ -982,7 +1028,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
               {visibleColumns.price && <span className="text-base font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>}
               
               <div className="flex gap-2">
-                <CopyTyreButton item={item} onCopyItem={onCopyItem} />
+                <CopyItemButton item={item} onCopyItem={onCopyItem} />
                 {!isReadOnly && (
                   <>
                     <button 
@@ -1188,12 +1234,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   };
 
   const handleCopyItem = async (item: InventoryItem) => {
-    const clipboardText = getTyreClipboardText(item);
+    const clipboardText = getItemClipboardText(item);
     if (!clipboardText) return;
 
     try {
       await copyTextToClipboard(clipboardText);
-      setClipboardNotice(`Copied: ${clipboardText}`);
+      setClipboardNotice(`Copied: ${clipboardText.split('\n')[0]}`);
     } catch (error) {
       console.error('Clipboard copy failed', error);
       setClipboardNotice('Could not copy to clipboard.');
