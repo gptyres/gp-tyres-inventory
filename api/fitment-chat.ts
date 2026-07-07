@@ -19,7 +19,7 @@ const FITMENT_BOT_SYSTEM_INSTRUCTION = [
   '3. PCD MUST be written as bolt count x pitch, for example 5x112, 5x100, 4x100, 6x139.7. Never reverse it.',
   '4. Use ET notation for offsets where helpful, for example ET35-45.',
   "5. Prioritize accurate vehicle fitment data. If you are not fully sure, say 'Please verify before fitment.'",
-  '6. Known reference: VW Golf 7 / Golf 7 GTI uses PCD 5x112 and center bore 57.1mm.'
+  '6. Known reference: VW Golf 7 / Golf 7 GTI uses PCD 5x112, center bore 57.1mm, common offset ET45-51, and common tyre sizes 225/45R17, 225/40R18, 235/35R19.'
 ].join('\n');
 
 type ChatRole = 'user' | 'model' | 'assistant';
