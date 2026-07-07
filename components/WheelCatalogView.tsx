@@ -7,6 +7,8 @@ import {
   LocalWheelCatalogImportPayload,
   replaceWheelCatalogFolder,
   startLocalWheelCatalogSync,
+  syncGoogleDriveWheelCatalog,
+  WHEEL_CATALOG_DRIVE_FOLDER_URL,
   WHEEL_CATALOG_SOURCE_LABEL,
   WHEEL_CATALOG_SOURCE_ROOT_ID,
   WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_LABEL,
@@ -430,6 +432,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   const [staffUploadRimSize, setStaffUploadRimSize] = useState('');
   const [staffUploadPcd, setStaffUploadPcd] = useState('');
   const [staffUploadToken, setStaffUploadToken] = useState(WHEEL_CATALOG_REPLACE_FOLDER_PIN);
+  const [driveSyncToken, setDriveSyncToken] = useState('');
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [selectedSize, setSelectedSize] = useState('ALL');
@@ -442,6 +445,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const staffUploadInputRef = useRef<HTMLInputElement | null>(null);
   const syncTokenRef = useRef('');
+  const driveSyncSubmittingRef = useRef(false);
 
   const loadCatalog = async () => {
     setIsLoading(true);
@@ -639,34 +643,50 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   };
 
   const handleSyncClick = async () => {
-    if (isSyncing) return;
-    const importToken = window.prompt('Enter the wheel catalog sync token/PIN.');
-    if (!importToken) {
-      setStatus('Sync cancelled.');
+    if (isSyncing || driveSyncSubmittingRef.current) return;
+    const syncToken = driveSyncToken.trim();
+    if (!syncToken) {
+      setError('Enter the wheel catalog sync token/PIN before syncing Google Drive.');
       return;
     }
 
-    const directoryPicker = (window as ClipboardWindow).showDirectoryPicker;
-    if (directoryPicker) {
-      try {
-        const directory = await directoryPicker();
-        const localFiles = await collectDirectoryFiles(directory);
-        await runLocalSync(localFiles, importToken, directory.name || WHEEL_CATALOG_SOURCE_LABEL);
-        return;
-      } catch (pickerError) {
-        if (pickerError instanceof DOMException && pickerError.name === 'AbortError') {
-          setStatus('Folder selection cancelled.');
-          syncTokenRef.current = '';
-          return;
-        }
-        setError(pickerError instanceof Error ? pickerError.message : 'Could not open the folder picker.');
-        syncTokenRef.current = '';
-        return;
-      }
-    }
+    driveSyncSubmittingRef.current = true;
+    setIsSyncing(true);
+    setError('');
+    setStatus('Syncing public Google Drive wheel catalog...');
+    setSyncProgress({ scanned: 0, uploaded: 0, skipped: 0, failed: 0, deactivated: 0, total: 0 });
 
-    syncTokenRef.current = importToken;
-    fileInputRef.current?.click();
+    try {
+      const result = await syncGoogleDriveWheelCatalog(syncToken);
+      if (!result.ok) {
+        throw new Error(result.error || result.errors?.join('\n') || 'Google Drive wheel catalog sync failed.');
+      }
+
+      const scanned = result.scanned ?? result.filesScanned ?? 0;
+      const uploaded = result.imported ?? result.filesUploaded ?? 0;
+      const skipped = result.skipped ?? result.filesSkipped ?? 0;
+      setSyncProgress({
+        scanned,
+        uploaded,
+        skipped,
+        failed: result.filesFailed ?? 0,
+        deactivated: result.deactivated ?? 0,
+        total: scanned
+      });
+      setStatus(`Google Drive sync complete. ${uploaded} images imported, ${skipped} skipped, ${result.deactivated ?? 0} old rows deactivated.`);
+      setDriveSyncToken('');
+      await loadCatalog();
+    } catch (syncError) {
+      setError(syncError instanceof Error ? syncError.message : 'Google Drive wheel catalog sync failed.');
+    } finally {
+      driveSyncSubmittingRef.current = false;
+      setIsSyncing(false);
+    }
+  };
+
+  const submitDriveSync = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    void handleSyncClick();
   };
 
   const handleFallbackFilesSelected = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -926,19 +946,22 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
           <div className="min-w-0">
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-gp-red shadow-[0_0_12px_rgba(255,0,0,0.8)]" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gp-text-muted">Local Wheel Catalog</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gp-text-muted">Google Drive Wheel Catalog</span>
               <span className="rounded border border-gp-border px-2 py-1 text-[10px] font-bold uppercase text-gp-text-muted">{items.length} images</span>
             </div>
             <h1 className="text-2xl font-black uppercase tracking-tight text-gp-text-main md:text-3xl">Customer Wheel Finder</h1>
             <p className="mt-1 max-w-3xl text-sm text-gp-text-muted">
-              Browse the cleaned local wheel folders from Supabase, select customer-ready photos, then copy or download them for WhatsApp.
+              Browse the public Google Drive wheel folders after they are indexed into Supabase, select customer-ready photos, then copy or download them for WhatsApp.
             </p>
           </div>
 
           <div className="rounded-lg border border-gp-border bg-gp-black/60 p-3 text-xs text-gp-text-muted xl:min-w-[360px]">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <form
+              className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+              onSubmit={submitDriveSync}
+            >
               <div>
-                <p className="font-black uppercase tracking-widest text-gp-text-muted">Supabase Local Sync</p>
+                <p className="font-black uppercase tracking-widest text-gp-text-muted">Supabase Google Drive Sync</p>
                 <p className="mt-1">
                   Last sync: <span className="font-bold text-gp-text-main">{formatSyncTime(syncRun?.completed_at ?? syncRun?.started_at)}</span>
                 </p>
@@ -947,6 +970,14 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                     {syncRun.status.toUpperCase()} | Uploaded {syncRun.files_uploaded} | Skipped {syncRun.files_skipped}
                   </p>
                 )}
+                <a
+                  href={WHEEL_CATALOG_DRIVE_FOLDER_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 inline-flex text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 hover:text-blue-300"
+                >
+                  Open public Google Drive folder
+                </a>
               </div>
               <button
                 type="button"
@@ -956,21 +987,38 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
               >
                 {isStaffUploading ? 'Uploading...' : 'Upload Wheels'}
               </button>
+              <label className="min-w-[190px]">
+                <span className="sr-only">Google Drive sync token</span>
+                <input
+                  type="password"
+                  value={driveSyncToken}
+                  onChange={(event) => setDriveSyncToken(event.target.value)}
+                  disabled={isSyncing || isStaffUploading}
+                  placeholder="Sync token / PIN"
+                  className="min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-3 py-2 text-xs font-bold text-gp-text-main outline-none transition-colors placeholder:text-gp-text-muted focus:border-gp-red"
+                />
+              </label>
               <button
-                type="button"
-                onClick={() => void handleSyncClick()}
-                disabled={isSyncing || isStaffUploading}
+                type="submit"
+                onClick={submitDriveSync}
+                onPointerDown={(event) => {
+                  if (event.button === 0) submitDriveSync(event);
+                }}
+                disabled={isSyncing || isStaffUploading || !driveSyncToken.trim()}
                 className={`${buttonBase} bg-gp-red text-white hover:bg-red-700`}
               >
-                {isSyncing ? 'Syncing...' : 'Sync Local Folder'}
+                {isSyncing ? 'Syncing...' : 'Sync Google Drive'}
               </button>
-            </div>
+            </form>
             {(isSyncing || isStaffUploading) && (
               <div className="mt-3 rounded border border-gp-border bg-gp-panel px-3 py-2 font-bold uppercase tracking-wider">
                 Scanned {syncProgress.scanned} | Uploaded {syncProgress.uploaded}/{syncProgress.total} | Skipped {syncProgress.skipped} | Failed {syncProgress.failed}
               </div>
             )}
-            {!isAdmin && <p className="mt-2 text-[11px]">Staff can browse, copy, download, upload wheel batches, and sync local folders.</p>}
+            <div className="mt-2 min-h-4 text-[11px]">
+              {error ? <span className="whitespace-pre-line font-bold text-gp-red">{error}</span> : <span>{status}</span>}
+            </div>
+            {!isAdmin && <p className="mt-2 text-[11px]">Staff can browse, copy, download, upload wheel batches, and sync the public Google Drive catalog.</p>}
           </div>
         </div>
       </header>
@@ -1184,7 +1232,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
             <div className="max-w-md">
               <h2 className="text-2xl font-black uppercase text-gp-text-main">No catalog images found</h2>
               <p className="mt-2 text-sm text-gp-text-muted">
-                {items.length ? 'Try clearing the filters or search text.' : 'Use Sync Local Folder to upload the cleaned live catalog into Supabase.'}
+                {items.length ? 'Try clearing the filters or search text.' : 'Use Sync Google Drive to index the public Drive catalog into Supabase.'}
               </p>
             </div>
           </div>

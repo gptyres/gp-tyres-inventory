@@ -2,6 +2,9 @@ import { supabase, WheelCatalogItemRow, WheelCatalogSyncRunRow } from './supabas
 
 export const WHEEL_CATALOG_SOURCE_LABEL = 'WHEEL CATALOG 2026 Q3_LIVE';
 export const WHEEL_CATALOG_SOURCE_ROOT_ID = 'local-wheel-catalog-2026-q3-live';
+export const WHEEL_CATALOG_DRIVE_SOURCE_LABEL = 'Public Google Drive Wheel Catalog';
+export const WHEEL_CATALOG_DRIVE_ROOT_ID = '15MhCztz6IvUXem2okdZkd13zHtdvzCKx';
+export const WHEEL_CATALOG_DRIVE_FOLDER_URL = `https://drive.google.com/drive/folders/${WHEEL_CATALOG_DRIVE_ROOT_ID}`;
 export const WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_LABEL = 'Staff Wheel Uploads';
 export const WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_ROOT_ID = 'staff-wheel-catalog-uploads';
 const PAGE_SIZE = 1000;
@@ -19,6 +22,17 @@ export interface WheelCatalogSyncResult {
   filesFailed?: number;
   storagePath?: string;
   publicImageUrl?: string;
+  scanned?: number;
+  imported?: number;
+  skipped?: number;
+  deactivated?: number;
+  totalImages?: number;
+  processedImages?: number;
+  nextImageOffset?: number;
+  hasMore?: boolean;
+  imageOffset?: number;
+  imageLimit?: number;
+  errors?: string[];
   error?: string;
 }
 
@@ -46,6 +60,39 @@ export interface LocalWheelCatalogImportPayload {
   base64: string;
 }
 
+const getFunctionErrorMessage = async (error: unknown, fallback: string) => {
+  const normalizeMessage = (message: string) => {
+    if (message.includes("Method doesn't allow unregistered callers") || message.includes('PERMISSION_DENIED')) {
+      return 'Google Drive API access is not configured. Add GOOGLE_DRIVE_API_KEY as a Supabase Edge Function secret, or configure Google service-account credentials for the public Drive folder.';
+    }
+
+    return message;
+  };
+
+  try {
+    const context = (error as { context?: unknown })?.context;
+    if (context && typeof context === 'object') {
+      const response = context as Response;
+      const payload = typeof response.clone === 'function'
+        ? await response.clone().json().catch(() => null) as { error?: string; errors?: string[] } | null
+        : typeof response.json === 'function'
+          ? await response.json().catch(() => null) as { error?: string; errors?: string[] } | null
+          : null;
+
+      if (payload?.error) return normalizeMessage(payload.error);
+      if (payload?.errors?.length) return normalizeMessage(payload.errors.join('\n'));
+
+      const plainError = (context as { error?: string; message?: string }).error
+        ?? (context as { error?: string; message?: string }).message;
+      if (plainError) return normalizeMessage(plainError);
+    }
+  } catch {
+    // Fall through to the standard error message.
+  }
+
+  return normalizeMessage(error instanceof Error ? error.message : fallback);
+};
+
 const invokeLocalImport = async (body: Record<string, unknown>, importToken: string): Promise<WheelCatalogSyncResult> => {
   const { data, error } = await supabase.functions.invoke('import-wheel-catalog-local', {
     body,
@@ -55,7 +102,7 @@ const invokeLocalImport = async (body: Record<string, unknown>, importToken: str
   });
 
   if (error) {
-    return { ok: false, error: error.message };
+    return { ok: false, error: await getFunctionErrorMessage(error, 'Wheel catalog import failed.') };
   }
 
   return data as WheelCatalogSyncResult;
@@ -148,4 +195,78 @@ export const replaceWheelCatalogFolder = async (
     folderPath,
     seenDriveFileIds
   }, importToken);
+};
+
+export const syncGoogleDriveWheelCatalog = async (
+  syncToken: string
+): Promise<WheelCatalogSyncResult> => {
+  let imageOffset = 0;
+  const imageLimit = 50;
+  const totals: WheelCatalogSyncResult = {
+    ok: true,
+    scanned: 0,
+    imported: 0,
+    skipped: 0,
+    deactivated: 0,
+    errors: []
+  };
+
+  for (let batch = 0; batch < 100; batch += 1) {
+    const { data, error } = await supabase.functions.invoke('sync-wheel-catalog', {
+      body: {
+        rootFolderId: WHEEL_CATALOG_DRIVE_ROOT_ID,
+        sourceLabel: WHEEL_CATALOG_DRIVE_SOURCE_LABEL,
+        deactivateSourceRootFolderIds: [WHEEL_CATALOG_SOURCE_ROOT_ID],
+        imageOffset,
+        imageLimit
+      },
+      headers: {
+        'x-wheel-catalog-sync-token': syncToken
+      }
+    });
+
+    if (error) {
+      return { ok: false, error: await getFunctionErrorMessage(error, 'Google Drive wheel catalog sync failed.') };
+    }
+
+    const result = data as WheelCatalogSyncResult;
+    totals.scanned = Math.max(totals.scanned ?? 0, result.scanned ?? 0);
+    totals.imported = (totals.imported ?? 0) + (result.imported ?? 0);
+    totals.skipped = Math.max(totals.skipped ?? 0, result.skipped ?? 0);
+    totals.deactivated = result.deactivated ?? totals.deactivated ?? 0;
+    totals.totalImages = result.totalImages ?? totals.totalImages;
+    totals.processedImages = (totals.processedImages ?? 0) + (result.processedImages ?? 0);
+    totals.nextImageOffset = result.nextImageOffset ?? totals.nextImageOffset;
+    totals.hasMore = result.hasMore;
+    totals.errors = [...(totals.errors ?? []), ...(result.errors ?? [])];
+
+    if (!result.ok) {
+      return {
+        ...totals,
+        ok: false,
+        error: result.error || result.errors?.join('\n') || 'Google Drive wheel catalog sync failed.'
+      };
+    }
+
+    if (!result.hasMore) {
+      return totals;
+    }
+
+    const nextOffset = result.nextImageOffset ?? imageOffset + (result.processedImages ?? imageLimit);
+    if (nextOffset <= imageOffset) {
+      return {
+        ...totals,
+        ok: false,
+        error: 'Google Drive sync stopped because the batch cursor did not advance.'
+      };
+    }
+
+    imageOffset = nextOffset;
+  }
+
+  return {
+    ...totals,
+    ok: false,
+    error: 'Google Drive sync stopped after 100 batches before completion.'
+  };
 };
