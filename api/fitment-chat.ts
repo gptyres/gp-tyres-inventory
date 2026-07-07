@@ -16,7 +16,10 @@ const FITMENT_BOT_SYSTEM_INSTRUCTION = [
   '   - **Offset**: [Value]',
   '   - **Center Bore**: [Value]',
   '   - **Tyres**: [Size 1], [Size 2]',
-  "3. Prioritize accurate vehicle fitment data. If you are not fully sure, say 'Please verify before fitment.'"
+  '3. PCD MUST be written as bolt count x pitch, for example 5x112, 5x100, 4x100, 6x139.7. Never reverse it.',
+  '4. Use ET notation for offsets where helpful, for example ET35-45.',
+  "5. Prioritize accurate vehicle fitment data. If you are not fully sure, say 'Please verify before fitment.'",
+  '6. Known reference: VW Golf 7 / Golf 7 GTI uses PCD 5x112 and center bore 57.1mm.'
 ].join('\n');
 
 type ChatRole = 'user' | 'model' | 'assistant';
@@ -124,9 +127,9 @@ const requestNvidiaCompletion = async (apiKey: string, model: string, messages: 
         { role: 'system', content: FITMENT_BOT_SYSTEM_INSTRUCTION },
         ...messages
       ],
-      temperature: 1,
+      temperature: 0.2,
       top_p: 1,
-      max_tokens: 2048,
+      max_tokens: 768,
       seed: 42,
       stream: true
     })
