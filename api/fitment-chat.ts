@@ -125,7 +125,8 @@ export default async function handler(request: any, response: any) {
 
     if (!upstreamResponse.ok) {
       const detail = upstreamJson?.error?.message || upstreamJson?.detail || upstreamJson?.message || 'NVIDIA model request failed.';
-      return response.status(upstreamResponse.status).json({ error: detail });
+      const status = /DEGRADED function cannot be invoked/i.test(detail) ? 503 : upstreamResponse.status;
+      return response.status(status).json({ error: detail });
     }
 
     const text = parseNvidiaResponseText(upstreamText, upstreamJson);

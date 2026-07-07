@@ -12,6 +12,20 @@ interface Message {
   sources?: { uri: string; title: string }[];
 }
 
+const getFitmentErrorMessage = (error: unknown) => {
+  const message = error instanceof Error ? error.message : 'Fitment bot request failed.';
+
+  if (/DEGRADED function cannot be invoked/i.test(message)) {
+    return 'NVIDIA GLM-5.2 is temporarily unavailable right now. Please try again shortly.';
+  }
+
+  if (/NVIDIA API key is not configured/i.test(message)) {
+    return 'NVIDIA bot is not configured yet. Please contact admin.';
+  }
+
+  return message || 'Fitment bot request failed. Please try again.';
+};
+
 export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize }) => {
   const [messages, setMessages] = useState<Message[]>([
     { role: 'model', text: 'Fast Fitment Bot Ready. Name the car (e.g., "Golf 7 GTI").' }
@@ -56,7 +70,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize })
       ]);
     } catch (error) {
       console.error('Chat Error', error);
-      setMessages(prev => [...prev, { role: 'model', text: 'Connection error. Please try again.' }]);
+      setMessages(prev => [...prev, { role: 'model', text: getFitmentErrorMessage(error) }]);
     } finally {
       setIsLoading(false);
     }
