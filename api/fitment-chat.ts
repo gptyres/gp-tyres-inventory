@@ -124,7 +124,7 @@ export default async function handler(request: any, response: any) {
     }
 
     if (!upstreamResponse.ok) {
-      const detail = upstreamJson?.error?.message || upstreamJson?.message || 'NVIDIA model request failed.';
+      const detail = upstreamJson?.error?.message || upstreamJson?.detail || upstreamJson?.message || 'NVIDIA model request failed.';
       return response.status(upstreamResponse.status).json({ error: detail });
     }
 
