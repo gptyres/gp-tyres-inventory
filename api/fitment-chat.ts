@@ -1,5 +1,10 @@
 const NVIDIA_CHAT_COMPLETIONS_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
 const NVIDIA_FITMENT_MODEL = 'z-ai/glm-5.2';
+const NVIDIA_FITMENT_FALLBACK_MODELS = [
+  'nvidia/llama-3.3-nemotron-super-49b-v1.5',
+  'meta/llama-3.3-70b-instruct',
+  'nvidia/llama-3.1-nemotron-nano-8b-v1'
+];
 
 const FITMENT_BOT_SYSTEM_INSTRUCTION = [
   "You are a high-speed automotive fitment expert for 'GP Tyres & Mags'. Provide **fast, accurate, and concise** Wheel Specifications and Tyre Sizes.",
@@ -40,7 +45,7 @@ const readRequestBody = async (request: any) => {
 };
 
 const normalizeMessages = (messages: ChatMessage[]) => {
-  return messages
+  const normalized = messages
     .slice(-12)
     .map((message) => {
       const content = String(message.content ?? message.text ?? '').trim();
@@ -51,6 +56,15 @@ const normalizeMessages = (messages: ChatMessage[]) => {
       };
     })
     .filter(Boolean);
+
+  while (normalized.length && normalized[0]?.role !== 'user') {
+    normalized.shift();
+  }
+
+  return normalized.filter((message, index) => {
+    if (!message) return false;
+    return index === 0 || message.role !== normalized[index - 1]?.role;
+  });
 };
 
 const parseNvidiaResponseText = (rawText: string, parsedJson: any) => {
@@ -75,6 +89,79 @@ const parseNvidiaResponseText = (rawText: string, parsedJson: any) => {
     .trim();
 };
 
+const getFitmentModels = () => {
+  const configuredModels = process.env.NVIDIA_FITMENT_MODELS
+    ?.split(',')
+    .map((model) => model.trim())
+    .filter(Boolean);
+
+  if (configuredModels?.length) return Array.from(new Set(configuredModels));
+
+  const primaryModel = process.env.NVIDIA_FITMENT_MODEL || NVIDIA_FITMENT_MODEL;
+  const fallbackModels = process.env.NVIDIA_FITMENT_FALLBACK_MODELS
+    ?.split(',')
+    .map((model) => model.trim())
+    .filter(Boolean) || NVIDIA_FITMENT_FALLBACK_MODELS;
+
+  return Array.from(new Set([primaryModel, ...fallbackModels]));
+};
+
+const shouldTryNextModel = (status: number, detail: string) => {
+  return status === 429 || status >= 500 || /DEGRADED function cannot be invoked|temporarily unavailable|overloaded|timeout/i.test(detail);
+};
+
+const requestNvidiaCompletion = async (apiKey: string, model: string, messages: any[]) => {
+  const upstreamResponse = await fetch(process.env.NVIDIA_CHAT_COMPLETIONS_URL || NVIDIA_CHAT_COMPLETIONS_URL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: 'system', content: FITMENT_BOT_SYSTEM_INSTRUCTION },
+        ...messages
+      ],
+      temperature: 1,
+      top_p: 1,
+      max_tokens: 2048,
+      seed: 42,
+      stream: true
+    })
+  });
+
+  const upstreamText = await upstreamResponse.text();
+  let upstreamJson: any = null;
+  try {
+    upstreamJson = upstreamText ? JSON.parse(upstreamText) : null;
+  } catch {
+    upstreamJson = null;
+  }
+
+  if (!upstreamResponse.ok) {
+    return {
+      ok: false,
+      model,
+      status: upstreamResponse.status,
+      error: upstreamJson?.error?.message || upstreamJson?.detail || upstreamJson?.message || 'NVIDIA model request failed.'
+    };
+  }
+
+  const text = parseNvidiaResponseText(upstreamText, upstreamJson);
+  if (!text) {
+    return {
+      ok: false,
+      model,
+      status: 502,
+      error: 'NVIDIA model returned an empty response.'
+    };
+  }
+
+  return { ok: true, model, status: 200, text };
+};
+
 export default async function handler(request: any, response: any) {
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST');
@@ -94,47 +181,22 @@ export default async function handler(request: any, response: any) {
       return response.status(400).json({ error: 'Send at least one chat message.' });
     }
 
-    const upstreamResponse = await fetch(process.env.NVIDIA_CHAT_COMPLETIONS_URL || NVIDIA_CHAT_COMPLETIONS_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: process.env.NVIDIA_FITMENT_MODEL || NVIDIA_FITMENT_MODEL,
-        messages: [
-          { role: 'system', content: FITMENT_BOT_SYSTEM_INSTRUCTION },
-          ...messages
-        ],
-        temperature: 1,
-        top_p: 1,
-        max_tokens: 2048,
-        seed: 42,
-        stream: true
-      })
-    });
+    const models = getFitmentModels();
+    let lastAttempt: any = null;
 
-    const upstreamText = await upstreamResponse.text();
-    let upstreamJson: any = null;
-    try {
-      upstreamJson = upstreamText ? JSON.parse(upstreamText) : null;
-    } catch {
-      upstreamJson = null;
+    for (const model of models) {
+      const attempt = await requestNvidiaCompletion(apiKey, model, messages);
+      if (attempt.ok) {
+        return response.status(200).json({ text: attempt.text, model: attempt.model });
+      }
+
+      lastAttempt = attempt;
+      if (!shouldTryNextModel(attempt.status, attempt.error)) break;
     }
 
-    if (!upstreamResponse.ok) {
-      const detail = upstreamJson?.error?.message || upstreamJson?.detail || upstreamJson?.message || 'NVIDIA model request failed.';
-      const status = /DEGRADED function cannot be invoked/i.test(detail) ? 503 : upstreamResponse.status;
-      return response.status(status).json({ error: detail });
-    }
-
-    const text = parseNvidiaResponseText(upstreamText, upstreamJson);
-    if (!text) {
-      return response.status(502).json({ error: 'NVIDIA model returned an empty response.' });
-    }
-
-    return response.status(200).json({ text });
+    const detail = lastAttempt?.error || 'NVIDIA model request failed.';
+    const status = /DEGRADED function cannot be invoked|temporarily unavailable|overloaded|timeout/i.test(detail) ? 503 : lastAttempt?.status || 502;
+    return response.status(status).json({ error: detail });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Fitment bot request failed.';
     return response.status(500).json({ error: message });
