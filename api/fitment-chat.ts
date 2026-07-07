@@ -23,6 +23,11 @@ interface ChatMessage {
 }
 
 const readRequestBody = async (request: any) => {
+  if (typeof request.body === 'string') return request.body ? JSON.parse(request.body) : {};
+  if (Buffer.isBuffer(request.body)) {
+    const rawBody = request.body.toString('utf8');
+    return rawBody ? JSON.parse(rawBody) : {};
+  }
   if (request.body && typeof request.body === 'object') return request.body;
 
   const chunks: Buffer[] = [];
