@@ -106,6 +106,10 @@ function doPost(event) {
       return jsonResponse_({ ok: false, error: 'Unauthorized portal sheet sync.' });
     }
 
+    if (payload.action === 'replaceSupplierCatalog') {
+      return jsonResponse_({ ok: true, ...replaceSupplierCatalogSheet_(payload) });
+    }
+
     if (payload.action !== 'portalToSheet') {
       return jsonResponse_({ ok: false, error: 'Unsupported action.' });
     }
@@ -281,6 +285,66 @@ function ensureHelperHeaders_(sheet) {
     'LAST_SYNC_STATUS'
   ]]);
   sheet.hideColumns(GP_SYNC_CONFIG.portalIdColumn, 3);
+}
+
+function replaceSupplierCatalogSheet_(payload) {
+  const allowedSheets = {
+    SAILUN: 'SUPPLIER_SAILUN',
+    SAFETY_GRIP: 'SUPPLIER_SAFETY_GRIP'
+  };
+  const expectedSheet = allowedSheets[String(payload.catalog || '')];
+  if (!expectedSheet || payload.sheetName !== expectedSheet) {
+    throw new Error('Unsupported supplier catalogue sheet.');
+  }
+
+  const rows = Array.isArray(payload.rows) ? payload.rows : [];
+  if (!rows.length || rows.length > 10000) {
+    throw new Error('Supplier catalogue must contain between 1 and 10,000 rows.');
+  }
+  if (rows.some((row) => !Array.isArray(row) || row.length !== 13)) {
+    throw new Error('Supplier catalogue rows do not match the required 13-column format.');
+  }
+
+  const spreadsheet = SpreadsheetApp.openById(GP_SYNC_CONFIG.spreadsheetId);
+  const sheet = spreadsheet.getSheetByName(expectedSheet) || spreadsheet.insertSheet(expectedSheet);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+
+  try {
+    const headers = [[
+      'Supplier',
+      'Supplier SKU',
+      'Brand',
+      'Product Name',
+      'Category',
+      'Size',
+      'Stock Location',
+      'Stock Availability',
+      'Stock Units',
+      'Cost Price (VAT incl.)',
+      'Selling Price',
+      'Source File',
+      'Imported At'
+    ]];
+    sheet.clearContents();
+    sheet.getRange(1, 1, 1, headers[0].length).setValues(headers);
+    for (let offset = 0; offset < rows.length; offset += 1000) {
+      const batch = rows.slice(offset, offset + 1000);
+      sheet.getRange(offset + 2, 1, batch.length, headers[0].length).setValues(batch);
+    }
+    sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, 1, headers[0].length).setFontWeight('bold').setBackground('#1f2937').setFontColor('#ffffff');
+    sheet.getRange(2, 9, rows.length, 1).setNumberFormat('0');
+    sheet.getRange(2, 10, rows.length, 2).setNumberFormat('R#,##0.00');
+    sheet.autoResizeColumns(1, headers[0].length);
+    PropertiesService.getDocumentProperties().setProperty(
+      `LAST_${payload.catalog}_IMPORT`,
+      `${new Date().toLocaleString('en-ZA')} - ${rows.length} rows from ${payload.sourceFile || 'supplier upload'}`
+    );
+    return { sheetName: expectedSheet, rowsWritten: rows.length, importedAt: payload.importedAt || new Date().toISOString() };
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function jsonResponse_(body) {

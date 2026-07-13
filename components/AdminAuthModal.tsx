@@ -1,111 +1,128 @@
-
 import React, { useState } from 'react';
 import { StaffName } from '../types';
 
 const ALLOWED_ADMINS: StaffName[] = ['Noor', 'Mac', 'Rafiek'];
 
+interface AdminLoginResult {
+  ok: boolean;
+  error?: string;
+}
 interface AdminAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (staffName: StaffName) => void;
+  onLogin: (staffName: StaffName, password: string) => Promise<AdminLoginResult>;
 }
 
-export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({ isOpen, onClose, onLogin }) => {
+export function AdminAuthModal({ isOpen, onClose, onLogin }: AdminAuthModalProps) {
   const [password, setPassword] = useState('');
   const [selectedStaff, setSelectedStaff] = useState<StaffName | ''>('');
-  const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(false);
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setErrorMsg('');
 
     if (!selectedStaff) {
-      setError(true);
-      setErrorMsg('IDENTIFICATION REQUIRED');
+      setErrorMsg('Select an authorized administrator.');
+      return;
+    }
+    if (!password) {
+      setErrorMsg('Enter the admin password.');
       return;
     }
 
-    if (password === '786') {
-      onLogin(selectedStaff);
-      setPassword('');
-      setSelectedStaff('');
-      setError(false);
-      onClose();
-    } else {
-      setError(true);
-      setErrorMsg('ACCESS DENIED: INVALID PASSCODE');
+    setSubmitting(true);
+    const result = await onLogin(selectedStaff, password);
+    setSubmitting(false);
+
+    if (!result.ok) {
+      setErrorMsg(result.error || 'Admin authentication failed.');
+      return;
     }
+
+    setPassword('');
+    setSelectedStaff('');
+    setErrorMsg('');
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
-      <div className="bg-gp-panel border-2 border-gp-red w-full max-w-sm rounded-lg shadow-[0_0_30px_rgba(255,0,0,0.3)] p-6 relative">
-        <button 
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm">
+      <div className="relative w-full max-w-sm rounded-lg border-2 border-gp-red bg-gp-panel p-6 shadow-[0_0_30px_rgba(255,0,0,0.3)]">
+        <button
+          type="button"
           onClick={onClose}
-          className="absolute top-2 right-4 text-gp-text-muted hover:text-gp-text-main text-2xl"
+          aria-label="Close admin login"
+          className="absolute right-4 top-2 text-2xl text-gp-text-muted hover:text-gp-text-main"
         >
           &times;
         </button>
-        
-        <div className="text-center mb-6">
-          <div className="mx-auto w-12 h-12 bg-gp-red rounded-full flex items-center justify-center mb-2">
-            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gp-red">
+            <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 className="text-xl font-display font-bold text-gp-text-main uppercase tracking-widest">
+          <h2 className="font-display text-xl font-bold uppercase tracking-widest text-gp-text-main">
             The Vault
           </h2>
-          <p className="text-xs text-gp-silver mt-1">Restricted Access // Admin Only</p>
+          <p className="mt-1 text-xs text-gp-silver">Restricted Access // Admin Only</p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          
-          {/* Identity Selection */}
           <div>
-            <label className="block text-[10px] font-bold text-gp-text-muted uppercase mb-1 tracking-wider">
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
               Identity Verification
             </label>
-            <select 
+            <select
               value={selectedStaff}
-              onChange={(e) => setSelectedStaff(e.target.value as StaffName)}
-              className="w-full bg-gp-black border border-gp-border rounded p-3 text-gp-text-main focus:border-gp-red focus:outline-none appearance-none transition-colors"
+              onChange={(event) => setSelectedStaff(event.target.value as StaffName)}
+              disabled={submitting}
+              className="w-full appearance-none rounded border border-gp-border bg-gp-black p-3 text-gp-text-main transition-colors focus:border-gp-red focus:outline-none"
             >
               <option value="">-- SELECT ADMIN --</option>
-              {ALLOWED_ADMINS.map(name => (
+              {ALLOWED_ADMINS.map((name) => (
                 <option key={name} value={name}>{name}</option>
               ))}
             </select>
           </div>
 
-          {/* Password Input */}
           <div>
-            <label className="block text-[10px] font-bold text-gp-text-muted uppercase mb-1 tracking-wider">
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
               Security Clearance
             </label>
-            <input 
-              type="password" 
-              className={`w-full bg-gp-black border ${error ? 'border-red-500 animate-pulse' : 'border-gp-border'} rounded p-3 text-gp-text-main text-center tracking-widest focus:outline-none focus:border-gp-red transition-colors`}
-              placeholder="ENTER PASSCODE"
+            <input
+              type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoFocus
+              onChange={(event) => setPassword(event.target.value)}
+              disabled={submitting}
+              autoComplete="current-password"
+              className={
+                'w-full rounded border bg-gp-black p-3 text-center tracking-widest text-gp-text-main transition-colors focus:border-gp-red focus:outline-none '
+                + (errorMsg ? 'border-gp-red' : 'border-gp-border')
+              }
+              placeholder="ENTER ACCESS CODE"
             />
-            {error && <p className="text-red-500 text-xs text-center mt-2 font-bold uppercase">{errorMsg}</p>}
+            {errorMsg && (
+              <p className="mt-2 text-center text-xs font-bold text-gp-red" role="alert">
+                {errorMsg}
+              </p>
+            )}
           </div>
 
-          <button 
-            type="submit" 
-            className="mt-2 w-full bg-gp-red text-white font-bold py-3 rounded uppercase tracking-wider hover:bg-red-700 transition-colors shadow-lg active:scale-95 transform"
+          <button
+            type="submit"
+            disabled={submitting}
+            className="mt-2 flex items-center justify-center rounded bg-gp-red py-3 text-sm font-bold uppercase tracking-widest text-white transition-all hover:bg-red-700 disabled:cursor-wait disabled:opacity-60"
           >
-            Authenticate
+            {submitting ? 'Verifying...' : 'Authenticate'}
           </button>
         </form>
       </div>
     </div>
   );
-};
+}

@@ -1,4 +1,5 @@
 import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
+import { loadLiveSupplierCatalogItems } from './liveSupplierCatalog';
 import {
   parseAlineData,
   parseApexData,
@@ -111,7 +112,7 @@ const tagSupplierPOSItems = (supplierKey: string, supplierItems: InventoryItem[]
   } as InventoryItem));
 };
 
-const loadConcreteSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Promise<InventoryItem[]> => {
+const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Promise<InventoryItem[]> => {
   switch (catalog) {
     case 'SAILUN': {
       const { SAILUN_RAW_DATA } = await import('./supplier_data/sailunData');
@@ -180,6 +181,17 @@ const loadConcreteSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pr
   }
 };
 
+const loadConcreteSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Promise<InventoryItem[]> => {
+  try {
+    const liveItems = await loadLiveSupplierCatalogItems(catalog);
+    if (liveItems) return liveItems;
+  } catch (error) {
+    console.warn('Live supplier catalogue unavailable; using bundled fallback.', error);
+  }
+
+  return loadBundledSupplierCatalog(catalog);
+};
+
 export const loadSupplierCatalogItems = async (catalog: SupplierCatalog): Promise<InventoryItem[]> => {
   if (catalog === 'ALL_SUPPLIERS') {
     const catalogs = await Promise.all(supplierCatalogOrder.map(async (supplierCatalog) => ({
@@ -207,4 +219,13 @@ export const loadAllSupplierPOSItems = async (): Promise<InventoryItem[]> => {
   }
 
   return cloneInventoryItems(await allSupplierPOSItemsCache);
+};
+
+export const invalidateSupplierCatalogCache = (catalog?: SupplierCatalog) => {
+  if (!catalog || catalog === 'ALL_SUPPLIERS') {
+    supplierItemCache.clear();
+  } else {
+    supplierItemCache.delete(catalog);
+  }
+  allSupplierPOSItemsCache = null;
 };

@@ -1,5 +1,5 @@
 
-import React, { lazy, Suspense, useState, useMemo, useEffect } from 'react';
+import React, { lazy, Suspense, useState, useMemo, useEffect, useCallback } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { InventoryView } from './components/InventoryView';
@@ -12,6 +12,8 @@ import { SystemLogsView } from './components/SystemLogsView';
 import { StockActionModal } from './components/StockActionModal';
 import { SellModal } from './components/SellModal';
 import { AdminAuthModal } from './components/AdminAuthModal';
+import { SupplierSyncButton } from './components/SupplierSyncButton';
+import { ManualSupplierImport } from './components/ManualSupplierImport';
 import { BackorderModal } from './components/BackorderModal';
 import { DataSyncModal } from './components/DataSyncModal';
 import { ReserveModal } from './components/ReserveModal';
@@ -40,7 +42,13 @@ import {
   upsertGlobalInventoryItem
 } from './inventorySync';
 import { customerRowToCustomerInfo, saveCRMDocumentFromPOS } from './crmSync';
-import { loadAllSupplierPOSItems, loadSupplierCatalogItems } from './supplierCatalogLoader';
+import {
+  invalidateSupplierCatalogCache,
+  loadAllSupplierPOSItems,
+  loadSupplierCatalogItems
+} from './supplierCatalogLoader';
+import { authenticateAdminSession, clearAdminSession } from './supplierSync';
+import { isManualSupplierCatalog, isRegistryBackedSupplierCatalog, isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { syncPortalInventoryItemsToSheet } from './sheetInventoryStatus';
 
 import {
@@ -139,6 +147,7 @@ const App: React.FC = () => {
   const [supplierItems, setSupplierItems] = useState<InventoryItem[]>([]);
   const [isSupplierCatalogLoading, setIsSupplierCatalogLoading] = useState(false);
   const [supplierCatalogError, setSupplierCatalogError] = useState('');
+  const [supplierCatalogRefreshVersion, setSupplierCatalogRefreshVersion] = useState(0);
   const [allSupplierPOSItems, setAllSupplierPOSItems] = useState<InventoryItem[]>([]);
   const [isSupplierPOSLoading, setIsSupplierPOSLoading] = useState(false);
   const [posCustomerInfo, setPOSCustomerInfo] = useState<CustomerInfo>({
@@ -195,7 +204,7 @@ const App: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [currentView, activeSupplierCatalog, shouldLoadSupplierCatalog]);
+  }, [currentView, activeSupplierCatalog, shouldLoadSupplierCatalog, supplierCatalogRefreshVersion]);
 
   useEffect(() => {
     let cancelled = false;
@@ -307,6 +316,8 @@ const App: React.FC = () => {
   const supplierCatalogLabel = supplierCatalogMeta[activeSupplierCatalog].label;
   const supplierCatalogNote = supplierCatalogMeta[activeSupplierCatalog].note;
   const supplierPortalUrl = supplierCatalogMeta[activeSupplierCatalog].portalUrl;
+  const supplierHasLiveSync = isLiveSupplierCatalog(activeSupplierCatalog);
+  const supplierUsesPortalWorker = isRegistryBackedSupplierCatalog(activeSupplierCatalog);
 
   // Helper to determine transaction type based on amount and fields
   const inferTransactionType = (row: any): 'SALE' | 'RESERVE' | 'REFUND' => {
@@ -685,7 +696,16 @@ const App: React.FC = () => {
     setLoginLogs(prev => mergeLoginLogsUnique([newLog], prev));
   };
 
-  const handleAdminAccess = async (staffName: string) => {
+  const handleAdminAccess = async (staffName: string, password: string) => {
+    try {
+      await authenticateAdminSession(staffName, password);
+    } catch (error) {
+      return {
+        ok: false,
+        error: error instanceof Error ? error.message : 'Admin authentication failed.'
+      };
+    }
+
     const fullUsername = `${currentUser} (${staffName})`;
     
     // 1. Sync to Supabase
@@ -708,6 +728,7 @@ const App: React.FC = () => {
     };
     setLoginLogs(prev => mergeLoginLogsUnique([newLog], prev));
     setIsAdmin(true);
+    return { ok: true };
   };
 
   const logAdminControlEvent = async (eventType: string, staffName: StaffName, status = 'SUCCESS') => {
@@ -738,6 +759,7 @@ const App: React.FC = () => {
 
   const handleAdminToggle = () => {
     if (isAdmin) {
+      void clearAdminSession();
       setIsAdmin(false);
       if (currentView === 'SYSTEM_LOGS') {
         setCurrentView('INVENTORY');
@@ -748,6 +770,12 @@ const App: React.FC = () => {
   };
 
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
+
+  const handleSupplierSyncCompleted = useCallback(() => {
+    invalidateSupplierCatalogCache();
+    setAllSupplierPOSItems([]);
+    setSupplierCatalogRefreshVersion((version) => version + 1);
+  }, []);
 
   // POS HELPERS
   const getInventoryCartTitle = (item: InventoryItem): string => {
@@ -1634,15 +1662,37 @@ const App: React.FC = () => {
                         <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <p className="text-xs text-blue-400"><strong>READ ONLY MODE:</strong> {supplierCatalogNote}</p>
                       </div>
-                      {supplierPortalUrl && (
-                        <a
-                          href={supplierPortalUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex shrink-0 items-center justify-center rounded bg-gp-red px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gp-red/20 transition hover:bg-red-700"
-                        >
-                          Live Supplier Portal
-                        </a>
+                      {(supplierPortalUrl || supplierHasLiveSync) && (
+                        <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-start">
+                          <SupplierSyncButton
+                            terminal={currentUser}
+                            catalog={activeSupplierCatalog}
+                            supplierLabel={supplierCatalogLabel}
+                            visible={supplierHasLiveSync}
+                            canTrigger={isAdmin && supplierUsesPortalWorker}
+                            workerRequired={supplierUsesPortalWorker}
+                            onCompleted={handleSupplierSyncCompleted}
+                          />
+                          {isAdmin && isManualSupplierCatalog(activeSupplierCatalog) && (
+                            <ManualSupplierImport
+                              terminal={currentUser}
+                              catalog={activeSupplierCatalog}
+                              supplierLabel={supplierCatalogLabel}
+                              visible
+                              onPublished={handleSupplierSyncCompleted}
+                            />
+                          )}
+                          {supplierPortalUrl && (
+                            <a
+                              href={supplierPortalUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex shrink-0 items-center justify-center rounded bg-gp-red px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gp-red/20 transition hover:bg-red-700"
+                            >
+                              Live Supplier Portal
+                            </a>
+                          )}
+                        </div>
                       )}
                     </div>
                 )}
