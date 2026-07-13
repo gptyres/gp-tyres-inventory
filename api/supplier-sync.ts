@@ -7,6 +7,7 @@ import {
   type LiveSupplierCatalog,
   type RegistryBackedSupplierCatalog
 } from '../supplierCatalogMapping.js';
+import type { SupplierSyncJob } from '../supplierSync.js';
 import type { SupplierCatalog } from '../types.js';
 
 const createRequestTimes = new Map<string, number>();
@@ -78,7 +79,7 @@ const getSyncStatus = async (
     : Promise.resolve({ data: null, error: null });
 
   const [
-    { data: activeJob, error: activeError },
+    { data: activeJobData, error: activeError },
     { data: latestJob, error: latestError },
     { data: worker, error: workerError },
     { data: activeSnapshot, error: snapshotError }
@@ -105,6 +106,8 @@ const getSyncStatus = async (
   if (workerError) throw workerError;
   if (snapshotError) throw snapshotError;
 
+  const globalActiveJob = activeJobData as unknown as SupplierSyncJob | null;
+
   let sourceJob: { scope?: string; artifact_name?: string | null } | null = null;
   if (activeSnapshot?.job_id) {
     const { data, error } = await supabase
@@ -118,9 +121,16 @@ const getSyncStatus = async (
 
   const heartbeatTime = worker?.last_heartbeat_at ? new Date(worker.last_heartbeat_at).getTime() : 0;
   const online = heartbeatTime > Date.now() - 45_000;
+  const activeJob = requestedCatalog
+    ? globalActiveJob?.target_catalog === requestedCatalog ? globalActiveJob : null
+    : globalActiveJob || null;
+  const blockingJob = requestedCatalog && globalActiveJob?.target_catalog !== requestedCatalog
+    ? globalActiveJob
+    : null;
 
   return {
-    activeJob: activeJob || null,
+    activeJob,
+    blockingJob,
     latestJob: latestJob || null,
     lastSuccessfulSync: activeSnapshot?.activated_at
       ? {
@@ -167,8 +177,6 @@ export default async function handler(request: any, response: any) {
     if (Date.now() - lastCreate < CREATE_RATE_LIMIT_MS) {
       return response.status(429).json({ error: 'Please wait before requesting another sync.' });
     }
-    createRequestTimes.set(session.staffName, Date.now());
-
     const body = await readApiBody(request);
     const requestedCatalog = normalizeCatalog(body.catalog);
     if (!requestedCatalog) {
@@ -179,6 +187,22 @@ export default async function handler(request: any, response: any) {
       ? body.terminal.trim().slice(0, 80)
       : 'UNKNOWN';
 
+    const currentStatus = await getSyncStatus(supabase, requestedCatalog);
+    if (currentStatus.activeJob || currentStatus.blockingJob) {
+      return response.status(409).json({
+        error: currentStatus.blockingJob
+          ? `Another supplier is already syncing: ${currentStatus.blockingJob.target_supplier || 'supplier'}.`
+          : `${targetSupplier} is already syncing.`,
+        ...currentStatus
+      });
+    }
+    if (!currentStatus.worker.online) {
+      return response.status(503).json({
+        error: 'Sync Worker Offline. Restart the office supplier sync service, then try again.',
+        ...currentStatus
+      });
+    }
+
     const { data: job, error } = await supabase
       .from('supplier_sync_jobs')
       .insert({
@@ -188,7 +212,7 @@ export default async function handler(request: any, response: any) {
         status: 'queued',
         progress_stage: 'queued',
         progress_current: 0,
-        progress_message: `Waiting to sync ${targetSupplier}…`,
+        progress_message: `Starting ${targetSupplier} sync…`,
         requested_by_staff: session.staffName,
         requested_by_terminal: requestedByTerminal || 'UNKNOWN',
         requested_ip_hash: getClientIpHash(request)
@@ -204,6 +228,7 @@ export default async function handler(request: any, response: any) {
       });
     }
     if (error) throw error;
+    createRequestTimes.set(session.staffName, Date.now());
 
     await supabase.from('system_logs').insert({
       terminal_id: (requestedByTerminal || 'UNKNOWN') + ' (' + session.staffName + ')',

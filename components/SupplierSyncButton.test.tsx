@@ -34,6 +34,15 @@ describe('SupplierSyncButton', () => {
     );
     expect(html).toContain('Sync EXOTIC');
     expect(html).not.toContain('Sync Supplier Portals');
+    expect(html).not.toContain('Sync Queued');
+  });
+
+  it('keeps active progress supplier-scoped and blocks offline queue creation', () => {
+    const apiSource = readFileSync(new URL('../api/supplier-sync.ts', import.meta.url), 'utf8');
+    expect(apiSource).toContain('globalActiveJob?.target_catalog === requestedCatalog');
+    expect(apiSource).toContain('blockingJob');
+    expect(apiSource).toContain('if (!currentStatus.worker.online)');
+    expect(apiSource).toContain('response.status(503)');
   });
 
   it('shows sync timing in sales mode without exposing the trigger button', () => {
