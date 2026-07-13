@@ -34,7 +34,7 @@ const formatTime = (value?: string | null) => {
 const formatCount = (value: number) => new Intl.NumberFormat('en-ZA').format(value);
 
 const stageLabel: Record<string, string> = {
-  queued: 'Queued',
+  queued: 'Starting supplier sync',
   fetching: 'Fetching supplier stock',
   validating: 'Validating stock rows',
   publishing: 'Publishing live stock',
@@ -100,19 +100,23 @@ export function SupplierSyncButton({
   if (!visible) return null;
 
   const activeJob = status?.activeJob;
+  const blockingJob = status?.blockingJob;
   const latestJob = status?.latestJob;
   const workerOnline = Boolean(status?.worker.online);
   const isActive = activeJob?.status === 'queued' || activeJob?.status === 'running';
-  const disabled = loading || isActive;
+  const workerUnavailable = workerRequired && Boolean(status) && !workerOnline;
+  const disabled = loading || isActive || Boolean(blockingJob) || workerUnavailable;
 
   let label = `Sync ${supplierLabel}`;
-  if (loading || activeJob?.status === 'queued') label = 'Sync Queued';
+  if (loading || activeJob?.status === 'queued') label = `Starting ${supplierLabel}…`;
   else if (activeJob?.status === 'running') {
     const completed = activeJob.suppliers_completed + activeJob.suppliers_failed + activeJob.suppliers_skipped;
     label = activeJob.suppliers_total > 0
       ? 'Syncing ' + completed + ' of ' + activeJob.suppliers_total
       : `Syncing ${activeJob.target_supplier || supplierLabel}`;
   }
+  else if (blockingJob) label = `Syncing ${blockingJob.target_supplier || 'another supplier'}`;
+  else if (workerUnavailable) label = 'Sync Worker Offline';
 
   const handleClick = async () => {
     setLoading(true);
@@ -122,7 +126,7 @@ export function SupplierSyncButton({
       setStatus(next);
       if (next.activeJob) trackedJobId.current = next.activeJob.id;
     } catch (syncError) {
-      setError(syncError instanceof Error ? syncError.message : 'Could not queue supplier sync.');
+      setError(syncError instanceof Error ? syncError.message : 'Could not start supplier sync.');
     } finally {
       setLoading(false);
     }
@@ -148,7 +152,7 @@ export function SupplierSyncButton({
           aria-busy={loading || isActive}
           className="inline-flex min-w-48 items-center justify-center rounded border border-blue-400/50 bg-blue-600 px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-blue-900/20 transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-gp-border disabled:bg-gp-panel disabled:text-gp-text-muted"
         >
-          {(loading || activeJob?.status === 'running') && (
+          {(loading || isActive) && (
             <span className="mr-2 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
           )}
           {label}
@@ -161,11 +165,13 @@ export function SupplierSyncButton({
             ? 'Current: ' + activeJob.result_summary.currentSupplier
             : !workerRequired
               ? 'Manual document import'
-              : !status
-                ? 'Checking sync worker status…'
+            : !status
+              ? 'Checking sync worker status…'
+              : blockingJob
+                ? `Another supplier is syncing: ${blockingJob.target_supplier || 'supplier'}`
               : workerOnline
-              ? 'Worker online'
-              : 'Worker offline · queued sync will start automatically.'
+              ? 'Ready to sync'
+              : 'Sync worker offline · restart the office sync service.'
         )}
       </div>
       <p className="text-right text-[10px] font-bold text-blue-200">

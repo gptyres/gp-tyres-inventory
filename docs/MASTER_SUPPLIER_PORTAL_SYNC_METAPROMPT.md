@@ -316,9 +316,9 @@ Required button behavior:
 - Render safe progress, worker state, and the last successful sync date/time whenever currentView is SUPPLIER_INVENTORY, including sales mode. Render the trigger action only in admin mode.
 - Label the idle action **Sync _Supplier Name_**.
 - One click queues only the registry supplier mapped to the catalogue currently open. Never silently expand a manual portal click to `ALL_ENABLED`.
-- Disable it while queueing or while a job is queued/running.
-- If the local worker heartbeat is stale, disable it and show **Sync Worker Offline** with a concise explanation.
-- While queued, show **Sync Queued**.
+- Disable it while starting, while its job is active, while another supplier is syncing, or when the worker heartbeat is stale.
+- If the local worker heartbeat is stale, do not create a job; show **Sync Worker Offline** with a concise restart instruction.
+- During the short claim handoff, show **Starting <supplier>** rather than exposing an internal queued state.
 - While running, show the current supplier, stage, stock rows discovered/published, and a percentage when a total is known. Poll safe server status frequently enough to feel live without exposing the private Supabase table.
 - On full success, show a success notice with refreshed supplier and row counts.
 - On partial success, show a warning listing failed/skipped suppliers with short non-secret reasons and make clear that their older snapshots remain active.
