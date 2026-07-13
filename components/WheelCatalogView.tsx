@@ -55,6 +55,7 @@ interface SyncProgress {
 }
 
 type AnalysisFilter = 'ALL' | 'ANALYZED' | 'REVIEW';
+type CatalogFilterKey = 'SEARCH' | 'ANALYSIS' | 'SIZE' | 'PCD' | 'FOLDER' | 'VEHICLE';
 
 const buttonBase = 'min-h-11 rounded-lg px-4 py-2 text-xs font-black uppercase tracking-wider transition-all disabled:cursor-not-allowed disabled:opacity-50';
 const chipBase = 'min-h-9 rounded-lg border px-3 py-2 text-xs font-bold uppercase transition-colors';
@@ -62,6 +63,13 @@ const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif']);
 const CATEGORY_FOLDER_PATTERN = /^(1[3-9]|2[0-6])\s+[456]X\d{3}(?:\.\d)?$/i;
 const SYNC_CONCURRENCY = 4;
 const WHEEL_CATALOG_REPLACE_FOLDER_PIN = '786';
+const QUICK_WHEEL_SEARCHES = [
+  { label: 'Model code', value: 'model' },
+  { label: 'Black', value: 'black' },
+  { label: 'Machined face', value: 'machined face' },
+  { label: 'Offset ET', value: 'ET' },
+  { label: 'Centre bore', value: 'CB' }
+];
 
 const normalizeText = (value: string) => value.trim().toLowerCase();
 const normalizePath = (value: string) => value.replaceAll('\\', '/').split('/').map((part) => part.replace(/\s+/g, ' ').trim()).filter(Boolean).join('/');
@@ -920,6 +928,17 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   };
 
   const clearSelection = () => setSelectedIds(new Set());
+  const clearCatalogFilter = (key: CatalogFilterKey) => {
+    if (key === 'SEARCH') setCatalogSearch('');
+    if (key === 'ANALYSIS') setAnalysisFilter('ALL');
+    if (key === 'SIZE') setSelectedSize('ALL');
+    if (key === 'PCD') setSelectedPcd('ALL');
+    if (key === 'FOLDER') setSelectedFolder('ALL');
+    if (key === 'VEHICLE') {
+      setSelectedVehicleBrand('ALL');
+      setSelectedVehicleModel('ALL');
+    }
+  };
   const resetCatalogFilters = () => {
     setCatalogSearch('');
     setAnalysisFilter('ALL');
@@ -938,6 +957,14 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     || selectedFolder !== 'ALL'
     || selectedVehicleModel !== 'ALL'
   );
+  const activeFilters: Array<{ key: CatalogFilterKey; label: string }> = [
+    ...(catalogSearch.trim() ? [{ key: 'SEARCH' as const, label: `Search: ${catalogSearch.trim()}` }] : []),
+    ...(analysisFilter !== 'ALL' ? [{ key: 'ANALYSIS' as const, label: analysisFilter === 'ANALYZED' ? 'OCR analyzed' : 'Needs review' }] : []),
+    ...(selectedSize !== 'ALL' ? [{ key: 'SIZE' as const, label: `${selectedSize} inch` }] : []),
+    ...(selectedPcd !== 'ALL' ? [{ key: 'PCD' as const, label: selectedPcd }] : []),
+    ...(selectedFolder !== 'ALL' ? [{ key: 'FOLDER' as const, label: selectedFolder }] : []),
+    ...(selectedVehicle ? [{ key: 'VEHICLE' as const, label: `${selectedVehicle.brand} ${selectedVehicle.model}` }] : [])
+  ];
 
   return (
     <div className="flex h-full min-h-[calc(100vh-80px)] flex-col bg-gp-black text-gp-text-main">
@@ -1132,17 +1159,17 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
 
       </section>
 
-      <section className="sticky top-0 z-40 border-y border-gp-border bg-[#06101a] px-4 py-3 shadow-2xl shadow-black/60 md:px-6">
+      <section className="sticky top-0 z-40 border-y border-gp-border bg-[#06101a]/95 px-4 py-3 shadow-2xl shadow-black/60 backdrop-blur-xl md:px-6">
         <div className="space-y-3">
-          <div className="grid gap-2 xl:grid-cols-[minmax(320px,1fr)_220px_auto]">
-            <label className="block">
-              <span className="sr-only">Search printed wheel specifications</span>
+          <div className="grid gap-2 xl:grid-cols-[minmax(360px,1fr)_220px_auto]">
+            <label className="block rounded-lg border border-gp-border bg-gp-black/50 px-3 py-2 focus-within:border-gp-red">
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gp-text-muted">Find by printed wheel specs</span>
               <input
                 type="search"
                 value={catalogSearch}
                 onChange={(event) => setCatalogSearch(event.target.value)}
-                placeholder="Search model, size, PCD, finish, ET, CB or vehicle..."
-                className="min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-4 py-2 text-sm font-bold text-gp-text-main outline-none transition-colors placeholder:font-medium placeholder:text-gp-text-muted focus:border-gp-red"
+                placeholder="Try: 7192, 17x9J, 5/112, black, ET35 or CB73.1"
+                className="min-h-8 w-full bg-transparent py-1 text-sm font-bold text-gp-text-main outline-none placeholder:font-medium placeholder:text-gp-text-muted"
               />
             </label>
             <label className="block">
@@ -1163,9 +1190,43 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
               disabled={!hasActiveFilters}
               className={`${buttonBase} border border-gp-border bg-transparent text-gp-text-muted hover:border-gp-red hover:text-gp-text-main`}
             >
-              Reset Filters
+              Clear All Filters
             </button>
           </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gp-text-muted">Quick find</span>
+            {QUICK_WHEEL_SEARCHES.map((search) => (
+              <button
+                key={search.value}
+                type="button"
+                onClick={() => setCatalogSearch(search.value)}
+                className={`rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-wide transition-colors ${normalizeText(catalogSearch) === normalizeText(search.value) ? 'border-gp-red bg-gp-red text-white' : 'border-gp-border bg-gp-input text-gp-text-muted hover:border-gp-red hover:text-gp-text-main'}`}
+              >
+                {search.label}
+              </button>
+            ))}
+          </div>
+          {(activeFilters.length > 0 || searchQuery.trim()) && (
+            <div className="flex flex-wrap items-center gap-2 border-t border-gp-border/70 pt-3" aria-label="Active wheel catalog filters">
+              <span className="text-[9px] font-black uppercase tracking-[0.18em] text-gp-text-muted">Active</span>
+              {searchQuery.trim() && (
+                <span className="rounded-full border border-blue-800 bg-blue-950/40 px-3 py-1 text-[10px] font-bold text-blue-300">
+                  Portal: {searchQuery.trim()}
+                </span>
+              )}
+              {activeFilters.map((filter) => (
+                <button
+                  key={filter.key}
+                  type="button"
+                  onClick={() => clearCatalogFilter(filter.key)}
+                  aria-label={`Remove ${filter.label} filter`}
+                  className="rounded-full border border-gp-red/60 bg-gp-red/10 px-3 py-1 text-[10px] font-bold text-red-100 transition-colors hover:bg-gp-red hover:text-white"
+                >
+                  {filter.label} <span aria-hidden="true">x</span>
+                </button>
+              ))}
+            </div>
+          )}
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-h-5 text-sm">
               {error ? (
@@ -1173,6 +1234,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
               ) : (
                 <span className="text-gp-text-muted">
                   <strong className="text-gp-text-main">{filteredItems.length}</strong> of {items.length} images found
+                  {selectedIds.size ? ` | ${selectedIds.size} selected` : ''}
                   {searchQuery.trim() ? ` | Portal search: ${searchQuery.trim()}` : ''}
                   {status ? ` | ${status}` : ''}
                 </span>
@@ -1193,7 +1255,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                 disabled={!filteredItems.length}
                 className={`${buttonBase} border border-gp-border bg-gp-input text-gp-text-main hover:border-gp-red`}
               >
-                Select Results
+                Select {filteredItems.length} Results
               </button>
               <button
                 type="button"
@@ -1297,6 +1359,15 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
               <p className="mt-2 text-sm text-gp-text-muted">
                 {items.length ? 'Try clearing the filters or search text.' : 'Use Sync Google Drive to index the public Drive catalog into Supabase.'}
               </p>
+              {items.length > 0 && hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={resetCatalogFilters}
+                  className={`${buttonBase} mt-5 bg-gp-red text-white hover:bg-red-700`}
+                >
+                  Clear All Filters
+                </button>
+              )}
             </div>
           </div>
         )}

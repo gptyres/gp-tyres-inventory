@@ -34,6 +34,11 @@ describe('wheel catalog specification search', () => {
     expect(itemMatchesWheelSearch(item, 'red 7192 5.5j')).toBe(true);
   });
 
+  it.each(['14 inch', '14"', '4/114.3', 'ET 35', 'centre bore 73.1', 'machine face'])(
+    'accepts staff-friendly search format %s',
+    (query) => expect(itemMatchesWheelSearch(item, query)).toBe(true)
+  );
+
   it('does not match unrelated specifications', () => {
     expect(itemMatchesWheelSearch(item, '18x9 bronze')).toBe(false);
   });
