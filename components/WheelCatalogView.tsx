@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
   fetchLatestWheelCatalogSyncRun,
   fetchWheelCatalogItems,
@@ -16,6 +16,7 @@ import {
 } from '../wheelCatalogSync';
 import { WheelCatalogItemRow, WheelCatalogSyncRunRow } from '../supabaseClient';
 import { SOUTH_AFRICA_VEHICLE_PCD_MODELS } from '../vehiclePcdData';
+import { itemMatchesWheelSearch, wheelMatchesVehiclePcd } from '../wheelCatalogSearch';
 
 interface WheelCatalogViewProps {
   searchQuery?: string;
@@ -52,6 +53,8 @@ interface SyncProgress {
   deactivated: number;
   total: number;
 }
+
+type AnalysisFilter = 'ALL' | 'ANALYZED' | 'REVIEW';
 
 const buttonBase = 'min-h-11 rounded-lg px-4 py-2 text-xs font-black uppercase tracking-wider transition-all disabled:cursor-not-allowed disabled:opacity-50';
 const chipBase = 'min-h-9 rounded-lg border px-3 py-2 text-xs font-bold uppercase transition-colors';
@@ -187,42 +190,29 @@ const makeSingleImageBlob = async (item: WheelCatalogItemRow) => {
   return canvasToBlob(canvas);
 };
 
+const formatWheelSpecs = (item: WheelCatalogItemRow) => [
+  item.brand ?? '',
+  item.model ? `Model ${item.model}` : '',
+  item.wheel_size || (item.rim_size ? `${item.rim_size} inch` : 'Wheel'),
+  item.pcd ?? '',
+  ...(item.pcd_aliases ?? []),
+  item.finish ?? '',
+  item.wheel_offset ? `ET${item.wheel_offset}` : '',
+  item.center_bore ? `CB${item.center_bore}` : '',
+  item.load_rating ? `${item.load_rating}kg` : ''
+].filter(Boolean).join(', ');
+
 const buildFallbackText = (items: WheelCatalogItemRow[]) => {
   return items.map((item) => [
-    `${item.rim_size ? `${item.rim_size} inch` : 'Wheel'}${item.pcd ? ` ${item.pcd}` : ''}`.trim(),
+    formatWheelSpecs(item),
     item.folder_path,
     item.public_image_url
   ].filter(Boolean).join('\n')).join('\n\n');
 };
 
-const itemMatchesSearch = (item: WheelCatalogItemRow, query: string) => {
-  if (!query) return true;
-  const haystack = [
-    item.file_name,
-    item.folder_path,
-    item.category ?? '',
-    item.rim_size ?? '',
-    item.pcd ?? '',
-    item.local_relative_path ?? '',
-    item.image_ocr_text ?? '',
-    item.image_spec_text ?? '',
-    ...(item.tags ?? [])
-  ].join(' ').toLowerCase();
-  return haystack.includes(query);
-};
-
 const normalizePcdForMatch = (value: string) => (
   value.toUpperCase().replace(/\//g, 'X').replace(/\s+/g, '')
 );
-
-const pcdMatchesVehicle = (itemPcd: string | null | undefined, vehiclePcds: string[]) => {
-  if (!vehiclePcds.length) return true;
-  const normalized = normalizePcdForMatch(itemPcd ?? '');
-  return vehiclePcds.some((pcd) => {
-    const candidate = normalizePcdForMatch(pcd);
-    return normalized === candidate || normalized.replace('.3', '') === candidate.replace('.3', '') || normalized.replace('.7', '') === candidate.replace('.7', '');
-  });
-};
 
 const normalizeStaffUploadPcd = (value: string) => normalizePcdForMatch(value).replace(/^([456])(\d{3})/, '$1X$2');
 const STAFF_UPLOAD_RIM_SIZES = Array.from({ length: 14 }, (_, index) => String(index + 13));
@@ -440,12 +430,15 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   const [selectedFolder, setSelectedFolder] = useState('ALL');
   const [selectedVehicleBrand, setSelectedVehicleBrand] = useState('ALL');
   const [selectedVehicleModel, setSelectedVehicleModel] = useState('ALL');
+  const [catalogSearch, setCatalogSearch] = useState('');
+  const [analysisFilter, setAnalysisFilter] = useState<AnalysisFilter>('ALL');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [syncProgress, setSyncProgress] = useState<SyncProgress>({ scanned: 0, uploaded: 0, skipped: 0, failed: 0, deactivated: 0, total: 0 });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const staffUploadInputRef = useRef<HTMLInputElement | null>(null);
   const syncTokenRef = useRef('');
   const driveSyncSubmittingRef = useRef(false);
+  const deferredCatalogSearch = useDeferredValue(catalogSearch);
 
   const loadCatalog = async () => {
     setIsLoading(true);
@@ -490,16 +483,24 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     SOUTH_AFRICA_VEHICLE_PCD_MODELS.find((vehicle) => `${vehicle.brand}|||${vehicle.model}` === selectedVehicleModel) ?? null
   ), [selectedVehicleModel]);
 
+  const analyzedItemsCount = useMemo(() => (
+    items.filter((item) => item.image_analysis_status === 'completed' && Boolean(item.image_ocr_text)).length
+  ), [items]);
+  const reviewItemsCount = useMemo(() => items.filter((item) => item.needs_review).length, [items]);
+
   const filteredItems = useMemo(() => {
-    const query = normalizeText(searchQuery);
+    const globalQuery = normalizeText(searchQuery);
+    const localQuery = normalizeText(deferredCatalogSearch);
     return items.filter((item) => (
       (selectedSize === 'ALL' || item.rim_size === selectedSize)
       && (selectedPcd === 'ALL' || item.pcd === selectedPcd)
-      && pcdMatchesVehicle(item.pcd, selectedVehicle?.pcds ?? [])
+      && wheelMatchesVehiclePcd(item, selectedVehicle?.pcds ?? [])
       && (selectedFolder === 'ALL' || (item.folder_path || 'Unsorted catalog') === selectedFolder)
-      && itemMatchesSearch(item, query)
+      && (analysisFilter === 'ALL' || (analysisFilter === 'ANALYZED' && item.image_analysis_status === 'completed') || (analysisFilter === 'REVIEW' && item.needs_review === true))
+      && itemMatchesWheelSearch(item, globalQuery)
+      && itemMatchesWheelSearch(item, localQuery)
     ));
-  }, [items, searchQuery, selectedFolder, selectedPcd, selectedSize, selectedVehicle]);
+  }, [analysisFilter, deferredCatalogSearch, items, searchQuery, selectedFolder, selectedPcd, selectedSize, selectedVehicle]);
 
   const groupedItems = useMemo(() => {
     const groups = new Map<string, WheelCatalogItemRow[]>();
@@ -919,7 +920,24 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   };
 
   const clearSelection = () => setSelectedIds(new Set());
+  const resetCatalogFilters = () => {
+    setCatalogSearch('');
+    setAnalysisFilter('ALL');
+    setSelectedSize('ALL');
+    setSelectedPcd('ALL');
+    setSelectedFolder('ALL');
+    setSelectedVehicleBrand('ALL');
+    setSelectedVehicleModel('ALL');
+  };
   const copyButtonLabel = selectedIds.size <= 1 ? 'Copy Image' : 'Copy Contact Sheet';
+  const hasActiveFilters = Boolean(
+    catalogSearch.trim()
+    || analysisFilter !== 'ALL'
+    || selectedSize !== 'ALL'
+    || selectedPcd !== 'ALL'
+    || selectedFolder !== 'ALL'
+    || selectedVehicleModel !== 'ALL'
+  );
 
   return (
     <div className="flex h-full min-h-[calc(100vh-80px)] flex-col bg-gp-black text-gp-text-main">
@@ -948,10 +966,11 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
               <span className="h-2 w-2 rounded-full bg-gp-red shadow-[0_0_12px_rgba(255,0,0,0.8)]" />
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gp-text-muted">Google Drive Wheel Catalog</span>
               <span className="rounded border border-gp-border px-2 py-1 text-[10px] font-bold uppercase text-gp-text-muted">{items.length} images</span>
+              <span className="rounded border border-green-800 bg-green-950/30 px-2 py-1 text-[10px] font-bold uppercase text-green-400">{analyzedItemsCount} OCR searchable</span>
             </div>
             <h1 className="text-2xl font-black uppercase tracking-tight text-gp-text-main md:text-3xl">Customer Wheel Finder</h1>
             <p className="mt-1 max-w-3xl text-sm text-gp-text-muted">
-              Browse the public Google Drive wheel folders after they are indexed into Supabase, select customer-ready photos, then copy or download them for WhatsApp.
+              Search printed wheel specifications from Supabase, browse the public Google Drive folders, then copy or download customer-ready photos for WhatsApp.
             </p>
           </div>
 
@@ -1114,51 +1133,93 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
       </section>
 
       <section className="sticky top-0 z-40 border-y border-gp-border bg-[#06101a] px-4 py-3 shadow-2xl shadow-black/60 md:px-6">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="min-h-5 text-sm">
-            {error ? <span className="whitespace-pre-line font-bold text-gp-red">{error}</span> : <span className="text-gp-text-muted">{status}</span>}
+        <div className="space-y-3">
+          <div className="grid gap-2 xl:grid-cols-[minmax(320px,1fr)_220px_auto]">
+            <label className="block">
+              <span className="sr-only">Search printed wheel specifications</span>
+              <input
+                type="search"
+                value={catalogSearch}
+                onChange={(event) => setCatalogSearch(event.target.value)}
+                placeholder="Search model, size, PCD, finish, ET, CB or vehicle..."
+                className="min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-4 py-2 text-sm font-bold text-gp-text-main outline-none transition-colors placeholder:font-medium placeholder:text-gp-text-muted focus:border-gp-red"
+              />
+            </label>
+            <label className="block">
+              <span className="sr-only">Analysis status</span>
+              <select
+                value={analysisFilter}
+                onChange={(event) => setAnalysisFilter(event.target.value as AnalysisFilter)}
+                className="min-h-11 w-full rounded-lg border border-gp-border bg-gp-input px-3 py-2 text-sm font-bold text-gp-text-main outline-none focus:border-gp-red"
+              >
+                <option value="ALL">All catalog images</option>
+                <option value="ANALYZED">OCR analyzed ({analyzedItemsCount})</option>
+                <option value="REVIEW">Needs review ({reviewItemsCount})</option>
+              </select>
+            </label>
+            <button
+              type="button"
+              onClick={resetCatalogFilters}
+              disabled={!hasActiveFilters}
+              className={`${buttonBase} border border-gp-border bg-transparent text-gp-text-muted hover:border-gp-red hover:text-gp-text-main`}
+            >
+              Reset Filters
+            </button>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <button
-              type="button"
-              onClick={handleStaffUploadClick}
-              disabled={isSyncing || isStaffUploading}
-              className={`${buttonBase} border border-green-700 bg-gp-input text-green-400 hover:bg-green-950/40`}
-            >
-              {isStaffUploading ? 'Uploading...' : 'Upload Wheels'}
-            </button>
-            <button
-              type="button"
-              onClick={handleSelectFiltered}
-              disabled={!filteredItems.length}
-              className={`${buttonBase} border border-gp-border bg-gp-input text-gp-text-main hover:border-gp-red`}
-            >
-              Select Results
-            </button>
-            <button
-              type="button"
-              onClick={clearSelection}
-              disabled={!selectedIds.size}
-              className={`${buttonBase} border border-gp-border bg-transparent text-gp-text-muted hover:text-gp-text-main`}
-            >
-              Clear
-            </button>
-            <button
-              type="button"
-              onClick={() => void handleDownloadSelected()}
-              disabled={!selectedIds.size}
-              className={`${buttonBase} border border-green-700 bg-gp-input text-green-400 hover:bg-green-950/40`}
-            >
-              Download ZIP
-            </button>
-            <button
-              type="button"
-              onClick={() => void handleCopySelected()}
-              disabled={!selectedIds.size}
-              className={`${buttonBase} bg-green-600 text-white hover:bg-green-700`}
-            >
-              {copyButtonLabel}
-            </button>
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-h-5 text-sm">
+              {error ? (
+                <span className="whitespace-pre-line font-bold text-gp-red">{error}</span>
+              ) : (
+                <span className="text-gp-text-muted">
+                  <strong className="text-gp-text-main">{filteredItems.length}</strong> of {items.length} images found
+                  {searchQuery.trim() ? ` | Portal search: ${searchQuery.trim()}` : ''}
+                  {status ? ` | ${status}` : ''}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={handleStaffUploadClick}
+                disabled={isSyncing || isStaffUploading}
+                className={`${buttonBase} border border-green-700 bg-gp-input text-green-400 hover:bg-green-950/40`}
+              >
+                {isStaffUploading ? 'Uploading...' : 'Upload Wheels'}
+              </button>
+              <button
+                type="button"
+                onClick={handleSelectFiltered}
+                disabled={!filteredItems.length}
+                className={`${buttonBase} border border-gp-border bg-gp-input text-gp-text-main hover:border-gp-red`}
+              >
+                Select Results
+              </button>
+              <button
+                type="button"
+                onClick={clearSelection}
+                disabled={!selectedIds.size}
+                className={`${buttonBase} border border-gp-border bg-transparent text-gp-text-muted hover:text-gp-text-main`}
+              >
+                Clear Selection
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleDownloadSelected()}
+                disabled={!selectedIds.size}
+                className={`${buttonBase} border border-green-700 bg-gp-input text-green-400 hover:bg-green-950/40`}
+              >
+                Download ZIP
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleCopySelected()}
+                disabled={!selectedIds.size}
+                className={`${buttonBase} bg-green-600 text-white hover:bg-green-700`}
+              >
+                {copyButtonLabel}
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -1204,6 +1265,8 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                         key={item.id}
                         type="button"
                         onClick={() => toggleItem(item.id)}
+                        aria-label={`Select ${formatWheelSpecs(item) || item.file_name}`}
+                        title={formatWheelSpecs(item) || item.file_name}
                         className={`group aspect-square overflow-hidden rounded-lg border text-left transition-all ${selected ? 'border-gp-red bg-gp-red/10 shadow-[0_0_0_1px_rgba(255,0,0,0.45)]' : 'border-gp-border bg-gp-panel hover:border-gp-red/70'}`}
                       >
                         <div className="relative h-full w-full bg-white">
