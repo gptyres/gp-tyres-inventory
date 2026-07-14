@@ -2,9 +2,9 @@ import { getClientIpHash, verifyAdminSession } from '../server/adminSession.js';
 import { readApiBody } from '../server/readApiBody.js';
 import { createSupabaseAdmin } from '../server/supabaseAdmin.js';
 import {
-  isManualSupplierCatalog,
-  MANUAL_SUPPLIER_BY_CATALOG,
-  type ManualSupplierCatalog
+  isSupplierImportCatalog,
+  SUPPLIER_IMPORT_BY_CATALOG,
+  type SupplierImportCatalog
 } from '../supplierCatalogMapping.js';
 import type { SupplierCatalog } from '../types.js';
 
@@ -39,10 +39,10 @@ const safeFileName = (value: unknown) => {
   return name.replace(/[^A-Za-z0-9._ -]+/g, '_');
 };
 
-const normalizeCatalog = (value: unknown): ManualSupplierCatalog | null => {
+const normalizeCatalog = (value: unknown): SupplierImportCatalog | null => {
   const catalog = typeof value === 'string' ? value.trim().toUpperCase() : '';
-  return isManualSupplierCatalog(catalog as SupplierCatalog)
-    ? catalog as ManualSupplierCatalog
+  return isSupplierImportCatalog(catalog as SupplierCatalog)
+    ? catalog as SupplierImportCatalog
     : null;
 };
 
@@ -107,7 +107,7 @@ const getPrivateSecret = async (
 
 const replaceSupplierSheet = async (
   supabase: ReturnType<typeof createSupabaseAdmin>,
-  catalog: ManualSupplierCatalog,
+  catalog: SupplierImportCatalog,
   sourceFile: string,
   rows: ImportRow[]
 ) => {
@@ -118,7 +118,7 @@ const replaceSupplierSheet = async (
   if (!appsScriptUrl || !token) throw new Error('The Google Sheet supplier import bridge is not configured.');
 
   const importedAt = new Date().toISOString();
-  const meta = MANUAL_SUPPLIER_BY_CATALOG[catalog];
+  const meta = SUPPLIER_IMPORT_BY_CATALOG[catalog];
   const sheetResponse = await fetch(appsScriptUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -177,11 +177,12 @@ export default async function handler(request: any, response: any) {
   try {
     const body = await readApiBody(request);
     const catalog = normalizeCatalog(body.catalog);
-    if (!catalog) return response.status(400).json({ error: 'Only Sailun and Safety Grip support manual document imports.' });
+    if (!catalog) return response.status(400).json({ error: 'Choose a supported supplier catalogue before importing.' });
     const rows = validateRows(body.rows);
     const sourceFile = safeFileName(body.sourceFile);
     const terminal = safeText(body.terminal, 80) || 'UNKNOWN';
-    const supplier = MANUAL_SUPPLIER_BY_CATALOG[catalog].supplier;
+    const supplierMeta = SUPPLIER_IMPORT_BY_CATALOG[catalog];
+    const supplier = supplierMeta.supplier;
 
     const { data: job, error: jobError } = await supabase
       .from('supplier_sync_jobs')
@@ -212,7 +213,7 @@ export default async function handler(request: any, response: any) {
 
     await supabase.from('supplier_sync_jobs').update({
       progress_stage: 'publishing',
-      progress_message: `Replacing ${MANUAL_SUPPLIER_BY_CATALOG[catalog].sheetName} in Google Sheets`,
+      progress_message: `Replacing ${supplierMeta.sheetName} in Google Sheets`,
       heartbeat_at: new Date().toISOString()
     }).eq('id', jobId);
 
@@ -238,7 +239,7 @@ export default async function handler(request: any, response: any) {
         snapshot_id: snapshotId,
         catalog_key: catalog,
         source_key: row.sourceKey,
-        product_type: 'TYRE',
+        product_type: supplierMeta.productType,
         supplier,
         supplier_sku: row.supplierSku,
         brand: row.brand,

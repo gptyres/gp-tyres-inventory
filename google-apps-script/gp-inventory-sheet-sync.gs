@@ -257,7 +257,20 @@ function ensureHelperHeaders_(sheet) {
 function replaceSupplierCatalogSheet_(payload) {
   const allowedSheets = {
     SAILUN: 'SUPPLIER_SAILUN',
-    SAFETY_GRIP: 'SUPPLIER_SAFETY_GRIP'
+    SAFETY_GRIP: 'SUPPLIER_SAFETY_GRIP',
+    EXCLUSIVE_TYRES: 'SUPPLIER_EXCLUSIVE_TYRES',
+    TYREWAREHOUSE: 'SUPPLIER_TYREWAREHOUSE',
+    ATT: 'SUPPLIER_ATT',
+    ALINE: 'SUPPLIER_ALINE',
+    STAMFORD: 'SUPPLIER_STAMFORD',
+    APEX: 'SUPPLIER_APEX',
+    TUBESTONE: 'SUPPLIER_TUBESTONE',
+    EXOTIC: 'SUPPLIER_EXOTIC',
+    TREAD_ZONE: 'SUPPLIER_TREAD_ZONE',
+    SUMITOMO_DUNLOP: 'SUPPLIER_SUMITOMO_DUNLOP',
+    TREADS_UNLIMITED: 'SUPPLIER_TREADS_UNLIMITED',
+    TYRE_LIFE: 'SUPPLIER_TYRE_LIFE',
+    TYRE_LIFE_WHEELS: 'SUPPLIER_TYRE_LIFE_WHEELS'
   };
   const expectedSheet = allowedSheets[String(payload.catalog || '')];
   if (!expectedSheet || payload.sheetName !== expectedSheet) {

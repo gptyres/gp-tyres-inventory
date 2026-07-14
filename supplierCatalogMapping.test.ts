@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
+  isSupplierImportCatalog,
   isLiveSupplierCatalog,
   isManualSupplierCatalog,
   isRegistryBackedSupplierCatalog,
   MANUAL_SUPPLIER_BY_CATALOG,
-  REGISTRY_SUPPLIER_BY_CATALOG
+  REGISTRY_SUPPLIER_BY_CATALOG,
+  SUPPLIER_IMPORT_BY_CATALOG
 } from './supplierCatalogMapping';
 
 describe('supplier catalogue registry mapping', () => {
@@ -29,5 +31,14 @@ describe('supplier catalogue registry mapping', () => {
     expect(isLiveSupplierCatalog('SAILUN')).toBe(true);
     expect(isLiveSupplierCatalog('ARC')).toBe(false);
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.sheetName).toBe('SUPPLIER_SAILUN');
+  });
+
+  it('allows admin file imports for every live supplier catalogue', () => {
+    expect(isSupplierImportCatalog('APEX')).toBe(true);
+    expect(isSupplierImportCatalog('SAILUN')).toBe(true);
+    expect(isSupplierImportCatalog('TYRE_LIFE_WHEELS')).toBe(true);
+    expect(isSupplierImportCatalog('ALL_SUPPLIERS')).toBe(false);
+    expect(isSupplierImportCatalog('ARC')).toBe(false);
+    expect(SUPPLIER_IMPORT_BY_CATALOG.ALINE.productType).toBe('WHEEL');
   });
 });

@@ -118,11 +118,11 @@ This queues and processes a SYSTEM job through the same runner and snapshot publ
 
 The button queues only the supplier catalogue currently open. It never expands a manual click into `ALL_ENABLED`. Only one queued or running job is allowed at a time, and a failed supplier keeps its previous active catalogue snapshot. The weekly automation remains a deliberate full-registry batch because it has no current portal context.
 
-## 6. Sailun and Safety Grip document workflow
+## 6. Supplier document upload workflow
 
-Sailun and Safety Grip have no live supplier portal. In admin mode, open that supplier catalogue and choose **Import Supplier File**. Upload a text PDF, CSV, XLS, or XLSX document, confirm the extracted preview, and publish it. The server first replaces the dedicated `SUPPLIER_SAILUN` or `SUPPLIER_SAFETY_GRIP` Google Sheet tab and only then activates the matching live portal snapshot.
+In admin mode, open any live supplier catalogue and choose **Upload Stock File**. Upload a text PDF, CSV, XLS, or XLSX document, confirm the extracted preview, and publish it. The importer detects likely identity, size, stock, location, cost, and selling columns, including a stock table on a later Excel worksheet. The server first replaces that catalogue's dedicated `SUPPLIER_<CATALOG>` Google Sheet tab and only then activates the matching live portal snapshot.
 
-Both cost and selling prices are stored VAT-inclusive. If the uploaded price header is not explicitly VAT-inclusive, the importer adds 15% VAT once. The file contents are processed in the browser and are not retained by the server.
+Both cost and selling prices are stored VAT-inclusive. If either uploaded price header is not explicitly VAT-inclusive, the importer adds 15% VAT once to that column. The file contents are processed in the browser and are not retained by the server.
 
 ## 7. Safe verification
 

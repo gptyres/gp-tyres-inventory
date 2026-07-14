@@ -1,4 +1,7 @@
-import type { ManualSupplierCatalog } from './supplierCatalogMapping';
+import {
+  SUPPLIER_IMPORT_BY_CATALOG,
+  type SupplierImportCatalog
+} from './supplierCatalogMapping';
 
 export interface ManualSupplierRow {
   sourceKey: string;
@@ -23,7 +26,7 @@ export interface ManualSupplierParseResult {
 }
 
 type GridRow = unknown[];
-type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'size' | 'quantity' | 'price' | 'location' | 'category';
+type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'size' | 'quantity' | 'price' | 'costPrice' | 'sellingPrice' | 'location' | 'category';
 
 const HEADER_ALIASES: Record<FieldName, string[]> = {
   sku: ['sku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
@@ -32,7 +35,9 @@ const HEADER_ALIASES: Record<FieldName, string[]> = {
   pattern: ['pattern', 'tread', 'model'],
   size: ['size', 'tyresize', 'dimensions'],
   quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'available', 'availability', 'onhand', 'freeqty'],
-  price: ['price', 'cost', 'costvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'sellingprice', 'unitprice'],
+  price: ['price', 'unitprice', 'pricevat', 'priceincvat', 'priceinclvat'],
+  costPrice: ['cost', 'costprice', 'costvat', 'costincvat', 'costinclvat', 'costpriceincvat', 'costpriceinclvat', 'costpriceexvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'buyprice', 'buyingprice', 'discountedprice', 'dealerprice', 'priceexvat'],
+  sellingPrice: ['selling', 'sellingprice', 'sellingincvat', 'sellinginclvat', 'sellingpriceincvat', 'sellingpriceinclvat', 'sellingpriceexvat', 'retail', 'retailprice', 'retailpriceincvat', 'retailpriceinclvat', 'rrp', 'recommendedretail', 'recommendedretailprice'],
   location: ['location', 'branch', 'warehouse', 'stocklocation'],
   category: ['category', 'type', 'segment']
 };
@@ -52,6 +57,7 @@ const parseNumber = (value: unknown) => {
     .replace(/[^0-9.,-]+/g, '')
     .replace(/,(?=\d{3}(?:\D|$))/g, '')
     .replace(',', '.');
+  if (!normalized || normalized === '-' || normalized === '.' || normalized === '-.') return Number.NaN;
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : Number.NaN;
 };
@@ -62,14 +68,19 @@ const parseStock = (value: unknown) => {
 };
 
 const TYRE_SIZE = /\b(?:\d{2,3}\s*\/\s*\d{2,3}\s*(?:ZR|RF|R)\s*\d{2}(?:\.\d)?|\d{2,3}\s*[Xx]\s*\d{1,2}(?:\.\d+)?\s*R\s*\d{2}(?:\.\d)?|\d{3}\s*R\s*\d{2}(?:\.\d)?|\d{3}\s*-\s*\d{2}(?:\.\d)?)\w*\b/i;
+const WHEEL_SIZE = /\b(?:1[2-9]|2[0-6])\s*[Xx]\s*\d{1,2}(?:\.\d+)?\b/i;
 
 const extractSize = (value: string) => {
-  const match = value.match(TYRE_SIZE);
+  const match = value.match(TYRE_SIZE) || value.match(WHEEL_SIZE);
   return match ? match[0].replace(/\s+/g, '').toUpperCase() : '';
 };
 
-const sourceKeyFor = (catalog: ManualSupplierCatalog, sku: string, size: string, productName: string) => {
-  const value = `${catalog}-${sku || `${size}-${productName}`}`
+const toVatInclusivePrice = (value: number, alreadyIncludesVat: boolean) => (
+  Number((Math.max(0, value) * (alreadyIncludesVat ? 1 : 1.15)).toFixed(2))
+);
+
+const sourceKeyFor = (catalog: SupplierImportCatalog, sku: string, size: string, productName: string, location: string) => {
+  const value = `${catalog}-${sku || `${size}-${productName}`}-${location}`
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
@@ -106,19 +117,25 @@ const findHeader = (grid: GridRow[]) => {
 };
 
 export const normalizeManualSupplierGrid = (
-  catalog: ManualSupplierCatalog,
+  catalog: SupplierImportCatalog,
   grid: GridRow[]
 ): ManualSupplierParseResult => {
   const header = findHeader(grid);
   if (!header) {
     throw new Error('Could not identify a stock table. The document needs a Quantity/Stock column plus a Code, Description, or Size column.');
   }
-  if (header.columns.price === undefined) {
-    throw new Error('Could not identify a Price, Cost, or Nett Price column.');
+  if (header.columns.price === undefined && header.columns.costPrice === undefined && header.columns.sellingPrice === undefined) {
+    throw new Error('Could not identify a Price, Cost, Nett Price, or Selling Price column.');
   }
 
-  const priceHeader = header.headers[header.columns.price] || '';
-  const priceIncludesVat = /incvat|includingvat|vatinclusive|pricevat/.test(priceHeader);
+  const genericPriceHeader = header.columns.price === undefined ? '' : header.headers[header.columns.price] || '';
+  const costPriceHeader = header.columns.costPrice === undefined ? '' : header.headers[header.columns.costPrice] || '';
+  const sellingPriceHeader = header.columns.sellingPrice === undefined ? '' : header.headers[header.columns.sellingPrice] || '';
+  const includesVat = (value: string) => /incvat|inclvat|includingvat|vatinclusive|pricevat/.test(value);
+  const genericPriceIncludesVat = includesVat(genericPriceHeader);
+  const costPriceIncludesVat = includesVat(costPriceHeader);
+  const sellingPriceIncludesVat = includesVat(sellingPriceHeader);
+  const supplierMeta = SUPPLIER_IMPORT_BY_CATALOG[catalog];
   const rows: ManualSupplierRow[] = [];
   const seen = new Set<string>();
   let rejectedRows = 0;
@@ -139,24 +156,42 @@ export const normalizeManualSupplierGrid = (
     const description = cleanCell(get(row, 'description'));
     const explicitSize = cleanCell(get(row, 'size'));
     const joinedIdentity = [explicitSize, explicitBrand, explicitPattern, description].filter(Boolean).join(' ');
-    const size = extractSize(explicitSize) || extractSize(description) || extractSize(joinedIdentity);
+    const size = extractSize(explicitSize)
+      || extractSize(description)
+      || extractSize(joinedIdentity)
+      || (/\d/.test(explicitSize) ? explicitSize.replace(/\s+/g, '').toUpperCase() : '');
     const stockUnits = parseStock(get(row, 'quantity'));
-    const suppliedPrice = parseNumber(get(row, 'price'));
+    const genericPrice = parseNumber(get(row, 'price'));
+    const suppliedCost = parseNumber(get(row, 'costPrice'));
+    const suppliedSelling = parseNumber(get(row, 'sellingPrice'));
+    const hasGenericPrice = Number.isFinite(genericPrice);
+    const hasCostPrice = Number.isFinite(suppliedCost);
+    const hasSellingPrice = Number.isFinite(suppliedSelling);
 
-    if ((!sku && !description && !size) || !size || !Number.isFinite(stockUnits) || !Number.isFinite(suppliedPrice)) {
+    if ((!sku && !description && !size) || !size || !Number.isFinite(stockUnits) || (!hasGenericPrice && !hasCostPrice && !hasSellingPrice)) {
       rejectedRows += 1;
       return;
     }
 
-    const descriptionWithoutSize = description.replace(TYRE_SIZE, '').trim();
-    const brand = explicitBrand || (catalog === 'SAILUN'
-      ? 'Sailun'
-      : descriptionWithoutSize.split(/\s+/)[0] || 'Safety Grip');
+    const descriptionWithoutSize = description.replace(TYRE_SIZE, '').replace(WHEEL_SIZE, '').trim();
+    const brand = explicitBrand || descriptionWithoutSize.split(/\s+/)[0] || supplierMeta.supplier;
     const productName = explicitPattern
       ? `${brand} ${explicitPattern}`.trim()
       : descriptionWithoutSize || `${brand} ${size}`;
-    const vatInclusivePrice = Number((Math.max(0, suppliedPrice) * (priceIncludesVat ? 1 : 1.15)).toFixed(2));
-    const sourceKey = sourceKeyFor(catalog, sku, size, productName);
+    const stockLocation = cleanCell(get(row, 'location')) || supplierMeta.supplier;
+    const costSource: [number, boolean] = hasCostPrice
+      ? [suppliedCost, costPriceIncludesVat]
+      : hasGenericPrice
+        ? [genericPrice, genericPriceIncludesVat]
+        : [suppliedSelling, sellingPriceIncludesVat];
+    const sellingSource: [number, boolean] = hasSellingPrice
+      ? [suppliedSelling, sellingPriceIncludesVat]
+      : hasGenericPrice
+        ? [genericPrice, genericPriceIncludesVat]
+        : [suppliedCost, costPriceIncludesVat];
+    const vatInclusiveCost = toVatInclusivePrice(...costSource);
+    const vatInclusiveSelling = toVatInclusivePrice(...sellingSource);
+    const sourceKey = sourceKeyFor(catalog, sku, size, productName, stockLocation);
     if (seen.has(sourceKey)) {
       rejectedRows += 1;
       return;
@@ -168,13 +203,13 @@ export const normalizeManualSupplierGrid = (
       supplierSku: sku || sourceKey,
       brand,
       productName,
-      category: cleanCell(get(row, 'category')) || catalog.replace('_', ' '),
+      category: cleanCell(get(row, 'category')) || (supplierMeta.productType === 'WHEEL' ? 'Wheels' : 'Tyres'),
       size,
-      stockLocation: cleanCell(get(row, 'location')) || catalog.replace('_', ' '),
+      stockLocation,
       stockAvailability: stockUnits > 0 ? 'In stock' : 'Out of stock',
       stockUnits,
-      costPrice: vatInclusivePrice,
-      sellingPrice: vatInclusivePrice,
+      costPrice: vatInclusiveCost,
+      sellingPrice: vatInclusiveSelling,
       sourceStockDetail: cleanCell(get(row, 'quantity'))
     });
   });
@@ -185,12 +220,29 @@ export const normalizeManualSupplierGrid = (
 
   const detectedColumns = Object.keys(header.columns);
   const warnings = rejectedRows > 0 ? [`${rejectedRows} row${rejectedRows === 1 ? '' : 's'} could not be safely imported.`] : [];
-  if (!priceIncludesVat) warnings.push('15% VAT will be added to the supplied price column.');
+  if (
+    (header.columns.costPrice !== undefined && !costPriceIncludesVat)
+    || (header.columns.sellingPrice !== undefined && !sellingPriceIncludesVat)
+    || (header.columns.price !== undefined && !genericPriceIncludesVat)
+  ) warnings.push('15% VAT will be added to price columns that are not marked VAT-inclusive.');
 
   return { rows, rejectedRows, warnings, detectedColumns };
 };
 
 export const parseCsvGrid = (text: string): string[][] => {
+  const sample = text.split(/\r?\n/).filter((line) => line.trim()).slice(0, 10);
+  const countDelimiter = (line: string, candidate: string) => {
+    let quoted = false;
+    let count = 0;
+    for (let index = 0; index < line.length; index += 1) {
+      if (line[index] === '"') quoted = !quoted;
+      else if (!quoted && line[index] === candidate) count += 1;
+    }
+    return count;
+  };
+  const delimiter = [',', ';', '\t', '|']
+    .map((candidate) => ({ candidate, score: sample.reduce((total, line) => total + countDelimiter(line, candidate), 0) }))
+    .sort((left, right) => right.score - left.score)[0]?.candidate || ',';
   const rows: string[][] = [];
   let row: string[] = [];
   let cell = '';
@@ -204,7 +256,7 @@ export const parseCsvGrid = (text: string): string[][] => {
       index += 1;
     } else if (char === '"') {
       quoted = !quoted;
-    } else if (!quoted && char === ',') {
+    } else if (!quoted && char === delimiter) {
       row.push(cell);
       cell = '';
     } else if (!quoted && (char === '\n' || char === '\r')) {
@@ -252,9 +304,10 @@ const readPdfGrid = async (file: File): Promise<GridRow[]> => {
 };
 
 export const parseManualSupplierFile = async (
-  catalog: ManualSupplierCatalog,
+  catalog: SupplierImportCatalog,
   file: File
 ): Promise<ManualSupplierParseResult> => {
+  if (file.size > 20 * 1024 * 1024) throw new Error('The supplier document must be 20 MB or smaller.');
   const lowerName = file.name.toLowerCase();
   let grid: GridRow[];
 
@@ -265,9 +318,22 @@ export const parseManualSupplierFile = async (
   } else if (lowerName.endsWith('.xlsx') || lowerName.endsWith('.xls')) {
     const XLSX = await import('@e965/xlsx');
     const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array' });
-    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    if (!firstSheet) throw new Error('The workbook does not contain a worksheet.');
-    grid = XLSX.utils.sheet_to_json(firstSheet, { header: 1, raw: false, defval: '' }) as GridRow[];
+    const candidates = workbook.SheetNames.flatMap((sheetName) => {
+      const sheet = workbook.Sheets[sheetName];
+      if (!sheet) return [];
+      const sheetGrid = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' }) as GridRow[];
+      try {
+        return [{ sheetName, result: normalizeManualSupplierGrid(catalog, sheetGrid) }];
+      } catch {
+        return [];
+      }
+    }).sort((left, right) => right.result.rows.length - left.result.rows.length);
+    const best = candidates[0];
+    if (!best) throw new Error('No worksheet contains a recognizable supplier stock table.');
+    if (best.sheetName !== workbook.SheetNames[0]) {
+      best.result.warnings.unshift(`Stock table detected on worksheet “${best.sheetName}”.`);
+    }
+    return best.result;
   } else {
     throw new Error('Upload a PDF, CSV, XLS, or XLSX supplier document.');
   }
@@ -285,7 +351,7 @@ const readJson = async (response: Response) => {
 };
 
 export const publishManualSupplierRows = async (
-  catalog: ManualSupplierCatalog,
+  catalog: SupplierImportCatalog,
   terminal: string,
   sourceFile: string,
   rows: ManualSupplierRow[]

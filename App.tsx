@@ -48,7 +48,7 @@ import {
   loadSupplierCatalogItems
 } from './supplierCatalogLoader';
 import { authenticateAdminSession, clearAdminSession } from './supplierSync';
-import { isManualSupplierCatalog, isRegistryBackedSupplierCatalog, isLiveSupplierCatalog } from './supplierCatalogMapping';
+import { isRegistryBackedSupplierCatalog, isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { syncPortalInventoryItemsToSheet } from './sheetInventoryStatus';
 
 import {
@@ -1673,7 +1673,7 @@ const App: React.FC = () => {
                             workerRequired={supplierUsesPortalWorker}
                             onCompleted={handleSupplierSyncCompleted}
                           />
-                          {isAdmin && isManualSupplierCatalog(activeSupplierCatalog) && (
+                          {isAdmin && isLiveSupplierCatalog(activeSupplierCatalog) && (
                             <ManualSupplierImport
                               terminal={currentUser}
                               catalog={activeSupplierCatalog}

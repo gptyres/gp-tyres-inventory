@@ -330,11 +330,11 @@ Required button behavior:
 
 Do not expose raw local paths or logs to ordinary users. Admin status may show safe artifact names and run ids.
 
-### 11. Manual document suppliers
+### 11. Supplier document imports
 
-SAILUN and SAFETY_GRIP do not have live portal credentials. In admin mode, provide an **Import Supplier File** workflow beside their catalogue status. Accept text PDFs, CSV, XLS, and XLSX files; detect the stock table; require a tyre identity, size, quantity, and price; preview accepted/rejected rows; and add 15% VAT when the detected source price is not explicitly VAT-inclusive.
+In admin mode, provide an **Upload Stock File** workflow beside every live supplier catalogue, including SAILUN and SAFETY_GRIP. Accept text PDFs, CSV, XLS, and XLSX files; detect the best stock table or worksheet; require a product identity, size, quantity, and at least one price; preserve branch-specific rows; preview accepted/rejected rows; and add 15% VAT only to detected cost or selling columns that are not explicitly VAT-inclusive.
 
-Publish both VAT-inclusive cost and selling prices. Replace only the supplier's dedicated `SUPPLIER_SAILUN` or `SUPPLIER_SAFETY_GRIP` Google Sheet tab, then publish the same validated rows as one atomic live snapshot. Do not activate the portal snapshot when the Sheet write fails. Never persist the uploaded document contents or expose the server-only Sheet token.
+Publish both VAT-inclusive cost and selling prices. Replace only the selected catalogue's dedicated `SUPPLIER_<CATALOG>` Google Sheet tab, then publish the same validated rows as one atomic live snapshot. Treat ALINE and TYRE_LIFE_WHEELS rows as wheels. Do not activate the portal snapshot when the Sheet write fails. Never persist the uploaded document contents or expose the server-only Sheet token.
 
 ### 12. Reliability and security rules
 
@@ -397,7 +397,7 @@ The task is complete only when all of the following are true:
 - Supplier credentials remain local and secret.
 - Near-real-time fetching, validating, and publishing stock progress plus final status are visible in the portal.
 - Sales mode can see progress and the last successful sync date/time without receiving sync permissions.
-- Sailun and Safety Grip can be imported from PDF/CSV/XLS/XLSX through Google Sheets into an atomic live snapshot.
+- Every live supplier catalogue can be replaced in admin mode from PDF/CSV/XLS/XLSX through its dedicated Google Sheet tab and an atomic live snapshot.
 - Every newly published listing has VAT-inclusive cost and selling prices.
 - Successful current-run outputs publish through validated snapshots.
 - Failed suppliers retain their previous active snapshots.

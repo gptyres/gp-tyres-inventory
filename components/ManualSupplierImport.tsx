@@ -4,11 +4,11 @@ import {
   parseManualSupplierFile,
   publishManualSupplierRows
 } from '../manualSupplierImport';
-import type { ManualSupplierCatalog } from '../supplierCatalogMapping';
+import type { SupplierImportCatalog } from '../supplierCatalogMapping';
 
 interface ManualSupplierImportProps {
   terminal: string;
-  catalog: ManualSupplierCatalog;
+  catalog: SupplierImportCatalog;
   supplierLabel: string;
   visible: boolean;
   onPublished: () => void;
@@ -100,10 +100,10 @@ export function ManualSupplierImport({
           <div className="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-xl border border-amber-400/40 bg-gp-panel p-5 shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400">Manual Supplier Workflow</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400">Admin Supplier File Import</p>
                 <h2 className="mt-1 font-display text-2xl font-black uppercase text-gp-text-main">Import {supplierLabel} Stock</h2>
                 <p className="mt-2 max-w-3xl text-xs text-gp-text-muted">
-                  Upload PDF, CSV, XLS, or XLSX. Review the extracted stock below. Publishing replaces the dedicated Google Sheet tab first, then activates the same rows in the supplier portal catalogue.
+                  Upload a CSV, text-based PDF, XLS, or XLSX file. Review the detected pricing, location, and stock before publishing. The current supplier catalogue is replaced only after its Google Sheet tab is updated successfully.
                 </p>
               </div>
               <button type="button" onClick={close} disabled={publishing} aria-label="Close supplier import" className="text-2xl text-gp-text-muted hover:text-white disabled:opacity-40">×</button>

@@ -47,4 +47,42 @@ describe('manual supplier document import', () => {
     const grid = parseCsvGrid('CODE,DESCRIPTION,QUANTITY,PRICE\r\nA1,155/65R13 TEST TREAD,8,"R1,043.00"');
     expect(grid[1]).toEqual(['A1', '155/65R13 TEST TREAD', '8', 'R1,043.00']);
   });
+
+  it('imports portal supplier cost and selling columns with VAT applied only where needed', () => {
+    const result = normalizeManualSupplierGrid('APEX', [
+      ['Stock Code', 'Brand', 'Description', 'Size', 'Quantity', 'Cost Price Ex VAT', 'Selling Price Inc VAT', 'Warehouse'],
+      ['AP-101', 'Michelin', 'Primacy 4', '205/55R16', 12, 1000, 1450, 'Cape Town']
+    ]);
+
+    expect(result.rows[0]).toMatchObject({
+      supplierSku: 'AP-101',
+      costPrice: 1150,
+      sellingPrice: 1450,
+      stockLocation: 'Cape Town'
+    });
+  });
+
+  it('keeps the same SKU as separate stock rows when locations differ', () => {
+    const result = normalizeManualSupplierGrid('TYREWAREHOUSE', [
+      ['SKU', 'Description', 'Stock', 'Price Inc VAT', 'Location'],
+      ['TW-1', '195/65R15 TEST TREAD', 4, 900, 'Cape Town'],
+      ['TW-1', '195/65R15 TEST TREAD', 7, 900, 'Johannesburg']
+    ]);
+
+    expect(result.rows).toHaveLength(2);
+    expect(new Set(result.rows.map((row) => row.sourceKey)).size).toBe(2);
+  });
+
+  it('detects semicolon-delimited supplier CSV files', () => {
+    const grid = parseCsvGrid('SKU;DESCRIPTION;STOCK;PRICE\nTW-1;195/65R15 TEST;5;900');
+    expect(grid[1]).toEqual(['TW-1', '195/65R15 TEST', '5', '900']);
+  });
+
+  it('recognizes wheel dimensions for wheel supplier uploads', () => {
+    const result = normalizeManualSupplierGrid('ALINE', [
+      ['Code', 'Description', 'Size', 'Stock', 'Price Inc VAT'],
+      ['AW-17', 'A-Line Vector', '17x8.5', 3, 2200]
+    ]);
+    expect(result.rows[0]).toMatchObject({ size: '17X8.5', category: 'Wheels' });
+  });
 });
