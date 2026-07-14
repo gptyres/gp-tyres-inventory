@@ -174,6 +174,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span className="font-bold text-sm">Customer Hub</span>
           </button>
 
+          <button
+            onClick={() => handleOrderClick('PHOTO_LIBRARY')}
+            className={`flex items-center w-full px-3 py-2 rounded transition-colors ${currentView === 'PHOTO_LIBRARY' ? 'bg-gp-red/10 text-gp-red' : 'text-gp-text-muted hover:text-gp-text-main hover:bg-gp-border'}`}
+          >
+            <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7h3l1.5-2h7L17 7h3v12H4V7Zm4 6a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z" />
+            </svg>
+            <span className="font-bold text-sm">Photo Library</span>
+          </button>
+
           {/* Products Group */}
           <div>
             <button 

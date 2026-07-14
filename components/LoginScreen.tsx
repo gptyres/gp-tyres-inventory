@@ -13,6 +13,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onAttempt }) 
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     try {
@@ -29,12 +30,36 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onAttempt }) 
     }
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     const formattedUser = username.toUpperCase().trim();
     const correctPassword = USER_CREDENTIALS[formattedUser];
 
     if (correctPassword && correctPassword === password) {
+      setIsSubmitting(true);
+      setError('');
+      try {
+        const response = await fetch('/api/staff-session', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ terminalId: formattedUser, password })
+        });
+
+        if (!response.ok && import.meta.env.PROD) {
+          const payload = await response.json().catch(() => ({}));
+          throw new Error(payload.error || 'Secure staff session could not be started.');
+        }
+      } catch (sessionError) {
+        if (import.meta.env.PROD) {
+          setError(sessionError instanceof Error ? sessionError.message : 'Secure staff session could not be started.');
+          setIsSubmitting(false);
+          onAttempt(formattedUser, false);
+          return;
+        }
+      }
+
       if (rememberMe) {
         localStorage.setItem(REMEMBERED_LOGIN_KEY, JSON.stringify({
           username: formattedUser,
@@ -47,6 +72,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onAttempt }) 
       console.log(`[AUTH] Login Successful: ${formattedUser} at ${new Date().toISOString()}`);
       onAttempt(formattedUser, true);
       onLogin(formattedUser);
+      setIsSubmitting(false);
     } else {
       const errorMsg = 'Invalid Terminal ID or Access Code';
       setError(errorMsg);
@@ -106,9 +132,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onAttempt }) 
 
           <button 
             type="submit"
-            className="w-full bg-gp-red hover:bg-red-700 text-white font-bold py-4 rounded uppercase tracking-wider transition-all active:scale-95 shadow-lg"
+            disabled={isSubmitting}
+            className="w-full bg-gp-red hover:bg-red-700 text-white font-bold py-4 rounded uppercase tracking-wider transition-all active:scale-95 shadow-lg disabled:cursor-wait disabled:opacity-60"
           >
-            Initialize System
+            {isSubmitting ? 'Starting Secure Session...' : 'Initialize System'}
           </button>
         </form>
         

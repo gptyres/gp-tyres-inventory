@@ -3,11 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-    <title>GP Tyres & Mags Inventory Tracker</title>
+    <title>GP Tyres & Mags | Inventory Portal</title>
+    <meta name="description" content="Internal GP Tyres & Mags inventory, supplier stock, POS, quote, invoice, CRM and training portal." />
+    <meta property="og:title" content="GP Tyres & Mags | Inventory Portal" />
+    <meta property="og:description" content="Internal GP Tyres & Mags stock, POS, quote, invoice and CRM portal." />
+    <meta property="og:image" content="/gp-tyres-favicon.png" />
     <link rel="icon" type="image/png" href="/gp-tyres-favicon.png?v=20260624" />
     <link rel="apple-touch-icon" href="/gp-tyres-favicon.png?v=20260624" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
       :root {
         /* Light Mode Defaults */
@@ -39,7 +43,18 @@
         -webkit-font-smoothing: antialiased;
         transition: background-color 0.3s, color 0.3s;
       }
-      
+
+      a, button, input, select, textarea {
+        transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+        transition-duration: 220ms;
+        transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+        outline: 3px solid #ffd400;
+        outline-offset: 3px;
+      }
+
       /* Custom Scrollbar for Industrial Look */
       ::-webkit-scrollbar {
         width: 8px;
@@ -79,8 +94,8 @@
               }
             },
             fontFamily: {
-              sans: ['Roboto', 'sans-serif'],
-              display: ['Montserrat', 'sans-serif'],
+              sans: ['Manrope', 'sans-serif'],
+              display: ['Oswald', 'sans-serif'],
             }
           }
         }
