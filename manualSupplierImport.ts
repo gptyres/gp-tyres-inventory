@@ -37,15 +37,15 @@ const HEADER_ALIASES: Record<FieldName, string[]> = {
   sku: ['sku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
   description: ['description', 'descrption', 'product', 'productname', 'item', 'itemdescription', 'tyredescription', 'brandandpattern', 'brandpattern', 'branddescription', 'patternanddescription'],
   brand: ['brand', 'tyrebrand', 'make'],
-  pattern: ['pattern', 'tyrepattern', 'tread', 'model'],
+  pattern: ['pattern', 'tyrepattern', 'portalpattern', 'tread', 'model'],
   rating: ['rating', 'tyrerating', 'ply', 'plyrating', 'pr'],
   index: ['index', 'tyreindex', 'loadindex', 'speedindex', 'loadspeed', 'loadspeedindex', 'loadspeedrating'],
   specs: ['specs', 'tyrespecs', 'specifications', 'otherspecs', 'additionaldetails', 'sidewall', 'construction'],
   size: ['size', 'tyresize', 'dimensions'],
   quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'stockunits', 'unitsinstock', 'availableunits', 'availableqty', 'qtyavailable', 'available', 'availability', 'onhand', 'freeqty'],
   price: ['price', 'unitprice', 'pricevat', 'priceincvat', 'priceinclvat'],
-  costPrice: ['cost', 'costprice', 'costvat', 'costincvat', 'costinclvat', 'costpriceincvat', 'costpriceinclvat', 'costpriceexvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'buyprice', 'buyingprice', 'discountedprice', 'dealerprice', 'priceexvat'],
-  sellingPrice: ['selling', 'sellingprice', 'sellingincvat', 'sellinginclvat', 'sellingpriceincvat', 'sellingpriceinclvat', 'sellingpriceexvat', 'retail', 'retailprice', 'retailpriceincvat', 'retailpriceinclvat', 'rrp', 'recommendedretail', 'recommendedretailprice'],
+  costPrice: ['cost', 'costprice', 'costvat', 'costincvat', 'costinclvat', 'costpriceincvat', 'costpriceinclvat', 'costpriceexvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'buyprice', 'buyingprice', 'discountedprice', 'discountedpriceexvat', 'dealerprice', 'priceexvat'],
+  sellingPrice: ['selling', 'sellingprice', 'sellingincvat', 'sellinginclvat', 'sellingpriceincvat', 'sellingpriceinclvat', 'sellingpriceexvat', 'roundedinclvatr25', 'retail', 'retailprice', 'retailpriceincvat', 'retailpriceinclvat', 'rrp', 'recommendedretail', 'recommendedretailprice'],
   location: ['location', 'branch', 'warehouse', 'stocklocation'],
   category: ['category', 'type', 'segment']
 };
@@ -78,7 +78,7 @@ const parseStock = (value: unknown) => {
 const WHEEL_SIZE = /\b(?:1[2-9]|2[0-6])\s*[Xx]\s*\d{1,2}(?:\.\d+)?\b/i;
 
 const extractSize = (value: string) => {
-  const tyreSize = extractSupplierTyreSize(value);
+  const tyreSize = extractSupplierTyreSize(value.replace(/\bHL(?=\d)/i, ''));
   if (tyreSize) return tyreSize;
   const wheelMatch = value.match(WHEEL_SIZE);
   return wheelMatch ? wheelMatch[0].replace(/\s+/g, '').toUpperCase() : '';
@@ -176,11 +176,12 @@ export const normalizeManualSupplierGrid = (
     const explicitIndex = cleanCell(get(row, 'index'));
     const explicitSpecs = cleanCell(get(row, 'specs'));
     const description = cleanCell(get(row, 'description'));
+    const descriptionForParsing = description.replace(/\bHL(?=\d)/i, '');
     const explicitSize = cleanCell(get(row, 'size'));
     const joinedIdentity = [explicitSize, explicitBrand, explicitPattern, explicitRating, explicitIndex, explicitSpecs, description].filter(Boolean).join(' ');
     const parsedTyre = supplierMeta.productType === 'TYRE'
       ? parseSupplierTyreFields({
-          description,
+          description: descriptionForParsing,
           explicitSize,
           explicitBrand,
           explicitPattern,

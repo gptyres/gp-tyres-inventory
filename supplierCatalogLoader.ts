@@ -6,6 +6,7 @@ import {
   parseApexData,
   parseArcData,
   parseAttData,
+  parseBridgestoneData,
   parseExclusiveTyresData,
   parseExoticData,
   parseSafetyGripData,
@@ -27,6 +28,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'EXCLUSIVE_TYRES',
   'TYREWAREHOUSE',
   'ATT',
+  'BRIDGESTONE',
   'SAFETY_GRIP',
   'ALINE',
   'STAMFORD',
@@ -46,6 +48,7 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   EXCLUSIVE_TYRES: 'EXCLUSIVE TYRES',
   TYREWAREHOUSE: 'TYREWAREHOUSE',
   ATT: 'ATT',
+  BRIDGESTONE: 'BRIDGESTONE',
   SAFETY_GRIP: 'SAFETY GRIP',
   ALINE: 'ALINE',
   STAMFORD: 'STAMFORD',
@@ -65,6 +68,7 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   EXCLUSIVE_TYRES: 'exclusive',
   TYREWAREHOUSE: 'tyrewarehouse',
   ATT: 'att',
+  BRIDGESTONE: 'bridgestone',
   SAFETY_GRIP: 'safetygrip',
   ALINE: 'aline',
   STAMFORD: 'stamford',
@@ -154,6 +158,10 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     case 'ATT': {
       const { ATT_RAW_DATA } = await import('./supplier_data/attData');
       return parseAttData(ATT_RAW_DATA);
+    }
+    case 'BRIDGESTONE': {
+      const { BRIDGESTONE_RAW_DATA } = await import('./supplier_data/bridgestoneData');
+      return parseBridgestoneData(BRIDGESTONE_RAW_DATA);
     }
     case 'SAFETY_GRIP': {
       const { SAFETY_GRIP_RAW_DATA } = await import('./supplier_data/safetygripData');

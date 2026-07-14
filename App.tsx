@@ -254,6 +254,11 @@ const App: React.FC = () => {
       note: 'Viewing External Supplier Data. Prices use ATT selling prices.',
       portalUrl: 'https://onlinestore.autoandtrucktyres.co.za/#!/evo-client-portal/dashboard'
     },
+    BRIDGESTONE: {
+      label: 'BRIDGESTONE',
+      note: 'Viewing Bridgestone and Firestone supplier stock. Prices include VAT and are rounded to the nearest R25.',
+      portalUrl: 'https://www.bsafonline.co.za/'
+    },
     SAFETY_GRIP: {
       label: 'SAFETY GRIP',
       note: 'Viewing External Supplier Data. Prices are calculated with 15% VAT added to the supplied price.'

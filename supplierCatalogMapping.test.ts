@@ -24,18 +24,22 @@ describe('supplier catalogue registry mapping', () => {
   it('keeps manual catalogues outside the portal registry but enables live snapshots', () => {
     expect(isRegistryBackedSupplierCatalog('SAILUN')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('SAFETY_GRIP')).toBe(false);
+    expect(isRegistryBackedSupplierCatalog('BRIDGESTONE')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('ARC')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('APEX')).toBe(true);
     expect(isManualSupplierCatalog('SAILUN')).toBe(true);
     expect(isManualSupplierCatalog('SAFETY_GRIP')).toBe(true);
+    expect(isManualSupplierCatalog('BRIDGESTONE')).toBe(true);
     expect(isLiveSupplierCatalog('SAILUN')).toBe(true);
     expect(isLiveSupplierCatalog('ARC')).toBe(false);
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.sheetName).toBe('SUPPLIER_SAILUN');
+    expect(MANUAL_SUPPLIER_BY_CATALOG.BRIDGESTONE.sheetName).toBe('SUPPLIER_BRIDGESTONE');
   });
 
   it('allows admin file imports for every live supplier catalogue', () => {
     expect(isSupplierImportCatalog('APEX')).toBe(true);
     expect(isSupplierImportCatalog('SAILUN')).toBe(true);
+    expect(isSupplierImportCatalog('BRIDGESTONE')).toBe(true);
     expect(isSupplierImportCatalog('TYRE_LIFE_WHEELS')).toBe(true);
     expect(isSupplierImportCatalog('ALL_SUPPLIERS')).toBe(false);
     expect(isSupplierImportCatalog('ARC')).toBe(false);

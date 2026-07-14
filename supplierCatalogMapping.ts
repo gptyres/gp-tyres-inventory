@@ -2,10 +2,10 @@ import type { SupplierCatalog } from './types.js';
 
 export type RegistryBackedSupplierCatalog = Exclude<
   SupplierCatalog,
-  'ALL_SUPPLIERS' | 'SAILUN' | 'SAFETY_GRIP' | 'ARC'
+  'ALL_SUPPLIERS' | 'SAILUN' | 'SAFETY_GRIP' | 'BRIDGESTONE' | 'ARC'
 >;
 
-export type ManualSupplierCatalog = Extract<SupplierCatalog, 'SAILUN' | 'SAFETY_GRIP'>;
+export type ManualSupplierCatalog = Extract<SupplierCatalog, 'SAILUN' | 'SAFETY_GRIP' | 'BRIDGESTONE'>;
 export type LiveSupplierCatalog = RegistryBackedSupplierCatalog | ManualSupplierCatalog;
 export type SupplierImportCatalog = LiveSupplierCatalog;
 
@@ -37,7 +37,8 @@ export const MANUAL_SUPPLIER_BY_CATALOG: Record<ManualSupplierCatalog, {
   sheetName: string;
 }> = {
   SAILUN: { supplier: 'Sailun', sheetName: 'SUPPLIER_SAILUN' },
-  SAFETY_GRIP: { supplier: 'Safety Grip', sheetName: 'SUPPLIER_SAFETY_GRIP' }
+  SAFETY_GRIP: { supplier: 'Safety Grip', sheetName: 'SUPPLIER_SAFETY_GRIP' },
+  BRIDGESTONE: { supplier: 'Bridgestone', sheetName: 'SUPPLIER_BRIDGESTONE' }
 };
 
 export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
@@ -47,6 +48,7 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
 }> = {
   SAILUN: { supplier: 'Sailun', sheetName: 'SUPPLIER_SAILUN', productType: 'TYRE' },
   SAFETY_GRIP: { supplier: 'Safety Grip', sheetName: 'SUPPLIER_SAFETY_GRIP', productType: 'TYRE' },
+  BRIDGESTONE: { supplier: 'Bridgestone', sheetName: 'SUPPLIER_BRIDGESTONE', productType: 'TYRE' },
   EXCLUSIVE_TYRES: { supplier: 'Exclusive Tyres', sheetName: 'SUPPLIER_EXCLUSIVE_TYRES', productType: 'TYRE' },
   TYREWAREHOUSE: { supplier: 'Tyrewarehouse', sheetName: 'SUPPLIER_TYREWAREHOUSE', productType: 'TYRE' },
   ATT: { supplier: 'ATT', sheetName: 'SUPPLIER_ATT', productType: 'TYRE' },

@@ -62,6 +62,25 @@ describe('manual supplier document import', () => {
     });
   });
 
+  it('imports the Bridgestone sheet using its rounded VAT price and portal pattern', () => {
+    const result = normalizeManualSupplierGrid('BRIDGESTONE', [
+      ['Brand', 'Requested Pattern', 'Portal Pattern', 'Description', 'Size', 'SKU', 'Stock Type', 'Stock Location', 'Stock Units', 'Discounted Price Ex VAT', 'Discounted Price Incl VAT', 'Rounded Incl VAT R25', 'Displayed Price'],
+      ['BRIDGESTONE', 'TURANZA 6', 'TURANZA 6', 'HL255/35R19 TURANZA 6 99W MO', '', '835250', 'rep', 'National', 4, 'R 2695.65', 'R3100.00', 'R3100', 'R 4999']
+    ]);
+
+    expect(result.rows).toHaveLength(1);
+    expect(result.rows[0]).toMatchObject({
+      supplierSku: '835250',
+      brand: 'BRIDGESTONE',
+      tyrePattern: 'TURANZA 6',
+      size: '255/35R19',
+      stockUnits: 4,
+      costPrice: 3100,
+      sellingPrice: 3100,
+      stockLocation: 'National'
+    });
+  });
+
   it('imports the APEX inventory workbook layout with Brand & Pattern and Stock Units headers', () => {
     const result = normalizeManualSupplierGrid('APEX', [
       ['Size', 'Brand & Pattern', 'Lead Time', 'Selling Price', 'Stock Units'],

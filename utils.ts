@@ -1,6 +1,7 @@
 
 import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
 import { parseAlineStockImageKeys, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
+import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-ZA', {
@@ -905,6 +906,60 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
 // --- ATT PARSER ---
 export const parseAttData = (rawCsv: string): InventoryItem[] => {
   return parseSimpleSupplierCsv(rawCsv, 'att', 'ATT');
+};
+
+// --- BRIDGESTONE / FIRESTONE PARSER ---
+export const parseBridgestoneData = (rawCsv: string): InventoryItem[] => {
+  const lines = rawCsv.split('\n');
+  const today = new Date().toISOString().split('T')[0];
+
+  return lines.flatMap((line, index): InventoryItem[] => {
+    const trimmed = line.trim();
+    if (!trimmed) return [];
+
+    const cols = parseCSVLine(trimmed);
+    const brand = cols[0]?.trim();
+    const requestedPattern = cols[1]?.replace(/\s+/g, ' ').trim();
+    const portalPattern = cols[2]?.replace(/\s+/g, ' ').trim();
+    const description = cols[3]?.replace(/\s+/g, ' ').trim();
+    const sku = cols[5]?.trim();
+
+    if (index === 0 && brand?.toUpperCase() === 'BRAND') return [];
+    if (!brand || !description || !sku) return [];
+
+    const normalizedDescription = description.replace(/^HL(?=\d)/i, '');
+    const parsed = parseSupplierTyreFields({
+      description: normalizedDescription,
+      explicitSize: cols[4]?.trim(),
+      explicitBrand: brand,
+      explicitPattern: portalPattern || requestedPattern
+    });
+    if (!parsed.size || !parsed.pattern) return [];
+
+    const stockType = cols[6]?.trim();
+    const stockLocation = cols[7]?.trim();
+    const quantity = Math.max(0, parseStockUnits(cols[8]));
+    const costPriceExVat = parseCurrencyString(cols[9]);
+    const sellingPrice = parseCurrencyString(cols[11]) || parseCurrencyString(cols[10]);
+
+    return [{
+      id: `bridgestone-${sku}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('BRIDGESTONE', brand, parsed.pattern, sku),
+      brand,
+      pattern: parsed.pattern,
+      size: parsed.size,
+      loadSpeedIndex: buildTyreIndexDisplay(parsed.rating, parsed.index),
+      tyreRating: parsed.rating,
+      tyreIndex: parsed.index,
+      tyreSpecs: parsed.specs,
+      location: [stockLocation || 'Supplier', stockType].filter(Boolean).join(' | '),
+      quantity,
+      costPrice: costPriceExVat,
+      sellingPrice,
+      lastUpdated: today
+    }];
+  });
 };
 
 // --- SAFETY GRIP PARSER ---
