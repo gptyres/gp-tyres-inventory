@@ -11,6 +11,8 @@ interface ManualSupplierImportProps {
   catalog: SupplierImportCatalog;
   supplierLabel: string;
   visible: boolean;
+  canOpen?: boolean;
+  onAdminRequired?: () => void;
   onPublished: () => void;
 }
 
@@ -25,6 +27,8 @@ export function ManualSupplierImport({
   catalog,
   supplierLabel,
   visible,
+  canOpen = true,
+  onAdminRequired,
   onPublished
 }: ManualSupplierImportProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,6 +58,14 @@ export function ManualSupplierImport({
     if (publishing) return;
     setOpen(false);
     reset();
+  };
+
+  const openImport = () => {
+    if (!canOpen) {
+      onAdminRequired?.();
+      return;
+    }
+    setOpen(true);
   };
 
   const handleFile = async (selectedFile?: File) => {
@@ -125,10 +137,12 @@ export function ManualSupplierImport({
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
-        className="inline-flex shrink-0 items-center justify-center rounded bg-amber-500 px-4 py-2 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-amber-900/20 transition hover:bg-amber-400"
+        onClick={openImport}
+        aria-label={canOpen ? `Upload ${supplierLabel} stock` : `Admin access required to upload ${supplierLabel} stock`}
+        title={canOpen ? `Upload ${supplierLabel} stock` : 'Admin access required'}
+        className="inline-flex h-11 w-full min-w-0 self-start items-center justify-center whitespace-nowrap rounded-lg border border-amber-300/70 bg-amber-500 px-4 text-xs font-black uppercase tracking-wider text-black shadow-lg shadow-amber-900/20 transition hover:-translate-y-px hover:bg-amber-400 active:translate-y-0"
       >
-        Upload Stock File
+        Upload Stock
       </button>
 
       {open && (

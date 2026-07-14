@@ -13,6 +13,7 @@ interface SupplierSyncButtonProps {
   visible: boolean;
   canTrigger: boolean;
   workerRequired?: boolean;
+  onAdminRequired?: () => void;
   onCompleted: (job: SupplierSyncJob) => void;
 }
 
@@ -50,6 +51,7 @@ export function SupplierSyncButton({
   visible,
   canTrigger,
   workerRequired = true,
+  onAdminRequired,
   onCompleted
 }: SupplierSyncButtonProps) {
   const [status, setStatus] = useState<SupplierSyncStatusResponse | null>(null);
@@ -107,18 +109,19 @@ export function SupplierSyncButton({
   const workerUnavailable = workerRequired && Boolean(status) && !workerOnline;
   const disabled = loading || isActive || Boolean(blockingJob) || workerUnavailable;
 
-  let label = `Sync ${supplierLabel}`;
-  if (loading || activeJob?.status === 'queued') label = `Starting ${supplierLabel}…`;
+  let label = 'Sync Stock';
+  if (loading || activeJob?.status === 'queued') label = 'Starting Sync...';
   else if (activeJob?.status === 'running') {
-    const completed = activeJob.suppliers_completed + activeJob.suppliers_failed + activeJob.suppliers_skipped;
-    label = activeJob.suppliers_total > 0
-      ? 'Syncing ' + completed + ' of ' + activeJob.suppliers_total
-      : `Syncing ${activeJob.target_supplier || supplierLabel}`;
+    label = 'Syncing Stock...';
   }
-  else if (blockingJob) label = `Syncing ${blockingJob.target_supplier || 'another supplier'}`;
-  else if (workerUnavailable) label = 'Sync Worker Offline';
+  else if (blockingJob) label = 'Sync In Progress';
+  else if (workerUnavailable) label = 'Sync Offline';
 
   const handleClick = async () => {
+    if (!canTrigger) {
+      onAdminRequired?.();
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -143,14 +146,16 @@ export function SupplierSyncButton({
   const progressSupplier = activeJob?.target_supplier || supplierLabel;
 
   return (
-    <div className="relative flex min-w-56 shrink-0 flex-col items-stretch gap-1 rounded border border-blue-400/20 bg-blue-950/20 p-2">
-      {canTrigger && (
+    <div className="relative flex min-w-0 self-start flex-col items-stretch gap-1">
+      {workerRequired && (
         <button
           type="button"
           onClick={handleClick}
           disabled={disabled}
           aria-busy={loading || isActive}
-          className="inline-flex min-w-48 items-center justify-center rounded border border-blue-400/50 bg-blue-600 px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-blue-900/20 transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:border-gp-border disabled:bg-gp-panel disabled:text-gp-text-muted"
+          aria-label={canTrigger ? `Sync ${supplierLabel} stock` : `Admin access required to sync ${supplierLabel} stock`}
+          title={canTrigger ? `Sync ${supplierLabel} stock` : 'Admin access required'}
+          className="inline-flex h-11 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg border border-blue-300/60 bg-blue-600 px-4 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-blue-900/20 transition hover:-translate-y-px hover:bg-blue-500 active:translate-y-0 disabled:cursor-not-allowed disabled:border-gp-border disabled:bg-gp-panel disabled:text-gp-text-muted"
         >
           {(loading || isActive) && (
             <span className="mr-2 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -159,7 +164,7 @@ export function SupplierSyncButton({
         </button>
       )}
 
-      <div className="max-w-72 text-right text-[10px] text-gp-text-muted" aria-live="polite">
+      <div className="mt-1 text-left text-[10px] text-gp-text-muted" aria-live="polite">
         {error || (
           activeJob?.result_summary?.currentSupplier
             ? 'Current: ' + activeJob.result_summary.currentSupplier
@@ -174,7 +179,7 @@ export function SupplierSyncButton({
               : 'Sync worker offline · restart the office sync service.'
         )}
       </div>
-      <p className="text-right text-[10px] font-bold text-blue-200">
+      <p className="text-left text-[10px] font-bold text-blue-200">
         Last successful sync: {status?.lastSuccessfulSync
           ? formatTime(status.lastSuccessfulSync.at)
           : 'Never synced'}

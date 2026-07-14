@@ -14,13 +14,15 @@ describe('supplier file upload module', () => {
         onPublished={vi.fn()}
       />
     );
-    expect(html).toContain('Upload Stock File');
+    expect(html).toContain('Upload Stock');
   });
 
-  it('is enabled for every live supplier catalogue from the admin-only portal header', () => {
+  it('stays visible for every live supplier catalogue and requests admin access when needed', () => {
     const appSource = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
-    expect(appSource).toContain('isAdmin && isLiveSupplierCatalog(activeSupplierCatalog)');
+    expect(appSource).toContain('{isLiveSupplierCatalog(activeSupplierCatalog) && (');
     expect(appSource).toContain('<ManualSupplierImport');
+    expect(appSource).toContain('canOpen={isAdmin}');
+    expect(appSource).toContain('onAdminRequired={() => setShowAuthModal(true)}');
   });
 
   it('supports dragging and dropping a supplier document into the upload area', () => {

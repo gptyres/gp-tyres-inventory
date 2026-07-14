@@ -15,7 +15,8 @@ describe('SupplierSyncButton', () => {
         onCompleted={vi.fn()}
       />
     );
-    expect(html).toContain('Sync APEX');
+    expect(html).toContain('Sync Stock');
+    expect(html).toContain('aria-label="Sync APEX stock"');
     expect(html).toContain('Checking sync worker status');
     expect(html).not.toContain(' disabled=');
     expect(html).toContain('aria-busy');
@@ -32,7 +33,8 @@ describe('SupplierSyncButton', () => {
         onCompleted={vi.fn()}
       />
     );
-    expect(html).toContain('Sync EXOTIC');
+    expect(html).toContain('Sync Stock');
+    expect(html).toContain('aria-label="Sync EXOTIC stock"');
     expect(html).not.toContain('Sync Supplier Portals');
     expect(html).not.toContain('Sync Queued');
   });
@@ -45,7 +47,7 @@ describe('SupplierSyncButton', () => {
     expect(apiSource).toContain('response.status(503)');
   });
 
-  it('shows sync timing in sales mode without exposing the trigger button', () => {
+  it('shows the sync action in sales mode and routes it through admin access', () => {
     const html = renderToStaticMarkup(
       <SupplierSyncButton
         terminal="GP1"
@@ -58,15 +60,19 @@ describe('SupplierSyncButton', () => {
     );
     expect(html).toContain('Last successful sync:');
     expect(html).toContain('Never synced');
-    expect(html).not.toContain('<button');
+    expect(html).toContain('<button');
+    expect(html).toContain('Admin access required to sync APEX stock');
   });
 
-  it('is placed before the existing Live Supplier Portal action', () => {
+  it('uses a symmetrical Live Portal, Sync Stock, Upload Stock action order', () => {
     const appSource = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
+    const livePortalPosition = appSource.indexOf('Live Portal');
     const syncButtonPosition = appSource.indexOf('<SupplierSyncButton');
-    const livePortalPosition = appSource.indexOf('Live Supplier Portal');
-    expect(syncButtonPosition).toBeGreaterThan(-1);
-    expect(livePortalPosition).toBeGreaterThan(syncButtonPosition);
+    const uploadButtonPosition = appSource.indexOf('<ManualSupplierImport');
+    expect(livePortalPosition).toBeGreaterThan(-1);
+    expect(syncButtonPosition).toBeGreaterThan(livePortalPosition);
+    expect(uploadButtonPosition).toBeGreaterThan(syncButtonPosition);
     expect(appSource).toContain('catalog={activeSupplierCatalog}');
+    expect(appSource).toContain('sm:grid-cols-3');
   });
 });

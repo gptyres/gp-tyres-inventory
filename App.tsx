@@ -1657,13 +1657,23 @@ const App: React.FC = () => {
               </div>
               <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
                 {currentView === 'SUPPLIER_INVENTORY' && (
-                    <div className="bg-blue-900/10 border border-blue-900/30 p-3 mb-4 rounded flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="mb-4 grid gap-4 rounded-xl border border-blue-900/30 bg-blue-900/10 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(560px,620px)] lg:items-start">
                       <div className="flex items-center gap-3">
                         <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <p className="text-xs text-blue-400"><strong>READ ONLY MODE:</strong> {supplierCatalogNote}</p>
                       </div>
                       {(supplierPortalUrl || supplierHasLiveSync) && (
-                        <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-start">
+                        <div className="grid w-full items-start gap-2 sm:grid-cols-3" aria-label={`${supplierCatalogLabel} supplier actions`}>
+                          {supplierPortalUrl && (
+                            <a
+                              href={supplierPortalUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex h-11 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg border border-red-400/60 bg-gp-red px-4 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gp-red/20 transition hover:-translate-y-px hover:bg-red-700 active:translate-y-0"
+                            >
+                              Live Portal
+                            </a>
+                          )}
                           <SupplierSyncButton
                             terminal={currentUser}
                             catalog={activeSupplierCatalog}
@@ -1671,26 +1681,19 @@ const App: React.FC = () => {
                             visible={supplierHasLiveSync}
                             canTrigger={isAdmin && supplierUsesPortalWorker}
                             workerRequired={supplierUsesPortalWorker}
+                            onAdminRequired={() => setShowAuthModal(true)}
                             onCompleted={handleSupplierSyncCompleted}
                           />
-                          {isAdmin && isLiveSupplierCatalog(activeSupplierCatalog) && (
+                          {isLiveSupplierCatalog(activeSupplierCatalog) && (
                             <ManualSupplierImport
                               terminal={currentUser}
                               catalog={activeSupplierCatalog}
                               supplierLabel={supplierCatalogLabel}
                               visible
+                              canOpen={isAdmin}
+                              onAdminRequired={() => setShowAuthModal(true)}
                               onPublished={handleSupplierSyncCompleted}
                             />
-                          )}
-                          {supplierPortalUrl && (
-                            <a
-                              href={supplierPortalUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex shrink-0 items-center justify-center rounded bg-gp-red px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gp-red/20 transition hover:bg-red-700"
-                            >
-                              Live Supplier Portal
-                            </a>
                           )}
                         </div>
                       )}
