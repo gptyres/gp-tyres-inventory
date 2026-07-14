@@ -16,7 +16,10 @@ describe('SupplierSyncButton', () => {
       />
     );
     expect(html).toContain('Sync Stock');
-    expect(html).toContain('aria-label="Sync APEX stock"');
+    expect(html).toContain('aria-label="Show APEX sync details"');
+    expect(html).toContain('aria-label="Start APEX stock sync"');
+    expect(html).toContain('aria-expanded="false"');
+    expect(html).toContain('hidden=""');
     expect(html).toContain('Checking sync worker status');
     expect(html).not.toContain(' disabled=');
     expect(html).toContain('aria-busy');
@@ -34,7 +37,8 @@ describe('SupplierSyncButton', () => {
       />
     );
     expect(html).toContain('Sync Stock');
-    expect(html).toContain('aria-label="Sync EXOTIC stock"');
+    expect(html).toContain('aria-label="Show EXOTIC sync details"');
+    expect(html).toContain('aria-label="Start EXOTIC stock sync"');
     expect(html).not.toContain('Sync Supplier Portals');
     expect(html).not.toContain('Sync Queued');
   });
@@ -60,8 +64,17 @@ describe('SupplierSyncButton', () => {
     );
     expect(html).toContain('Last successful sync:');
     expect(html).toContain('Never synced');
-    expect(html).toContain('<button');
+    expect(html).toContain('aria-expanded="false"');
+    expect(html).toContain('hidden=""');
     expect(html).toContain('Admin access required to sync APEX stock');
+  });
+
+  it('keeps idle sync status inside an anchored dropdown so the action row stays aligned', () => {
+    const source = readFileSync(new URL('./SupplierSyncButton.tsx', import.meta.url), 'utf8');
+    expect(source).toContain('top-[calc(100%+0.5rem)]');
+    expect(source).toContain('hidden={!isPanelOpen}');
+    expect(source).toContain('setIsPanelOpen((open) => !open)');
+    expect(source).toContain("activeStatus === 'queued' || activeStatus === 'running' || error");
   });
 
   it('uses a symmetrical Live Portal, Sync Stock, Upload Stock action order', () => {
