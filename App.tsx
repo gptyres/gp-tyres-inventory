@@ -26,6 +26,7 @@ const InvoiceModal = lazy(() => import('./components/InvoiceModal').then((module
 const QuoteModuleView = lazy(() => import('./components/QuoteModuleView').then((module) => ({ default: module.QuoteModuleView })));
 const TrainingPortalView = lazy(() => import('./components/TrainingPortalView').then((module) => ({ default: module.TrainingPortalView })));
 const CustomerHubView = lazy(() => import('./components/CustomerHubView').then((module) => ({ default: module.CustomerHubView })));
+const PhotoLibraryView = lazy(() => import('./components/photo-library/PhotoLibraryView').then((module) => ({ default: module.PhotoLibraryView })));
 import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { PricingPOSQuoteLine } from './pricing-processor/types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
@@ -1580,14 +1581,18 @@ const App: React.FC = () => {
       searchPlaceholder = "Search training content inside the portal...";
   } else if (currentView === 'CUSTOMER_HUB') {
       searchPlaceholder = "Search customers inside Customer Hub...";
+  } else if (currentView === 'PHOTO_LIBRARY') {
+      searchPlaceholder = "Search inside the photo library...";
   }
 
   const topNavTitle = currentView === 'TRAINING_PORTAL'
     ? 'TRAINING PORTAL'
     : currentView === 'CUSTOMER_HUB'
       ? 'CUSTOMER HUB'
+      : currentView === 'PHOTO_LIBRARY'
+        ? 'PHOTO LIBRARY'
       : undefined;
-  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB'
+  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY'
     ? false
     : isSearchVisible || currentView === 'WHEEL_CATALOG';
 
@@ -1627,7 +1632,7 @@ const App: React.FC = () => {
           pageTitle={topNavTitle}
         />
 
-        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB') ? '' : 'pb-20'}`}>
+        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY') ? '' : 'pb-20'}`}>
           {currentView === 'DASHBOARD' && (
             <DashboardView 
               currentUser={currentUser}
@@ -1764,6 +1769,12 @@ const App: React.FC = () => {
                 onEditDocument={handleEditCRMDocument}
                 onCreateQuoteForCustomer={handleCreateQuoteForCustomer}
               />
+            </Suspense>
+          )}
+
+          {currentView === 'PHOTO_LIBRARY' && (
+            <Suspense fallback={<LoadingPanel label="Loading customer photo library..." />}>
+              <PhotoLibraryView isAdmin={isAdmin} />
             </Suspense>
           )}
 

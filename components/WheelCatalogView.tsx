@@ -17,16 +17,13 @@ import {
 import { WheelCatalogItemRow, WheelCatalogSyncRunRow } from '../supabaseClient';
 import { SOUTH_AFRICA_VEHICLE_PCD_MODELS } from '../vehiclePcdData';
 import { itemMatchesWheelSearch, wheelMatchesVehiclePcd } from '../wheelCatalogSearch';
+import { pngFilename, shareImageFiles, writeImageBlobsToClipboard, writeOneImageToClipboard } from '../imageClipboard';
+import { SelectionActionBar } from './photo-library/SelectionActionBar';
 
 interface WheelCatalogViewProps {
   searchQuery?: string;
   isAdmin?: boolean;
 }
-
-type ClipboardWindow = typeof window & {
-  ClipboardItem?: typeof ClipboardItem;
-  showDirectoryPicker?: () => Promise<FileSystemDirectoryHandleLike>;
-};
 
 interface FileSystemDirectoryHandleLike {
   kind: 'directory';
@@ -93,33 +90,6 @@ const formatSyncTime = (value?: string | null) => {
   }).format(new Date(value));
 };
 
-const copyTextToClipboard = async (value: string) => {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(value);
-    return;
-  }
-
-  const textarea = document.createElement('textarea');
-  textarea.value = value;
-  document.body.appendChild(textarea);
-  textarea.select();
-  document.execCommand('copy');
-  textarea.remove();
-};
-
-const copyBlobToClipboard = async (blob: Blob) => {
-  const ClipboardItemCtor = (window as ClipboardWindow).ClipboardItem;
-  if (!navigator.clipboard?.write || !ClipboardItemCtor) {
-    throw new Error('Image clipboard is not available in this browser.');
-  }
-
-  await navigator.clipboard.write([
-    new ClipboardItemCtor({
-      [blob.type || 'image/png']: blob
-    })
-  ]);
-};
-
 const loadImage = (url: string) => new Promise<HTMLImageElement>((resolve, reject) => {
   const image = new Image();
   image.crossOrigin = 'anonymous';
@@ -134,54 +104,6 @@ const canvasToBlob = (canvas: HTMLCanvasElement) => new Promise<Blob>((resolve, 
     else reject(new Error('Could not prepare image for clipboard.'));
   }, 'image/png');
 });
-
-const makeContactSheetBlob = async (items: WheelCatalogItemRow[]) => {
-  const maxItems = items.slice(0, 12);
-  const images = await Promise.all(maxItems.map((item) => loadImage(item.public_image_url)));
-  const tileWidth = 360;
-  const tileHeight = 420;
-  const gap = 18;
-  const columns = Math.min(3, Math.max(1, Math.ceil(Math.sqrt(images.length))));
-  const rows = Math.ceil(images.length / columns);
-  const width = columns * tileWidth + (columns + 1) * gap;
-  const height = rows * tileHeight + (rows + 1) * gap;
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const context = canvas.getContext('2d');
-  if (!context) throw new Error('Could not prepare contact sheet.');
-
-  context.fillStyle = '#111827';
-  context.fillRect(0, 0, width, height);
-  context.font = '700 18px Arial';
-  context.textBaseline = 'top';
-
-  images.forEach((image, index) => {
-    const item = maxItems[index];
-    const col = index % columns;
-    const row = Math.floor(index / columns);
-    const x = gap + col * (tileWidth + gap);
-    const y = gap + row * (tileHeight + gap);
-    const imageHeight = tileHeight - 72;
-    const ratio = Math.min(tileWidth / image.naturalWidth, imageHeight / image.naturalHeight);
-    const drawWidth = image.naturalWidth * ratio;
-    const drawHeight = image.naturalHeight * ratio;
-    const drawX = x + (tileWidth - drawWidth) / 2;
-    const drawY = y + (imageHeight - drawHeight) / 2;
-
-    context.fillStyle = '#ffffff';
-    context.fillRect(x, y, tileWidth, tileHeight);
-    context.drawImage(image, drawX, drawY, drawWidth, drawHeight);
-    context.fillStyle = '#111827';
-    context.fillText(`${item.rim_size ?? '-'} inch ${item.pcd ?? ''}`.trim(), x + 14, y + imageHeight + 12);
-    context.font = '500 14px Arial';
-    context.fillStyle = '#4b5563';
-    context.fillText(item.folder_path || item.file_name, x + 14, y + imageHeight + 38, tileWidth - 28);
-    context.font = '700 18px Arial';
-  });
-
-  return canvasToBlob(canvas);
-};
 
 const makeSingleImageBlob = async (item: WheelCatalogItemRow) => {
   const image = await loadImage(item.public_image_url);
@@ -209,14 +131,6 @@ const formatWheelSpecs = (item: WheelCatalogItemRow) => [
   item.center_bore ? `CB${item.center_bore}` : '',
   item.load_rating ? `${item.load_rating}kg` : ''
 ].filter(Boolean).join(', ');
-
-const buildFallbackText = (items: WheelCatalogItemRow[]) => {
-  return items.map((item) => [
-    formatWheelSpecs(item),
-    item.folder_path,
-    item.public_image_url
-  ].filter(Boolean).join('\n')).join('\n\n');
-};
 
 const normalizePcdForMatch = (value: string) => (
   value.toUpperCase().replace(/\//g, 'X').replace(/\s+/g, '')
@@ -441,12 +355,16 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   const [catalogSearch, setCatalogSearch] = useState('');
   const [analysisFilter, setAnalysisFilter] = useState<AnalysisFilter>('ALL');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
+  const [isMediaActionBusy, setIsMediaActionBusy] = useState(false);
+  const [clipboardQueue, setClipboardQueue] = useState<File[]>([]);
+  const [clipboardQueueIndex, setClipboardQueueIndex] = useState(0);
   const [syncProgress, setSyncProgress] = useState<SyncProgress>({ scanned: 0, uploaded: 0, skipped: 0, failed: 0, deactivated: 0, total: 0 });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const staffUploadInputRef = useRef<HTMLInputElement | null>(null);
   const syncTokenRef = useRef('');
   const driveSyncSubmittingRef = useRef(false);
   const deferredCatalogSearch = useDeferredValue(catalogSearch);
+  const selectionKey = useMemo(() => [...selectedIds].sort().join('|'), [selectedIds]);
 
   const loadCatalog = async () => {
     setIsLoading(true);
@@ -473,6 +391,11 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   useEffect(() => {
     setSelectedVehicleModel('ALL');
   }, [selectedVehicleBrand]);
+
+  useEffect(() => {
+    setClipboardQueue([]);
+    setClipboardQueueIndex(0);
+  }, [selectionKey]);
 
   const sizes = useMemo(() => sortSizes(Array.from(new Set(items.map((item) => item.rim_size).filter(Boolean) as string[]))), [items]);
   const pcds = useMemo(() => sortPcds(Array.from(new Set(items.map((item) => item.pcd).filter(Boolean) as string[]))), [items]);
@@ -871,6 +794,37 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     }
   };
 
+  const prepareWheelClipboardFiles = async (wheelItems: WheelCatalogItemRow[]) => Promise.all(
+    wheelItems.map(async (item, index) => new File(
+      [await makeSingleImageBlob(item)],
+      pngFilename(item.file_name || `wheel-${index + 1}.jpg`),
+      { type: 'image/png' }
+    ))
+  );
+
+  const prepareWheelShareFiles = async (wheelItems: WheelCatalogItemRow[]) => Promise.all(
+    wheelItems.map(async (item, index) => {
+      const response = await fetch(item.public_image_url, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`Could not load ${item.file_name || `wheel ${index + 1}`}.`);
+      const blob = await response.blob();
+      return new File([blob], item.file_name || `wheel-${index + 1}.jpg`, { type: blob.type || 'image/jpeg' });
+    })
+  );
+
+  const beginWheelClipboardCopy = async (files: File[]) => {
+    const result = await writeImageBlobsToClipboard(files);
+    if (result.copiedAll) {
+      setClipboardQueue([]);
+      setClipboardQueueIndex(0);
+      setStatus(`${files.length} wheel ${files.length === 1 ? 'image' : 'images'} copied. Paste into the customer chat.`);
+      return;
+    }
+
+    setClipboardQueue(files);
+    setClipboardQueueIndex(0);
+    setStatus(`Wheel image 1 of ${files.length} copied. Paste it, then choose Copy next.`);
+  };
+
   const handleCopySelected = async () => {
     if (!selectedItems.length) {
       setStatus('Select at least one image first.');
@@ -878,27 +832,63 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     }
 
     setError('');
-    setStatus('Preparing image for clipboard...');
+    setStatus(`Preparing ${selectedItems.length} separate ${selectedItems.length === 1 ? 'image' : 'images'} for the clipboard...`);
+    setIsMediaActionBusy(true);
     try {
-      if (selectedItems.length === 1) {
-        const response = await fetch(selectedItems[0].public_image_url, { cache: 'no-store' });
-        if (!response.ok) throw new Error('Image could not be fetched.');
-        const sourceBlob = await response.blob();
-        try {
-          await copyBlobToClipboard(sourceBlob);
-        } catch {
-          await copyBlobToClipboard(await makeSingleImageBlob(selectedItems[0]));
-        }
-        setStatus('Image copied. Paste it into your customer chat.');
+      await beginWheelClipboardCopy(await prepareWheelClipboardFiles(selectedItems));
+    } catch (copyError) {
+      setError(copyError instanceof Error ? copyError.message : 'The selected wheel images could not be copied.');
+    } finally {
+      setIsMediaActionBusy(false);
+    }
+  };
+
+  const handleCopyNext = async () => {
+    const nextIndex = clipboardQueueIndex + 1;
+    const nextFile = clipboardQueue[nextIndex];
+    if (!nextFile) return;
+    setError('');
+    setIsMediaActionBusy(true);
+    try {
+      await writeOneImageToClipboard(nextFile);
+      if (nextIndex >= clipboardQueue.length - 1) {
+        setClipboardQueue([]);
+        setClipboardQueueIndex(0);
+        setStatus(`Wheel image ${nextIndex + 1} of ${clipboardQueue.length} copied. The clipboard queue is complete.`);
+      } else {
+        setClipboardQueueIndex(nextIndex);
+        setStatus(`Wheel image ${nextIndex + 1} of ${clipboardQueue.length} copied. Paste it, then choose Copy next.`);
+      }
+    } catch (copyError) {
+      setError(copyError instanceof Error ? copyError.message : 'The next wheel image could not be copied.');
+    } finally {
+      setIsMediaActionBusy(false);
+    }
+  };
+
+  const handleShareSelected = async () => {
+    if (!selectedItems.length) {
+      setStatus('Select at least one image first.');
+      return;
+    }
+
+    setError('');
+    setStatus(`Preparing ${selectedItems.length} separate ${selectedItems.length === 1 ? 'image' : 'images'} for sharing...`);
+    setIsMediaActionBusy(true);
+    try {
+      const files = await prepareWheelShareFiles(selectedItems);
+      if (await shareImageFiles(files, 'GP Tyres & Mags Wheels', 'Selected wheel options')) {
+        setStatus(`${files.length} wheel ${files.length === 1 ? 'image' : 'images'} sent to the share menu.`);
         return;
       }
 
-      const sheetBlob = await makeContactSheetBlob(selectedItems);
-      await copyBlobToClipboard(sheetBlob);
-      setStatus(`${Math.min(selectedItems.length, 12)} images copied as one WhatsApp-ready sheet.`);
-    } catch {
-      await copyTextToClipboard(buildFallbackText(selectedItems));
-      setStatus('Image clipboard was blocked, so image links were copied instead.');
+      await beginWheelClipboardCopy(await prepareWheelClipboardFiles(selectedItems));
+      setStatus(`Bulk sharing is unavailable here. Wheel image 1 of ${selectedItems.length} is copied; paste it, then choose Copy next.`);
+    } catch (shareError) {
+      if (shareError instanceof DOMException && shareError.name === 'AbortError') return;
+      setError(shareError instanceof Error ? shareError.message : 'The selected wheel images could not be shared.');
+    } finally {
+      setIsMediaActionBusy(false);
     }
   };
 
@@ -948,7 +938,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     setSelectedVehicleBrand('ALL');
     setSelectedVehicleModel('ALL');
   };
-  const copyButtonLabel = selectedIds.size <= 1 ? 'Copy Image' : 'Copy Contact Sheet';
+  const copyButtonLabel = selectedIds.size <= 1 ? 'Copy Image' : 'Copy Images';
   const hasActiveFilters = Boolean(
     catalogSearch.trim()
     || analysisFilter !== 'ALL'
@@ -1268,16 +1258,24 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
               <button
                 type="button"
                 onClick={() => void handleDownloadSelected()}
-                disabled={!selectedIds.size}
+                disabled={!selectedIds.size || isMediaActionBusy}
                 className={`${buttonBase} border border-green-700 bg-gp-input text-green-400 hover:bg-green-950/40`}
               >
                 Download ZIP
               </button>
               <button
                 type="button"
+                onClick={() => void handleShareSelected()}
+                disabled={!selectedIds.size || isMediaActionBusy}
+                className={`${buttonBase} border border-gp-border bg-gp-input text-white hover:border-white`}
+              >
+                Share Images
+              </button>
+              <button
+                type="button"
                 onClick={() => void handleCopySelected()}
-                disabled={!selectedIds.size}
-                className={`${buttonBase} bg-green-600 text-white hover:bg-green-700`}
+                disabled={!selectedIds.size || isMediaActionBusy}
+                className={`${buttonBase} bg-gp-red text-white hover:bg-red-700`}
               >
                 {copyButtonLabel}
               </button>
@@ -1475,42 +1473,16 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
         </div>
       )}
 
-      {selectedItems.length > 0 && (
-        <aside className="fixed bottom-0 left-0 right-0 z-40 border-t border-gp-border bg-gp-panel/95 px-4 py-3 shadow-2xl backdrop-blur md:left-72">
-          <div className="mx-auto flex max-w-7xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm font-black uppercase text-gp-text-main">{selectedItems.length} image{selectedItems.length === 1 ? '' : 's'} selected</p>
-              <p className="text-xs text-gp-text-muted">
-                {selectedItems.slice(0, 3).map((item) => `${item.rim_size ?? '-'} ${item.pcd ?? ''}`.trim()).join('  |  ')}
-                {selectedItems.length > 3 ? `  |  +${selectedItems.length - 3} more` : ''}
-              </p>
-            </div>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <button
-                type="button"
-                onClick={clearSelection}
-                className={`${buttonBase} border border-gp-border bg-gp-input text-gp-text-main hover:border-gp-red`}
-              >
-                Clear
-              </button>
-              <button
-                type="button"
-                onClick={() => void handleDownloadSelected()}
-                className={`${buttonBase} border border-green-700 bg-gp-input text-green-400 hover:bg-green-950/40`}
-              >
-                Download ZIP
-              </button>
-              <button
-                type="button"
-                onClick={() => void handleCopySelected()}
-                className={`${buttonBase} bg-green-600 text-white hover:bg-green-700`}
-              >
-                {copyButtonLabel}
-              </button>
-            </div>
-          </div>
-        </aside>
-      )}
+      <SelectionActionBar
+        count={selectedItems.length}
+        busy={isMediaActionBusy}
+        onCopyImages={() => void handleCopySelected()}
+        onDownload={() => void handleDownloadSelected()}
+        onShare={() => void handleShareSelected()}
+        clipboardQueue={clipboardQueue.length > 1 ? { next: clipboardQueueIndex + 2, total: clipboardQueue.length } : null}
+        onCopyNext={() => void handleCopyNext()}
+        onClear={clearSelection}
+      />
     </div>
   );
 };
