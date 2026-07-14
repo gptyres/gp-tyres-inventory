@@ -51,7 +51,7 @@ describe('SupplierSyncButton', () => {
     expect(apiSource).toContain('response.status(503)');
   });
 
-  it('keeps the sync action admin-gated if it is mounted without admin access', () => {
+  it('keeps the sync action visible but admin-gated in sales mode', () => {
     const html = renderToStaticMarkup(
       <SupplierSyncButton
         terminal="GP1"
@@ -66,13 +66,15 @@ describe('SupplierSyncButton', () => {
     expect(html).toContain('Never synced');
     expect(html).toContain('aria-expanded="false"');
     expect(html).toContain('hidden=""');
+    expect(html).toContain('Admin access required to view APEX sync');
     expect(html).toContain('Admin access required to sync APEX stock');
   });
 
-  it('mounts supplier sync only in admin mode', () => {
+  it('shows supplier sync in both modes and routes access through admin authentication', () => {
     const appSource = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
-    expect(appSource).toContain('{isAdmin && supplierCanSync && (');
     expect(appSource).toContain('<SupplierSyncButton');
+    expect(appSource).toContain('canTrigger={isAdmin && supplierUsesPortalWorker}');
+    expect(appSource).toContain('onAdminRequired={() => setShowAuthModal(true)}');
   });
 
   it('keeps idle sync status inside an anchored dropdown so the action row stays aligned', () => {
@@ -80,6 +82,7 @@ describe('SupplierSyncButton', () => {
     expect(source).toContain('top-[calc(100%+0.5rem)]');
     expect(source).toContain('hidden={!isPanelOpen}');
     expect(source).toContain('setIsPanelOpen((open) => !open)');
+    expect(source).toContain('if (!canTrigger)');
     expect(source).toContain("activeStatus === 'queued' || activeStatus === 'running' || error");
   });
 

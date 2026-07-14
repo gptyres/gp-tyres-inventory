@@ -187,17 +187,24 @@ export function SupplierSyncButton({
             ? 'Ready to sync'
             : 'Sync worker offline. Restart the office sync service.'
   );
+  const handlePanelToggle = () => {
+    if (!canTrigger) {
+      onAdminRequired?.();
+      return;
+    }
+    setIsPanelOpen((open) => !open);
+  };
 
   return (
     <div ref={menuRef} className="relative min-w-0 self-start">
       <button
         type="button"
-        onClick={() => setIsPanelOpen((open) => !open)}
+        onClick={handlePanelToggle}
         aria-busy={loading || isActive}
         aria-expanded={isPanelOpen}
         aria-controls={panelId}
-        aria-label={`Show ${supplierLabel} sync details`}
-        title={`Show ${supplierLabel} sync details`}
+        aria-label={canTrigger ? `Show ${supplierLabel} sync details` : `Admin access required to view ${supplierLabel} sync`}
+        title={canTrigger ? `Show ${supplierLabel} sync details` : 'Admin access required'}
         className="inline-flex h-11 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg border border-blue-300/60 bg-blue-600 px-4 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-blue-900/20 transition hover:-translate-y-px hover:bg-blue-500 active:translate-y-0"
       >
         {(loading || isActive) && (

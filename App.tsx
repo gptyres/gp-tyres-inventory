@@ -318,15 +318,6 @@ const App: React.FC = () => {
   const supplierPortalUrl = supplierCatalogMeta[activeSupplierCatalog].portalUrl;
   const supplierHasLiveSync = isLiveSupplierCatalog(activeSupplierCatalog);
   const supplierUsesPortalWorker = isRegistryBackedSupplierCatalog(activeSupplierCatalog);
-  const supplierCanSync = supplierHasLiveSync && supplierUsesPortalWorker;
-  const supplierActionCount = Number(Boolean(supplierPortalUrl)) + (
-    isAdmin ? Number(supplierCanSync) + Number(supplierHasLiveSync) : 0
-  );
-  const supplierActionGridClass = supplierActionCount >= 3
-    ? 'sm:grid-cols-3'
-    : supplierActionCount === 2
-      ? 'sm:grid-cols-2'
-      : 'sm:grid-cols-1';
 
   // Helper to determine transaction type based on amount and fields
   const inferTransactionType = (row: any): 'SALE' | 'RESERVE' | 'REFUND' => {
@@ -1671,8 +1662,8 @@ const App: React.FC = () => {
                         <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <p className="text-xs text-blue-400"><strong>READ ONLY MODE:</strong> {supplierCatalogNote}</p>
                       </div>
-                      {(supplierPortalUrl || (isAdmin && supplierHasLiveSync)) && (
-                        <div className={`grid w-full items-start gap-2 ${supplierActionGridClass}`} aria-label={`${supplierCatalogLabel} supplier actions`}>
+                      {(supplierPortalUrl || supplierHasLiveSync) && (
+                        <div className="grid w-full items-start gap-2 sm:grid-cols-3" aria-label={`${supplierCatalogLabel} supplier actions`}>
                           {supplierPortalUrl && (
                             <a
                               href={supplierPortalUrl}
@@ -1683,24 +1674,24 @@ const App: React.FC = () => {
                               Live Portal
                             </a>
                           )}
-                          {isAdmin && supplierCanSync && (
-                            <SupplierSyncButton
-                              terminal={currentUser}
-                              catalog={activeSupplierCatalog}
-                              supplierLabel={supplierCatalogLabel}
-                              visible
-                              canTrigger
-                              workerRequired
-                              onCompleted={handleSupplierSyncCompleted}
-                            />
-                          )}
-                          {isAdmin && supplierHasLiveSync && (
+                          <SupplierSyncButton
+                            terminal={currentUser}
+                            catalog={activeSupplierCatalog}
+                            supplierLabel={supplierCatalogLabel}
+                            visible={supplierHasLiveSync}
+                            canTrigger={isAdmin && supplierUsesPortalWorker}
+                            workerRequired={supplierUsesPortalWorker}
+                            onAdminRequired={() => setShowAuthModal(true)}
+                            onCompleted={handleSupplierSyncCompleted}
+                          />
+                          {isLiveSupplierCatalog(activeSupplierCatalog) && (
                             <ManualSupplierImport
                               terminal={currentUser}
                               catalog={activeSupplierCatalog}
                               supplierLabel={supplierCatalogLabel}
                               visible
-                              canOpen
+                              canOpen={isAdmin}
+                              onAdminRequired={() => setShowAuthModal(true)}
                               onPublished={handleSupplierSyncCompleted}
                             />
                           )}
