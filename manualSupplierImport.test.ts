@@ -62,6 +62,37 @@ describe('manual supplier document import', () => {
     });
   });
 
+  it('imports the APEX inventory workbook layout with Brand & Pattern and Stock Units headers', () => {
+    const result = normalizeManualSupplierGrid('APEX', [
+      ['Size', 'Brand & Pattern', 'Lead Time', 'Selling Price', 'Stock Units'],
+      ['00R12', 'MICHELIN 7. XZR TL 136 A5', '6 Weeks', 'R6050', '3 units'],
+      ['205/55R16', 'MICHELIN PRIMACY 4', '7 Days', 'R1450', '20 units']
+    ]);
+
+    expect(result.rows).toHaveLength(2);
+    expect(result.rows[0]).toMatchObject({
+      brand: 'MICHELIN',
+      productName: 'MICHELIN 7. XZR TL 136 A5',
+      size: '00R12',
+      stockUnits: 3,
+      costPrice: 6957.5,
+      sellingPrice: 6957.5,
+      stockLocation: 'Apex'
+    });
+    expect(result.detectedColumns).toEqual(expect.arrayContaining(['description', 'quantity', 'sellingPrice']));
+  });
+
+  it('keeps APEX variants that differ only by supplier symbols as separate products', () => {
+    const result = normalizeManualSupplierGrid('APEX', [
+      ['Size', 'Brand & Pattern', 'Lead Time', 'Selling Price', 'Stock Units'],
+      ['165/65R14', 'GENERALTIRE 79T ALTIMAX COMFORT', '7 Days', 'R1100', '1 unit'],
+      ['165/65R14', 'GENERALTIRE 79T ALTIMAX COMFORT #', '6 Hours', 'R1050', '20 units']
+    ]);
+
+    expect(result.rows).toHaveLength(2);
+    expect(new Set(result.rows.map((row) => row.sourceKey)).size).toBe(2);
+  });
+
   it('keeps the same SKU as separate stock rows when locations differ', () => {
     const result = normalizeManualSupplierGrid('TYREWAREHOUSE', [
       ['SKU', 'Description', 'Stock', 'Price Inc VAT', 'Location'],

@@ -30,11 +30,11 @@ type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'size' | 'quantit
 
 const HEADER_ALIASES: Record<FieldName, string[]> = {
   sku: ['sku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
-  description: ['description', 'descrption', 'product', 'productname', 'item', 'itemdescription', 'tyredescription'],
+  description: ['description', 'descrption', 'product', 'productname', 'item', 'itemdescription', 'tyredescription', 'brandandpattern', 'brandpattern', 'branddescription', 'patternanddescription'],
   brand: ['brand', 'make'],
   pattern: ['pattern', 'tread', 'model'],
   size: ['size', 'tyresize', 'dimensions'],
-  quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'available', 'availability', 'onhand', 'freeqty'],
+  quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'stockunits', 'unitsinstock', 'availableunits', 'availableqty', 'qtyavailable', 'available', 'availability', 'onhand', 'freeqty'],
   price: ['price', 'unitprice', 'pricevat', 'priceincvat', 'priceinclvat'],
   costPrice: ['cost', 'costprice', 'costvat', 'costincvat', 'costinclvat', 'costpriceincvat', 'costpriceinclvat', 'costpriceexvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'buyprice', 'buyingprice', 'discountedprice', 'dealerprice', 'priceexvat'],
   sellingPrice: ['selling', 'sellingprice', 'sellingincvat', 'sellinginclvat', 'sellingpriceincvat', 'sellingpriceinclvat', 'sellingpriceexvat', 'retail', 'retailprice', 'retailpriceincvat', 'retailpriceinclvat', 'rrp', 'recommendedretail', 'recommendedretailprice'],
@@ -79,13 +79,23 @@ const toVatInclusivePrice = (value: number, alreadyIncludesVat: boolean) => (
   Number((Math.max(0, value) * (alreadyIncludesVat ? 1 : 1.15)).toFixed(2))
 );
 
+const stableIdentityHash = (value: string) => {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36).padStart(7, '0');
+};
+
 const sourceKeyFor = (catalog: SupplierImportCatalog, sku: string, size: string, productName: string, location: string) => {
-  const value = `${catalog}-${sku || `${size}-${productName}`}-${location}`
-    .toLowerCase()
+  const rawIdentity = `${catalog}-${sku || `${size}-${productName}`}-${location}`.toLowerCase();
+  const suffix = stableIdentityHash(rawIdentity);
+  const base = rawIdentity
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 180);
-  return value || `${catalog.toLowerCase()}-row`;
+    .replace(/^-+|-+$/g, '');
+  const maxBaseLength = 180 - suffix.length - 1;
+  return `${(base || `${catalog.toLowerCase()}-row`).slice(0, maxBaseLength)}-${suffix}`;
 };
 
 const fieldForHeader = (header: string): FieldName | null => {
