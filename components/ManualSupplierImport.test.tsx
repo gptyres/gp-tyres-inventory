@@ -22,4 +22,11 @@ describe('supplier file upload module', () => {
     expect(appSource).toContain('isAdmin && isLiveSupplierCatalog(activeSupplierCatalog)');
     expect(appSource).toContain('<ManualSupplierImport');
   });
+
+  it('supports dragging and dropping a supplier document into the upload area', () => {
+    const componentSource = readFileSync(new URL('./ManualSupplierImport.tsx', import.meta.url), 'utf8');
+    expect(componentSource).toContain('data-testid="supplier-file-dropzone"');
+    expect(componentSource).toContain('onDrop={handleDrop}');
+    expect(componentSource).toContain('Drag & drop your supplier file here');
+  });
 });

@@ -28,11 +28,13 @@ export function ManualSupplierImport({
   onPublished
 }: ManualSupplierImportProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const dragDepthRef = useRef(0);
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<ManualSupplierParseResult | null>(null);
   const [parsing, setParsing] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
@@ -43,6 +45,8 @@ export function ManualSupplierImport({
     setResult(null);
     setError('');
     setMessage('');
+    setDragActive(false);
+    dragDepthRef.current = 0;
     if (inputRef.current) inputRef.current.value = '';
   };
 
@@ -66,6 +70,38 @@ export function ManualSupplierImport({
     } finally {
       setParsing(false);
     }
+  };
+
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (parsing || publishing) return;
+    dragDepthRef.current += 1;
+    setDragActive(true);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (parsing || publishing) return;
+    event.dataTransfer.dropEffect = 'copy';
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+    if (dragDepthRef.current === 0) setDragActive(false);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = 0;
+    setDragActive(false);
+    if (parsing || publishing) return;
+    const droppedFile = event.dataTransfer.files?.[0];
+    if (droppedFile) void handleFile(droppedFile);
   };
 
   const publish = async () => {
@@ -109,7 +145,20 @@ export function ManualSupplierImport({
               <button type="button" onClick={close} disabled={publishing} aria-label="Close supplier import" className="text-2xl text-gp-text-muted hover:text-white disabled:opacity-40">×</button>
             </div>
 
-            <div className="mt-5 rounded-lg border border-dashed border-amber-400/40 bg-gp-black/50 p-5 text-center">
+            <div
+              data-testid="supplier-file-dropzone"
+              aria-label="Drop supplier stock document here or choose a file"
+              aria-busy={parsing || publishing}
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`mt-5 rounded-lg border-2 border-dashed p-6 text-center transition-all ${
+                dragActive
+                  ? 'scale-[1.01] border-amber-300 bg-amber-500/15 shadow-[0_0_30px_rgba(245,158,11,0.18)]'
+                  : 'border-amber-400/40 bg-gp-black/50'
+              }`}
+            >
               <input
                 ref={inputRef}
                 type="file"
@@ -117,6 +166,22 @@ export function ManualSupplierImport({
                 className="hidden"
                 onChange={(event) => void handleFile(event.target.files?.[0])}
               />
+              <div
+                aria-hidden="true"
+                className={`mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full border text-xl transition-colors ${
+                  dragActive
+                    ? 'border-amber-300 bg-amber-400 text-black'
+                    : 'border-amber-400/40 bg-gp-panel text-amber-400'
+                }`}
+              >
+                {dragActive ? '↓' : '↑'}
+              </div>
+              <p className="text-sm font-black uppercase tracking-wider text-gp-text-main">
+                {dragActive ? 'Drop file to import' : 'Drag & drop your supplier file here'}
+              </p>
+              <p className="mb-4 mt-1 text-[10px] font-bold uppercase tracking-widest text-gp-text-muted">
+                CSV, PDF, XLS or XLSX · Maximum 20 MB
+              </p>
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
