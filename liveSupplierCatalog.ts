@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient';
 import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { isLiveSupplierCatalog } from './supplierCatalogMapping';
+import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 
 export interface LiveSupplierCatalogRow {
   id: number;
@@ -12,6 +13,10 @@ export interface LiveSupplierCatalogRow {
   supplier_sku?: string | null;
   brand: string;
   product_name: string;
+  tyre_pattern?: string | null;
+  tyre_rating?: string | null;
+  tyre_index?: string | null;
+  tyre_specs?: string | null;
   category?: string | null;
   size?: string | null;
   stock_location?: string | null;
@@ -32,16 +37,6 @@ const buildLocation = (row: LiveSupplierCatalogRow) => (
     .join(' | ')
   || 'Supplier'
 );
-
-const removeBrandPrefix = (productName: string, brand: string) => {
-  const normalizedProduct = productName.trim();
-  const normalizedBrand = brand.trim();
-  if (!normalizedBrand) return normalizedProduct || 'Standard';
-  if (normalizedProduct.toLowerCase().startsWith(normalizedBrand.toLowerCase())) {
-    return normalizedProduct.slice(normalizedBrand.length).trim() || 'Standard';
-  }
-  return normalizedProduct || 'Standard';
-};
 
 export const liveSupplierRowToInventoryItem = (
   row: LiveSupplierCatalogRow
@@ -72,13 +67,25 @@ export const liveSupplierRowToInventoryItem = (
     return wheel;
   }
 
+  const parsedTyre = parseSupplierTyreFields({
+    description: row.product_name,
+    explicitSize: row.size,
+    explicitBrand: row.brand,
+    explicitPattern: row.tyre_pattern,
+    explicitRating: row.tyre_rating,
+    explicitIndex: row.tyre_index,
+    explicitSpecs: row.tyre_specs
+  });
   const tyre: TyreProduct = {
     ...common,
     type: ProductType.TYRE,
-    brand: row.brand || 'Unknown',
-    pattern: removeBrandPrefix(row.product_name, row.brand || ''),
-    size: row.size || '',
-    loadSpeedIndex: '',
+    brand: parsedTyre.brand,
+    pattern: parsedTyre.pattern,
+    size: parsedTyre.size,
+    loadSpeedIndex: buildTyreIndexDisplay(parsedTyre.rating, parsedTyre.index),
+    tyreRating: parsedTyre.rating,
+    tyreIndex: parsedTyre.index,
+    tyreSpecs: parsedTyre.specs,
     location: buildLocation(row)
   };
   return tyre;
@@ -105,7 +112,7 @@ export const loadLiveSupplierCatalogItems = async (
     const { data, error } = await (supabase
       .from('supplier_catalog_items') as any)
       .select(
-        'id,snapshot_id,catalog_key,source_key,product_type,supplier,supplier_sku,brand,product_name,category,size,stock_location,stock_units_availability,stock_units,cost_price,selling_price,source_file,imported_at'
+        'id,snapshot_id,catalog_key,source_key,product_type,supplier,supplier_sku,brand,product_name,tyre_pattern,tyre_rating,tyre_index,tyre_specs,category,size,stock_location,stock_units_availability,stock_units,cost_price,selling_price,source_file,imported_at'
       )
       .eq('snapshot_id', source.active_snapshot_id)
       .gt('id', lastId)

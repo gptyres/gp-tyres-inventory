@@ -2,12 +2,17 @@ import {
   SUPPLIER_IMPORT_BY_CATALOG,
   type SupplierImportCatalog
 } from './supplierCatalogMapping';
+import { extractSupplierTyreSize, parseSupplierTyreFields } from './supplierTyreParsing';
 
 export interface ManualSupplierRow {
   sourceKey: string;
   supplierSku: string;
   brand: string;
   productName: string;
+  tyrePattern: string;
+  tyreRating: string;
+  tyreIndex: string;
+  tyreSpecs: string;
   category: string;
   size: string;
   stockLocation: string;
@@ -26,13 +31,16 @@ export interface ManualSupplierParseResult {
 }
 
 type GridRow = unknown[];
-type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'size' | 'quantity' | 'price' | 'costPrice' | 'sellingPrice' | 'location' | 'category';
+type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'rating' | 'index' | 'specs' | 'size' | 'quantity' | 'price' | 'costPrice' | 'sellingPrice' | 'location' | 'category';
 
 const HEADER_ALIASES: Record<FieldName, string[]> = {
   sku: ['sku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
   description: ['description', 'descrption', 'product', 'productname', 'item', 'itemdescription', 'tyredescription', 'brandandpattern', 'brandpattern', 'branddescription', 'patternanddescription'],
-  brand: ['brand', 'make'],
-  pattern: ['pattern', 'tread', 'model'],
+  brand: ['brand', 'tyrebrand', 'make'],
+  pattern: ['pattern', 'tyrepattern', 'tread', 'model'],
+  rating: ['rating', 'tyrerating', 'ply', 'plyrating', 'pr'],
+  index: ['index', 'tyreindex', 'loadindex', 'speedindex', 'loadspeed', 'loadspeedindex', 'loadspeedrating'],
+  specs: ['specs', 'tyrespecs', 'specifications', 'otherspecs', 'additionaldetails', 'sidewall', 'construction'],
   size: ['size', 'tyresize', 'dimensions'],
   quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'stockunits', 'unitsinstock', 'availableunits', 'availableqty', 'qtyavailable', 'available', 'availability', 'onhand', 'freeqty'],
   price: ['price', 'unitprice', 'pricevat', 'priceincvat', 'priceinclvat'],
@@ -67,12 +75,13 @@ const parseStock = (value: unknown) => {
   return Number.isFinite(parsed) ? Math.max(0, Math.trunc(parsed)) : Number.NaN;
 };
 
-const TYRE_SIZE = /\b(?:\d{2,3}\s*\/\s*\d{2,3}\s*(?:ZR|RF|R)\s*\d{2}(?:\.\d)?|\d{2,3}\s*[Xx]\s*\d{1,2}(?:\.\d+)?\s*R\s*\d{2}(?:\.\d)?|\d{3}\s*R\s*\d{2}(?:\.\d)?|\d{3}\s*-\s*\d{2}(?:\.\d)?)\w*\b/i;
 const WHEEL_SIZE = /\b(?:1[2-9]|2[0-6])\s*[Xx]\s*\d{1,2}(?:\.\d+)?\b/i;
 
 const extractSize = (value: string) => {
-  const match = value.match(TYRE_SIZE) || value.match(WHEEL_SIZE);
-  return match ? match[0].replace(/\s+/g, '').toUpperCase() : '';
+  const tyreSize = extractSupplierTyreSize(value);
+  if (tyreSize) return tyreSize;
+  const wheelMatch = value.match(WHEEL_SIZE);
+  return wheelMatch ? wheelMatch[0].replace(/\s+/g, '').toUpperCase() : '';
 };
 
 const toVatInclusivePrice = (value: number, alreadyIncludesVat: boolean) => (
@@ -163,10 +172,26 @@ export const normalizeManualSupplierGrid = (
     const sku = cleanCell(get(row, 'sku'));
     const explicitBrand = cleanCell(get(row, 'brand'));
     const explicitPattern = cleanCell(get(row, 'pattern'));
+    const explicitRating = cleanCell(get(row, 'rating'));
+    const explicitIndex = cleanCell(get(row, 'index'));
+    const explicitSpecs = cleanCell(get(row, 'specs'));
     const description = cleanCell(get(row, 'description'));
     const explicitSize = cleanCell(get(row, 'size'));
-    const joinedIdentity = [explicitSize, explicitBrand, explicitPattern, description].filter(Boolean).join(' ');
-    const size = extractSize(explicitSize)
+    const joinedIdentity = [explicitSize, explicitBrand, explicitPattern, explicitRating, explicitIndex, explicitSpecs, description].filter(Boolean).join(' ');
+    const parsedTyre = supplierMeta.productType === 'TYRE'
+      ? parseSupplierTyreFields({
+          description,
+          explicitSize,
+          explicitBrand,
+          explicitPattern,
+          explicitRating,
+          explicitIndex,
+          explicitSpecs,
+          inferBrandFromDescription: true
+        })
+      : null;
+    const size = parsedTyre?.size
+      || extractSize(explicitSize)
       || extractSize(description)
       || extractSize(joinedIdentity)
       || (/\d/.test(explicitSize) ? explicitSize.replace(/\s+/g, '').toUpperCase() : '');
@@ -183,11 +208,19 @@ export const normalizeManualSupplierGrid = (
       return;
     }
 
-    const descriptionWithoutSize = description.replace(TYRE_SIZE, '').replace(WHEEL_SIZE, '').trim();
-    const brand = explicitBrand || descriptionWithoutSize.split(/\s+/)[0] || supplierMeta.supplier;
-    const productName = explicitPattern
-      ? `${brand} ${explicitPattern}`.trim()
-      : descriptionWithoutSize || `${brand} ${size}`;
+    const descriptionWithoutSize = description.replace(WHEEL_SIZE, '').trim();
+    const brand = parsedTyre
+      ? parsedTyre.brand
+      : explicitBrand || descriptionWithoutSize.split(/\s+/)[0] || supplierMeta.supplier;
+    const tyrePattern = parsedTyre?.pattern || '';
+    const tyreRating = parsedTyre?.rating || '';
+    const tyreIndex = parsedTyre?.index || '';
+    const tyreSpecs = parsedTyre?.specs || '';
+    const productName = parsedTyre
+      ? [brand, tyrePattern, tyreRating, tyreIndex, tyreSpecs].filter(Boolean).join(' ') || description || size
+      : explicitPattern
+        ? `${brand} ${explicitPattern}`.trim()
+        : descriptionWithoutSize || `${brand} ${size}`;
     const stockLocation = cleanCell(get(row, 'location')) || supplierMeta.supplier;
     const costSource: [number, boolean] = hasCostPrice
       ? [suppliedCost, costPriceIncludesVat]
@@ -213,6 +246,10 @@ export const normalizeManualSupplierGrid = (
       supplierSku: sku || sourceKey,
       brand,
       productName,
+      tyrePattern,
+      tyreRating,
+      tyreIndex,
+      tyreSpecs,
       category: cleanCell(get(row, 'category')) || (supplierMeta.productType === 'WHEEL' ? 'Wheels' : 'Tyres'),
       size,
       stockLocation,

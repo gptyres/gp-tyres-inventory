@@ -51,4 +51,63 @@ describe('live supplier catalogue conversion', () => {
     expect(item.code).toBe('SKU-1');
     expect(item.size).toBe('18x8');
   });
+
+  it('parses legacy APEX product names into the requested card fields', () => {
+    const item = liveSupplierRowToInventoryItem({
+      ...baseRow,
+      brand: 'COMPASAL',
+      product_name: 'CPS60 / 18PR',
+      size: '10.00R20'
+    });
+
+    if (item.type !== ProductType.TYRE) throw new Error('Expected tyre item');
+    expect(item).toMatchObject({
+      size: '10.00R20',
+      brand: 'COMPASAL',
+      pattern: 'CPS60',
+      tyreRating: '18PR',
+      tyreIndex: '',
+      tyreSpecs: '',
+      loadSpeedIndex: '18PR'
+    });
+  });
+
+  it('repairs previously split truck sizes while preserving rating, index, and specs', () => {
+    const item = liveSupplierRowToInventoryItem({
+      ...baseRow,
+      brand: 'COMPASAL',
+      product_name: 'COMPASAL 10. CPS60 149/146K 18PR TL',
+      size: '00R20'
+    });
+
+    if (item.type !== ProductType.TYRE) throw new Error('Expected tyre item');
+    expect(item).toMatchObject({
+      size: '10.00R20',
+      pattern: 'CPS60',
+      tyreRating: '18PR',
+      tyreIndex: '149/146K',
+      tyreSpecs: 'TL',
+      loadSpeedIndex: '18PR / 149/146K'
+    });
+  });
+
+  it('removes missing-value placeholders instead of showing invented tyre details', () => {
+    const item = liveSupplierRowToInventoryItem({
+      ...baseRow,
+      brand: 'Unknown',
+      product_name: 'Standard',
+      size: '195/65R15'
+    });
+
+    if (item.type !== ProductType.TYRE) throw new Error('Expected tyre item');
+    expect(item).toMatchObject({
+      size: '195/65R15',
+      brand: '',
+      pattern: '',
+      tyreRating: '',
+      tyreIndex: '',
+      tyreSpecs: '',
+      loadSpeedIndex: ''
+    });
+  });
 });

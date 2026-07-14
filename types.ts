@@ -39,6 +39,9 @@ export interface TyreProduct extends BaseProduct {
   pattern: string; // e.g., AT3G
   size: string; // e.g., 265/65/17
   loadSpeedIndex: string; // e.g., 112T
+  tyreRating?: string; // e.g., 18PR
+  tyreIndex?: string; // e.g., 149/146K
+  tyreSpecs?: string; // e.g., TL / OWL
   location: string; // e.g., Deck, Home
 }
 

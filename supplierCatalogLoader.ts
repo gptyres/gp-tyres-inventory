@@ -1,5 +1,6 @@
 import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { loadLiveSupplierCatalogItems } from './liveSupplierCatalog';
+import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import {
   parseAlineData,
   parseApexData,
@@ -82,6 +83,30 @@ const supplierItemCache = new Map<ConcreteSupplierCatalog, Promise<InventoryItem
 let allSupplierPOSItemsCache: Promise<InventoryItem[]> | null = null;
 
 const cloneInventoryItems = (items: InventoryItem[]) => items.map((item) => ({ ...item } as InventoryItem));
+
+export const normalizeBundledSupplierTyres = (
+  catalog: ConcreteSupplierCatalog,
+  items: InventoryItem[]
+): InventoryItem[] => items.map((item) => {
+  if (item.type !== ProductType.TYRE) return item;
+  const tyre = item as TyreProduct;
+  const parsed = parseSupplierTyreFields({
+    description: [tyre.brand, tyre.pattern, tyre.loadSpeedIndex].filter(Boolean).join(' '),
+    explicitSize: tyre.size,
+    explicitBrand: tyre.brand
+  });
+  return {
+    ...tyre,
+    supplierName: tyre.supplierName || supplierDisplayNames[catalog],
+    size: parsed.size,
+    brand: parsed.brand,
+    pattern: parsed.pattern,
+    tyreRating: parsed.rating,
+    tyreIndex: parsed.index,
+    tyreSpecs: parsed.specs,
+    loadSpeedIndex: buildTyreIndexDisplay(parsed.rating, parsed.index)
+  };
+});
 
 const tagSupplierItems = (supplierName: string, supplierItems: InventoryItem[]): InventoryItem[] => {
   return supplierItems.map((item) => {
@@ -189,7 +214,7 @@ const loadConcreteSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pr
     console.warn('Live supplier catalogue unavailable; using bundled fallback.', error);
   }
 
-  return loadBundledSupplierCatalog(catalog);
+  return normalizeBundledSupplierTyres(catalog, await loadBundledSupplierCatalog(catalog));
 };
 
 export const loadSupplierCatalogItems = async (catalog: SupplierCatalog): Promise<InventoryItem[]> => {

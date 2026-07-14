@@ -74,21 +74,38 @@ const isSupplierTyre = (item: InventoryItem): item is TyreProduct => (
   item.type === ProductType.TYRE && Boolean((item as TyreProduct).supplierName)
 );
 
-const getItemDisplayName = (item: InventoryItem): string => {
+const uniqueDisplayParts = (parts: Array<string | undefined>) => {
+  const seen = new Set<string>();
+  return parts.map((part) => String(part || '').trim()).filter((part) => {
+    const key = part.toLowerCase();
+    if (!key || /^(?:-|n\/?a|none|null|unknown|standard)$/.test(key) || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
+export const getItemDisplayName = (item: InventoryItem): string => {
   if (item.type === ProductType.TYRE) {
     const tyre = item as TyreProduct;
-    if (isSupplierTyre(item)) return tyre.pattern || tyre.imageDesignKey || tyre.size;
+    if (isSupplierTyre(item)) {
+      return uniqueDisplayParts([tyre.size, tyre.brand, tyre.pattern]).join(' ');
+    }
     return tyre.size;
   }
   if (item.type === ProductType.WHEEL) return getWheelDisplayName(item as WheelProduct);
   return (item as CoiloverProduct).vehicleCompatibility;
 };
 
-const getItemSecondaryLine = (item: InventoryItem): string => {
+export const getItemSecondaryLine = (item: InventoryItem): string => {
   if (item.type === ProductType.TYRE) {
     const tyre = item as TyreProduct;
     if (isSupplierTyre(item)) {
-      return [tyre.size, tyre.brand, tyre.loadSpeedIndex].filter(Boolean).join(' / ');
+      return uniqueDisplayParts([
+        tyre.tyreRating,
+        tyre.tyreIndex,
+        tyre.tyreSpecs,
+        (!tyre.tyreRating && !tyre.tyreIndex && !tyre.tyreSpecs) ? tyre.loadSpeedIndex : undefined
+      ]).join(' / ');
     }
     return `${tyre.brand} ${tyre.pattern}`.trim();
   }
@@ -885,7 +902,10 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             <div className={`p-3 grid gap-2 flex-grow content-start bg-gradient-to-b from-gp-panel to-gp-overlay ${item.type === ProductType.WHEEL ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-3'}`}>
                 {item.type === ProductType.TYRE && (
                     <>
-                    <SpecBadge label="Index" value={(item as TyreProduct).loadSpeedIndex || '-'} />
+                    <SpecBadge
+                      label="Index"
+                      value={(item as TyreProduct).loadSpeedIndex || (isSupplierTyre(item) ? '' : '-')}
+                    />
                     {visibleColumns.location && <SpecBadge label="Loc" value={(item as TyreProduct).location} />}
                     <SpecBadge label="Cat" value="PCR" />
                     </>

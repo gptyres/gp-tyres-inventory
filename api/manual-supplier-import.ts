@@ -20,6 +20,10 @@ interface ImportRow {
   supplierSku: string;
   brand: string;
   productName: string;
+  tyrePattern: string;
+  tyreRating: string;
+  tyreIndex: string;
+  tyreSpecs: string;
   category: string;
   size: string;
   stockLocation: string;
@@ -57,13 +61,17 @@ const validateRows = (value: unknown): ImportRow[] => {
     const supplierSku = safeText(row.supplierSku, 120);
     const brand = safeText(row.brand, 120);
     const productName = safeText(row.productName, 300);
+    const tyrePattern = safeText(row.tyrePattern, 160);
+    const tyreRating = safeText(row.tyreRating, 80);
+    const tyreIndex = safeText(row.tyreIndex, 80);
+    const tyreSpecs = safeText(row.tyreSpecs, 240);
     const size = safeText(row.size, 80);
     const stockUnits = Number(row.stockUnits);
     const costPrice = Number(row.costPrice);
     const sellingPrice = Number(row.sellingPrice);
 
     if (!sourceKey || seen.has(sourceKey)) throw new Error(`Row ${index + 1} has a missing or duplicate source key.`);
-    if (!brand || !productName || !size) throw new Error(`Row ${index + 1} is missing brand, product, or size.`);
+    if (!productName || !size) throw new Error(`Row ${index + 1} is missing a product description or tyre size.`);
     if (!Number.isFinite(stockUnits) || stockUnits < 0 || stockUnits > 10_000_000) {
       throw new Error(`Row ${index + 1} has an invalid stock quantity.`);
     }
@@ -80,6 +88,10 @@ const validateRows = (value: unknown): ImportRow[] => {
       supplierSku: supplierSku || sourceKey,
       brand,
       productName,
+      tyrePattern,
+      tyreRating,
+      tyreIndex,
+      tyreSpecs,
       category: safeText(row.category, 120) || 'TYRE',
       size,
       stockLocation: safeText(row.stockLocation, 160) || 'Supplier',
@@ -244,6 +256,10 @@ export default async function handler(request: any, response: any) {
         supplier_sku: row.supplierSku,
         brand: row.brand,
         product_name: row.productName,
+        tyre_pattern: row.tyrePattern || null,
+        tyre_rating: row.tyreRating || null,
+        tyre_index: row.tyreIndex || null,
+        tyre_specs: row.tyreSpecs || null,
         category: row.category,
         size: row.size,
         stock_location: row.stockLocation,

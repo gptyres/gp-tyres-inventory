@@ -72,14 +72,66 @@ describe('manual supplier document import', () => {
     expect(result.rows).toHaveLength(2);
     expect(result.rows[0]).toMatchObject({
       brand: 'MICHELIN',
-      productName: 'MICHELIN 7. XZR TL 136 A5',
-      size: '00R12',
+      productName: 'MICHELIN XZR 136A5 TL',
+      tyrePattern: 'XZR',
+      tyreRating: '',
+      tyreIndex: '136A5',
+      tyreSpecs: 'TL',
+      size: '7.00R12',
       stockUnits: 3,
       costPrice: 6957.5,
       sellingPrice: 6957.5,
       stockLocation: 'Apex'
     });
     expect(result.detectedColumns).toEqual(expect.arrayContaining(['description', 'quantity', 'sellingPrice']));
+  });
+
+  it('separates the requested tyre size, brand, pattern, rating, index, and specs fields', () => {
+    const result = normalizeManualSupplierGrid('APEX', [
+      ['Stock Code', 'TYRE_SIZE', 'TYRE_BRAND', 'TYRE_PATTERN', 'TYRE_RATING', 'TYRE_INDEX', 'TYRE_SPECS', 'Stock', 'Cost Inc VAT'],
+      ['AP-TRUCK-1', '10.00R20', 'COMPASAL', 'CPS60', '18PR', '149/146K', 'TL', 20, 4500]
+    ]);
+
+    expect(result.rows[0]).toMatchObject({
+      brand: 'COMPASAL',
+      productName: 'COMPASAL CPS60 18PR 149/146K TL',
+      tyrePattern: 'CPS60',
+      tyreRating: '18PR',
+      tyreIndex: '149/146K',
+      tyreSpecs: 'TL',
+      size: '10.00R20'
+    });
+  });
+
+  it('repairs split commercial sizes and parses rating and index from Brand & Pattern', () => {
+    const result = normalizeManualSupplierGrid('APEX', [
+      ['Size', 'Brand & Pattern', 'Selling Price Inc VAT', 'Stock Units'],
+      ['00R20', 'COMPASAL 10. CPS60 149/146K 18PR', 4500, 20]
+    ]);
+
+    expect(result.rows[0]).toMatchObject({
+      brand: 'COMPASAL',
+      tyrePattern: 'CPS60',
+      tyreRating: '18PR',
+      tyreIndex: '149/146K',
+      size: '10.00R20'
+    });
+  });
+
+  it('leaves unavailable tyre fields blank without rejecting an otherwise valid row', () => {
+    const result = normalizeManualSupplierGrid('SAFETY_GRIP', [
+      ['TYRE_SIZE', 'TYRE_BRAND', 'TYRE_PATTERN', 'TYRE_RATING', 'TYRE_INDEX', 'TYRE_SPECS', 'Stock', 'Cost Inc VAT'],
+      ['195/65R15', '', '', '', '', '', 4, 900]
+    ]);
+
+    expect(result.rows[0]).toMatchObject({
+      size: '195/65R15',
+      brand: '',
+      tyrePattern: '',
+      tyreRating: '',
+      tyreIndex: '',
+      tyreSpecs: ''
+    });
   });
 
   it('keeps APEX variants that differ only by supplier symbols as separate products', () => {
