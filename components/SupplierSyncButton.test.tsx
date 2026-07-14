@@ -51,7 +51,7 @@ describe('SupplierSyncButton', () => {
     expect(apiSource).toContain('response.status(503)');
   });
 
-  it('shows the sync action in sales mode and routes it through admin access', () => {
+  it('keeps the sync action admin-gated if it is mounted without admin access', () => {
     const html = renderToStaticMarkup(
       <SupplierSyncButton
         terminal="GP1"
@@ -67,6 +67,12 @@ describe('SupplierSyncButton', () => {
     expect(html).toContain('aria-expanded="false"');
     expect(html).toContain('hidden=""');
     expect(html).toContain('Admin access required to sync APEX stock');
+  });
+
+  it('mounts supplier sync only in admin mode', () => {
+    const appSource = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
+    expect(appSource).toContain('{isAdmin && supplierCanSync && (');
+    expect(appSource).toContain('<SupplierSyncButton');
   });
 
   it('keeps idle sync status inside an anchored dropdown so the action row stays aligned', () => {

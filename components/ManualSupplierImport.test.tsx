@@ -17,12 +17,13 @@ describe('supplier file upload module', () => {
     expect(html).toContain('Upload Stock');
   });
 
-  it('stays visible for every live supplier catalogue and requests admin access when needed', () => {
+  it('is mounted only for admins while the live portal remains available to sales', () => {
     const appSource = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
-    expect(appSource).toContain('{isLiveSupplierCatalog(activeSupplierCatalog) && (');
+    expect(appSource).toContain('{isAdmin && supplierHasLiveSync && (');
     expect(appSource).toContain('<ManualSupplierImport');
-    expect(appSource).toContain('canOpen={isAdmin}');
-    expect(appSource).toContain('onAdminRequired={() => setShowAuthModal(true)}');
+    expect(appSource).toContain('{supplierPortalUrl && (');
+    expect(appSource).toContain('href={supplierPortalUrl}');
+    expect(appSource).toContain('isAdmin ? Number(supplierCanSync) + Number(supplierHasLiveSync) : 0');
   });
 
   it('supports dragging and dropping a supplier document into the upload area', () => {
