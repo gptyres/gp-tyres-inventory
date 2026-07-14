@@ -6,6 +6,10 @@ The portal implementation was deployed to production on 13 July 2026. The Supaba
 
 The admin button sends the supplier catalogue currently open in the portal to the Vercel API. The API maps that fixed catalogue key to one registry supplier and creates one private `SINGLE_SUPPLIER` Supabase job. A worker running in the local supplier automation folder claims that job, runs `sync_all_suppliers.py --supplier-exact <mapped supplier>`, validates the exact-run output, uploads its catalogue snapshot, and switches only that supplier's active catalogue pointer.
 
+For portal-button syncs, the worker keeps the exact supplier cost before VAT, applies 15% VAT once, and rounds only the final selling price to the nearest R25. Each supplier scraper has an explicit ex-VAT or VAT-inclusive price mapping so an already VAT-inclusive portal value is first converted back to its source cost instead of receiving VAT a second time.
+
+Tyrewarehouse uses the authenticated portal's displayed `product_price` as its discounted ex-VAT dealer cost. The API's separate `up_min` value is not used for catalogue pricing.
+
 Supplier usernames and passwords never leave:
 
     C:\Users\User\Documents\GP TYRES SITE\.env
