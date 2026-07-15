@@ -248,4 +248,22 @@ describe('manual supplier document import', () => {
       sellingPrice: 4850
     });
   });
+
+  it('imports Tyre Life tyre stock with its supplied VAT-inclusive selling price', () => {
+    const result = normalizeManualSupplierGrid('TYRE_LIFE', [
+      ['Size', 'SKU', 'Brand', 'Pattern', 'Load Rating', 'Speed Rating', 'Sidewall', 'Category', 'Selling Price', 'JHB Stock Units', 'CPT Stock Units', 'DBN Stock Units', 'Total Stock Units'],
+      ['LT305/55R20', 'PANCCN0164', 'Patriot', 'PATRIOT R/T+', '121/118', 'Q', 'BLK', 'Tyres', 'R5,750', 11, 0, 2, 13]
+    ]);
+
+    expect(result.rows).toHaveLength(1);
+    expect(result.rows[0]).toMatchObject({
+      supplierSku: 'PANCCN0164',
+      brand: 'Patriot',
+      tyrePattern: 'PATRIOT R/T+',
+      size: 'LT305/55R20',
+      stockUnits: 13,
+      costPrice: 5750,
+      sellingPrice: 5750
+    });
+  });
 });

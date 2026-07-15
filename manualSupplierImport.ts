@@ -158,7 +158,9 @@ export const normalizeManualSupplierGrid = (
   const costPriceHeader = header.columns.costPrice === undefined ? '' : header.headers[header.columns.costPrice] || '';
   const sellingPriceHeader = header.columns.sellingPrice === undefined ? '' : header.headers[header.columns.sellingPrice] || '';
   const includesVat = (value: string) => /incvat|inclvat|includingvat|vatinclusive|pricevat/.test(value);
-  const supplierPricesIncludeVat = catalog === 'TYRE_LIFE_WHEELS' || catalog === 'TREADS_UNLIMITED';
+  const supplierPricesIncludeVat = catalog === 'TYRE_LIFE'
+    || catalog === 'TYRE_LIFE_WHEELS'
+    || catalog === 'TREADS_UNLIMITED';
   const genericPriceIncludesVat = supplierPricesIncludeVat || includesVat(genericPriceHeader);
   const costPriceIncludesVat = supplierPricesIncludeVat || includesVat(costPriceHeader);
   const sellingPriceIncludesVat = supplierPricesIncludeVat || includesVat(sellingPriceHeader);

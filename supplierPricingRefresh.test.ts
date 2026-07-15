@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { TREADS_UNLIMITED_RAW_DATA } from './supplier_data/treadsUnlimitedData';
+import { TYRE_LIFE_RAW_DATA } from './supplier_data/tyreLifeData';
 import { TYRE_LIFE_WHEELS_RAW_DATA } from './supplier_data/tyreLifeWheelsData';
-import { parseTreadsUnlimitedData, parseTyreLifeWheelsData } from './utils';
+import { parseTreadsUnlimitedData, parseTyreLifeData, parseTyreLifeWheelsData } from './utils';
 
 describe('Tyre Life and Treads catalogue refresh', () => {
   it('embeds the complete Tyre Life Wheels pricing and stock snapshot', () => {
@@ -23,5 +24,14 @@ describe('Tyre Life and Treads catalogue refresh', () => {
     expect(sample).toMatchObject({ sellingPrice: 4500, costPrice: 4500, quantity: 12 });
     expect(TREADS_UNLIMITED_RAW_DATA).toContain('BFGoodrich®');
     expect(TREADS_UNLIMITED_RAW_DATA).not.toContain('Ã');
+  });
+
+  it('embeds the complete Tyre Life tyre pricing and stock snapshot', () => {
+    const items = parseTyreLifeData(TYRE_LIFE_RAW_DATA);
+    const sample = items.find((item) => item.supplierStockCode === 'PANCCN0164');
+
+    expect(items).toHaveLength(476);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(18572);
+    expect(sample).toMatchObject({ sellingPrice: 5750, costPrice: 5750, quantity: 13 });
   });
 });

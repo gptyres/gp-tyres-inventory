@@ -1,10 +1,10 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-const [wheelSource, tyreSource] = process.argv.slice(2);
+const [wheelSource, tyreLifeSource, treadsSource] = process.argv.slice(2);
 
-if (!wheelSource || !tyreSource) {
-  throw new Error('Usage: node scripts/refresh-tyre-life-treads-data.mjs <tyre-life-wheels.csv> <treads-unlimited.csv>');
+if (!wheelSource || !tyreLifeSource || !treadsSource) {
+  throw new Error('Usage: node scripts/refresh-tyre-life-treads-data.mjs <tyre-life-wheels.csv> <tyre-life-tyres.csv> <treads-unlimited.csv>');
 }
 
 const normalizeCsv = async (filePath) => (
@@ -15,7 +15,8 @@ const normalizeCsv = async (filePath) => (
 );
 
 const wheelCsv = await normalizeCsv(wheelSource);
-const tyreCsv = await normalizeCsv(tyreSource);
+const tyreLifeCsv = await normalizeCsv(tyreLifeSource);
+const treadsCsv = await normalizeCsv(treadsSource);
 const asTemplateLiteral = (value) => value
   .replace(/\\/g, '\\\\')
   .replace(/`/g, '\\`')
@@ -28,9 +29,15 @@ await writeFile(
 );
 
 await writeFile(
-  resolve('supplier_data/treadsUnlimitedData.ts'),
-  `export const TREADS_UNLIMITED_RAW_DATA = \`${asTemplateLiteral(tyreCsv)}\`;\n`,
+  resolve('supplier_data/tyreLifeData.ts'),
+  `export const TYRE_LIFE_RAW_DATA = \`${asTemplateLiteral(tyreLifeCsv)}\`;\n`,
   'utf8'
 );
 
-console.log('Refreshed Tyre Life Wheels and Treads Unlimited supplier data.');
+await writeFile(
+  resolve('supplier_data/treadsUnlimitedData.ts'),
+  `export const TREADS_UNLIMITED_RAW_DATA = \`${asTemplateLiteral(treadsCsv)}\`;\n`,
+  'utf8'
+);
+
+console.log('Refreshed Tyre Life Wheels, Tyre Life Tyres, and Treads Unlimited supplier data.');
