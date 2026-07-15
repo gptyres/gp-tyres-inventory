@@ -100,7 +100,7 @@ const toVatExclusivePrice = (value: number, alreadyIncludesVat: boolean) => (
   Number((Math.max(0, value) / (alreadyIncludesVat ? 1.15 : 1)).toFixed(2))
 );
 
-const roundToNearest25 = (value: number) => Math.round(Math.max(0, value) / 25) * 25;
+const roundToNearest25 = (value: number) => Math.round((Math.max(0, value) / 25) + 1e-9) * 25;
 
 const stableIdentityHash = (value: string) => {
   let hash = 2166136261;

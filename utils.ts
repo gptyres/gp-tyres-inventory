@@ -884,7 +884,7 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
       .join(' | ');
 
     const sellingPriceIncVat = entry.price * 1.15;
-    const roundedSellingPrice = Math.round(sellingPriceIncVat / 25) * 25;
+    const roundedSellingPrice = Math.round((sellingPriceIncVat / 25) + 1e-9) * 25;
 
     return {
       id: `tyrewarehouse-${index + 1}`,
@@ -1162,7 +1162,73 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
 };
 
 // --- APEX PARSER ---
+const parseStructuredSupplierRefreshData = (
+  rawCsv: string,
+  idPrefix: string,
+  supplierName: string
+): InventoryItem[] | null => {
+  const lines = rawCsv.split('\n').filter((line) => line.trim());
+  if (!lines.length) return [];
+
+  const headers = parseCSVLine(lines[0]).map((header) => header.trim());
+  const normalizedHeaders = headers.map((header) => header.toLowerCase().replace(/[^a-z0-9]+/g, ''));
+  const column = (name: string) => normalizedHeaders.indexOf(name.toLowerCase().replace(/[^a-z0-9]+/g, ''));
+  if (column('Supplier SKU') < 0 || column('Cost Price') < 0 || column('Selling Price') < 0) return null;
+
+  const locationColumns = headers.flatMap((header, index) => {
+    const match = header.match(/^(.+?)\s+Stock Units$/i);
+    return match && !/^total$/i.test(match[1].trim())
+      ? [{ index, location: match[1].trim() }]
+      : [];
+  });
+  const today = new Date().toISOString().split('T')[0];
+
+  return lines.slice(1).flatMap((line, index) => {
+    const cols = parseCSVLine(line);
+    const get = (name: string) => {
+      const position = column(name);
+      return position >= 0 ? cols[position]?.trim() || '' : '';
+    };
+    const sku = get('Supplier SKU');
+    const size = get('TYRE_SIZE');
+    const brand = get('TYRE_BRAND');
+    const pattern = get('TYRE_PATTERN');
+    if (!sku || !size || !brand || !pattern) return [];
+
+    const tyreRating = get('TYRE_RATING');
+    const tyreIndex = get('TYRE_INDEX');
+    const tyreSpecs = get('TYRE_SPECS');
+    const stockByLocation = Object.fromEntries(locationColumns.map(({ index: stockIndex, location }) => (
+      [location, parseStockUnits(cols[stockIndex])]
+    )));
+    const locationTotal = Object.values(stockByLocation).reduce((total, quantity) => total + quantity, 0);
+    const declaredTotal = parseStockUnits(get('Total Stock Units'));
+    const quantity = Math.max(locationTotal, declaredTotal);
+
+    return [{
+      id: `${idPrefix}-${index + 1}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata(supplierName, brand, pattern, sku),
+      brand,
+      pattern,
+      size,
+      loadSpeedIndex: [tyreRating, tyreIndex].filter(Boolean).join(' '),
+      tyreRating,
+      tyreIndex,
+      tyreSpecs,
+      location: locationColumns.map(({ location }) => `${location}: ${stockByLocation[location] || 0}`).join(' | ') || supplierName,
+      stockByLocation,
+      quantity,
+      costPrice: parseCurrencyString(get('Cost Price')),
+      sellingPrice: parseCurrencyString(get('Selling Price')),
+      lastUpdated: today
+    } satisfies TyreProduct];
+  });
+};
+
 export const parseApexData = (rawCsv: string): InventoryItem[] => {
+  const refreshedItems = parseStructuredSupplierRefreshData(rawCsv, 'apex', 'APEX');
+  if (refreshedItems) return refreshedItems;
   return parseSimpleSupplierCsv(rawCsv, 'apex', 'APEX', { normalizePattern: true });
 };
 
@@ -1307,6 +1373,8 @@ export const parseArcData = (rawCsv: string): InventoryItem[] => {
 
 // --- TUBESTONE PARSER ---
 export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
+  const refreshedItems = parseStructuredSupplierRefreshData(rawCsv, 'tubestone', 'TUBESTONE');
+  if (refreshedItems) return refreshedItems;
   const items: InventoryItem[] = [];
   const lines = rawCsv.split('\n');
   const today = new Date().toISOString().split('T')[0];
@@ -1363,6 +1431,8 @@ export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
 
 // --- TREADS UNLIMITED PARSER ---
 export const parseTreadsUnlimitedData = (rawCsv: string): InventoryItem[] => {
+  const refreshedItems = parseStructuredSupplierRefreshData(rawCsv, 'treads', 'TREADS UNLIMITED');
+  if (refreshedItems) return refreshedItems;
   const items: InventoryItem[] = [];
   const lines = rawCsv.split('\n');
   const today = new Date().toISOString().split('T')[0];

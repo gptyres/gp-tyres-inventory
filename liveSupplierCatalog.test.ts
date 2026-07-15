@@ -43,17 +43,17 @@ describe('live supplier catalogue conversion', () => {
     expect(grouped).toHaveLength(1);
     expect(grouped[0]).toMatchObject({
       stock_units: 4,
-      stock_by_location: { JHB: 0, GLK: 4, CPT: 0, DBN: 0 },
-      stock_location: 'JHB: 0 | CPT: 0 | DBN: 0 | GLK: 4'
+      stock_by_location: { JHB: 0, GLK: 4, CPT: 0, DUR: 0 },
+      stock_location: 'JHB: 0 | CPT: 0 | DUR: 0 | GLK: 4'
     });
 
     const item = liveSupplierRowToInventoryItem(grouped[0]);
     expect(item).toMatchObject({
       quantity: 4,
-      stockByLocation: { JHB: 0, GLK: 4, CPT: 0, DBN: 0 }
+      stockByLocation: { JHB: 0, GLK: 4, CPT: 0, DUR: 0 }
     });
     if (item.type !== ProductType.TYRE) throw new Error('Expected tyre item');
-    expect(item.location).toBe('JHB: 0 | CPT: 0 | DBN: 0 | GLK: 4');
+    expect(item.location).toBe('JHB: 0 | CPT: 0 | DUR: 0 | GLK: 4');
   });
 
   it('combines matching location rows for every supplier catalogue', () => {
@@ -65,7 +65,7 @@ describe('live supplier catalogue conversion', () => {
     expect(grouped).toHaveLength(1);
     expect(grouped[0]).toMatchObject({
       stock_units: 16,
-      stock_by_location: { 'Cape Town': 8, Johannesburg: 8 }
+      stock_by_location: { CPT: 8, JHB: 8 }
     });
   });
 
@@ -79,8 +79,24 @@ describe('live supplier catalogue conversion', () => {
     expect(grouped).toHaveLength(1);
     expect(grouped[0]).toMatchObject({
       stock_units: 9,
-      stock_by_location: { 'Cape Town': 5, Johannesburg: 4 },
-      stock_location: 'Johannesburg: 4 | Cape Town: 5'
+      stock_by_location: { CPT: 5, JHB: 4 },
+      stock_location: 'JHB: 4 | CPT: 5'
+    });
+  });
+
+  it('combines internal warehouses into customer-facing branches and excludes inbound stock', () => {
+    const grouped = groupLiveSupplierCatalogRows([
+      { ...baseRow, catalog_key: 'SUMITOMO_DUNLOP', source_key: 'eastport', stock_location: 'Eastport', stock_units: 10 },
+      { ...baseRow, id: 2, catalog_key: 'SUMITOMO_DUNLOP', source_key: 'durban-cdc', stock_location: 'Durban CDC', stock_units: 5 },
+      { ...baseRow, id: 3, catalog_key: 'SUMITOMO_DUNLOP', source_key: 'inbound-cpt', stock_location: 'Inbound To Cape Town', stock_units: 4 },
+      { ...baseRow, id: 4, catalog_key: 'SUMITOMO_DUNLOP', source_key: 'port-elizabeth', stock_location: 'Port Elizabeth', stock_units: 2 }
+    ]);
+
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0]).toMatchObject({
+      stock_units: 17,
+      stock_by_location: { JHB: 10, DUR: 5, PLZ: 2 },
+      stock_location: 'JHB: 10 | DUR: 5 | PLZ: 2'
     });
   });
 
@@ -92,8 +108,8 @@ describe('live supplier catalogue conversion', () => {
       stock_units: 10
     }]);
 
-    expect(grouped.stock_by_location).toEqual({ BFN: 2, CPT: 3, DBN: 0, JHB: 4, NWH: 1 });
-    expect(liveSupplierRowToInventoryItem(grouped).stockByLocation).toEqual({ BFN: 2, CPT: 3, DBN: 0, JHB: 4, NWH: 1 });
+    expect(grouped.stock_by_location).toEqual({ BFN: 2, CPT: 3, DUR: 0, JHB: 4, NWH: 1 });
+    expect(liveSupplierRowToInventoryItem(grouped).stockByLocation).toEqual({ BFN: 2, CPT: 3, DUR: 0, JHB: 4, NWH: 1 });
   });
 
   it('keeps different sizes and prices as separate listings even when a supplier reuses a SKU', () => {

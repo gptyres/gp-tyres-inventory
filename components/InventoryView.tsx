@@ -182,6 +182,46 @@ const getStockEntries = (item: InventoryItem): Array<[string, number]> => {
   return sortStockLocationEntries(parseStockLocationSummary(location));
 };
 
+const getItemLocation = (item: InventoryItem): string => (
+  item.type === ProductType.TYRE
+    ? (item as TyreProduct).location
+    : item.type === ProductType.WHEEL
+      ? (item as WheelProduct).location || ''
+      : ''
+);
+
+const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
+  const structuredEntries = getStockEntries(item);
+  const availableEntries = structuredEntries.filter(([, quantity]) => quantity > 0);
+  const fallbackLocation = getItemLocation(item);
+
+  return (
+    <div className="col-span-full mt-2 border-t border-gp-border/70 pt-3">
+      <span className="block text-[9px] leading-none text-gp-text-muted uppercase font-bold tracking-wider">
+        Available locations
+      </span>
+      {availableEntries.length > 0 ? (
+        <div className="mt-2 grid grid-cols-[repeat(auto-fit,minmax(4rem,1fr))] gap-2">
+          {availableEntries.map(([location, quantity]) => (
+            <div
+              key={location}
+              className="flex min-h-10 min-w-0 items-center justify-between gap-2 rounded border border-gp-border bg-gp-black/70 px-2.5 py-2"
+              title={location}
+            >
+              <span className="truncate text-[10px] font-bold leading-none text-gp-text-muted">{location}</span>
+              <span className="shrink-0 font-mono text-xs font-black leading-none tabular-nums text-green-500">{quantity}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <span className="mt-2 block truncate text-[10px] font-mono font-bold text-gp-text-main">
+          {structuredEntries.length > 0 ? 'No branch stock' : fallbackLocation}
+        </span>
+      )}
+    </div>
+  );
+};
+
 const getWheelClipboardText = (item: InventoryItem): string => {
   if (item.type !== ProductType.WHEEL) return '';
   const wheel = item as WheelProduct;
@@ -963,23 +1003,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     </>
                 )}
                 {visibleColumns.location && (item.type === ProductType.TYRE || item.type === ProductType.WHEEL) && (
-                  <div className="col-span-full mt-1 border-t border-gp-border/70 pt-2">
-                    <span className="text-[9px] text-gp-text-muted uppercase font-bold tracking-wider">Available by location</span>
-                    {getStockEntries(item).length > 0 ? (
-                      <div className="mt-1 grid grid-cols-2 sm:grid-cols-4 gap-1">
-                        {getStockEntries(item).map(([location, quantity]) => (
-                          <div key={location} className="flex items-center justify-between bg-gp-black px-2 py-1 border border-gp-border rounded">
-                            <span className="text-[9px] font-bold text-gp-text-muted">{location}</span>
-                            <span className={`text-xs font-mono font-black ${quantity > 0 ? 'text-green-500' : 'text-gp-text-muted'}`}>{quantity}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="mt-1 block text-[10px] font-mono font-bold text-gp-text-main">
-                        {item.type === ProductType.TYRE ? (item as TyreProduct).location : (item as WheelProduct).location}
-                      </span>
-                    )}
-                  </div>
+                  <StockLocationPanel item={item} />
                 )}
             </div>
           )}

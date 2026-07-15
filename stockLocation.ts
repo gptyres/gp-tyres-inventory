@@ -1,25 +1,27 @@
 const LOCATION_ALIASES: Record<string, string> = {
   jhb: 'JHB',
-  johannesburg: 'Johannesburg',
+  johannesburg: 'JHB',
   cpt: 'CPT',
-  capetown: 'Cape Town',
-  dbn: 'DBN',
-  durban: 'Durban',
+  capetown: 'CPT',
+  dbn: 'DUR',
+  dur: 'DUR',
+  durban: 'DUR',
   glk: 'GLK',
   bfn: 'BFN',
-  bloemfontein: 'Bloemfontein',
+  bloemfontein: 'BFN',
   nwh: 'NWH',
-  jetpark: 'Jet Park',
-  portelizabeth: 'Port Elizabeth',
-  durbancdc: 'Durban CDC',
-  eastport: 'Eastport',
-  ladysmith: 'Ladysmith',
-  regional: 'Regional',
-  national: 'National',
-  inboundtocapetown: 'Inbound to Cape Town'
+  jetpark: 'JHB',
+  plz: 'PLZ',
+  portelizabeth: 'PLZ',
+  durbancdc: 'DUR',
+  eastport: 'JHB',
+  ladysmith: 'DUR',
+  regional: 'REG',
+  national: 'NAT'
 };
 
 const locationKey = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '');
+const NON_AVAILABLE_LOCATIONS = new Set(['inboundtocapetown', 'nostocklisted']);
 
 export const normalizeStockLocationName = (value: string): string => {
   const cleaned = value
@@ -28,7 +30,9 @@ export const normalizeStockLocationName = (value: string): string => {
     .replace(/^exotic wheel and tyre\s*-\s*johannesburg$/i, 'Johannesburg')
     .replace(/\s+/g, ' ')
     .trim();
-  return LOCATION_ALIASES[locationKey(cleaned)] || cleaned;
+  const key = locationKey(cleaned);
+  if (NON_AVAILABLE_LOCATIONS.has(key)) return '';
+  return LOCATION_ALIASES[key] || cleaned;
 };
 
 export const normalizeStockByLocation = (
@@ -58,9 +62,7 @@ export const parseStockLocationSummary = (value: string | null | undefined): Rec
 };
 
 const LOCATION_ORDER = [
-  'jhb', 'johannesburg', 'cpt', 'capetown', 'dbn', 'durban', 'glk',
-  'bfn', 'bloemfontein', 'nwh', 'jetpark', 'portelizabeth', 'durbancdc',
-  'eastport', 'ladysmith', 'inboundtocapetown', 'regional', 'national'
+  'jhb', 'cpt', 'dur', 'plz', 'glk', 'bfn', 'nwh', 'reg', 'nat'
 ];
 
 export const sortStockLocationEntries = (
