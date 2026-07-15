@@ -153,14 +153,27 @@ const BRANCH_HEADER_LABELS: Record<string, string> = {
   jhb: 'JHB',
   cpt: 'CPT',
   dbn: 'DBN',
-  glk: 'GLK'
+  glk: 'GLK',
+  bfn: 'BFN',
+  bloemfontein: 'Bloemfontein',
+  nwh: 'NWH',
+  johannesburg: 'Johannesburg',
+  capetown: 'Cape Town',
+  durban: 'Durban',
+  jetpark: 'Jet Park',
+  portelizabeth: 'Port Elizabeth',
+  durbancdc: 'Durban CDC',
+  eastport: 'Eastport',
+  ladysmith: 'Ladysmith',
+  regional: 'Regional',
+  national: 'National'
 };
 
 const findBranchStockColumns = (headerRow: GridRow) => headerRow.flatMap((value, columnIndex) => {
   const normalized = normalizeHeader(value);
-  const match = normalized.match(/^(jhb|cpt|dbn|glk)(?:stockunits|stockqty|stock)$/);
-  if (!match) return [];
-  return [{ columnIndex, label: BRANCH_HEADER_LABELS[match[1]] }];
+  const locationHeader = normalized.replace(/(?:stockunits?|stockqty|stockquantity|availableunits?|quantity|qty|stock)$/i, '');
+  const label = BRANCH_HEADER_LABELS[locationHeader];
+  return label ? [{ columnIndex, label }] : [];
 });
 
 export const normalizeManualSupplierGrid = (
@@ -235,12 +248,10 @@ export const normalizeManualSupplierGrid = (
           ? explicitSize.replace(/\s+/g, '').toUpperCase()
           : '');
     const suppliedStockUnits = parseStock(get(row, 'quantity'));
-    const stockByLocation = supplierMeta.productType === 'WHEEL'
-      ? Object.fromEntries(branchStockColumns.map(({ columnIndex, label }) => {
-          const parsed = parseStock(row[columnIndex]);
-          return [label, Number.isFinite(parsed) ? parsed : 0];
-        }))
-      : {};
+    const stockByLocation = Object.fromEntries(branchStockColumns.map(({ columnIndex, label }) => {
+      const parsed = parseStock(row[columnIndex]);
+      return [label, Number.isFinite(parsed) ? parsed : 0];
+    }));
     const branchStockTotal = Object.values(stockByLocation).reduce((total, quantity) => total + quantity, 0);
     const stockUnits = branchStockColumns.length
       ? Math.max(Number.isFinite(suppliedStockUnits) ? suppliedStockUnits : 0, branchStockTotal)

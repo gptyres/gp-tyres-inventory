@@ -3,6 +3,12 @@ import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct 
 import { isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import { parseSupplierWheelImageKeys } from './supplierStockImages';
+import {
+  normalizeStockByLocation,
+  normalizeStockLocationName,
+  parseStockLocationSummary,
+  sortStockLocationEntries
+} from './stockLocation';
 
 export interface LiveSupplierCatalogRow {
   id: number;
@@ -36,16 +42,19 @@ export interface LiveSupplierCatalogRow {
 const PAGE_SIZE = 1_000;
 
 const stockEntries = (row: LiveSupplierCatalogRow): Array<[string, number]> => {
-  const existing = Object.entries(row.stock_by_location || {})
-    .map(([location, quantity]) => [location.trim(), Math.max(0, Math.trunc(Number(quantity) || 0))] as [string, number])
-    .filter(([location]) => Boolean(location));
-  if (existing.length > 0) return existing;
-  const location = row.stock_location?.trim();
-  return location ? [[location, Math.max(0, Math.trunc(Number(row.stock_units) || 0))]] : [];
+  const existing = normalizeStockByLocation(row.stock_by_location);
+  if (Object.keys(existing).length > 0) return sortStockLocationEntries(existing);
+
+  const summary = parseStockLocationSummary(row.stock_location);
+  if (Object.keys(summary).length > 0) return sortStockLocationEntries(summary);
+
+  const location = normalizeStockLocationName(row.stock_location || '');
+  if (!location || /^no stock listed$/i.test(location)) return [];
+  return [[location, Math.max(0, Math.trunc(Number(row.stock_units) || 0))]];
 };
 
 const formatStockByLocation = (locations: Record<string, number>) => (
-  Object.entries(locations).map(([location, quantity]) => `${location}: ${quantity}`).join(' | ')
+  sortStockLocationEntries(locations).map(([location, quantity]) => `${location}: ${quantity}`).join(' | ')
 );
 
 const buildLocation = (row: LiveSupplierCatalogRow) => {
@@ -85,7 +94,7 @@ export const groupLiveSupplierCatalogRows = (
       String(row.selling_price)
     ].map((value) => String(value).trim().toLowerCase()).join('\u001f');
     const existing = grouped.get(key);
-    const locations = existing?.stock_by_location ? { ...existing.stock_by_location } : {};
+    const locations = normalizeStockByLocation(existing?.stock_by_location);
     stockEntries(row).forEach(([location, quantity]) => {
       locations[location] = (locations[location] || 0) + quantity;
     });

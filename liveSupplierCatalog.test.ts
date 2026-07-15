@@ -44,7 +44,7 @@ describe('live supplier catalogue conversion', () => {
     expect(grouped[0]).toMatchObject({
       stock_units: 4,
       stock_by_location: { JHB: 0, GLK: 4, CPT: 0, DBN: 0 },
-      stock_location: 'JHB: 0 | GLK: 4 | CPT: 0 | DBN: 0'
+      stock_location: 'JHB: 0 | CPT: 0 | DBN: 0 | GLK: 4'
     });
 
     const item = liveSupplierRowToInventoryItem(grouped[0]);
@@ -53,7 +53,7 @@ describe('live supplier catalogue conversion', () => {
       stockByLocation: { JHB: 0, GLK: 4, CPT: 0, DBN: 0 }
     });
     if (item.type !== ProductType.TYRE) throw new Error('Expected tyre item');
-    expect(item.location).toBe('JHB: 0 | GLK: 4 | CPT: 0 | DBN: 0');
+    expect(item.location).toBe('JHB: 0 | CPT: 0 | DBN: 0 | GLK: 4');
   });
 
   it('combines matching location rows for every supplier catalogue', () => {
@@ -67,6 +67,33 @@ describe('live supplier catalogue conversion', () => {
       stock_units: 16,
       stock_by_location: { 'Cape Town': 8, Johannesburg: 8 }
     });
+  });
+
+  it('normalizes supplier-specific branch aliases into clean location tiles', () => {
+    const grouped = groupLiveSupplierCatalogRows([
+      { ...baseRow, catalog_key: 'EXOTIC', source_key: 'exotic-cpt-1', stock_location: 'Cape Town', stock_units: 2 },
+      { ...baseRow, id: 2, catalog_key: 'EXOTIC', source_key: 'exotic-cpt-2', stock_location: 'EWT - Cape Town - Cape Town', stock_units: 3 },
+      { ...baseRow, id: 3, catalog_key: 'EXOTIC', source_key: 'exotic-jhb', stock_location: 'EXOTIC WHEEL AND TYRE - Johannesburg', stock_units: 4 }
+    ]);
+
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0]).toMatchObject({
+      stock_units: 9,
+      stock_by_location: { 'Cape Town': 5, Johannesburg: 4 },
+      stock_location: 'Johannesburg: 4 | Cape Town: 5'
+    });
+  });
+
+  it('converts an existing location summary into the shared stock map', () => {
+    const [grouped] = groupLiveSupplierCatalogRows([{
+      ...baseRow,
+      catalog_key: 'TUBESTONE',
+      stock_location: 'BFN: 2 | CPT: 3 | DBN: 0 | JHB: 4 | NWH: 1',
+      stock_units: 10
+    }]);
+
+    expect(grouped.stock_by_location).toEqual({ BFN: 2, CPT: 3, DBN: 0, JHB: 4, NWH: 1 });
+    expect(liveSupplierRowToInventoryItem(grouped).stockByLocation).toEqual({ BFN: 2, CPT: 3, DBN: 0, JHB: 4, NWH: 1 });
   });
 
   it('keeps different sizes and prices as separate listings even when a supplier reuses a SKU', () => {

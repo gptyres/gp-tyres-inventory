@@ -11,6 +11,11 @@ import {
   supplierTyreMatchesUploadKeys
 } from '../supplierStockImages';
 import { supabase } from '../supabaseClient';
+import {
+  normalizeStockByLocation,
+  parseStockLocationSummary,
+  sortStockLocationEntries
+} from '../stockLocation';
 
 interface InventoryViewProps {
   items: InventoryItem[];
@@ -166,19 +171,16 @@ const getWheelFinish = (wheel: WheelProduct): string => {
   return (wheel.imageFinishKey || colourParts[1] || wheel.colour || '').trim().toUpperCase();
 };
 
-const getStockEntries = (item: InventoryItem): Array<[string, number]> => (
-  Object.entries(item.stockByLocation || {}).sort(([left], [right]) => {
-    const branchOrder = ['JHB', 'CPT', 'DBN', 'GLK'];
-    const leftIndex = branchOrder.indexOf(left.toUpperCase());
-    const rightIndex = branchOrder.indexOf(right.toUpperCase());
-    if (leftIndex >= 0 || rightIndex >= 0) {
-      if (leftIndex < 0) return 1;
-      if (rightIndex < 0) return -1;
-      return leftIndex - rightIndex;
-    }
-    return left.localeCompare(right);
-  })
-);
+const getStockEntries = (item: InventoryItem): Array<[string, number]> => {
+  const mappedStock = normalizeStockByLocation(item.stockByLocation);
+  if (Object.keys(mappedStock).length > 0) return sortStockLocationEntries(mappedStock);
+  const location = item.type === ProductType.TYRE
+    ? (item as TyreProduct).location
+    : item.type === ProductType.WHEEL
+      ? (item as WheelProduct).location
+      : '';
+  return sortStockLocationEntries(parseStockLocationSummary(location));
+};
 
 const getWheelClipboardText = (item: InventoryItem): string => {
   if (item.type !== ProductType.WHEEL) return '';

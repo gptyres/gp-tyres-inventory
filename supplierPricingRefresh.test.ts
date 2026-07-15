@@ -20,6 +20,11 @@ describe('Tyre Life catalogue refresh', () => {
 
     expect(items).toHaveLength(476);
     expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(18572);
-    expect(sample).toMatchObject({ sellingPrice: 5750, costPrice: 5750, quantity: 13 });
+    expect(sample).toMatchObject({
+      sellingPrice: 5750,
+      costPrice: 5750,
+      quantity: 13,
+      stockByLocation: { JHB: 11, CPT: 0, DBN: 2 }
+    });
   });
 });

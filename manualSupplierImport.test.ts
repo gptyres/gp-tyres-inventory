@@ -265,9 +265,24 @@ describe('manual supplier document import', () => {
       brand: 'Patriot',
       tyrePattern: 'PATRIOT R/T+',
       size: 'LT305/55R20',
+      stockByLocation: { JHB: 11, CPT: 0, DBN: 2 },
+      stockLocation: 'JHB: 11 | CPT: 0 | DBN: 2',
       stockUnits: 13,
       costPrice: 5750,
       sellingPrice: 5750
+    });
+  });
+
+  it('preserves extended tyre branch columns for the shared location tile layout', () => {
+    const result = normalizeManualSupplierGrid('TUBESTONE', [
+      ['Size', 'SKU', 'Brand', 'Pattern', 'Selling Price', 'BFN Stock', 'CPT Stock', 'DBN Stock', 'JHB Stock', 'NWH Stock', 'Total Stock Units'],
+      ['12R22.5', 'TB-1', 'Compasal', 'CPS21', 4200, 2, 3, 0, 4, 1, 10]
+    ]);
+
+    expect(result.rows[0]).toMatchObject({
+      stockByLocation: { BFN: 2, CPT: 3, DBN: 0, JHB: 4, NWH: 1 },
+      stockLocation: 'BFN: 2 | CPT: 3 | DBN: 0 | JHB: 4 | NWH: 1',
+      stockUnits: 10
     });
   });
 });
