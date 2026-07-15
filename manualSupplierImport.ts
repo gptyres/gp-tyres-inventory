@@ -35,14 +35,14 @@ type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'rating' | 'index
 
 const HEADER_ALIASES: Record<FieldName, string[]> = {
   sku: ['sku', 'suppliersku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
-  description: ['description', 'descrption', 'product', 'productname', 'productdescription', 'item', 'itemdescription', 'tyredescription', 'brandandpattern', 'brandpattern', 'branddescription', 'patternanddescription'],
+  description: ['description', 'descrption', 'product', 'productname', 'item', 'itemdescription', 'tyredescription', 'brandandpattern', 'brandpattern', 'branddescription', 'patternanddescription'],
   brand: ['brand', 'tyrebrand', 'make'],
   pattern: ['pattern', 'tyrepattern', 'portalpattern', 'tread', 'model', 'wheelname'],
   rating: ['rating', 'tyrerating', 'ply', 'plyrating', 'pr'],
   index: ['index', 'tyreindex', 'loadindex', 'speedindex', 'loadspeed', 'loadspeedindex', 'loadspeedrating'],
   specs: ['specs', 'tyrespecs', 'specifications', 'otherspecs', 'additionaldetails', 'sidewall', 'construction', 'finish'],
   size: ['size', 'tyresize', 'dimensions'],
-  quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'stockunits', 'unitsinstock', 'availableunits', 'availableqty', 'qtyavailable', 'available', 'availability', 'onhand', 'freeqty', 'nationalstockunits', 'totalstockunits'],
+  quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'stockunits', 'unitsinstock', 'availableunits', 'availableqty', 'qtyavailable', 'available', 'availability', 'onhand', 'freeqty', 'totalstockunits'],
   price: ['price', 'unitprice', 'pricevat', 'priceincvat', 'priceinclvat'],
   costPrice: ['cost', 'costprice', 'costvat', 'costincvat', 'costinclvat', 'costpriceincvat', 'costpriceinclvat', 'costpriceexvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'buyprice', 'buyingprice', 'discountedprice', 'discountedpriceexvat', 'dealerprice', 'priceexvat'],
   sellingPrice: ['selling', 'sellingprice', 'sellingincvat', 'sellinginclvat', 'sellingpriceincvat', 'sellingpriceinclvat', 'sellingpriceexvat', 'roundedinclvatr25', 'retail', 'retailprice', 'retailpriceincvat', 'retailpriceinclvat', 'rrp', 'recommendedretail', 'recommendedretailprice'],
@@ -159,8 +159,7 @@ export const normalizeManualSupplierGrid = (
   const sellingPriceHeader = header.columns.sellingPrice === undefined ? '' : header.headers[header.columns.sellingPrice] || '';
   const includesVat = (value: string) => /incvat|inclvat|includingvat|vatinclusive|pricevat/.test(value);
   const supplierPricesIncludeVat = catalog === 'TYRE_LIFE'
-    || catalog === 'TYRE_LIFE_WHEELS'
-    || catalog === 'TREADS_UNLIMITED';
+    || catalog === 'TYRE_LIFE_WHEELS';
   const genericPriceIncludesVat = supplierPricesIncludeVat || includesVat(genericPriceHeader);
   const costPriceIncludesVat = supplierPricesIncludeVat || includesVat(costPriceHeader);
   const sellingPriceIncludesVat = supplierPricesIncludeVat || includesVat(sellingPriceHeader);
@@ -223,9 +222,7 @@ export const normalizeManualSupplierGrid = (
     const brand = parsedTyre
       ? parsedTyre.brand
       : explicitBrand || descriptionWithoutSize.split(/\s+/)[0] || supplierMeta.supplier;
-    const tyrePattern = parsedTyre?.pattern
-      || explicitPattern
-      || (catalog === 'TREADS_UNLIMITED' ? description : '');
+    const tyrePattern = parsedTyre?.pattern || explicitPattern;
     const tyreRating = parsedTyre?.rating || '';
     const tyreIndex = parsedTyre?.index || '';
     const tyreSpecs = parsedTyre?.specs || explicitSpecs;
