@@ -204,7 +204,11 @@ export const normalizeManualSupplierGrid = (
       || extractSize(explicitSize)
       || extractSize(description)
       || extractSize(joinedIdentity)
-      || (/\d/.test(explicitSize) ? explicitSize.replace(/\s+/g, '').toUpperCase() : '');
+      || (supplierMeta.productType === 'WHEEL' && explicitSize
+        ? explicitSize.replace(/\s+/g, '').toUpperCase()
+        : /\d/.test(explicitSize)
+          ? explicitSize.replace(/\s+/g, '').toUpperCase()
+          : '');
     const stockUnits = parseStock(get(row, 'quantity'));
     const genericPrice = parseNumber(get(row, 'price'));
     const suppliedCost = parseNumber(get(row, 'costPrice'));

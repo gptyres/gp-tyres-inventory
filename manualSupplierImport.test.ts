@@ -231,6 +231,23 @@ describe('manual supplier document import', () => {
     });
   });
 
+  it('keeps Tyre Life wheel catalogue rows whose supplied size is unavailable', () => {
+    const result = normalizeManualSupplierGrid('TYRE_LIFE_WHEELS', [
+      ['Size', 'SKU', 'Brand', 'Wheel Name', 'Finish', 'Category', 'Selling Price', 'Total Stock Units'],
+      ['N/A', 'SAA9303-2983MB12', 'Dirty Life', 'A9303 DT1', 'Matte Black W/Simulated Ring', 'Wheels', 'R6,900', 7],
+      ['N/A', 'CBL10893', 'Dynamic', '108.1 - 93.1', 'HUB RINGS', 'Wheels', 'R0', 444]
+    ]);
+
+    expect(result.rejectedRows).toBe(0);
+    expect(result.rows).toHaveLength(2);
+    expect(result.rows[0]).toMatchObject({
+      supplierSku: 'SAA9303-2983MB12',
+      size: 'N/A',
+      sellingPrice: 6900,
+      stockUnits: 7
+    });
+  });
+
   it('imports Tyre Life tyre stock with its supplied VAT-inclusive selling price', () => {
     const result = normalizeManualSupplierGrid('TYRE_LIFE', [
       ['Size', 'SKU', 'Brand', 'Pattern', 'Load Rating', 'Speed Rating', 'Sidewall', 'Category', 'Selling Price', 'JHB Stock Units', 'CPT Stock Units', 'DBN Stock Units', 'Total Stock Units'],
