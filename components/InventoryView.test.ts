@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getItemDisplayName, getItemSecondaryLine, getItemSupplierName } from './InventoryView';
+import { getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupportedStaffImageMimeType } from './InventoryView';
 import { ProductType, type TyreProduct, type WheelProduct } from '../types';
 
 const supplierTyre: TyreProduct = {
@@ -46,6 +46,17 @@ describe('supplier tyre card formatting', () => {
     };
     expect(getItemDisplayName(incomplete)).toBe('10.00R20');
     expect(getItemSecondaryLine(incomplete)).toBe('');
+  });
+});
+
+describe('supplier tyre visual drag and drop', () => {
+  it('accepts image files whose browser omits the MIME type', () => {
+    expect(getSupportedStaffImageMimeType({ name: 'grandtrek-at3g.JPG', type: '' })).toBe('image/jpeg');
+    expect(getSupportedStaffImageMimeType({ name: 'terramax.webp', type: 'application/octet-stream' })).toBe('image/webp');
+  });
+
+  it('rejects non-image drops', () => {
+    expect(getSupportedStaffImageMimeType({ name: 'supplier-pricing.pdf', type: 'application/pdf' })).toBe('');
   });
 });
 
