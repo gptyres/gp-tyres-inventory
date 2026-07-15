@@ -4,8 +4,10 @@ import { TYRE_LIFE_WHEELS_RAW_DATA } from './supplier_data/tyreLifeWheelsData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
 import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
+import { EXOTIC_RAW_DATA } from './supplier_data/exoticData';
 import {
   parseApexData,
+  parseExoticData,
   parseTreadsUnlimitedData,
   parseTubestoneData,
   parseTyreLifeData,
@@ -51,6 +53,21 @@ describe('15 July supplier pricing refresh', () => {
       stockByLocation: { BFN: 4, CPT: 0, DBN: 0, JHB: 6, NWH: 0 }
     });
     expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
+  });
+
+  it('consolidates Exotic tyre stock while excluding its separate alloy-wheel catalogue', () => {
+    const items = parseExoticData(EXOTIC_RAW_DATA);
+    const sample = items.find((item) => item.supplierStockCode === 'Z2756517HT5000MAX115H');
+
+    expect(items).toHaveLength(1259);
+    expect(sample).toMatchObject({
+      costPrice: 865.22,
+      sellingPrice: 1000,
+      quantity: 2,
+      stockByLocation: { CPT: 0, JHB: 2 }
+    });
+    expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
+    expect(EXOTIC_RAW_DATA).not.toContain('Alloy Wheels');
   });
 });
 

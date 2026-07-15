@@ -24,6 +24,12 @@ const sources = [
     supplier: 'Tubestone',
     dataFile: 'supplier_data/tubestoneData.ts',
     sourceFile: 'tubestone_portal_import_2026-07-15.csv'
+  },
+  {
+    catalog: 'EXOTIC',
+    supplier: 'Exotic',
+    dataFile: 'supplier_data/exoticData.ts',
+    sourceFile: 'exotic_portal_import_2026-07-15.csv'
   }
 ];
 
@@ -67,6 +73,12 @@ const readEmbeddedCsv = async (file) => {
 };
 
 const clean = (value) => String(value ?? '').trim();
+const catalogArgumentIndex = process.argv.indexOf('--catalog');
+const requestedCatalog = catalogArgumentIndex >= 0 ? clean(process.argv[catalogArgumentIndex + 1]).toUpperCase() : '';
+const selectedSources = requestedCatalog
+  ? sources.filter((source) => source.catalog === requestedCatalog)
+  : sources.filter((source) => source.catalog !== 'EXOTIC');
+if (!selectedSources.length) throw new Error(`Unsupported supplier catalog: ${requestedCatalog || '(blank)'}.`);
 const parseMoney = (value) => Number.parseFloat(clean(value).replace(/[^0-9.-]/g, '')) || 0;
 const parseStock = (value) => Number.parseInt(clean(value).replace(/[^0-9-]/g, ''), 10) || 0;
 const stableIdentityHash = (value) => {
@@ -97,7 +109,7 @@ const buildItems = async (source) => {
     const stockByLocation = Object.fromEntries(locationColumns.map(({ index, location }) => [location, parseStock(row[index])]));
     const stockUnits = Object.values(stockByLocation).reduce((total, quantity) => total + quantity, 0);
     const stockLocation = Object.entries(stockByLocation).map(([location, quantity]) => `${location}: ${quantity}`).join(' | ');
-    const rawIdentity = `${source.catalog}-${sku}`.toLowerCase();
+    const rawIdentity = [source.catalog, sku, get(row, 'TYRE_SIZE'), get(row, 'Product Name'), get(row, 'Cost Price')].join('-').toLowerCase();
     const sourceKey = `${rawIdentity.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 168)}-${stableIdentityHash(rawIdentity)}`;
     return {
       catalog_key: source.catalog,
@@ -128,19 +140,23 @@ const buildItems = async (source) => {
 const supabase = createClient(SUPABASE_URL, serviceKey, {
   auth: { persistSession: false, autoRefreshToken: false }
 });
-const prepared = await Promise.all(sources.map(async (source) => ({ ...source, items: await buildItems(source) })));
+const prepared = await Promise.all(selectedSources.map(async (source) => ({ ...source, items: await buildItems(source) })));
 const totalRows = prepared.reduce((total, source) => total + source.items.length, 0);
 let jobId = '';
 const snapshotIds = [];
 
 try {
   const now = new Date().toISOString();
+  const isSingleSupplier = prepared.length === 1;
+  const singleSupplier = prepared[0];
   const { data: job, error: jobError } = await supabase.from('supplier_sync_jobs').insert({
-    scope: 'ALL_ENABLED',
+    scope: isSingleSupplier ? 'SINGLE_SUPPLIER' : 'ALL_ENABLED',
+    target_supplier: isSingleSupplier ? singleSupplier.supplier : null,
+    target_catalog: isSingleSupplier ? singleSupplier.catalog : null,
     status: 'running',
     requested_by_staff: 'Codex supplier pricing refresh',
     requested_by_terminal: 'CODEX',
-    artifact_name: 'supplier_refresh_summary_2026-07-15.csv',
+    artifact_name: isSingleSupplier ? singleSupplier.sourceFile : 'supplier_refresh_summary_2026-07-15.csv',
     suppliers_total: prepared.length,
     progress_stage: 'publishing',
     progress_current: 0,
@@ -189,7 +205,7 @@ try {
 
   const completedAt = new Date().toISOString();
   const resultSummary = {
-    source: 'supplier_refresh_summary_2026-07-15.csv',
+    source: isSingleSupplier ? singleSupplier.sourceFile : 'supplier_refresh_summary_2026-07-15.csv',
     suppliers: prepared.map((source) => ({ supplier: source.supplier, catalog: source.catalog, rowsPublished: source.items.length, status: 'ok' }))
   };
   const { error: completionError } = await supabase.from('supplier_sync_jobs').update({

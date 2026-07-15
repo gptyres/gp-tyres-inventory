@@ -1190,14 +1190,26 @@ const parseStructuredSupplierRefreshData = (
       return position >= 0 ? cols[position]?.trim() || '' : '';
     };
     const sku = get('Supplier SKU');
-    const size = get('TYRE_SIZE');
-    const brand = get('TYRE_BRAND');
-    const pattern = get('TYRE_PATTERN');
+    const productName = get('Product Name');
+    const parsedTyre = parseSupplierTyreFields({
+      description: productName,
+      explicitSize: get('TYRE_SIZE'),
+      explicitBrand: get('TYRE_BRAND'),
+      explicitPattern: get('TYRE_PATTERN'),
+      explicitRating: get('TYRE_RATING'),
+      explicitIndex: get('TYRE_INDEX'),
+      explicitSpecs: get('TYRE_SPECS'),
+      inferBrandFromDescription: true
+    });
+    const skuSizeMatch = sku.match(/(\d{3})(\d{2})(\d{2})/);
+    const size = parsedTyre.size || (skuSizeMatch ? `${skuSizeMatch[1]}/${skuSizeMatch[2]}R${skuSizeMatch[3]}` : '');
+    const brand = parsedTyre.brand;
+    const pattern = parsedTyre.pattern;
     if (!sku || !size || !brand || !pattern) return [];
 
-    const tyreRating = get('TYRE_RATING');
-    const tyreIndex = get('TYRE_INDEX');
-    const tyreSpecs = get('TYRE_SPECS');
+    const tyreRating = parsedTyre.rating;
+    const tyreIndex = parsedTyre.index;
+    const tyreSpecs = parsedTyre.specs;
     const stockByLocation = Object.fromEntries(locationColumns.map(({ index: stockIndex, location }) => (
       [location, parseStockUnits(cols[stockIndex])]
     )));
@@ -1252,6 +1264,8 @@ const extractExoticPattern = (productName: string, size: string, brand: string):
 
 // --- EXOTIC PARSER ---
 export const parseExoticData = (rawCsv: string): InventoryItem[] => {
+  const refreshedItems = parseStructuredSupplierRefreshData(rawCsv, 'exotic', 'EXOTIC');
+  if (refreshedItems) return refreshedItems;
   const groupedItems = new Map<string, {
     sku: string;
     category: string;

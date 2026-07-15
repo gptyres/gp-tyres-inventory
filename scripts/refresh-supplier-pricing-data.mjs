@@ -1,10 +1,13 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-const [apexSource, treadsSource, tubestoneSource] = process.argv.slice(2);
+const args = process.argv.slice(2);
+const exoticOnly = args[0] === '--exotic';
+const [apexSource, treadsSource, tubestoneSource] = exoticOnly ? [] : args;
+const exoticSource = exoticOnly ? args[1] : '';
 
-if (!apexSource || !treadsSource || !tubestoneSource) {
-  throw new Error('Usage: node scripts/refresh-supplier-pricing-data.mjs <apex.csv> <treads-unlimited.csv> <tubestone.csv>');
+if ((!exoticOnly && (!apexSource || !treadsSource || !tubestoneSource)) || (exoticOnly && !exoticSource)) {
+  throw new Error('Usage: node scripts/refresh-supplier-pricing-data.mjs <apex.csv> <treads-unlimited.csv> <tubestone.csv> OR --exotic <exotic.csv>');
 }
 
 const parseCsv = (text) => {
@@ -72,7 +75,7 @@ const OUTPUT_HEADERS = [
   'Selling Price'
 ];
 
-const refreshSupplier = async ({ input, output, exportName, supplier, locations }) => {
+const refreshSupplier = async ({ input, output, exportName, supplier, locations, includeRow = () => true }) => {
   const parsed = parseCsv(await readFile(resolve(input), 'utf8'));
   const headers = parsed[0].map(clean);
   const indexOf = (name) => {
@@ -87,7 +90,8 @@ const refreshSupplier = async ({ input, output, exportName, supplier, locations 
 
   const products = new Map();
   let correctedSellingRows = 0;
-  for (const row of parsed.slice(1)) {
+  const includedRows = parsed.slice(1).filter((row) => includeRow(row, columns));
+  for (const row of includedRows) {
     const sku = clean(row[columns['Supplier SKU']]);
     if (!sku) throw new Error(`${supplier}: encountered a row without a supplier SKU.`);
     const location = clean(row[columns['Stock Location']]);
@@ -110,7 +114,8 @@ const refreshSupplier = async ({ input, output, exportName, supplier, locations 
       clean(row[columns.Category]),
       clean(row[columns['Product Name']])
     ];
-    const existing = products.get(sku) ?? {
+    const productKey = [sku, ...identity.slice(1)].join('\u001f').toLowerCase();
+    const existing = products.get(productKey) ?? {
       identity,
       cost,
       selling,
@@ -120,7 +125,7 @@ const refreshSupplier = async ({ input, output, exportName, supplier, locations 
       throw new Error(`${supplier} ${sku}: inconsistent product or price data across location rows.`);
     }
     existing.stock[location] += parseStock(row[columns['Stock Units']]);
-    products.set(sku, existing);
+    products.set(productKey, existing);
   }
 
   const outputRows = [[...OUTPUT_HEADERS, ...locations.map((location) => `${location} Stock Units`), 'Total Stock Units']];
@@ -139,31 +144,44 @@ const refreshSupplier = async ({ input, output, exportName, supplier, locations 
 
   const csv = toCsv(outputRows);
   await writeFile(resolve(output), `export const ${exportName} = ${JSON.stringify(csv)};\n`, 'utf8');
-  return { supplier, sourceRows: parsed.length - 1, products: products.size, correctedSellingRows, locations };
+  return { supplier, sourceRows: parsed.length - 1, includedRows: includedRows.length, products: products.size, correctedSellingRows, locations };
 };
 
-const results = await Promise.all([
-  refreshSupplier({
+const standardRefreshes = [
+  {
     input: apexSource,
     output: 'supplier_data/apexData.ts',
     exportName: 'APEX_RAW_DATA',
     supplier: 'Apex',
     locations: ['Cape Town']
-  }),
-  refreshSupplier({
+  },
+  {
     input: treadsSource,
     output: 'supplier_data/treadsUnlimitedData.ts',
     exportName: 'TREADS_RAW_DATA',
     supplier: 'Threads Unlimited',
     locations: ['Regional', 'National']
-  }),
-  refreshSupplier({
+  },
+  {
     input: tubestoneSource,
     output: 'supplier_data/tubestoneData.ts',
     exportName: 'TUBESTONE_RAW_DATA',
     supplier: 'Tubestone',
     locations: ['BFN', 'CPT', 'DBN', 'JHB', 'NWH']
-  })
-]);
+  }
+];
+
+const exoticRefreshes = [
+  {
+    input: exoticSource,
+    output: 'supplier_data/exoticData.ts',
+    exportName: 'EXOTIC_RAW_DATA',
+    supplier: 'Exotic',
+    locations: ['CPT', 'JHB'],
+    includeRow: (row, columns) => /tyres?/i.test(clean(row[columns.Category]))
+  }
+];
+
+const results = await Promise.all((exoticOnly ? exoticRefreshes : standardRefreshes).map(refreshSupplier));
 
 console.log(JSON.stringify(results, null, 2));

@@ -27,7 +27,7 @@ const cleanOptional = (value: unknown) => {
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // Covers passenger, 4x4, light-truck, and commercial sizes, including 10.00R20.
-const TYRE_SIZE_PATTERN = /\b(?:\d{2,3}\/\d{2,3}(?:ZR|RF|R)\d{2}(?:\.\d)?|\d{2,3}X\d{1,2}(?:\.\d+)?R\d{2}(?:\.\d)?|\d{1,3}(?:\.\d{1,2})?R\d{2}(?:\.\d)?|\d{3}-\d{2}(?:\.\d)?)\b/i;
+const TYRE_SIZE_PATTERN = /\b(?:\d{2,3}\/\d{2,3}(?:ZR|RF|R)\d{2}(?:\.\d)?(?:LT)?|\d{2,3}X\d{1,2}(?:\.\d+)?(?:R|-)\d{2}(?:\.\d)?(?:LT)?|\d{1,3}(?:\.\d{1,2})?R\d{2}(?:\.\d)?|\d{3}-\d{2}(?:\.\d)?)\b/i;
 const TYRE_RATING_PATTERN = /\b\d{1,2}\s*(?:PR|PLY)\b/gi;
 const TYRE_INDEX_PATTERN = /\b\d{2,3}(?:\s*\/\s*\d{2,3})?\s*(?:A[1-8]|[A-Z])\b/gi;
 const TYRE_SPEC_PATTERN = /(?:^|\s)(M\+S|M\/S|R\/B|A\/T|M\/T|H\/T|R\/T|TLR|TL|TT|RFT|RUN\s*FLAT|RUNFLAT|XL|RF|OWL|RWL|BSW|WSW)(?=\s|$)/gi;
