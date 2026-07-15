@@ -592,6 +592,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {isAdmin && (
             <div className="mt-4 pt-4 border-t border-gp-border">
                 <p className="px-3 text-[10px] font-bold uppercase text-gp-text-muted mb-2 tracking-wider">Admin Controls</p>
+                <button
+                  onClick={() => handleOrderClick('AI_AGENT_ADMIN')}
+                  className={`flex items-center w-full px-3 py-2 rounded transition-colors ${currentView === 'AI_AGENT_ADMIN' ? 'bg-gp-red/10 text-gp-red' : 'text-gp-text-muted hover:text-gp-text-main hover:bg-gp-border'}`}
+                >
+                  <span className="mr-3 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded bg-gp-red text-[9px] font-black text-white">AI</span>
+                  <span className="font-bold text-sm">AI Intelligence</span>
+                </button>
                 <button 
                   onClick={() => handleOrderClick('SYSTEM_LOGS')}
                   className={`flex items-center w-full px-3 py-2 rounded transition-colors ${currentView === 'SYSTEM_LOGS' ? 'bg-gp-red/10 text-gp-red' : 'text-gp-text-muted hover:text-gp-text-main hover:bg-gp-border'}`}
