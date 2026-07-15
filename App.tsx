@@ -30,6 +30,7 @@ const CustomerHubView = lazy(() => import('./components/CustomerHubView').then((
 const PhotoLibraryView = lazy(() => import('./components/photo-library/PhotoLibraryView').then((module) => ({ default: module.PhotoLibraryView })));
 const WorkshopTrackerView = lazy(() => import('./components/WorkshopTrackerView').then((module) => ({ default: module.WorkshopTrackerView })));
 const RadarRedView = lazy(() => import('./components/RadarRedView').then((module) => ({ default: module.RadarRedView })));
+const AiAgentAdminView = lazy(() => import('./components/AiAgentAdminView').then((module) => ({ default: module.AiAgentAdminView })));
 import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { PricingPOSQuoteLine } from './pricing-processor/types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
@@ -806,7 +807,7 @@ const App: React.FC = () => {
     if (isAdmin) {
       void clearAdminSession();
       setIsAdmin(false);
-      if (currentView === 'SYSTEM_LOGS') {
+      if (currentView === 'SYSTEM_LOGS' || currentView === 'AI_AGENT_ADMIN') {
         setCurrentView('INVENTORY');
       }
     } else {
@@ -1807,6 +1808,12 @@ const App: React.FC = () => {
             <SystemLogsView logs={loginLogs} />
           )}
 
+          {currentView === 'AI_AGENT_ADMIN' && isAdmin && (
+            <Suspense fallback={<LoadingPanel label="Loading AI intelligence controls..." />}>
+              <AiAgentAdminView />
+            </Suspense>
+          )}
+
           {currentView === 'QUOTE_MODULE' && (
             <Suspense fallback={<LoadingPanel label="Loading quote module..." />}>
               <QuoteModuleView onPushToPOSQuote={handleQuoteModulePushToPOS} />
@@ -1873,7 +1880,13 @@ const App: React.FC = () => {
 
         {isChatOpen && (
           <Suspense fallback={null}>
-            <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} onMinimize={() => setIsChatOpen(false)} />
+            <ChatBot
+              isOpen={isChatOpen}
+              onClose={() => setIsChatOpen(false)}
+              onMinimize={() => setIsChatOpen(false)}
+              currentUser={currentUser || 'UNKNOWN'}
+              isAdmin={isAdmin}
+            />
           </Suspense>
         )}
 
