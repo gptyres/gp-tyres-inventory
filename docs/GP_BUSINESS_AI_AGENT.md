@@ -107,9 +107,8 @@ Customer-ready flow uses the same core but removes cost/margin tools and interna
 
 ## 8. API integration structure
 
-- `POST /api/business-agent`: staff-authenticated central agent endpoint.
-- `POST /api/business-agent-feedback`: records pending supervised corrections.
-- `GET/POST /api/business-agent-admin`: admin review and approval workflow.
+- `POST /api/business-agent`: staff-authenticated central endpoint for chat, pending feedback, admin review actions and tyre-visual research. Actions dispatch to isolated server modules behind one deployable function.
+- `GET /api/business-agent?action=ADMIN_DASHBOARD`: admin-only review data.
 
 Future adapters should translate their channel payload into the same message, mode, identity and conversation structure. WhatsApp webhooks must verify Meta signatures, map a consented customer identity, rate-limit, deduplicate messages and request human handoff before any sensitive action.
 
