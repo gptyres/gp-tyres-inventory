@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { basename, extname, join } from 'node:path';
 import { promisify } from 'node:util';
 import { pathToFileURL } from 'node:url';
+import { parseSupplierTyreImageKeys } from '../supplierTyreImageKeys.mjs';
 
 export const BUCKET_NAME = 'supplier-stock-images';
 export const DEFAULT_BATCH_SIZE = 25;
@@ -25,6 +26,8 @@ const RAW_SUPPLIERS = [
   { supplier: 'SAFETY GRIP', file: 'supplier_data/safetygripData.ts', parser: 'safetyGrip' },
   { supplier: 'STAMFORD', file: 'supplier_data/stamfordData.ts', parser: 'stamford' },
   { supplier: 'APEX', file: 'supplier_data/apexData.ts', parser: 'apex' },
+  { supplier: 'BRIDGESTONE', file: 'supplier_data/bridgestoneData.ts', parser: 'structured' },
+  { supplier: 'EXOTIC', file: 'supplier_data/exoticData.ts', parser: 'structured' },
   { supplier: 'TUBESTONE', file: 'supplier_data/tubestoneData.ts', parser: 'tubestone' },
   { supplier: 'TREAD ZONE', file: 'supplier_data/treadZoneData.ts', parser: 'branchRows' },
   { supplier: 'SUMITOMO/DUNLOP', file: 'supplier_data/sumitomoDunlopData.ts', parser: 'branchRows' },
@@ -379,10 +382,7 @@ const normalizeExclusiveTyrePattern = (brand, pattern) => {
   return cleaned || String(pattern || '').replace(/\bIMP\b/gi, ' ').replace(/\s+/g, ' ').trim() || 'Standard';
 };
 
-const imageKeys = (brand, pattern) => ({
-  designKey: normalizeToken(pattern || brand || 'TYRE'),
-  finishKey: normalizeToken(brand)
-});
+const imageKeys = (brand, pattern) => parseSupplierTyreImageKeys(brand, pattern);
 
 const readRawExport = async (filePath) => {
   const source = await readFile(filePath, 'utf8');
@@ -410,6 +410,70 @@ const addItem = (items, supplier, id, brand, pattern, quantity = 0, sku = '') =>
   });
 };
 
+const headerIndex = (headers, aliases) => {
+  for (const alias of aliases) {
+    const index = headers.indexOf(normalizeToken(alias));
+    if (index >= 0) return index;
+  }
+  return -1;
+};
+
+const headerIndexes = (headers, aliases) => aliases
+  .map((alias) => headers.indexOf(normalizeToken(alias)))
+  .filter((index) => index >= 0);
+
+const firstColumnValue = (columns, indexes) => {
+  for (const index of indexes) {
+    const value = columns[index]?.trim();
+    if (value) return value;
+  }
+  return '';
+};
+
+const parseHeaderDrivenTyreRows = (supplier, raw) => {
+  const lines = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  if (lines.length < 2) return null;
+
+  const headers = parseCsvLine(lines[0]).map(normalizeToken);
+  const skuIndex = headerIndex(headers, ['Supplier SKU', 'SKU', 'Code', 'Stock Code']);
+  const brandIndex = headerIndex(headers, ['TYRE_BRAND', 'Tyre Brand', 'Brand']);
+  const patternIndexes = headerIndexes(headers, [
+    'TYRE_PATTERN',
+    'Tyre Pattern',
+    'Portal Pattern',
+    'Pattern',
+    'Pattern Name',
+    'Requested Pattern'
+  ]);
+
+  if (skuIndex < 0 || brandIndex < 0 || patternIndexes.length === 0) return null;
+
+  const stockIndexes = headerIndexes(headers, [
+    'Total Stock Units',
+    'Stock Units',
+    'Quantity',
+    'Qty'
+  ]);
+  const categoryIndex = headerIndex(headers, ['Category', 'Product Category']);
+  const items = [];
+
+  for (const [rowIndex, line] of lines.slice(1).entries()) {
+    const columns = parseCsvLine(line);
+    const sku = columns[skuIndex]?.trim();
+    const brand = columns[brandIndex]?.trim();
+    const pattern = firstColumnValue(columns, patternIndexes);
+    const category = categoryIndex >= 0 ? columns[categoryIndex]?.trim() ?? '' : '';
+
+    if (!sku || !brand || !pattern) continue;
+    if (/\b(?:ALLOY\s+)?WHEELS?\b|\bACCESSOR(?:Y|IES)\b/i.test(category)) continue;
+
+    const stockValue = firstColumnValue(columns, stockIndexes);
+    addItem(items, supplier, sku || `${slugify(supplier)}-${rowIndex + 1}`, brand, pattern, parseStockUnits(stockValue), sku);
+  }
+
+  return items;
+};
+
 export const parseSupplierTyreRows = (supplier, parser, raw) => {
   const items = [];
   const lines = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
@@ -432,6 +496,9 @@ export const parseSupplierTyreRows = (supplier, parser, raw) => {
     }
     return items;
   }
+
+  const headerDrivenItems = parseHeaderDrivenTyreRows(supplier, raw);
+  if (headerDrivenItems) return headerDrivenItems;
 
   for (const [index, line] of lines.entries()) {
     const cols = parseCsvLine(line);
@@ -544,10 +611,12 @@ export const buildImportCandidates = (rows) => {
       searchQueries: buildSearchQueries(row.brand, row.pattern)
     };
 
-    candidate.affectedSkus.push(row.supplierStockCode);
+    if (!candidate.affectedSkus.includes(row.supplierStockCode)) candidate.affectedSkus.push(row.supplierStockCode);
     if (!candidate.affectedSuppliers.includes(row.supplier)) candidate.affectedSuppliers.push(row.supplier);
     candidate.supplierSkus[row.supplier] = candidate.supplierSkus[row.supplier] ?? [];
-    candidate.supplierSkus[row.supplier].push(row.supplierStockCode);
+    if (!candidate.supplierSkus[row.supplier].includes(row.supplierStockCode)) {
+      candidate.supplierSkus[row.supplier].push(row.supplierStockCode);
+    }
     candidate.totalAvailableStock += row.quantity || 0;
     groups.set(key, candidate);
   }
@@ -617,8 +686,7 @@ export const loadManifest = async (manifestPath = DEFAULT_MANIFEST_PATH) => {
 };
 
 const fetchExistingRows = async (candidate) => {
-  const supplierList = candidate.affectedSuppliers.map(encodeURIComponent).join(',');
-  const query = `supplier_stock_images?select=supplier,design_key,finish_key,public_image_url,storage_path,active&active=eq.true&design_key=eq.${encodeURIComponent(candidate.patternKey)}&finish_key=eq.${encodeURIComponent(candidate.brandKey)}&supplier=in.(${supplierList})`;
+  const query = `supplier_stock_images?select=supplier,design_key,finish_key,public_image_url,storage_path,active&active=eq.true&design_key=eq.${encodeURIComponent(candidate.patternKey)}&finish_key=eq.${encodeURIComponent(candidate.brandKey)}`;
   const response = await fetch(`${SUPABASE_URL}/rest/v1/${query}`, {
     headers: {
       apikey: SUPABASE_KEY,
@@ -626,7 +694,9 @@ const fetchExistingRows = async (candidate) => {
     }
   });
   if (!response.ok) return [];
-  return response.json();
+  const rows = await response.json();
+  const affectedSuppliers = new Set(candidate.affectedSuppliers.map(normalizeToken));
+  return rows.filter((row) => affectedSuppliers.has(normalizeToken(row.supplier)));
 };
 
 const imageExtension = (mimeType, url) => {
@@ -801,8 +871,8 @@ export const runWorkflow = async (options = {}) => {
   for (const candidate of batchCandidates) {
     try {
       const existingRows = await fetchExistingRows(candidate);
-      const existingSuppliers = new Set(existingRows.map((row) => row.supplier));
-      if (!options.force && candidate.affectedSuppliers.every((supplier) => existingSuppliers.has(supplier))) {
+      const existingSuppliers = new Set(existingRows.map((row) => normalizeToken(row.supplier)));
+      if (!options.force && candidate.affectedSuppliers.every((supplier) => existingSuppliers.has(normalizeToken(supplier)))) {
         batch.candidates.push({
           ...candidate,
           status: 'skipped_existing',
@@ -834,7 +904,10 @@ export const runWorkflow = async (options = {}) => {
   batch.completedAt = new Date().toISOString();
   Object.assign(batch, summarizeBatch(batch.candidates));
 
-  const candidateMap = new Map((manifest.candidates ?? []).map((candidate) => [candidate.id, candidate]));
+  const currentCandidateIds = new Set(allCandidates.map((candidate) => candidate.id));
+  const candidateMap = new Map((manifest.candidates ?? [])
+    .filter((candidate) => currentCandidateIds.has(candidate.id))
+    .map((candidate) => [candidate.id, candidate]));
   for (const candidate of batch.candidates) candidateMap.set(candidate.id, candidate);
   manifest.candidates = [...candidateMap.values()].sort((first, second) => first.id.localeCompare(second.id));
   manifest.batches = [...(manifest.batches ?? []), {
