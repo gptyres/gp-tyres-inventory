@@ -3,6 +3,9 @@ import { runGpBusinessAgent, type AgentMode } from '../server/gpBusinessAgent.js
 import { readApiBody } from '../server/readApiBody.js';
 import { verifyStaffSession } from '../server/staffSession.js';
 import { createSupabaseAdmin } from '../server/supabaseAdmin.js';
+import adminHandler from '../server/gpBusinessAgentAdminHandler.js';
+import feedbackHandler from '../server/gpBusinessAgentFeedbackHandler.js';
+import tyreVisualHandler from '../server/gpTyreVisualHandler.js';
 
 const requestsByTerminal = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -45,10 +48,25 @@ const getOrCreateConversation = async (supabase: ReturnType<typeof createSupabas
 
 export default async function handler(request: any, response: any) {
   response.setHeader('Cache-Control', 'no-store');
+  const queryAction = typeof request.query?.action === 'string' ? request.query.action : '';
+  if (request.method === 'GET' && queryAction === 'ADMIN_DASHBOARD') {
+    return adminHandler(request, response);
+  }
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST');
     return response.status(405).json({ error: 'Only POST is supported.' });
   }
+
+  let routingBody: any = {};
+  try {
+    routingBody = await readApiBody(request);
+    request.body = routingBody;
+  } catch {
+    return response.status(400).json({ error: 'Invalid JSON request.' });
+  }
+  if (routingBody.action === 'SUBMIT_FEEDBACK') return feedbackHandler(request, response);
+  if (routingBody.action === 'FIND_TYRE_VISUAL') return tyreVisualHandler(request, response);
+  if (routingBody.action === 'APPROVE_FEEDBACK' || routingBody.action === 'REJECT_FEEDBACK') return adminHandler(request, response);
 
   const staffSession = verifyStaffSession(request);
   if (!staffSession) return response.status(401).json({ error: 'A valid staff login is required.' });
@@ -58,7 +76,7 @@ export default async function handler(request: any, response: any) {
   if (!apiKey) return response.status(503).json({ error: 'The GP Business Agent is not configured yet.' });
 
   try {
-    const body = await readApiBody(request);
+    const body = routingBody;
     const messages = Array.isArray(body.messages) ? body.messages.slice(-16) : [];
     const latestUserMessage = [...messages].reverse().find((message: any) => message?.role === 'user');
     if (!latestUserMessage || !String(latestUserMessage.content ?? latestUserMessage.text ?? '').trim()) {
@@ -124,4 +142,3 @@ export default async function handler(request: any, response: any) {
     return response.status(500).json({ error: message });
   }
 }
-

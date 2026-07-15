@@ -1263,11 +1263,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         throw new Error('This tyre needs a confirmed supplier, brand and pattern first.');
       }
 
-      const response = await fetch('/api/find-supplier-tyre-visual', {
+      const response = await fetch('/api/business-agent', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          action: 'FIND_TYRE_VISUAL',
           supplier: lookupItem.supplierName,
           supplierStockCode: lookupItem.supplierStockCode || item.id,
           brand: tyre.brand,
