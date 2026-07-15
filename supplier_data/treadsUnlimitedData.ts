@@ -1,34 +1,34 @@
-export const TREADS_RAW_DATA = `Size,SKU,Brand,Product Description,Cost + VAT,Regional Stock Units,National Stock Units
-215/65R16,2156516SBFATKO2,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO2 215/65R16 100S,R4850,0 units,0 units
-215/75R15,2157515SBFATKO2,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO2 215/75R15 97S,R4700,0 units,0 units
-235/85R16,2358516SBFATKO2,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO2 235/85R16 116S,R4500,0 units,0 units
-265/65R18,2656518RBFATKO2,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO2 265/65R18 114R,R6350,0 units,0 units
-275/55R20,2755520SBFATKO2,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO2 275/55R20 112S,R6400,0 units,0 units
-285/70R17,2857017SBFATKO2DT,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO2 285/70R17 113S,R6550,0 units,0 units
-285/75R16,2857516RBFATKO2,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO2 285/75R16 113R,R6850,0 units,0 units
-30/9.5R15,3095015SBFATKO2,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO2 30/9.5R15 104S,R5300,0 units,0 units
-235/85R16,2358516SBFATKO3RWL,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 235/85R16 116S,R4500,0 units,12 units
-265/60R18,2656018SBFATKO3,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 265/60R18 110S,R4800,0 units,365 units
-265/65R17,2656517SBFATKO3RWL,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 265/65R17 113S,R4850,0 units,51 units
-265/65R18,2656518SBFATKO3RWL,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 265/65R18 114S,R6350,0 units,4 units
-265/70R16,2657016SBFATKO3RWL,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 265/70R16 114S,R5000,0 units,0 units
-265/70R17,2657017SBFATKO3RWLLRD,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 265/70R17 115S,R4800,0 units,0 units
-265/75R16,2657516SBFATKO3RWL,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 265/75R16 116S,R4500,0 units,8 units
-275/55R20,2755520SBFATKO3,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 275/55R20 112S,R6400,0 units,0 units
-275/60R20,2756020SBFATKO3LT,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 275/60R20 116S,R7150,0 units,0 units
-275/65R17,2756517SBFATKO3RWL,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 275/65R17 115S,R4700,0 units,0 units
-285/55R20,2855520SBFATKO3,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 285/55R20 114S,R6400,0 units,0 units
-285/60R18,2856018SBFATKO3RWL,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 285/60R18 115S,R6950,0 units,8 units
-285/70R17,2857017SBFATKO3DRWL,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 285/70R17 118S,R6450,0 units,8 units
-285/75R16,2857516SBFATKO3RWL,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 285/75R16 123S,R6850,0 units,8 units
-37 x 12.5R17,37125017RBFATKO3LTRWL,BFGoodrichÂ®,BFGoodrichÂ® All Terrain T/A KO3 37/12.5R17 128R,R8000,0 units,0 units
-215/75R15,2157515QBFMUDKM3,BFGoodrichÂ®,BFGoodrichÂ® Mud Terrain T/A KM3 215/75R15 97Q,R4950,5 units,0 units
-265/65R17,2656517QBFMUDKM3,BFGoodrichÂ®,BFGoodrichÂ® Mud Terrain T/A KM3 265/65R17 117Q,R6200,0 units,0 units
-265/70R17,2657017QBFMUDKM3,BFGoodrichÂ®,BFGoodrichÂ® Mud Terrain T/A KM3 265/70R17 118Q,R6100,0 units,0 units
-265/75R16,2657516QBFMUDKM3GO,BFGoodrichÂ®,BFGoodrichÂ® Mud Terrain T/A KM3 265/75R16 116Q,R6400,0 units,0 units
-285/70R17,2857017QBFMUDKM3,BFGoodrichÂ®,BFGoodrichÂ® Mud Terrain T/A KM3 285/70R17 121Q,R7100,0 units,0 units
-35 x 12.5R20,35125020QBFMUDKM3,BFGoodrichÂ®,BFGoodrichÂ® Mud Terrain T/A KM3 35/12.5R20 121Q,R7950,0 units,0 units
-245/60R14,2456014SBFRA,BFGoodrichÂ®,BFGoodrichÂ® Radial T/A 245/60R14 98S,R4200,0 units,0 units
+export const TREADS_UNLIMITED_RAW_DATA = `Size,SKU,Brand,Product Description,Cost + VAT,Regional Stock Units,National Stock Units
+215/65R16,2156516SBFATKO2,BFGoodrich®,BFGoodrich® All Terrain T/A KO2 215/65R16 100S,R4850,0 units,0 units
+215/75R15,2157515SBFATKO2,BFGoodrich®,BFGoodrich® All Terrain T/A KO2 215/75R15 97S,R4700,0 units,0 units
+235/85R16,2358516SBFATKO2,BFGoodrich®,BFGoodrich® All Terrain T/A KO2 235/85R16 116S,R4500,0 units,0 units
+265/65R18,2656518RBFATKO2,BFGoodrich®,BFGoodrich® All Terrain T/A KO2 265/65R18 114R,R6350,0 units,0 units
+275/55R20,2755520SBFATKO2,BFGoodrich®,BFGoodrich® All Terrain T/A KO2 275/55R20 112S,R6400,0 units,0 units
+285/70R17,2857017SBFATKO2DT,BFGoodrich®,BFGoodrich® All Terrain T/A KO2 285/70R17 113S,R6550,0 units,0 units
+285/75R16,2857516RBFATKO2,BFGoodrich®,BFGoodrich® All Terrain T/A KO2 285/75R16 113R,R6850,0 units,0 units
+30/9.5R15,3095015SBFATKO2,BFGoodrich®,BFGoodrich® All Terrain T/A KO2 30/9.5R15 104S,R5300,0 units,0 units
+235/85R16,2358516SBFATKO3RWL,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 235/85R16 116S,R4500,0 units,12 units
+265/60R18,2656018SBFATKO3,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 265/60R18 110S,R4800,0 units,365 units
+265/65R17,2656517SBFATKO3RWL,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 265/65R17 113S,R4850,0 units,51 units
+265/65R18,2656518SBFATKO3RWL,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 265/65R18 114S,R6350,0 units,4 units
+265/70R16,2657016SBFATKO3RWL,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 265/70R16 114S,R5000,0 units,0 units
+265/70R17,2657017SBFATKO3RWLLRD,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 265/70R17 115S,R4800,0 units,0 units
+265/75R16,2657516SBFATKO3RWL,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 265/75R16 116S,R4500,0 units,8 units
+275/55R20,2755520SBFATKO3,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 275/55R20 112S,R6400,0 units,0 units
+275/60R20,2756020SBFATKO3LT,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 275/60R20 116S,R7150,0 units,0 units
+275/65R17,2756517SBFATKO3RWL,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 275/65R17 115S,R4700,0 units,0 units
+285/55R20,2855520SBFATKO3,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 285/55R20 114S,R6400,0 units,0 units
+285/60R18,2856018SBFATKO3RWL,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 285/60R18 115S,R6950,0 units,8 units
+285/70R17,2857017SBFATKO3DRWL,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 285/70R17 118S,R6450,0 units,8 units
+285/75R16,2857516SBFATKO3RWL,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 285/75R16 123S,R6850,0 units,8 units
+37 x 12.5R17,37125017RBFATKO3LTRWL,BFGoodrich®,BFGoodrich® All Terrain T/A KO3 37/12.5R17 128R,R8000,0 units,0 units
+215/75R15,2157515QBFMUDKM3,BFGoodrich®,BFGoodrich® Mud Terrain T/A KM3 215/75R15 97Q,R4950,5 units,0 units
+265/65R17,2656517QBFMUDKM3,BFGoodrich®,BFGoodrich® Mud Terrain T/A KM3 265/65R17 117Q,R6200,0 units,0 units
+265/70R17,2657017QBFMUDKM3,BFGoodrich®,BFGoodrich® Mud Terrain T/A KM3 265/70R17 118Q,R6100,0 units,0 units
+265/75R16,2657516QBFMUDKM3GO,BFGoodrich®,BFGoodrich® Mud Terrain T/A KM3 265/75R16 116Q,R6400,0 units,0 units
+285/70R17,2857017QBFMUDKM3,BFGoodrich®,BFGoodrich® Mud Terrain T/A KM3 285/70R17 121Q,R7100,0 units,0 units
+35 x 12.5R20,35125020QBFMUDKM3,BFGoodrich®,BFGoodrich® Mud Terrain T/A KM3 35/12.5R20 121Q,R7950,0 units,0 units
+245/60R14,2456014SBFRA,BFGoodrich®,BFGoodrich® Radial T/A 245/60R14 98S,R4200,0 units,0 units
 215/60R17,2156017HA001A,Bridgestone,Bridgestone Alenza 001 215/60R17 96H,R2150,0 units,4 units
 225/50R18,2255018VA001,Bridgestone,Bridgestone Alenza 001 225/50R18 95V,R2500,0 units,7 units
 225/60R18,2256018WA001XL,Bridgestone,Bridgestone Alenza 001 225/60R18 104W,R2100,0 units,103 units

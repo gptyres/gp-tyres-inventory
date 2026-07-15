@@ -210,4 +210,42 @@ describe('manual supplier document import', () => {
     ]);
     expect(result.rows[0]).toMatchObject({ size: '17X8.5', category: 'Wheels' });
   });
+
+  it('imports the Treads Unlimited national catalogue without adding VAT twice', () => {
+    const result = normalizeManualSupplierGrid('TREADS_UNLIMITED', [
+      ['Size', 'SKU', 'Brand', 'Product Description', 'Cost + VAT', 'Regional Stock Units', 'National Stock Units'],
+      ['235/85R16', '2358516SBFATKO3RWL', 'BFGoodrich®', 'All Terrain T/A KO3', 'R4,500', 2, 12]
+    ]);
+
+    expect(result.rows).toHaveLength(1);
+    expect(result.rows[0]).toMatchObject({
+      supplierSku: '2358516SBFATKO3RWL',
+      brand: 'BFGoodrich®',
+      tyrePattern: 'All Terrain T/A KO3',
+      size: '235/85R16',
+      stockUnits: 12,
+      costPrice: 4500,
+      sellingPrice: 4500
+    });
+  });
+
+  it('imports Tyre Life wheel names, finishes, totals, and VAT-inclusive selling prices', () => {
+    const result = normalizeManualSupplierGrid('TYRE_LIFE_WHEELS', [
+      ['Size', 'SKU', 'Brand', 'Wheel Name', 'Finish', 'PCD', 'Offset', 'Center Bore', 'Category', 'Selling Price', 'JHB Stock Units', 'CPT Stock Units', 'DBN Stock Units', 'Total Stock Units'],
+      ['20” x 9"', 'SAA8306-2983MB', 'Dirty Life', 'A8306 MAYHEM RIDGELINE', 'MACHINED BLACK', '6/139.7', 'ET0', '106.1', 'Wheels', 'R4,850', 2, 3, 3, 8]
+    ]);
+
+    expect(result.rows).toHaveLength(1);
+    expect(result.rows[0]).toMatchObject({
+      supplierSku: 'SAA8306-2983MB',
+      brand: 'Dirty Life',
+      productName: 'Dirty Life A8306 MAYHEM RIDGELINE MACHINED BLACK',
+      tyrePattern: 'A8306 MAYHEM RIDGELINE',
+      tyreSpecs: 'MACHINED BLACK',
+      size: '20X9',
+      stockUnits: 8,
+      costPrice: 4850,
+      sellingPrice: 4850
+    });
+  });
 });

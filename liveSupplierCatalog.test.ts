@@ -43,13 +43,18 @@ describe('live supplier catalogue conversion', () => {
       ...baseRow,
       catalog_key: 'TYRE_LIFE_WHEELS',
       product_type: 'WHEEL',
-      product_name: 'R-Line Wheel',
+      brand: 'Dirty Life',
+      product_name: 'Dirty Life A8306 MAYHEM RIDGELINE MACHINED BLACK',
+      tyre_pattern: 'A8306 MAYHEM RIDGELINE',
+      tyre_specs: 'MACHINED BLACK',
       size: '18x8'
     });
     expect(item.type).toBe(ProductType.WHEEL);
     if (item.type !== ProductType.WHEEL) throw new Error('Expected wheel item');
-    expect(item.code).toBe('SKU-1');
+    expect(item.code).toBe('A8306 MAYHEM RIDGELINE');
     expect(item.size).toBe('18x8');
+    expect(item.imageDesignKey).toBe('A8306 MAYHEM RIDGELINE');
+    expect(item.imageFinishKey).toBe('MACHINED BLACK');
   });
 
   it('parses legacy APEX product names into the requested card fields', () => {

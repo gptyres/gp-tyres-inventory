@@ -35,14 +35,14 @@ type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'rating' | 'index
 
 const HEADER_ALIASES: Record<FieldName, string[]> = {
   sku: ['sku', 'suppliersku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
-  description: ['description', 'descrption', 'product', 'productname', 'item', 'itemdescription', 'tyredescription', 'brandandpattern', 'brandpattern', 'branddescription', 'patternanddescription'],
+  description: ['description', 'descrption', 'product', 'productname', 'productdescription', 'item', 'itemdescription', 'tyredescription', 'brandandpattern', 'brandpattern', 'branddescription', 'patternanddescription'],
   brand: ['brand', 'tyrebrand', 'make'],
-  pattern: ['pattern', 'tyrepattern', 'portalpattern', 'tread', 'model'],
+  pattern: ['pattern', 'tyrepattern', 'portalpattern', 'tread', 'model', 'wheelname'],
   rating: ['rating', 'tyrerating', 'ply', 'plyrating', 'pr'],
   index: ['index', 'tyreindex', 'loadindex', 'speedindex', 'loadspeed', 'loadspeedindex', 'loadspeedrating'],
-  specs: ['specs', 'tyrespecs', 'specifications', 'otherspecs', 'additionaldetails', 'sidewall', 'construction'],
+  specs: ['specs', 'tyrespecs', 'specifications', 'otherspecs', 'additionaldetails', 'sidewall', 'construction', 'finish'],
   size: ['size', 'tyresize', 'dimensions'],
-  quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'stockunits', 'unitsinstock', 'availableunits', 'availableqty', 'qtyavailable', 'available', 'availability', 'onhand', 'freeqty'],
+  quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'stockunits', 'unitsinstock', 'availableunits', 'availableqty', 'qtyavailable', 'available', 'availability', 'onhand', 'freeqty', 'nationalstockunits', 'totalstockunits'],
   price: ['price', 'unitprice', 'pricevat', 'priceincvat', 'priceinclvat'],
   costPrice: ['cost', 'costprice', 'costvat', 'costincvat', 'costinclvat', 'costpriceincvat', 'costpriceinclvat', 'costpriceexvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'buyprice', 'buyingprice', 'discountedprice', 'discountedpriceexvat', 'dealerprice', 'priceexvat'],
   sellingPrice: ['selling', 'sellingprice', 'sellingincvat', 'sellinginclvat', 'sellingpriceincvat', 'sellingpriceinclvat', 'sellingpriceexvat', 'roundedinclvatr25', 'retail', 'retailprice', 'retailpriceincvat', 'retailpriceinclvat', 'rrp', 'recommendedretail', 'recommendedretailprice'],
@@ -78,9 +78,10 @@ const parseStock = (value: unknown) => {
 const WHEEL_SIZE = /\b(?:1[2-9]|2[0-6])\s*[Xx]\s*\d{1,2}(?:\.\d+)?\b/i;
 
 const extractSize = (value: string) => {
-  const tyreSize = extractSupplierTyreSize(value.replace(/\bHL(?=\d)/i, ''));
+  const normalizedValue = value.replace(/[“”″"]/g, '').replace(/\bHL(?=\d)/i, '');
+  const tyreSize = extractSupplierTyreSize(normalizedValue);
   if (tyreSize) return tyreSize;
-  const wheelMatch = value.match(WHEEL_SIZE);
+  const wheelMatch = normalizedValue.match(WHEEL_SIZE);
   return wheelMatch ? wheelMatch[0].replace(/\s+/g, '').toUpperCase() : '';
 };
 
@@ -157,9 +158,10 @@ export const normalizeManualSupplierGrid = (
   const costPriceHeader = header.columns.costPrice === undefined ? '' : header.headers[header.columns.costPrice] || '';
   const sellingPriceHeader = header.columns.sellingPrice === undefined ? '' : header.headers[header.columns.sellingPrice] || '';
   const includesVat = (value: string) => /incvat|inclvat|includingvat|vatinclusive|pricevat/.test(value);
-  const genericPriceIncludesVat = includesVat(genericPriceHeader);
-  const costPriceIncludesVat = includesVat(costPriceHeader);
-  const sellingPriceIncludesVat = includesVat(sellingPriceHeader);
+  const supplierPricesIncludeVat = catalog === 'TYRE_LIFE_WHEELS' || catalog === 'TREADS_UNLIMITED';
+  const genericPriceIncludesVat = supplierPricesIncludeVat || includesVat(genericPriceHeader);
+  const costPriceIncludesVat = supplierPricesIncludeVat || includesVat(costPriceHeader);
+  const sellingPriceIncludesVat = supplierPricesIncludeVat || includesVat(sellingPriceHeader);
   const supplierMeta = SUPPLIER_IMPORT_BY_CATALOG[catalog];
   const rows: ManualSupplierRow[] = [];
   const seen = new Set<string>();
@@ -219,14 +221,16 @@ export const normalizeManualSupplierGrid = (
     const brand = parsedTyre
       ? parsedTyre.brand
       : explicitBrand || descriptionWithoutSize.split(/\s+/)[0] || supplierMeta.supplier;
-    const tyrePattern = parsedTyre?.pattern || '';
+    const tyrePattern = parsedTyre?.pattern
+      || explicitPattern
+      || (catalog === 'TREADS_UNLIMITED' ? description : '');
     const tyreRating = parsedTyre?.rating || '';
     const tyreIndex = parsedTyre?.index || '';
-    const tyreSpecs = parsedTyre?.specs || '';
+    const tyreSpecs = parsedTyre?.specs || explicitSpecs;
     const productName = parsedTyre
       ? [brand, tyrePattern, tyreRating, tyreIndex, tyreSpecs].filter(Boolean).join(' ') || description || size
       : explicitPattern
-        ? `${brand} ${explicitPattern}`.trim()
+        ? [brand, explicitPattern, explicitSpecs].filter(Boolean).join(' ')
         : descriptionWithoutSize || `${brand} ${size}`;
     const stockLocation = cleanCell(get(row, 'location')) || supplierMeta.supplier;
     const costSource: [number, boolean] = hasCostPrice

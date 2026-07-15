@@ -2,6 +2,7 @@ import { supabase } from './supabaseClient';
 import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
+import { parseSupplierWheelImageKeys } from './supplierStockImages';
 
 export interface LiveSupplierCatalogRow {
   id: number;
@@ -52,17 +53,27 @@ export const liveSupplierRowToInventoryItem = (
   };
 
   if (row.product_type === 'WHEEL') {
+    const brandPrefix = row.brand?.trim();
+    const fallbackName = row.product_name
+      .replace(brandPrefix ? new RegExp(`^${brandPrefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+`, 'i') : /^$/, '')
+      .split('|')[0]
+      .trim();
+    const wheelName = row.tyre_pattern?.trim() || fallbackName || row.supplier_sku || row.source_key;
+    const finish = row.tyre_specs?.trim() || '';
+    const imageKeys = parseSupplierWheelImageKeys(row.brand, wheelName, finish, row.supplier_sku || '');
     const wheel: WheelProduct = {
       ...common,
       type: ProductType.WHEEL,
-      code: row.supplier_sku || row.source_key,
+      code: wheelName,
       size: row.size || '',
       pcd: '',
       offset: '',
       centerBore: '',
-      colour: row.category || '',
+      colour: [row.brand, finish, row.category, row.supplier_sku].filter(Boolean).join(' | '),
       setQuantity: 1,
-      location: buildLocation(row)
+      location: buildLocation(row),
+      imageDesignKey: imageKeys.designKey,
+      imageFinishKey: imageKeys.finishKey
     };
     return wheel;
   }
