@@ -30,7 +30,7 @@ export const AiAgentAdminView: React.FC = () => {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/business-agent-admin', { credentials: 'same-origin' });
+      const response = await fetch('/api/business-agent?action=ADMIN_DASHBOARD', { credentials: 'same-origin' });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || 'Agent administration data could not be loaded.');
       setData({
@@ -53,7 +53,7 @@ export const AiAgentAdminView: React.FC = () => {
     setWorkingId(feedbackId);
     setMessage('');
     try {
-      const response = await fetch('/api/business-agent-admin', {
+      const response = await fetch('/api/business-agent', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -160,4 +160,3 @@ export const AiAgentAdminView: React.FC = () => {
     </div>
   );
 };
-

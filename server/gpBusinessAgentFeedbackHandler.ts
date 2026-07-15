@@ -1,7 +1,7 @@
-import { verifyAdminSession } from '../server/adminSession.js';
-import { readApiBody } from '../server/readApiBody.js';
-import { verifyStaffSession } from '../server/staffSession.js';
-import { createSupabaseAdmin } from '../server/supabaseAdmin.js';
+import { verifyAdminSession } from './adminSession.js';
+import { readApiBody } from './readApiBody.js';
+import { verifyStaffSession } from './staffSession.js';
+import { createSupabaseAdmin } from './supabaseAdmin.js';
 
 const clean = (value: unknown, max: number) => String(value ?? '').trim().slice(0, max);
 

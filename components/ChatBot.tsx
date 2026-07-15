@@ -126,11 +126,12 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize, c
     setSubmittingFeedback(true);
     setFeedbackStatus('');
     try {
-      const response = await fetch('/api/business-agent-feedback', {
+      const response = await fetch('/api/business-agent', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          action: 'SUBMIT_FEEDBACK',
           conversationId,
           messageId: answer.messageId,
           originalQuestion: originalQuestion.text,
