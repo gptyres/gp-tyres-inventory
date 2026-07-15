@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  groupLiveSupplierCatalogRows,
   liveSupplierRowToInventoryItem,
   LiveSupplierCatalogRow
 } from './liveSupplierCatalog';
@@ -27,6 +28,57 @@ const baseRow: LiveSupplierCatalogRow = {
 };
 
 describe('live supplier catalogue conversion', () => {
+  it('combines branch stock for the same SKU into one listing', () => {
+    const rows = ['JHB', 'GLK', 'CPT', 'DBN'].map((location, index) => ({
+      ...baseRow,
+      id: index + 1,
+      catalog_key: 'TYREWAREHOUSE',
+      source_key: `source-${location.toLowerCase()}`,
+      stock_location: location,
+      stock_units: location === 'GLK' ? 4 : 0,
+      stock_units_availability: location === 'GLK' ? 'Available' : 'Out of stock'
+    }));
+
+    const grouped = groupLiveSupplierCatalogRows(rows);
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0]).toMatchObject({
+      stock_units: 4,
+      stock_by_location: { JHB: 0, GLK: 4, CPT: 0, DBN: 0 },
+      stock_location: 'JHB: 0 | GLK: 4 | CPT: 0 | DBN: 0'
+    });
+
+    const item = liveSupplierRowToInventoryItem(grouped[0]);
+    expect(item).toMatchObject({
+      quantity: 4,
+      stockByLocation: { JHB: 0, GLK: 4, CPT: 0, DBN: 0 }
+    });
+    if (item.type !== ProductType.TYRE) throw new Error('Expected tyre item');
+    expect(item.location).toBe('JHB: 0 | GLK: 4 | CPT: 0 | DBN: 0');
+  });
+
+  it('combines matching location rows for every supplier catalogue', () => {
+    const grouped = groupLiveSupplierCatalogRows([
+      { ...baseRow, source_key: 'apex-cape-town', stock_location: 'Cape Town' },
+      { ...baseRow, id: 2, source_key: 'apex-johannesburg', stock_location: 'Johannesburg' }
+    ]);
+
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0]).toMatchObject({
+      stock_units: 16,
+      stock_by_location: { 'Cape Town': 8, Johannesburg: 8 }
+    });
+  });
+
+  it('keeps different sizes and prices as separate listings even when a supplier reuses a SKU', () => {
+    const grouped = groupLiveSupplierCatalogRows([
+      baseRow,
+      { ...baseRow, id: 2, source_key: 'different-size', size: '225/45R17' },
+      { ...baseRow, id: 3, source_key: 'different-price', selling_price: '1500.00' }
+    ]);
+
+    expect(grouped).toHaveLength(3);
+  });
+
   it('converts normalized tyre rows into portal inventory items', () => {
     const item = liveSupplierRowToInventoryItem(baseRow);
     expect(item.type).toBe(ProductType.TYRE);

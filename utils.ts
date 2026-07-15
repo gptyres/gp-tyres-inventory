@@ -896,6 +896,7 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
       location: location || 'TYREWAREHOUSE',
       quantity: entry.totalQuantity,
+      stockByLocation: entry.branchStock,
       costPrice: entry.price,
       sellingPrice: roundedSellingPrice,
       lastUpdated: today
@@ -1075,6 +1076,7 @@ export const parseStamfordData = (
       loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
       location: location || 'STAMFORD',
       quantity: entry.totalQuantity,
+      stockByLocation: entry.branchStock,
       costPrice: price,
       sellingPrice: price,
       lastUpdated: today
@@ -1190,6 +1192,7 @@ export const parseExoticData = (rawCsv: string): InventoryItem[] => {
     pattern: string;
     size: string;
     branchAvailability: Record<string, string>;
+    branchStock: Record<string, number>;
     totalQuantity: number;
     sellingPrice: number;
   }>();
@@ -1225,11 +1228,13 @@ export const parseExoticData = (rawCsv: string): InventoryItem[] => {
       pattern,
       size,
       branchAvailability: {},
+      branchStock: {},
       totalQuantity: 0,
       sellingPrice
     };
 
     existing.branchAvailability[stockLocation] = availability;
+    existing.branchStock[stockLocation] = (existing.branchStock[stockLocation] || 0) + branchQuantity;
     existing.totalQuantity += branchQuantity;
     if (!existing.sellingPrice && sellingPrice) existing.sellingPrice = sellingPrice;
     groupedItems.set(sku, existing);
@@ -1253,6 +1258,7 @@ export const parseExoticData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: [entry.sku, entry.category, 'Availability only'].filter(Boolean).join(' | '),
       location: location || 'EXOTIC',
       quantity: entry.totalQuantity,
+      stockByLocation: entry.branchStock,
       costPrice: entry.sellingPrice,
       sellingPrice: entry.sellingPrice,
       lastUpdated: today
@@ -1393,6 +1399,7 @@ export const parseTreadsUnlimitedData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: sku || '',
       location: `Regional: ${regionalQty} | National: ${nationalQty}`,
       quantity: nationalQty,
+      stockByLocation: { Regional: regionalQty, National: nationalQty },
       costPrice: priceIncVat,
       sellingPrice: priceIncVat,
       lastUpdated: today
@@ -1470,6 +1477,7 @@ export const parseTreadZoneData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
       location: location || 'TREAD ZONE',
       quantity: entry.totalQuantity,
+      stockByLocation: entry.branchStock,
       costPrice: entry.price,
       sellingPrice: roundedSellingPrice,
       lastUpdated: today
@@ -1555,6 +1563,7 @@ export const parseSumitomoDunlopData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
       location: location || 'SUMITOMO/DUNLOP',
       quantity: entry.totalQuantity,
+      stockByLocation: entry.branchStock,
       costPrice: entry.price,
       sellingPrice: roundedSellingPrice,
       lastUpdated: today

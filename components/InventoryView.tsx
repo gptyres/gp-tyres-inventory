@@ -166,8 +166,8 @@ const getWheelFinish = (wheel: WheelProduct): string => {
   return (wheel.imageFinishKey || colourParts[1] || wheel.colour || '').trim().toUpperCase();
 };
 
-const getWheelStockEntries = (wheel: WheelProduct): Array<[string, number]> => (
-  Object.entries(wheel.stockByLocation || {}).sort(([left], [right]) => {
+const getStockEntries = (item: InventoryItem): Array<[string, number]> => (
+  Object.entries(item.stockByLocation || {}).sort(([left], [right]) => {
     const branchOrder = ['JHB', 'CPT', 'DBN', 'GLK'];
     const leftIndex = branchOrder.indexOf(left.toUpperCase());
     const rightIndex = branchOrder.indexOf(right.toUpperCase());
@@ -943,7 +943,6 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                       label="Index"
                       value={(item as TyreProduct).loadSpeedIndex || (isSupplierTyre(item) ? '' : '-')}
                     />
-                    {visibleColumns.location && <SpecBadge label="Loc" value={(item as TyreProduct).location} />}
                     <SpecBadge label="Cat" value="PCR" />
                     </>
                 )}
@@ -953,23 +952,6 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     <SpecBadge label="PCD" value={formatWheelPcd((item as WheelProduct).pcd) || '-'} />
                     <SpecBadge label="ET" value={formatWheelOffset((item as WheelProduct).offset) || '-'} />
                     <SpecBadge label="CB" value={(item as WheelProduct).centerBore || '-'} />
-                    {visibleColumns.location && (item as WheelProduct).location && (
-                       <div className="col-span-full mt-1 border-t border-gp-border/70 pt-2">
-                           <span className="text-[9px] text-gp-text-muted uppercase font-bold tracking-wider">Available by location</span>
-                           {getWheelStockEntries(item as WheelProduct).length > 0 ? (
-                             <div className="mt-1 grid grid-cols-3 gap-1">
-                               {getWheelStockEntries(item as WheelProduct).map(([location, quantity]) => (
-                                 <div key={location} className="flex items-center justify-between bg-gp-black px-2 py-1 border border-gp-border rounded">
-                                   <span className="text-[9px] font-bold text-gp-text-muted">{location}</span>
-                                   <span className="text-xs font-mono font-black text-gp-text-main">{quantity}</span>
-                                 </div>
-                               ))}
-                             </div>
-                           ) : (
-                             <span className="mt-1 block text-[10px] font-mono font-bold text-gp-text-main">{(item as WheelProduct).location}</span>
-                           )}
-                       </div>
-                    )}
                     </>
                 )}
                 {item.type === ProductType.COILOVER && (
@@ -977,6 +959,25 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     <SpecBadge label="Series" value={(item as CoiloverProduct).series} />
                     <div className="col-span-2"><SpecBadge label="Fitment" value={(item as CoiloverProduct).vehicleCompatibility} /></div>
                     </>
+                )}
+                {visibleColumns.location && (item.type === ProductType.TYRE || item.type === ProductType.WHEEL) && (
+                  <div className="col-span-full mt-1 border-t border-gp-border/70 pt-2">
+                    <span className="text-[9px] text-gp-text-muted uppercase font-bold tracking-wider">Available by location</span>
+                    {getStockEntries(item).length > 0 ? (
+                      <div className="mt-1 grid grid-cols-2 sm:grid-cols-4 gap-1">
+                        {getStockEntries(item).map(([location, quantity]) => (
+                          <div key={location} className="flex items-center justify-between bg-gp-black px-2 py-1 border border-gp-border rounded">
+                            <span className="text-[9px] font-bold text-gp-text-muted">{location}</span>
+                            <span className={`text-xs font-mono font-black ${quantity > 0 ? 'text-green-500' : 'text-gp-text-muted'}`}>{quantity}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="mt-1 block text-[10px] font-mono font-bold text-gp-text-main">
+                        {item.type === ProductType.TYRE ? (item as TyreProduct).location : (item as WheelProduct).location}
+                      </span>
+                    )}
+                  </div>
                 )}
             </div>
           )}

@@ -186,6 +186,7 @@ describe('STAMFORD supplier catalogue parsing', () => {
     expect(item.location).toContain('Cape Town: 2');
     expect(item.location).toContain('Durban: 0');
     expect(item.location).toContain('Johannesburg: 3');
+    expect(item.stockByLocation).toEqual({ 'Cape Town': 2, Durban: 0, Johannesburg: 3 });
   });
 });
 
@@ -216,6 +217,7 @@ describe('TYREWAREHOUSE supplier catalogue parsing', () => {
     expect(item.location).toContain('GLK: 4');
     expect(item.location).toContain('CPT: 0');
     expect(item.location).toContain('DBN: 0');
+    expect(item.stockByLocation).toEqual({ JHB: 0, GLK: 4, CPT: 0, DBN: 0 });
   });
 });
 
@@ -277,6 +279,12 @@ describe('TREAD ZONE supplier catalogue parsing', () => {
     expect(item.location).toContain('Durban: 15');
     expect(item.location).toContain('Jet Park: 120');
     expect(item.location).toContain('Port Elizabeth: 12');
+    expect(item.stockByLocation).toEqual({
+      'Cape Town': 30,
+      Durban: 15,
+      'Jet Park': 120,
+      'Port Elizabeth': 12
+    });
   });
 });
 
@@ -311,6 +319,14 @@ describe('SUMITOMO/DUNLOP supplier catalogue parsing', () => {
     expect(item.location).toContain('Eastport: 40');
     expect(item.location).toContain('Ladysmith: 17');
     expect(item.location).toContain('Port Elizabeth: 10');
+    expect(item.stockByLocation).toEqual({
+      'Cape Town': 18,
+      Durban: 16,
+      'Durban CDC': 19,
+      Eastport: 40,
+      Ladysmith: 17,
+      'Port Elizabeth': 10
+    });
   });
 });
 
@@ -339,6 +355,7 @@ describe('EXOTIC supplier catalogue parsing', () => {
     });
     expect(items[0].location).toContain('Cape Town: Available');
     expect(items[0].location).toContain('Johannesburg: Available');
+    expect(items[0].stockByLocation).toEqual({ 'Cape Town': 1, Johannesburg: 1 });
   });
 });
 

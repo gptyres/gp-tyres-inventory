@@ -35,13 +35,74 @@ export interface LiveSupplierCatalogRow {
 
 const PAGE_SIZE = 1_000;
 
-const buildLocation = (row: LiveSupplierCatalogRow) => (
-  [row.stock_location, row.stock_units_availability]
+const stockEntries = (row: LiveSupplierCatalogRow): Array<[string, number]> => {
+  const existing = Object.entries(row.stock_by_location || {})
+    .map(([location, quantity]) => [location.trim(), Math.max(0, Math.trunc(Number(quantity) || 0))] as [string, number])
+    .filter(([location]) => Boolean(location));
+  if (existing.length > 0) return existing;
+  const location = row.stock_location?.trim();
+  return location ? [[location, Math.max(0, Math.trunc(Number(row.stock_units) || 0))]] : [];
+};
+
+const formatStockByLocation = (locations: Record<string, number>) => (
+  Object.entries(locations).map(([location, quantity]) => `${location}: ${quantity}`).join(' | ')
+);
+
+const buildLocation = (row: LiveSupplierCatalogRow) => {
+  if (row.stock_by_location && Object.keys(row.stock_by_location).length > 0) {
+    return formatStockByLocation(row.stock_by_location);
+  }
+  return [row.stock_location, row.stock_units_availability]
     .map((value) => value?.trim())
     .filter(Boolean)
     .join(' | ')
-  || 'Supplier'
-);
+    || 'Supplier';
+};
+
+export const groupLiveSupplierCatalogRows = (
+  rows: LiveSupplierCatalogRow[]
+): LiveSupplierCatalogRow[] => {
+  const grouped = new Map<string, LiveSupplierCatalogRow>();
+
+  rows.forEach((row) => {
+    const supplierIdentity = row.supplier_sku?.trim() || '';
+    const key = [
+      row.catalog_key,
+      row.product_type,
+      supplierIdentity,
+      row.brand,
+      row.product_name,
+      row.tyre_pattern || '',
+      row.tyre_rating || '',
+      row.tyre_index || '',
+      row.tyre_specs || '',
+      row.wheel_pcd || '',
+      row.wheel_offset || '',
+      row.wheel_center_bore || '',
+      row.category || '',
+      row.size || '',
+      String(row.cost_price),
+      String(row.selling_price)
+    ].map((value) => String(value).trim().toLowerCase()).join('\u001f');
+    const existing = grouped.get(key);
+    const locations = existing?.stock_by_location ? { ...existing.stock_by_location } : {};
+    stockEntries(row).forEach(([location, quantity]) => {
+      locations[location] = (locations[location] || 0) + quantity;
+    });
+    const totalQuantity = Object.values(locations).reduce((total, quantity) => total + quantity, 0);
+
+    grouped.set(key, {
+      ...(existing || row),
+      imported_at: existing && existing.imported_at > row.imported_at ? existing.imported_at : row.imported_at,
+      stock_by_location: Object.keys(locations).length > 0 ? locations : null,
+      stock_location: Object.keys(locations).length > 0 ? formatStockByLocation(locations) : row.stock_location,
+      stock_units_availability: totalQuantity > 0 ? 'In stock' : 'Out of stock',
+      stock_units: totalQuantity
+    });
+  });
+
+  return Array.from(grouped.values());
+};
 
 export const liveSupplierRowToInventoryItem = (
   row: LiveSupplierCatalogRow
@@ -53,7 +114,8 @@ export const liveSupplierRowToInventoryItem = (
     costPrice: Math.max(0, Number(row.cost_price) || Number(row.selling_price) || 0),
     lastUpdated: row.imported_at.slice(0, 10),
     supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS' : row.supplier,
-    supplierStockCode: row.supplier_sku || undefined
+    supplierStockCode: row.supplier_sku || undefined,
+    stockByLocation: row.stock_by_location || undefined
   };
 
   if (row.product_type === 'WHEEL') {
@@ -78,7 +140,6 @@ export const liveSupplierRowToInventoryItem = (
       colour: [row.brand, finish, row.category, row.supplier_sku].filter(Boolean).join(' | '),
       setQuantity: 1,
       location: buildLocation(row),
-      stockByLocation: row.stock_by_location || undefined,
       imageDesignKey: imageKeys.designKey,
       imageFinishKey: imageKeys.finishKey
     };
@@ -144,5 +205,7 @@ export const loadLiveSupplierCatalogItems = async (
     lastId = page[page.length - 1].id;
   }
 
-  return rows.length > 0 ? rows.map(liveSupplierRowToInventoryItem) : null;
+  return rows.length > 0
+    ? groupLiveSupplierCatalogRows(rows).map(liveSupplierRowToInventoryItem)
+    : null;
 };

@@ -26,6 +26,7 @@ export interface BaseProduct {
   lastUpdated: string;
   supplierName?: string;
   supplierStockCode?: string;
+  stockByLocation?: Record<string, number>;
   imageDesignKey?: string;
   imageFinishKey?: string;
   sheetRowNumber?: number;
@@ -57,7 +58,6 @@ export interface WheelProduct extends BaseProduct {
   colour: string;
   setQuantity: number; // e.g., 4 per set
   location?: string; // e.g., JHB: 4, CPT: 2
-  stockByLocation?: Record<string, number>;
 }
 
 export interface CoiloverProduct extends BaseProduct {
