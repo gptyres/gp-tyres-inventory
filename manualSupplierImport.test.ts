@@ -224,8 +224,13 @@ describe('manual supplier document import', () => {
       productName: 'Dirty Life A8306 MAYHEM RIDGELINE MACHINED BLACK',
       tyrePattern: 'A8306 MAYHEM RIDGELINE',
       tyreSpecs: 'MACHINED BLACK',
+      wheelPcd: '6/139.7',
+      wheelOffset: 'ET0',
+      wheelCenterBore: '106.1',
+      stockByLocation: { JHB: 2, CPT: 3, DBN: 3 },
       size: '20X9',
       stockUnits: 8,
+      stockLocation: 'JHB: 2 | CPT: 3 | DBN: 3',
       costPrice: 4850,
       sellingPrice: 4850
     });

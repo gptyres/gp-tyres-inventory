@@ -13,6 +13,10 @@ export interface ManualSupplierRow {
   tyreRating: string;
   tyreIndex: string;
   tyreSpecs: string;
+  wheelPcd: string;
+  wheelOffset: string;
+  wheelCenterBore: string;
+  stockByLocation: Record<string, number>;
   category: string;
   size: string;
   stockLocation: string;
@@ -31,7 +35,7 @@ export interface ManualSupplierParseResult {
 }
 
 type GridRow = unknown[];
-type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'rating' | 'index' | 'specs' | 'size' | 'quantity' | 'price' | 'costPrice' | 'sellingPrice' | 'location' | 'category';
+type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'rating' | 'index' | 'specs' | 'size' | 'pcd' | 'offset' | 'centerBore' | 'quantity' | 'price' | 'costPrice' | 'sellingPrice' | 'location' | 'category';
 
 const HEADER_ALIASES: Record<FieldName, string[]> = {
   sku: ['sku', 'suppliersku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
@@ -42,6 +46,9 @@ const HEADER_ALIASES: Record<FieldName, string[]> = {
   index: ['index', 'tyreindex', 'loadindex', 'speedindex', 'loadspeed', 'loadspeedindex', 'loadspeedrating'],
   specs: ['specs', 'tyrespecs', 'specifications', 'otherspecs', 'additionaldetails', 'sidewall', 'construction', 'finish'],
   size: ['size', 'tyresize', 'dimensions'],
+  pcd: ['pcd', 'pitchcirclediameter', 'boltpattern'],
+  offset: ['offset', 'et', 'wheeloffset'],
+  centerBore: ['centerbore', 'centrebore', 'cb', 'hubdiameter'],
   quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'stockunits', 'unitsinstock', 'availableunits', 'availableqty', 'qtyavailable', 'available', 'availability', 'onhand', 'freeqty', 'totalstockunits'],
   price: ['price', 'unitprice', 'pricevat', 'priceincvat', 'priceinclvat'],
   costPrice: ['cost', 'costprice', 'costvat', 'costincvat', 'costinclvat', 'costpriceincvat', 'costpriceinclvat', 'costpriceexvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'buyprice', 'buyingprice', 'discountedprice', 'discountedpriceexvat', 'dealerprice', 'priceexvat'],
@@ -142,6 +149,20 @@ const findHeader = (grid: GridRow[]) => {
   return best;
 };
 
+const BRANCH_HEADER_LABELS: Record<string, string> = {
+  jhb: 'JHB',
+  cpt: 'CPT',
+  dbn: 'DBN',
+  glk: 'GLK'
+};
+
+const findBranchStockColumns = (headerRow: GridRow) => headerRow.flatMap((value, columnIndex) => {
+  const normalized = normalizeHeader(value);
+  const match = normalized.match(/^(jhb|cpt|dbn|glk)(?:stockunits|stockqty|stock)$/);
+  if (!match) return [];
+  return [{ columnIndex, label: BRANCH_HEADER_LABELS[match[1]] }];
+});
+
 export const normalizeManualSupplierGrid = (
   catalog: SupplierImportCatalog,
   grid: GridRow[]
@@ -164,6 +185,7 @@ export const normalizeManualSupplierGrid = (
   const costPriceIncludesVat = supplierPricesIncludeVat || includesVat(costPriceHeader);
   const sellingPriceIncludesVat = supplierPricesIncludeVat || includesVat(sellingPriceHeader);
   const supplierMeta = SUPPLIER_IMPORT_BY_CATALOG[catalog];
+  const branchStockColumns = findBranchStockColumns(grid[header.rowIndex] || []);
   const rows: ManualSupplierRow[] = [];
   const seen = new Set<string>();
   let rejectedRows = 0;
@@ -187,6 +209,9 @@ export const normalizeManualSupplierGrid = (
     const description = cleanCell(get(row, 'description'));
     const descriptionForParsing = description.replace(/\bHL(?=\d)/i, '');
     const explicitSize = cleanCell(get(row, 'size'));
+    const wheelPcd = supplierMeta.productType === 'WHEEL' ? cleanCell(get(row, 'pcd')) : '';
+    const wheelOffset = supplierMeta.productType === 'WHEEL' ? cleanCell(get(row, 'offset')).replace(/^--/, '-') : '';
+    const wheelCenterBore = supplierMeta.productType === 'WHEEL' ? cleanCell(get(row, 'centerBore')) : '';
     const joinedIdentity = [explicitSize, explicitBrand, explicitPattern, explicitRating, explicitIndex, explicitSpecs, description].filter(Boolean).join(' ');
     const parsedTyre = supplierMeta.productType === 'TYRE'
       ? parseSupplierTyreFields({
@@ -209,7 +234,17 @@ export const normalizeManualSupplierGrid = (
         : /\d/.test(explicitSize)
           ? explicitSize.replace(/\s+/g, '').toUpperCase()
           : '');
-    const stockUnits = parseStock(get(row, 'quantity'));
+    const suppliedStockUnits = parseStock(get(row, 'quantity'));
+    const stockByLocation = supplierMeta.productType === 'WHEEL'
+      ? Object.fromEntries(branchStockColumns.map(({ columnIndex, label }) => {
+          const parsed = parseStock(row[columnIndex]);
+          return [label, Number.isFinite(parsed) ? parsed : 0];
+        }))
+      : {};
+    const branchStockTotal = Object.values(stockByLocation).reduce((total, quantity) => total + quantity, 0);
+    const stockUnits = branchStockColumns.length
+      ? Math.max(Number.isFinite(suppliedStockUnits) ? suppliedStockUnits : 0, branchStockTotal)
+      : suppliedStockUnits;
     const genericPrice = parseNumber(get(row, 'price'));
     const suppliedCost = parseNumber(get(row, 'costPrice'));
     const suppliedSelling = parseNumber(get(row, 'sellingPrice'));
@@ -235,7 +270,10 @@ export const normalizeManualSupplierGrid = (
       : explicitPattern
         ? [brand, explicitPattern, explicitSpecs].filter(Boolean).join(' ')
         : descriptionWithoutSize || `${brand} ${size}`;
-    const stockLocation = cleanCell(get(row, 'location')) || supplierMeta.supplier;
+    const branchStockLocation = Object.entries(stockByLocation)
+      .map(([location, quantity]) => `${location}: ${quantity}`)
+      .join(' | ');
+    const stockLocation = branchStockLocation || cleanCell(get(row, 'location')) || supplierMeta.supplier;
     const costSource: [number, boolean] = hasCostPrice
       ? [suppliedCost, costPriceIncludesVat]
       : hasGenericPrice
@@ -271,6 +309,10 @@ export const normalizeManualSupplierGrid = (
       tyreRating,
       tyreIndex,
       tyreSpecs,
+      wheelPcd,
+      wheelOffset,
+      wheelCenterBore,
+      stockByLocation,
       category: cleanCell(get(row, 'category')) || (supplierMeta.productType === 'WHEEL' ? 'Wheels' : 'Tyres'),
       size,
       stockLocation,
@@ -286,7 +328,10 @@ export const normalizeManualSupplierGrid = (
     throw new Error('No valid tyre stock rows were extracted. Check that size, quantity, and price are present in the document.');
   }
 
-  const detectedColumns = Object.keys(header.columns);
+  const detectedColumns = [
+    ...Object.keys(header.columns),
+    ...(branchStockColumns.length ? ['branchStock'] : [])
+  ];
   const warnings = rejectedRows > 0 ? [`${rejectedRows} row${rejectedRows === 1 ? '' : 's'} could not be safely imported.`] : [];
   if (catalog === 'TYREWAREHOUSE' && header.columns.sellingPrice === undefined) {
     warnings.push('TyreWarehouse selling prices will be calculated from discounted cost plus 15% VAT and rounded to the nearest R25.');

@@ -467,10 +467,12 @@ export const findBestSupplierStockImage = (
   const scored = (finishMatches.length ? finishMatches : designMatches)
     .map((candidate) => {
       let score = 100;
-      if (itemFinish && normalizeSupplierImageToken(candidate.finishKey) === itemFinish) score += 30;
+      const candidateFinish = normalizeSupplierImageToken(candidate.finishKey);
+      if (itemFinish && candidateFinish === itemFinish) score += 30;
+      else if (itemFinish && !candidateFinish) score -= 5;
+      else if (itemFinish) score -= 20;
       if (itemRim && candidate.rimSize === itemRim) score += 10;
       if (itemPcd && normalizePcd(candidate.pcd) === itemPcd) score += 8;
-      if (!candidate.finishKey && itemFinish) score -= 5;
       if (isStaffUploadedSupplierImage(candidate)) score += 60;
       return { candidate, score };
     })

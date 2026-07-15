@@ -96,6 +96,11 @@ export const getItemDisplayName = (item: InventoryItem): string => {
   return (item as CoiloverProduct).vehicleCompatibility;
 };
 
+const getWheelBrand = (wheel: WheelProduct): string => {
+  if (wheel.brand?.trim()) return wheel.brand.trim();
+  return String(wheel.colour || '').split('|')[0]?.trim() || '';
+};
+
 export const getItemSecondaryLine = (item: InventoryItem): string => {
   if (item.type === ProductType.TYRE) {
     const tyre = item as TyreProduct;
@@ -111,7 +116,14 @@ export const getItemSecondaryLine = (item: InventoryItem): string => {
   }
   if (item.type === ProductType.WHEEL) {
     const wheel = item as WheelProduct;
-    return [wheel.size, wheel.pcd, formatWheelOffset(wheel.offset), wheel.centerBore ? `CB ${wheel.centerBore}` : ''].filter(Boolean).join(' / ');
+    return uniqueDisplayParts([
+      getWheelBrand(wheel),
+      getWheelFinish(wheel),
+      wheel.size,
+      formatWheelPcd(wheel.pcd),
+      formatWheelOffset(wheel.offset),
+      wheel.centerBore ? `CB ${wheel.centerBore}` : ''
+    ]).join(' / ');
   }
   const coilover = item as CoiloverProduct;
   return `${coilover.brand} ${coilover.series}`.trim();
@@ -148,10 +160,25 @@ const splitWheelSize = (value: string | undefined): { diameter: string; width: s
 };
 
 const getWheelFinish = (wheel: WheelProduct): string => {
+  if (wheel.finish?.trim()) return wheel.finish.trim().toUpperCase();
   const colourParts = String(wheel.colour || '').split('|').map((part) => part.trim()).filter(Boolean);
   if (wheel.supplierName === 'TYRE LIFE WHEELS' && colourParts[1]) return colourParts[1].toUpperCase();
   return (wheel.imageFinishKey || colourParts[1] || wheel.colour || '').trim().toUpperCase();
 };
+
+const getWheelStockEntries = (wheel: WheelProduct): Array<[string, number]> => (
+  Object.entries(wheel.stockByLocation || {}).sort(([left], [right]) => {
+    const branchOrder = ['JHB', 'CPT', 'DBN', 'GLK'];
+    const leftIndex = branchOrder.indexOf(left.toUpperCase());
+    const rightIndex = branchOrder.indexOf(right.toUpperCase());
+    if (leftIndex >= 0 || rightIndex >= 0) {
+      if (leftIndex < 0) return 1;
+      if (rightIndex < 0) return -1;
+      return leftIndex - rightIndex;
+    }
+    return left.localeCompare(right);
+  })
+);
 
 const getWheelClipboardText = (item: InventoryItem): string => {
   if (item.type !== ProductType.WHEEL) return '';
@@ -787,7 +814,10 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               {visibleColumns.specs && (
                 <td className="p-3 border-r border-gp-border text-gp-text-main opacity-90">
                   {item.type === ProductType.TYRE ? (item as TyreProduct).brand : 
-                   item.type === ProductType.WHEEL ? (item as WheelProduct).code : 
+                   item.type === ProductType.WHEEL ? uniqueDisplayParts([
+                     getWheelBrand(item as WheelProduct),
+                     getWheelFinish(item as WheelProduct)
+                   ]).join(' / ') :
                    (item as CoiloverProduct).brand}
                 </td>
               )}
@@ -879,12 +909,19 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
               <span className="text-[9px] bg-gp-black text-gp-text-muted px-2 py-0.5 rounded font-bold uppercase tracking-wide border border-gp-border">
                 {item.type}
               </span>
+              {item.type === ProductType.WHEEL && getWheelBrand(item as WheelProduct) && (
+                <p className="mt-2 text-[10px] font-black uppercase text-gp-red tracking-widest">
+                  {getWheelBrand(item as WheelProduct)}
+                </p>
+              )}
               <h3 className="text-xl font-black text-gp-text-main mt-2 leading-none font-display tracking-wide truncate max-w-full">
                 {getItemDisplayName(item)}
               </h3>
               {visibleColumns.specs && (
                 <p className="text-xs text-gp-silver mt-1 uppercase font-semibold truncate max-w-full">
-                    {getItemSecondaryLine(item)}
+                    {item.type === ProductType.WHEEL
+                      ? getWheelFinish(item as WheelProduct) || 'Finish not supplied'
+                      : getItemSecondaryLine(item)}
                 </p>
               )}
             </div>
@@ -913,13 +950,24 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 {item.type === ProductType.WHEEL && (
                     <>
                     <SpecBadge label="Size" value={(item as WheelProduct).size} />
-                    <SpecBadge label="PCD" value={(item as WheelProduct).pcd} />
-                    <SpecBadge label="ET" value={(item as WheelProduct).offset} />
+                    <SpecBadge label="PCD" value={formatWheelPcd((item as WheelProduct).pcd) || '-'} />
+                    <SpecBadge label="ET" value={formatWheelOffset((item as WheelProduct).offset) || '-'} />
                     <SpecBadge label="CB" value={(item as WheelProduct).centerBore || '-'} />
-                    {(item as WheelProduct).location && (
-                       <div className="col-span-full mt-1 flex flex-col bg-black/10 p-1.5 rounded border border-gp-border/50">
-                           <span className="text-[9px] text-gp-text-muted uppercase font-bold tracking-wider">Warehouse Stock</span>
-                           <span className="text-[10px] font-mono font-bold text-gp-text-main truncate">{(item as WheelProduct).location}</span>
+                    {visibleColumns.location && (item as WheelProduct).location && (
+                       <div className="col-span-full mt-1 border-t border-gp-border/70 pt-2">
+                           <span className="text-[9px] text-gp-text-muted uppercase font-bold tracking-wider">Available by location</span>
+                           {getWheelStockEntries(item as WheelProduct).length > 0 ? (
+                             <div className="mt-1 grid grid-cols-3 gap-1">
+                               {getWheelStockEntries(item as WheelProduct).map(([location, quantity]) => (
+                                 <div key={location} className="flex items-center justify-between bg-gp-black px-2 py-1 border border-gp-border rounded">
+                                   <span className="text-[9px] font-bold text-gp-text-muted">{location}</span>
+                                   <span className="text-xs font-mono font-black text-gp-text-main">{quantity}</span>
+                                 </div>
+                               ))}
+                             </div>
+                           ) : (
+                             <span className="mt-1 block text-[10px] font-mono font-bold text-gp-text-main">{(item as WheelProduct).location}</span>
+                           )}
                        </div>
                     )}
                     </>

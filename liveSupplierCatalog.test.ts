@@ -47,12 +47,24 @@ describe('live supplier catalogue conversion', () => {
       product_name: 'Dirty Life A8306 MAYHEM RIDGELINE MACHINED BLACK',
       tyre_pattern: 'A8306 MAYHEM RIDGELINE',
       tyre_specs: 'MACHINED BLACK',
+      wheel_pcd: '139.7',
+      wheel_offset: '18',
+      wheel_center_bore: '106',
+      stock_by_location: { JHB: 5, CPT: 2, DBN: 1 },
+      stock_location: 'JHB: 5 | CPT: 2 | DBN: 1',
       size: '18x8'
     });
     expect(item.type).toBe(ProductType.WHEEL);
     if (item.type !== ProductType.WHEEL) throw new Error('Expected wheel item');
     expect(item.code).toBe('A8306 MAYHEM RIDGELINE');
+    expect(item.brand).toBe('Dirty Life');
+    expect(item.finish).toBe('MACHINED BLACK');
     expect(item.size).toBe('18x8');
+    expect(item.pcd).toBe('139.7');
+    expect(item.offset).toBe('18');
+    expect(item.centerBore).toBe('106');
+    expect(item.stockByLocation).toEqual({ JHB: 5, CPT: 2, DBN: 1 });
+    expect(item.supplierName).toBe('TYRE LIFE WHEELS');
     expect(item.imageDesignKey).toBe('A8306 MAYHEM RIDGELINE');
     expect(item.imageFinishKey).toBe('MACHINED BLACK');
   });

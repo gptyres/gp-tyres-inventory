@@ -516,6 +516,40 @@ describe('supplier stock image matching', () => {
     expect(match.confidence).toBe('best');
     expect(match.imageUrl).toBe('https://example.test/a9303-gunmetal.jpg');
   });
+
+  it('prefers a neutral design image over an image showing the wrong finish', () => {
+    const match = findBestSupplierStockImage({
+      id: 'tyrelifewheels-3',
+      productType: ProductType.WHEEL,
+      supplierName: 'TYRE LIFE WHEELS',
+      imageDesignKey: 'A8306 MAYHEM RIDGELINE',
+      imageFinishKey: 'SATIN BLACK',
+      size: '20x9',
+      pcd: '139.7'
+    }, [
+      {
+        supplierName: 'TYRE LIFE WHEELS',
+        designKey: 'A8306 MAYHEM RIDGELINE',
+        finishKey: 'BRONZE',
+        rimSize: null,
+        pcd: null,
+        publicImageUrl: 'https://example.test/ridgeline-bronze.jpg',
+        fileName: 'ridgeline-bronze.jpg'
+      },
+      {
+        supplierName: 'TYRE LIFE WHEELS',
+        designKey: 'A8306 MAYHEM RIDGELINE',
+        finishKey: null,
+        rimSize: null,
+        pcd: null,
+        publicImageUrl: 'https://example.test/ridgeline-design.jpg',
+        fileName: 'ridgeline-design.jpg'
+      }
+    ]);
+
+    expect(match.confidence).toBe('best');
+    expect(match.imageUrl).toBe('https://example.test/ridgeline-design.jpg');
+  });
 });
 
 describe('supplier tyre image parsing and matching', () => {

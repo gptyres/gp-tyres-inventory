@@ -18,6 +18,10 @@ export interface LiveSupplierCatalogRow {
   tyre_rating?: string | null;
   tyre_index?: string | null;
   tyre_specs?: string | null;
+  wheel_pcd?: string | null;
+  wheel_offset?: string | null;
+  wheel_center_bore?: string | null;
+  stock_by_location?: Record<string, number> | null;
   category?: string | null;
   size?: string | null;
   stock_location?: string | null;
@@ -48,7 +52,7 @@ export const liveSupplierRowToInventoryItem = (
     sellingPrice: Math.max(0, Number(row.selling_price) || 0),
     costPrice: Math.max(0, Number(row.cost_price) || Number(row.selling_price) || 0),
     lastUpdated: row.imported_at.slice(0, 10),
-    supplierName: row.supplier,
+    supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS' : row.supplier,
     supplierStockCode: row.supplier_sku || undefined
   };
 
@@ -65,13 +69,16 @@ export const liveSupplierRowToInventoryItem = (
       ...common,
       type: ProductType.WHEEL,
       code: wheelName,
+      brand: row.brand,
+      finish,
       size: row.size || '',
-      pcd: '',
-      offset: '',
-      centerBore: '',
+      pcd: row.wheel_pcd?.trim() || '',
+      offset: row.wheel_offset?.trim().replace(/^--/, '-') || '',
+      centerBore: row.wheel_center_bore?.trim() || '',
       colour: [row.brand, finish, row.category, row.supplier_sku].filter(Boolean).join(' | '),
       setQuantity: 1,
       location: buildLocation(row),
+      stockByLocation: row.stock_by_location || undefined,
       imageDesignKey: imageKeys.designKey,
       imageFinishKey: imageKeys.finishKey
     };
@@ -123,7 +130,7 @@ export const loadLiveSupplierCatalogItems = async (
     const { data, error } = await (supabase
       .from('supplier_catalog_items') as any)
       .select(
-        'id,snapshot_id,catalog_key,source_key,product_type,supplier,supplier_sku,brand,product_name,tyre_pattern,tyre_rating,tyre_index,tyre_specs,category,size,stock_location,stock_units_availability,stock_units,cost_price,selling_price,source_file,imported_at'
+        'id,snapshot_id,catalog_key,source_key,product_type,supplier,supplier_sku,brand,product_name,tyre_pattern,tyre_rating,tyre_index,tyre_specs,wheel_pcd,wheel_offset,wheel_center_bore,stock_by_location,category,size,stock_location,stock_units_availability,stock_units,cost_price,selling_price,source_file,imported_at'
       )
       .eq('snapshot_id', source.active_snapshot_id)
       .gt('id', lastId)

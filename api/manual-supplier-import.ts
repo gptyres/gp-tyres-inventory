@@ -24,6 +24,10 @@ interface ImportRow {
   tyreRating: string;
   tyreIndex: string;
   tyreSpecs: string;
+  wheelPcd: string;
+  wheelOffset: string;
+  wheelCenterBore: string;
+  stockByLocation: Record<string, number>;
   category: string;
   size: string;
   stockLocation: string;
@@ -50,6 +54,18 @@ const normalizeCatalog = (value: unknown): SupplierImportCatalog | null => {
     : null;
 };
 
+const safeStockByLocation = (value: unknown): Record<string, number> => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  return Object.entries(value as Record<string, unknown>).slice(0, 20).reduce<Record<string, number>>((stock, [key, rawQuantity]) => {
+    const location = safeText(key, 40).toUpperCase();
+    const quantity = Number(rawQuantity);
+    if (location && Number.isFinite(quantity) && quantity >= 0 && quantity <= 10_000_000) {
+      stock[location] = Math.trunc(quantity);
+    }
+    return stock;
+  }, {});
+};
+
 const validateRows = (value: unknown): ImportRow[] => {
   if (!Array.isArray(value) || value.length === 0) throw new Error('No supplier stock rows were supplied.');
   if (value.length > MAX_ROWS) throw new Error(`A maximum of ${MAX_ROWS.toLocaleString('en-ZA')} rows can be imported at once.`);
@@ -65,6 +81,10 @@ const validateRows = (value: unknown): ImportRow[] => {
     const tyreRating = safeText(row.tyreRating, 80);
     const tyreIndex = safeText(row.tyreIndex, 80);
     const tyreSpecs = safeText(row.tyreSpecs, 240);
+    const wheelPcd = safeText(row.wheelPcd, 80);
+    const wheelOffset = safeText(row.wheelOffset, 80);
+    const wheelCenterBore = safeText(row.wheelCenterBore, 80);
+    const stockByLocation = safeStockByLocation(row.stockByLocation);
     const size = safeText(row.size, 80);
     const stockUnits = Number(row.stockUnits);
     const costPrice = Number(row.costPrice);
@@ -92,6 +112,10 @@ const validateRows = (value: unknown): ImportRow[] => {
       tyreRating,
       tyreIndex,
       tyreSpecs,
+      wheelPcd,
+      wheelOffset,
+      wheelCenterBore,
+      stockByLocation,
       category: safeText(row.category, 120) || 'TYRE',
       size,
       stockLocation: safeText(row.stockLocation, 160) || 'Supplier',
@@ -260,6 +284,10 @@ export default async function handler(request: any, response: any) {
         tyre_rating: row.tyreRating || null,
         tyre_index: row.tyreIndex || null,
         tyre_specs: row.tyreSpecs || null,
+        wheel_pcd: row.wheelPcd || null,
+        wheel_offset: row.wheelOffset || null,
+        wheel_center_bore: row.wheelCenterBore || null,
+        stock_by_location: row.stockByLocation,
         category: row.category,
         size: row.size,
         stock_location: row.stockLocation,

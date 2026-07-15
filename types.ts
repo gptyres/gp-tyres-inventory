@@ -48,6 +48,8 @@ export interface TyreProduct extends BaseProduct {
 export interface WheelProduct extends BaseProduct {
   type: ProductType.WHEEL;
   code: string;
+  brand?: string;
+  finish?: string;
   size: string; // e.g., 15x6.5
   pcd: string; // e.g., 5/100
   offset: string; // ET
@@ -55,6 +57,7 @@ export interface WheelProduct extends BaseProduct {
   colour: string;
   setQuantity: number; // e.g., 4 per set
   location?: string; // e.g., JHB: 4, CPT: 2
+  stockByLocation?: Record<string, number>;
 }
 
 export interface CoiloverProduct extends BaseProduct {
