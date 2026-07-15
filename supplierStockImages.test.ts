@@ -190,13 +190,13 @@ describe('STAMFORD supplier catalogue parsing', () => {
 });
 
 describe('TYREWAREHOUSE supplier catalogue parsing', () => {
-  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest R50', () => {
+  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest R25', () => {
     const [item] = parseTyreWarehouseData([
-      'SKU,Size,Brand,Pattern,Category,Stock Location,Stock Units Availability,Stock Units,Selling Price',
-      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,JHB,Out of stock,0 units,R3350',
-      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,GLK,Available,4 units,R3350',
-      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,CPT,Out of stock,0 units,R3350',
-      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,DBN,Out of stock,0 units,R3350'
+      'SKU,Size,Brand,Pattern,Category,Stock Location,Stock Units Availability,Stock Units,Cost Price',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,JHB,Out of stock,0 units,R1100',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,GLK,Available,4 units,R1100',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,CPT,Out of stock,0 units,R1100',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,DBN,Out of stock,0 units,R1100'
     ].join('\n'));
 
     expect(item).toMatchObject({
@@ -207,8 +207,8 @@ describe('TYREWAREHOUSE supplier catalogue parsing', () => {
       pattern: 'ContiCrossContact AT',
       size: '265/60R18',
       quantity: 4,
-      sellingPrice: 3850,
-      costPrice: 3350,
+      sellingPrice: 1275,
+      costPrice: 1100,
       imageDesignKey: 'CONTICROSSCONTACT AT',
       imageFinishKey: 'CONTINENTAL'
     });

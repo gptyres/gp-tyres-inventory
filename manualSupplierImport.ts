@@ -34,7 +34,7 @@ type GridRow = unknown[];
 type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'rating' | 'index' | 'specs' | 'size' | 'quantity' | 'price' | 'costPrice' | 'sellingPrice' | 'location' | 'category';
 
 const HEADER_ALIASES: Record<FieldName, string[]> = {
-  sku: ['sku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
+  sku: ['sku', 'suppliersku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
   description: ['description', 'descrption', 'product', 'productname', 'item', 'itemdescription', 'tyredescription', 'brandandpattern', 'brandpattern', 'branddescription', 'patternanddescription'],
   brand: ['brand', 'tyrebrand', 'make'],
   pattern: ['pattern', 'tyrepattern', 'portalpattern', 'tread', 'model'],
@@ -87,6 +87,12 @@ const extractSize = (value: string) => {
 const toVatInclusivePrice = (value: number, alreadyIncludesVat: boolean) => (
   Number((Math.max(0, value) * (alreadyIncludesVat ? 1 : 1.15)).toFixed(2))
 );
+
+const toVatExclusivePrice = (value: number, alreadyIncludesVat: boolean) => (
+  Number((Math.max(0, value) / (alreadyIncludesVat ? 1.15 : 1)).toFixed(2))
+);
+
+const roundToNearest25 = (value: number) => Math.round(Math.max(0, value) / 25) * 25;
 
 const stableIdentityHash = (value: string) => {
   let hash = 2166136261;
@@ -233,8 +239,15 @@ export const normalizeManualSupplierGrid = (
       : hasGenericPrice
         ? [genericPrice, genericPriceIncludesVat]
         : [suppliedCost, costPriceIncludesVat];
-    const vatInclusiveCost = toVatInclusivePrice(...costSource);
-    const vatInclusiveSelling = toVatInclusivePrice(...sellingSource);
+    const isTyreWarehouse = catalog === 'TYREWAREHOUSE';
+    const normalizedCost = isTyreWarehouse
+      ? toVatExclusivePrice(...costSource)
+      : toVatInclusivePrice(...costSource);
+    const normalizedSelling = isTyreWarehouse
+      ? hasSellingPrice
+        ? Number(Math.max(0, suppliedSelling).toFixed(2))
+        : roundToNearest25(normalizedCost * 1.15)
+      : toVatInclusivePrice(...sellingSource);
     const sourceKey = sourceKeyFor(catalog, sku, size, productName, stockLocation);
     if (seen.has(sourceKey)) {
       rejectedRows += 1;
@@ -256,8 +269,8 @@ export const normalizeManualSupplierGrid = (
       stockLocation,
       stockAvailability: stockUnits > 0 ? 'In stock' : 'Out of stock',
       stockUnits,
-      costPrice: vatInclusiveCost,
-      sellingPrice: vatInclusiveSelling,
+      costPrice: normalizedCost,
+      sellingPrice: normalizedSelling,
       sourceStockDetail: cleanCell(get(row, 'quantity'))
     });
   });
@@ -268,7 +281,9 @@ export const normalizeManualSupplierGrid = (
 
   const detectedColumns = Object.keys(header.columns);
   const warnings = rejectedRows > 0 ? [`${rejectedRows} row${rejectedRows === 1 ? '' : 's'} could not be safely imported.`] : [];
-  if (
+  if (catalog === 'TYREWAREHOUSE' && header.columns.sellingPrice === undefined) {
+    warnings.push('TyreWarehouse selling prices will be calculated from discounted cost plus 15% VAT and rounded to the nearest R25.');
+  } else if (
     (header.columns.costPrice !== undefined && !costPriceIncludesVat)
     || (header.columns.sellingPrice !== undefined && !sellingPriceIncludesVat)
     || (header.columns.price !== undefined && !genericPriceIncludesVat)

@@ -884,7 +884,7 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
       .join(' | ');
 
     const sellingPriceIncVat = entry.price * 1.15;
-    const roundedSellingPrice = Math.round(sellingPriceIncVat / 50) * 50;
+    const roundedSellingPrice = Math.round(sellingPriceIncVat / 25) * 25;
 
     return {
       id: `tyrewarehouse-${index + 1}`,

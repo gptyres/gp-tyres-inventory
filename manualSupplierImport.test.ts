@@ -175,6 +175,29 @@ describe('manual supplier document import', () => {
     expect(new Set(result.rows.map((row) => row.sourceKey)).size).toBe(2);
   });
 
+  it('keeps TyreWarehouse discounted cost exact and does not add VAT to a supplied final selling price', () => {
+    const result = normalizeManualSupplierGrid('TYREWAREHOUSE', [
+      ['Supplier SKU', 'TYRE_SIZE', 'TYRE_BRAND', 'TYRE_PATTERN', 'Stock Location', 'Stock Units', 'Cost Price', 'Cost Price Ex VAT', 'Cost Price Inc VAT', 'Selling Price'],
+      ['TW-PORTAL-1', '265/60R18', 'Continental', 'ContiCrossContact AT', 'JHB', 4, 3912.43, 3912.43, 4499.29, 4500]
+    ]);
+
+    expect(result.rows[0]).toMatchObject({
+      supplierSku: 'TW-PORTAL-1',
+      stockLocation: 'JHB',
+      costPrice: 3912.43,
+      sellingPrice: 4500
+    });
+  });
+
+  it('calculates a missing TyreWarehouse selling price with VAT once and rounds to the nearest R25', () => {
+    const result = normalizeManualSupplierGrid('TYREWAREHOUSE', [
+      ['SKU', 'Description', 'Stock', 'Discounted Price Ex VAT', 'Location'],
+      ['TW-COST-ONLY', '195/65R15 TEST TREAD', 4, 1100, 'Cape Town']
+    ]);
+
+    expect(result.rows[0]).toMatchObject({ costPrice: 1100, sellingPrice: 1275 });
+  });
+
   it('detects semicolon-delimited supplier CSV files', () => {
     const grid = parseCsvGrid('SKU;DESCRIPTION;STOCK;PRICE\nTW-1;195/65R15 TEST;5;900');
     expect(grid[1]).toEqual(['TW-1', '195/65R15 TEST', '5', '900']);
