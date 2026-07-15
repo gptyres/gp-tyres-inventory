@@ -119,16 +119,18 @@ const tagSupplierItems = (supplierName: string, supplierItems: InventoryItem[]):
       return {
         ...wheel,
         id: `${supplierName}-${wheel.id}`,
+        supplierName,
         location: `${supplierName}: ${wheel.location || 'Supplier'}`
       };
     }
 
-    if (item.type !== ProductType.TYRE) return { ...item, id: `${supplierName}-${item.id}` };
+    if (item.type !== ProductType.TYRE) return { ...item, id: `${supplierName}-${item.id}`, supplierName };
 
     const tyre = item as TyreProduct;
     return {
       ...tyre,
       id: `${supplierName}-${tyre.id}`,
+      supplierName,
       location: `${supplierName}: ${tyre.location || 'Supplier'}`
     };
   });

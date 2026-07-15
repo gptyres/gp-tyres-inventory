@@ -28,6 +28,7 @@ interface InventoryViewProps {
   onReserve: (item: InventoryItem) => void;
   onBulkDelete: (ids: string[]) => void;
   isReadOnly?: boolean; // New Prop for Supplier Views
+  showSupplierName?: boolean;
   currentUser?: string | null;
 }
 
@@ -77,6 +78,10 @@ const getWheelDisplayName = (wheel: WheelProduct): string => (
 
 const isSupplierTyre = (item: InventoryItem): item is TyreProduct => (
   item.type === ProductType.TYRE && Boolean((item as TyreProduct).supplierName)
+);
+
+export const getItemSupplierName = (item: InventoryItem): string => (
+  String(item.supplierName || '').trim().toUpperCase()
 );
 
 const uniqueDisplayParts = (parts: Array<string | undefined>) => {
@@ -315,6 +320,18 @@ const SpecBadge = ({ label, value }: { label: string; value: string | number }) 
     <span className="text-xs text-gp-text-main font-mono font-bold truncate">{value}</span>
   </div>
 );
+
+const SupplierBadge = ({ item, className = '' }: { item: InventoryItem; className?: string }) => {
+  const supplierName = getItemSupplierName(item);
+  if (!supplierName) return null;
+
+  return (
+    <span className={`inline-flex max-w-full items-center gap-1.5 rounded border border-gp-red/40 bg-gp-red/10 px-2 py-1 text-[9px] font-black uppercase tracking-wider text-gp-red ${className}`}>
+      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gp-red" aria-hidden="true" />
+      <span className="truncate">Supplier: {supplierName}</span>
+    </span>
+  );
+};
 
 // --- IMAGE COMPONENT ---
 interface ProductImageProps {
@@ -744,7 +761,7 @@ interface ViewComponentProps extends InventoryViewProps {
   onCopyItem: (item: InventoryItem) => void;
 }
 
-const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
+const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
   
   const SortIcon = ({ colKey }: { colKey: SortKey }) => (
     <span className={`ml-1 inline-block transition-opacity ${sortConfig.key === colKey ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`}>
@@ -773,6 +790,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
             <th className="p-3 border-r border-b border-gp-border w-20 text-center">Copy</th>
             {showImages && <th className="p-3 border-r border-b border-gp-border w-24 text-center">Visual</th>}
             <th className="p-3 border-r border-b border-gp-border w-16 text-center">Type</th>
+            {showSupplierName && <th className="p-3 border-r border-b border-gp-border">Supplier</th>}
             <Header label="Main Spec" colKey="size" />
             {visibleColumns.specs && <Header label="Brand / Model" colKey="brand" />}
             {visibleColumns.specs && <th className="p-3 border-r border-b border-gp-border">Details</th>}
@@ -848,6 +866,12 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               <td className="p-3 border-r border-gp-border text-center">
                 <span className="text-[9px] font-bold bg-gp-overlay px-1.5 py-0.5 rounded text-gp-text-muted">{item.type.charAt(0)}</span>
               </td>
+
+              {showSupplierName && (
+                <td className="p-3 border-r border-gp-border">
+                  <SupplierBadge item={item} />
+                </td>
+              )}
               
               <td className="p-3 border-r border-gp-border font-bold text-gp-text-main">
                 {getItemDisplayName(item)}
@@ -902,7 +926,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
   );
 };
 
-const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
+const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
       {items.map((item) => (
@@ -948,9 +972,12 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
           {/* Header */}
           <div className="bg-gp-overlay p-3 pt-4 border-b border-gp-border flex justify-between items-start">
             <div className="pt-4 overflow-hidden">
-              <span className="text-[9px] bg-gp-black text-gp-text-muted px-2 py-0.5 rounded font-bold uppercase tracking-wide border border-gp-border">
-                {item.type}
-              </span>
+              <div className="flex max-w-full flex-wrap items-center gap-2">
+                <span className="text-[9px] bg-gp-black text-gp-text-muted px-2 py-0.5 rounded font-bold uppercase tracking-wide border border-gp-border">
+                  {item.type}
+                </span>
+                {showSupplierName && <SupplierBadge item={item} />}
+              </div>
               {item.type === ProductType.WHEEL && getWheelBrand(item as WheelProduct) && (
                 <p className="mt-2 text-[10px] font-black uppercase text-gp-red tracking-widest">
                   {getWheelBrand(item as WheelProduct)}
@@ -1057,7 +1084,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
   );
 };
 
-const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
+const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
   return (
     <div className="flex flex-col divide-y divide-gp-border p-2 mb-6">
       {items.map((item) => (
@@ -1091,6 +1118,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                )}
 
                <div className="flex flex-col cursor-pointer" onClick={() => !isReadOnly && onEdit(item)}>
+                  {showSupplierName && <SupplierBadge item={item} className="mb-1 self-start" />}
                   <span className="text-lg font-black text-gp-text-main font-display">
                     {getItemDisplayName(item)}
                   </span>

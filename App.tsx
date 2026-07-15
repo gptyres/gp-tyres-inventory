@@ -1736,6 +1736,7 @@ const App: React.FC = () => {
                     onReserve={openReserveModal}
                     onBulkDelete={handleBulkDelete}
                     isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
+                    showSupplierName={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS'}
                   />
                 )}
               </div>

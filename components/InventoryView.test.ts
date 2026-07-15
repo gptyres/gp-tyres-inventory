@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getItemDisplayName, getItemSecondaryLine } from './InventoryView';
+import { getItemDisplayName, getItemSecondaryLine, getItemSupplierName } from './InventoryView';
 import { ProductType, type TyreProduct, type WheelProduct } from '../types';
 
 const supplierTyre: TyreProduct = {
@@ -27,6 +27,11 @@ describe('supplier tyre card formatting', () => {
 
   it('uses rating, index, and remaining specs for the secondary line', () => {
     expect(getItemSecondaryLine(supplierTyre)).toBe('18PR / 149/146K / TL');
+  });
+
+  it('provides a consistent supplier label for all-supplier search results', () => {
+    expect(getItemSupplierName(supplierTyre)).toBe('APEX');
+    expect(getItemSupplierName({ ...supplierTyre, supplierName: undefined })).toBe('');
   });
 
   it('leaves unavailable supplier fields blank', () => {
