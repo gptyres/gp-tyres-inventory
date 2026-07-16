@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCustomerStockOption } from './gpBusinessAgent';
+import { formatCustomerStockOption, getAgentProductOptions } from './gpBusinessAgent';
 
 describe('customer-ready stock formatting', () => {
   it('uses the exact size brand pattern and selling price format', () => {
@@ -36,5 +36,14 @@ describe('customer-ready stock formatting', () => {
     expect(formatCustomerStockOption({
       size: '265/65R17', brand: 'Trazano', pattern: '', sellingPrice: 1850, stockUnits: 8
     })).toBeNull();
+  });
+
+  it('collects direct and grouped stock-tool options', () => {
+    expect(getAgentProductOptions({
+      products: [{ productId: 'direct' }],
+      gpStockOptions: [{ productId: 'gp' }],
+      supplierStockOptions: [{ productId: 'supplier' }],
+      bestAvailableOption: { productId: 'best' }
+    }).map((product) => product.productId)).toEqual(['direct', 'gp', 'supplier', 'best']);
   });
 });
