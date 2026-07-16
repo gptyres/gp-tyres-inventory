@@ -49,7 +49,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize, c
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      text: 'GP Business Agent ready. Ask me to search current GP stock, compare supplier availability, check fitment requirements, build a customer reply, or prepare a quotation.'
+      text: 'GP Business Agent ready. Ask me to search current GP stock, compare supplier availability, check fitment requirements, build a customer reply, or prepare a quotation. Say “remember…” to save a safe staff preference for future conversations.'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
@@ -72,8 +72,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize, c
     setMessages([{
       role: 'assistant',
       text: nextMode === 'CUSTOMER_READY'
-        ? 'Customer-ready mode enabled. I will use verified selling prices and stock, and hide supplier costs, margins, staff notes, and system details.'
-        : 'Internal staff mode enabled. Live stock, supplier comparison, fitment support, and quotations are available. Cost and margin tools require admin mode.'
+        ? 'Customer-ready mode enabled. I will only show products with at least 2 units in stock, using SIZE BRAND PATTERN @ RPRICE, while hiding supplier costs and internal details.'
+        : 'Internal staff mode enabled. Live stock, supplier comparison, fitment support, quotations, and saved staff preferences are available. Cost and margin tools require admin mode.'
     }]);
   };
 
@@ -163,6 +163,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize, c
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-sm font-black uppercase tracking-wide text-gp-text-main">GP Business Agent</h3>
                 <span className="rounded bg-green-500/15 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-green-400">GLM-5.2</span>
+                <span className="rounded bg-blue-500/15 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-blue-300">Memory on</span>
               </div>
               <p className="truncate text-[10px] text-gp-text-muted">{currentUser} · {isAdmin ? 'Admin permissions' : 'Sales permissions'} · live tool verification</p>
             </div>
@@ -298,7 +299,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize, c
             Send
           </button>
         </div>
-        <p className="mt-2 text-[9px] text-gp-text-muted">Enter sends · Shift+Enter adds a line · stock and price claims require live sources</p>
+        <p className="mt-2 text-[9px] text-gp-text-muted">Enter sends · Shift+Enter adds a line · say “remember…” to save a safe preference · stock and prices always use live sources</p>
       </form>
     </section>
   );

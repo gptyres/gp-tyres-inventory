@@ -3,6 +3,7 @@ import { runGpBusinessAgent, type AgentMode } from '../server/gpBusinessAgent.js
 import { readApiBody } from '../server/readApiBody.js';
 import { verifyStaffSession } from '../server/staffSession.js';
 import { createSupabaseAdmin } from '../server/supabaseAdmin.js';
+import { loadStaffMemories } from '../server/gpBusinessAgentMemory.js';
 import adminHandler from '../server/gpBusinessAgentAdminHandler.js';
 import feedbackHandler from '../server/gpBusinessAgentFeedbackHandler.js';
 import tyreVisualHandler from '../server/gpTyreVisualHandler.js';
@@ -85,6 +86,7 @@ export default async function handler(request: any, response: any) {
     const mode: AgentMode = body.mode === 'CUSTOMER_READY' ? 'CUSTOMER_READY' : 'INTERNAL';
     const adminSession = verifyAdminSession(request);
     const supabase = createSupabaseAdmin();
+    const staffMemories = await loadStaffMemories(supabase, staffSession.terminalId);
     const conversationId = await getOrCreateConversation(supabase, body, staffSession.terminalId, adminSession?.staffName || null, mode);
     const latestText = String(latestUserMessage.content ?? latestUserMessage.text).trim().slice(0, 4000);
     const { data: userMessage, error: userMessageError } = await supabase.from('ai_agent_messages').insert({
@@ -102,7 +104,8 @@ export default async function handler(request: any, response: any) {
       isAdmin: Boolean(adminSession),
       mode,
       conversationId,
-      latestUserMessage: latestText
+      latestUserMessage: latestText,
+      staffMemories
     }, messages);
 
     const { data: assistantMessage, error: assistantError } = await supabase.from('ai_agent_messages').insert({
@@ -123,7 +126,7 @@ export default async function handler(request: any, response: any) {
       action: 'AI_AGENT_RESPONSE',
       resource_type: 'AI_CONVERSATION',
       resource_id: conversationId,
-      details: { mode, messageId: assistantMessage.id, sourceCount: result.sources.length, verificationStatus: result.verificationStatus }
+      details: { mode, messageId: assistantMessage.id, sourceCount: result.sources.length, verificationStatus: result.verificationStatus, memoryCount: staffMemories.length }
     });
 
     return response.status(200).json({
@@ -134,6 +137,7 @@ export default async function handler(request: any, response: any) {
       sources: result.sources,
       confidence: result.confidence,
       verificationStatus: result.verificationStatus,
+      memory: { enabled: true, loaded: staffMemories.length },
       permissions: { role: adminSession ? 'ADMIN' : 'SALES', mode }
     });
   } catch (error) {
