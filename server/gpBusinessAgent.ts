@@ -66,16 +66,19 @@ const customerProductField = (product: any, field: 'size' | 'brand' | 'pattern')
   120
 );
 
+const formatCustomerTyreSize = (value: string) => value
+  .replace(/\b(\d{3})\/(\d{2})\/(\d{2})\b/i, '$1/$2R$3')
+  .replace(/\b(\d{3})\/(\d{2})\s*r\s*(\d{2})\b/i, '$1/$2R$3');
+
 export const formatCustomerStockOption = (product: any) => {
   const stockUnits = Math.floor(Number(product?.stockUnits));
   const sellingPrice = toMoney(product?.sellingPrice);
   if (!Number.isFinite(stockUnits) || stockUnits < 2 || sellingPrice <= 0) return null;
-  const description = [
-    customerProductField(product, 'size'),
-    customerProductField(product, 'brand'),
-    customerProductField(product, 'pattern')
-  ].filter(Boolean).join(' ');
-  if (!description) return null;
+  const size = formatCustomerTyreSize(customerProductField(product, 'size'));
+  const brand = customerProductField(product, 'brand');
+  const pattern = customerProductField(product, 'pattern');
+  if (!size || !brand || !pattern) return null;
+  const description = `${size} ${brand} ${pattern}`;
   const formattedPrice = Number.isInteger(sellingPrice) ? String(sellingPrice) : sellingPrice.toFixed(2);
   return `${description} @ R${formattedPrice}`;
 };
