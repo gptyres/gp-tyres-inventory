@@ -143,6 +143,7 @@ export default async function handler(request: any, response: any) {
   } catch (error) {
     console.error('[GP BUSINESS AGENT]', error);
     const message = error instanceof Error ? error.message : 'The GP Business Agent request failed.';
-    return response.status(500).json({ error: message });
+    const status = Number((error as any)?.publicStatus) || 500;
+    return response.status(status).json({ error: message });
   }
 }
