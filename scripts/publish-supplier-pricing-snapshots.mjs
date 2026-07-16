@@ -4,9 +4,18 @@ import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = 'https://moiybakshvuvppesbnpt.supabase.co';
 const serviceKey = process.env.SUPABASE_SECRET_KEY;
-if (!serviceKey) throw new Error('SUPABASE_SECRET_KEY is not available in this environment.');
+const dryRun = process.argv.includes('--dry-run');
+const exportItemsJson = process.argv.includes('--export-items-json');
+if (!dryRun && !exportItemsJson && !serviceKey) throw new Error('SUPABASE_SECRET_KEY is not available in this environment.');
 
 const sources = [
+  {
+    catalog: 'ALINE',
+    supplier: 'Aline',
+    dataFile: 'supplier_data/alineData.ts',
+    sourceFile: 'aline_raw_inventory_2026-07-16.csv',
+    parser: 'aline'
+  },
   {
     catalog: 'APEX',
     supplier: 'Apex',
@@ -90,8 +99,151 @@ const stableIdentityHash = (value) => {
   return (hash >>> 0).toString(36).padStart(7, '0');
 };
 
+const normalizeToken = (value) => clean(value)
+  .replace(/([a-z])([A-Z])/g, '$1 $2')
+  .replace(/[^A-Za-z0-9]+/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim()
+  .toUpperCase();
+
+const alineFinishHints = [
+  ['ARCTICSILVERMF', 'ARCTIC SILVER'], ['ARCTICSILVER', 'ARCTIC SILVER'],
+  ['ARCTICSIL', 'ARCTIC SILVER'], ['ARCTIC SILVER', 'ARCTIC SILVER'],
+  ['AMBER BRNZ', 'AMBER BRONZE'], ['BKML', 'BLACK MACHINED LIP'],
+  ['BLKML', 'BLACK MACHINED LIP'], ['BRNZ BLK LIP', 'BRONZE BLACK LIP'],
+  ['BRONZE BLK LIP', 'BRONZE BLACK LIP'], ['CRYSTAL SILVER', 'CRYSTAL SILVER'],
+  ['DARK TINT SMOKE', 'DARK TINT SMOKE'], ['DIAMOND BLK', 'DIAMOND BLACK'],
+  ['GLOSS BLACK', 'GLOSS BLACK'], ['GLOSS BLK', 'GLOSS BLACK'],
+  ['GLOSSBLK', 'GLOSS BLACK'], ['GMML', 'GMMF'], ['GMMF', 'GMMF'],
+  ['GM MF', 'GMMF'], ['GRAPHITE', 'GRAPHITE'], ['GRANITE', 'GRANITE'],
+  ['HYPER BLACK', 'HYPER BLACK'], ['HYPERBLK', 'HYPER BLACK'],
+  ['HYPER SILVER', 'HYPER SILVER'], ['MATT CHG', 'MATT CHG'],
+  ['MATT TITANIUM', 'MATT TITANIUM'], ['MACHINE FACE', 'MACHINE FACE'],
+  ['MACHINED', 'MACHINED'], ['POLISHED LIP', 'POLISHED LIP'],
+  ['SATIN BLACK TINT', 'SATIN BLACK TINT'], ['SATIN BLK TINT', 'SATIN BLACK TINT'],
+  ['SATINBLK TINT', 'SATIN BLACK TINT'], ['SATIN BLACK', 'SATIN BLACK'],
+  ['SATIN BLK', 'SATIN BLACK'], ['SATINBLK', 'SATIN BLACK'],
+  ['SEPANG SILVER', 'SEPANG SILVER'], ['SILK BLACK', 'SILK BLACK'],
+  ['SILK BLK', 'SILK BLACK'], ['SILKBLK', 'SILK BLACK'],
+  ['SLKBLK', 'SILK BLACK'], ['SLBLK', 'SILK BLACK'],
+  ['SSML', 'SILVER MACHINED LIP'], ['SSMF', 'SSMF'],
+  ['STBKTNT', 'SATIN BLACK TINT'], ['STBLKTNT', 'SATIN BLACK TINT'],
+  ['STBKML', 'SATIN BLACK MACHINED LIP'], ['STBKMILLED', 'SATIN BLACK MILLED'],
+  ['STBLK', 'SATIN BLACK'], ['STBK', 'SATIN BLACK'],
+  ['TINTED SMOKE', 'TINTED SMOKE'], ['TITANIUM BLK LIP', 'TITANIUM BLACK LIP'],
+  ['VELVET BLACK', 'VELVET BLACK'], ['VELVET BLK', 'VELVET BLACK'],
+  ['VELVETBLK', 'VELVET BLACK'], ['VELBLK', 'VELVET BLACK'],
+  ['GOLD', 'GOLD'], ['CIDER', 'CIDER'], ['CHG TINT', 'CHG TINT'],
+  ['CHGTINT', 'CHG TINT'], ['CHGTNT', 'CHG TINT'], ['CHG', 'CHG']
+];
+
+const alineSpecialDesigns = new Set([
+  'AR Z2', 'BIG ROCK', 'LE MANS', 'MEGA X', 'STEEL BLACK SPOKE',
+  'STEEL CHROME MODULAR', 'STEEL MODULAR BLACK', 'STEEL SOFT 8',
+  'STEEL SPOKE GREY', 'STEEL SPOKE', 'STEEL WHITE SPOKE'
+]);
+
+const parseAlineDescription = (description) => {
+  const compact = description.replace(/\s+/g, '');
+  const spec = compact.match(/^([3-6])(\d{3})(\d{2})X(\d{1,2}(?:\.\d+)?)/i);
+  const offset = description.match(/\bET\s*(-?\d+)/i)?.[1] || '';
+  const centerBore = description.match(/\b(\d{2,3}\.\d)\b/)?.[1] || '';
+  let withoutSpec = description
+    .replace(/^[456]\d{3}(?:1[3-9]|2[0-6])X\d+(?:\.\d+)?(?:\/[0-9.]+)?/i, '')
+    .replace(/\bET\s*-?\d+\b/gi, ' ')
+    .trim();
+  const normalized = normalizeToken(withoutSpec);
+  const finish = alineFinishHints
+    .filter(([hint]) => normalized.includes(normalizeToken(hint)))
+    .sort((a, b) => b[0].length - a[0].length)[0]?.[1] || '';
+  const beforeSpecs = normalizeToken(withoutSpec.split(/\b(?:ET\s*-?\d+|\d{2,3}(?:\.\d)?|R\b|F\b)\b/i)[0]);
+  const words = beforeSpecs.split(' ').filter(Boolean);
+  let design = words[0] || normalizeToken(description);
+  if (design === 'BIGROCK') design = 'BIG ROCK';
+  else if (design === 'AR' || /^AR\d*/.test(design)) design = 'AR Z2';
+  else if (/^MONACO\d*/.test(design)) design = 'MONACO';
+  else if (/^DESTROYER\d*/.test(design)) design = 'DESTROYER';
+  else if (/^VILLAIN/.test(design)) design = 'VILLAIN';
+  else if (/^HOSTILE/.test(design)) design = 'HOSTILE';
+  else {
+    for (let length = Math.min(3, words.length); length >= 2; length -= 1) {
+      const candidate = words.slice(0, length).join(' ');
+      if (alineSpecialDesigns.has(candidate)) {
+        design = candidate;
+        break;
+      }
+    }
+  }
+
+  return {
+    size: spec ? `${spec[3]}X${spec[4]}` : 'N/A',
+    pcd: spec ? `${spec[1]}/${Number(spec[2])}` : '',
+    offset,
+    centerBore,
+    design,
+    finish
+  };
+};
+
+const buildAlineItems = (rows, source) => {
+  const headers = rows[0].map(clean);
+  const column = (name) => {
+    const index = headers.indexOf(name);
+    if (index < 0) throw new Error(`${source.catalog}: missing ${name}.`);
+    return index;
+  };
+  const get = (row, name) => clean(row[column(name)]);
+
+  return rows.slice(1).map((row) => {
+    const sku = get(row, 'Stock Code');
+    const description = get(row, 'Description');
+    const brand = get(row, 'Brand') || 'A-Line';
+    const wheel = parseAlineDescription(description);
+    const isWheel = wheel.size !== 'N/A';
+    const displayName = isWheel ? (wheel.design || description) : description;
+    const finish = isWheel ? wheel.finish : '';
+    const stockByLocation = {
+      JHB: parseStock(get(row, 'Qty JHB')),
+      CPT: parseStock(get(row, 'Qty CPT')),
+      DBN: parseStock(get(row, 'Qty DBN'))
+    };
+    const stockUnits = Object.values(stockByLocation).reduce((total, quantity) => total + quantity, 0);
+    const stockLocation = Object.entries(stockByLocation).map(([location, quantity]) => `${location}: ${quantity}`).join(' | ');
+    const costPrice = parseMoney(get(row, 'Price inc VAT'));
+    const recommendedPrice = parseMoney(get(row, 'Recommended Retail From')) || costPrice;
+    const rawIdentity = [source.catalog, sku, description].join('-').toLowerCase();
+    const sourceKey = `${rawIdentity.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 168)}-${stableIdentityHash(rawIdentity)}`;
+
+    return {
+      catalog_key: source.catalog,
+      source_key: sourceKey,
+      product_type: 'WHEEL',
+      supplier: source.supplier,
+      supplier_sku: sku,
+      brand,
+      product_name: `${brand} ${displayName}${finish ? ` ${finish}` : ''}`,
+      tyre_pattern: displayName,
+      tyre_specs: finish || null,
+      wheel_pcd: wheel.pcd || null,
+      wheel_offset: wheel.offset || null,
+      wheel_center_bore: wheel.centerBore || null,
+      stock_by_location: stockByLocation,
+      category: get(row, 'Category') || 'Wheels',
+      size: wheel.size,
+      stock_location: stockLocation,
+      stock_units_availability: stockUnits > 0 ? 'In stock' : 'Out of stock',
+      stock_units: stockUnits,
+      cost_price: costPrice,
+      selling_price: recommendedPrice,
+      source_stock_detail: stockLocation,
+      source_file: basename(source.sourceFile)
+    };
+  }).filter((item) => item.supplier_sku);
+};
+
 const buildItems = async (source) => {
   const rows = parseCsv(await readEmbeddedCsv(source.dataFile));
+  if (source.parser === 'aline') return buildAlineItems(rows, source);
   const headers = rows[0].map(clean);
   const column = (name) => {
     const index = headers.indexOf(name);
@@ -137,11 +289,37 @@ const buildItems = async (source) => {
   });
 };
 
+const prepared = await Promise.all(selectedSources.map(async (source) => ({ ...source, items: await buildItems(source) })));
+const totalRows = prepared.reduce((total, source) => total + source.items.length, 0);
+if (exportItemsJson) {
+  const argumentValue = (name, fallback) => {
+    const index = process.argv.indexOf(name);
+    const parsed = index >= 0 ? Number.parseInt(process.argv[index + 1], 10) : fallback;
+    return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+  };
+  const offset = argumentValue('--offset', 0);
+  const limit = argumentValue('--limit', totalRows);
+  console.log(JSON.stringify(prepared.flatMap((source) => source.items).slice(offset, offset + limit)));
+  process.exit(0);
+}
+if (dryRun) {
+  console.log(JSON.stringify({
+    dryRun: true,
+    totalRows,
+    suppliers: prepared.map((source) => ({
+      supplier: source.supplier,
+      catalog: source.catalog,
+      products: source.items.length,
+      stockUnits: source.items.reduce((total, item) => total + item.stock_units, 0),
+      sample: source.items.find((item) => item.supplier_sku === '82410224') || source.items[0]
+    }))
+  }, null, 2));
+  process.exit(0);
+}
+
 const supabase = createClient(SUPABASE_URL, serviceKey, {
   auth: { persistSession: false, autoRefreshToken: false }
 });
-const prepared = await Promise.all(selectedSources.map(async (source) => ({ ...source, items: await buildItems(source) })));
-const totalRows = prepared.reduce((total, source) => total + source.items.length, 0);
 let jobId = '';
 const snapshotIds = [];
 
