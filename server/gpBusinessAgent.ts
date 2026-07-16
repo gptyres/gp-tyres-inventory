@@ -91,6 +91,14 @@ export const formatCustomerStockOption = (product: any) => {
   return `${description} @ R${formattedPrice}`;
 };
 
+export const getAgentProductOptions = (data: Record<string, unknown>) => {
+  const direct = Array.isArray(data.products) ? data.products as any[] : [];
+  const gpStock = Array.isArray(data.gpStockOptions) ? data.gpStockOptions as any[] : [];
+  const supplierStock = Array.isArray(data.supplierStockOptions) ? data.supplierStockOptions as any[] : [];
+  const bestAvailable = data.bestAvailableOption ? [data.bestAvailableOption as any] : [];
+  return [...direct, ...gpStock, ...supplierStock, ...bestAvailable];
+};
+
 const productTitle = (row: any) => {
   const item = row?.item || {};
   if (row?.type === 'TYRE') return [item.size, item.brand, item.pattern].filter(Boolean).join(' ');
@@ -643,9 +651,14 @@ const requestCompletion = async (apiKey: string, model: string, messages: any[],
       if (!response.ok) {
         const providerMessage = cleanText(payload?.error?.message || payload?.detail || payload?.message, 300);
         const safePreview = cleanText(responseText, 500).replace(/nvapi-[A-Za-z0-9_-]+/g, '[REDACTED]');
+        const retryAfterSeconds = Number(response.headers.get('retry-after'));
+        const retryAfterMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+          ? Math.min(retryAfterSeconds * 1000, 15_000)
+          : 5_000;
         console.error('[NVIDIA GLM UPSTREAM]', {
           status: response.status,
           attempt,
+          retryAfterMs: response.status === 429 ? retryAfterMs : null,
           requestId: response.headers.get('x-request-id') || response.headers.get('nvidia-request-id') || null,
           contentType: response.headers.get('content-type') || null,
           body: safePreview || null
@@ -661,7 +674,7 @@ const requestCompletion = async (apiKey: string, model: string, messages: any[],
         (error as any).publicStatus = 503;
         lastError = error;
         if (attempt < NVIDIA_MAX_ATTEMPTS && (response.status === 429 || response.status >= 500)) {
-          await new Promise((resolve) => setTimeout(resolve, 750 * attempt));
+          await new Promise((resolve) => setTimeout(resolve, response.status === 429 ? retryAfterMs : 750 * attempt));
           continue;
         }
         throw error;
@@ -702,6 +715,28 @@ export const runGpBusinessAgent = async (apiKey: string, context: AgentContext, 
   let verificationStatus: 'VERIFIED' | 'PARTIAL' | 'UNVERIFIED' = 'UNVERIFIED';
   let answer = '';
 
+  const deterministicCustomerQuery = context.mode === 'CUSTOMER_READY'
+    ? extractTyreSizeForAgentFallback(context.latestUserMessage)
+    : '';
+  if (deterministicCustomerQuery) {
+    const startedAt = Date.now();
+    const result = await findAlternatives(context, { query: deterministicCustomerQuery });
+    const lines = getAgentProductOptions(result.data)
+      .map((product) => formatCustomerStockOption(product))
+      .filter((line): line is string => Boolean(line));
+    await logToolRun(context, 'find_alternative_products_deterministic', { query: deterministicCustomerQuery }, result, startedAt);
+    const finalSources = dedupeSources(result.sources);
+    return {
+      answer: lines.length
+        ? Array.from(new Set(lines)).join('\n')
+        : `No verified ${deterministicCustomerQuery} options with at least 2 units in stock are available right now.`,
+      model: 'gp-verified-stock-tools',
+      sources: finalSources,
+      confidence: finalSources.length ? 0.93 : 0.45,
+      verificationStatus: result.verificationStatus
+    };
+  }
+
   for (let round = 0; round < MAX_TOOL_ROUNDS; round += 1) {
     let assistantMessage: any;
     try {
@@ -712,8 +747,7 @@ export const runGpBusinessAgent = async (apiKey: string, context: AgentContext, 
       const startedAt = Date.now();
       const result = await findAlternatives(context, { query: fallbackQuery });
       sources.push(...result.sources);
-      const products = Array.isArray(result.data.products) ? result.data.products as any[] : [];
-      products.forEach((product) => {
+      getAgentProductOptions(result.data).forEach((product) => {
         const line = formatCustomerStockOption(product);
         if (line) customerStockLines.push(line);
       });
@@ -742,9 +776,7 @@ export const runGpBusinessAgent = async (apiKey: string, context: AgentContext, 
         const result = await executeTool(context, toolName, args);
         sources.push(...result.sources);
         if (context.mode === 'CUSTOMER_READY') {
-          const products = Array.isArray(result.data.products) ? result.data.products as any[] : [];
-          const bestAvailableOption = result.data.bestAvailableOption ? [result.data.bestAvailableOption as any] : [];
-          [...products, ...bestAvailableOption].forEach((product) => {
+          getAgentProductOptions(result.data).forEach((product) => {
             const line = formatCustomerStockOption(product);
             if (line) customerStockLines.push(line);
           });
