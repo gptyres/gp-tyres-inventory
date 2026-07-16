@@ -40,6 +40,7 @@ const getAgentErrorMessage = (error: unknown) => {
   const message = error instanceof Error ? error.message : 'Business Agent request failed.';
   if (/valid staff login/i.test(message)) return 'Your secure staff session has expired. Please sign in again.';
   if (/not configured/i.test(message)) return 'The GP Business Agent is not configured yet. Ask an administrator to add the server-side NVIDIA key.';
+  if (/rate-limited|too many requests/i.test(message)) return 'GLM-5.2 is temporarily rate-limited. Verified customer tyre stock searches will keep working; please retry conversational questions shortly.';
   if (/DEGRADED|temporarily unavailable|overloaded|timeout/i.test(message)) return 'GLM-5.2 is temporarily unavailable. Your stock data has not been changed; please try again shortly.';
   return message || 'The GP Business Agent request failed. Please try again.';
 };
@@ -113,7 +114,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize, c
       }]);
     } catch (error) {
       console.error('Business Agent error', error);
-      setMessages((current) => [...current, { role: 'assistant', text: getAgentErrorMessage(error), verificationStatus: 'UNVERIFIED' }]);
+      setMessages((current) => [...current, { role: 'assistant', text: getAgentErrorMessage(error) }]);
     } finally {
       setIsLoading(false);
     }
