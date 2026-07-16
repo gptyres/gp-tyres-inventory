@@ -1153,7 +1153,7 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
       stockByLocation: { JHB: qtyJhb, CPT: qtyCpt, DBN: qtyDbn },
       quantity: qtyJhb + qtyCpt + qtyDbn,
       costPrice: priceIncVat,
-      sellingPrice: priceIncVat,
+      sellingPrice: recommendedRetail || priceIncVat,
       lastUpdated: today
     });
   });

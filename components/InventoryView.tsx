@@ -30,6 +30,7 @@ interface InventoryViewProps {
   isReadOnly?: boolean; // New Prop for Supplier Views
   showSupplierName?: boolean;
   currentUser?: string | null;
+  priceLabel?: string;
 }
 
 // --- CONFIG TYPES ---
@@ -761,7 +762,7 @@ interface ViewComponentProps extends InventoryViewProps {
   onCopyItem: (item: InventoryItem) => void;
 }
 
-const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
+const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
   
   const SortIcon = ({ colKey }: { colKey: SortKey }) => (
     <span className={`ml-1 inline-block transition-opacity ${sortConfig.key === colKey ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`}>
@@ -797,7 +798,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
             {visibleColumns.location && <Header label="Location" colKey="location" />}
             <Header label="Qty" colKey="quantity" align="center" />
             {visibleColumns.cost && <th className="p-3 border-r border-b border-gp-border text-right text-green-600 bg-green-900/10">Cost</th>}
-            {visibleColumns.price && <Header label={isReadOnly ? "Selling Price" : "Sell Price"} colKey="price" align="right" />}
+            {visibleColumns.price && <Header label={isReadOnly ? priceLabel : "Sell Price"} colKey="price" align="right" />}
           </tr>
         </thead>
         <tbody className="divide-y divide-gp-border">
@@ -926,7 +927,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
   );
 };
 
-const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
+const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
       {items.map((item) => (
@@ -1048,7 +1049,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             {visibleColumns.price && (
                 <div className="bg-gp-black p-3 grid grid-cols-2 gap-3 items-center">
                     <div className="flex flex-col">
-                        <span className="text-[9px] text-gp-red uppercase font-bold tracking-wider">{isReadOnly ? "Selling Price" : "Selling Price"}</span>
+                        <span className="text-[9px] text-gp-red uppercase font-bold tracking-wider">{isReadOnly ? priceLabel : "Selling Price"}</span>
                         <span className="text-xl font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
                     </div>
 
@@ -1084,7 +1085,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
   );
 };
 
-const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
+const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
   return (
     <div className="flex flex-col divide-y divide-gp-border p-2 mb-6">
       {items.map((item) => (
@@ -1149,7 +1150,12 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                  <span className="text-xs font-bold text-green-600 font-mono bg-green-900/10 px-1 rounded">{formatCurrency(item.costPrice)}</span>
               )}
 
-              {visibleColumns.price && <span className="text-base font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>}
+              {visibleColumns.price && (
+                <div className="flex flex-col items-end">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-gp-red">{isReadOnly ? priceLabel : 'Selling Price'}</span>
+                  <span className="text-base font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
+                </div>
+              )}
               
               <div className="flex gap-2">
                 <CopyItemButton item={item} onCopyItem={onCopyItem} />

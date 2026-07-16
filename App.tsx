@@ -266,7 +266,7 @@ const App: React.FC = () => {
     },
     ALINE: {
       label: 'ALINE',
-      note: 'Viewing External Supplier Data. Prices already include VAT, with branch wheel stock shown in the location field.',
+      note: 'Viewing External Supplier Data. Recommended selling prices include VAT and are a guide only, not the final selling price. Branch wheel stock is shown by location.',
       portalUrl: 'https://www.alinewheels.co.za/login-2/?arm_redirect=https%3A%2F%2Fwww.alinewheels.co.za%2Fedit_profile%2F'
     },
     STAMFORD: {
@@ -1737,6 +1737,7 @@ const App: React.FC = () => {
                     onBulkDelete={handleBulkDelete}
                     isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
                     showSupplierName={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS'}
+                    priceLabel={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALINE' ? 'Recommended Selling Price' : undefined}
                   />
                 )}
               </div>

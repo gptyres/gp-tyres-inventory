@@ -211,6 +211,57 @@ describe('manual supplier document import', () => {
     expect(result.rows[0]).toMatchObject({ size: '17X8.5', category: 'Wheels' });
   });
 
+  it('decodes ALINE wheel fitment, name, finish and branch rows from portal exports', () => {
+    const result = normalizeManualSupplierGrid('ALINE', [
+      ['Supplier SKU', 'Brand', 'Product Name', 'Category', 'Size', 'Stock Location', 'Stock Units', 'Cost Price Inc VAT', 'Selling Price'],
+      ['82410219', 'A-Line', '512017X8PHANTOM ET25F SSML 72.6', 'Classic Wheels', '', 'Cape Town', '2 units', 'R5590', 'R6990']
+    ]);
+
+    expect(result.rows).toHaveLength(1);
+    expect(result.rows[0]).toMatchObject({
+      supplierSku: '82410219',
+      brand: 'A-Line',
+      productName: 'A-Line PHANTOM SILVER MACHINED LIP',
+      tyrePattern: 'PHANTOM',
+      tyreSpecs: 'SILVER MACHINED LIP',
+      wheelPcd: '5/120',
+      wheelOffset: '25',
+      wheelCenterBore: '72.6',
+      size: '17X8',
+      stockLocation: 'Cape Town',
+      stockUnits: 2,
+      costPrice: 5590,
+      sellingPrice: 6990
+    });
+  });
+
+  it('uses ALINE recommended retail as a VAT-inclusive recommended selling price', () => {
+    const result = normalizeManualSupplierGrid('ALINE', [
+      ['Stock Code', 'Brand', 'Description', 'Category', 'Stock Location', 'Stock Units', 'Price inc VAT', 'Recommended Retail From'],
+      ['82410224', 'A-Line', '410015X8BLISS ET25 SSML ChRiv', 'Classic Wheels', 'Johannesburg', '6 units', 'R5590.00', 'R6990.00']
+    ]);
+
+    expect(result.rows[0]).toMatchObject({
+      supplierSku: '82410224',
+      costPrice: 5590,
+      sellingPrice: 6990
+    });
+  });
+
+  it('keeps ALINE accessories without a wheel size', () => {
+    const result = normalizeManualSupplierGrid('ALINE', [
+      ['Supplier SKU', 'Brand', 'Product Name', 'Category', 'Stock Location', 'Stock Units', 'Cost Price Inc VAT', 'Selling Price'],
+      ['82440005', 'A-Line', '1/2 19MM NUT', 'Accessories', 'Durban', '104 units', 'R7.80', 'R0']
+    ]);
+
+    expect(result.rows[0]).toMatchObject({
+      supplierSku: '82440005',
+      productName: '1/2 19MM NUT',
+      size: 'N/A',
+      stockUnits: 104
+    });
+  });
+
   it('imports Tyre Life wheel names, finishes, totals, and VAT-inclusive selling prices', () => {
     const result = normalizeManualSupplierGrid('TYRE_LIFE_WHEELS', [
       ['Size', 'SKU', 'Brand', 'Wheel Name', 'Finish', 'PCD', 'Offset', 'Center Bore', 'Category', 'Selling Price', 'JHB Stock Units', 'CPT Stock Units', 'DBN Stock Units', 'Total Stock Units'],

@@ -2,6 +2,7 @@ import {
   SUPPLIER_IMPORT_BY_CATALOG,
   type SupplierImportCatalog
 } from './supplierCatalogMapping';
+import { parseAlineStockImageKeys } from './supplierStockImages';
 import { extractSupplierTyreSize, parseSupplierTyreFields } from './supplierTyreParsing';
 
 export interface ManualSupplierRow {
@@ -52,7 +53,7 @@ const HEADER_ALIASES: Record<FieldName, string[]> = {
   quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'stockunits', 'unitsinstock', 'availableunits', 'availableqty', 'qtyavailable', 'available', 'availability', 'onhand', 'freeqty', 'totalstockunits'],
   price: ['price', 'unitprice', 'pricevat', 'priceincvat', 'priceinclvat'],
   costPrice: ['cost', 'costprice', 'costvat', 'costincvat', 'costinclvat', 'costpriceincvat', 'costpriceinclvat', 'costpriceexvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'buyprice', 'buyingprice', 'discountedprice', 'discountedpriceexvat', 'dealerprice', 'priceexvat'],
-  sellingPrice: ['selling', 'sellingprice', 'sellingincvat', 'sellinginclvat', 'sellingpriceincvat', 'sellingpriceinclvat', 'sellingpriceexvat', 'roundedinclvatr25', 'retail', 'retailprice', 'retailpriceincvat', 'retailpriceinclvat', 'rrp', 'recommendedretail', 'recommendedretailprice'],
+  sellingPrice: ['selling', 'sellingprice', 'sellingincvat', 'sellinginclvat', 'sellingpriceincvat', 'sellingpriceinclvat', 'sellingpriceexvat', 'roundedinclvatr25', 'retail', 'retailprice', 'retailpriceincvat', 'retailpriceinclvat', 'rrp', 'recommendedretail', 'recommendedretailprice', 'recommendedretailfrom'],
   location: ['location', 'branch', 'warehouse', 'stocklocation'],
   category: ['category', 'type', 'segment']
 };
@@ -83,6 +84,34 @@ const parseStock = (value: unknown) => {
 };
 
 const WHEEL_SIZE = /\b(?:1[2-9]|2[0-6])\s*[Xx]\s*\d{1,2}(?:\.\d+)?\b/i;
+
+const parseAlineWheelDescription = (value: string) => {
+  const compact = value.replace(/\s+/g, '');
+  const specMatch = compact.match(/^([3-6])(\d{3})(\d{2})X(\d{1,2}(?:\.\d+)?)/i);
+  const offsetMatch = value.match(/\bET\s*(-?\d+)/i);
+  const centerBoreMatch = value.match(/\b(\d{2,3}\.\d)\b/);
+  const imageKeys = parseAlineStockImageKeys(value);
+
+  if (!specMatch) {
+    return {
+      size: '',
+      pcd: '',
+      offset: '',
+      centerBore: '',
+      wheelName: '',
+      finish: ''
+    };
+  }
+
+  return {
+    size: `${specMatch[3]}X${specMatch[4]}`,
+    pcd: `${specMatch[1]}/${Number(specMatch[2])}`,
+    offset: offsetMatch?.[1] || '',
+    centerBore: centerBoreMatch?.[1] || '',
+    wheelName: imageKeys.designKey,
+    finish: imageKeys.finishKey
+  };
+};
 
 const extractSize = (value: string) => {
   const normalizedValue = value.replace(/[“”″"]/g, '').replace(/\bHL(?=\d)/i, '');
@@ -192,7 +221,8 @@ export const normalizeManualSupplierGrid = (
   const costPriceHeader = header.columns.costPrice === undefined ? '' : header.headers[header.columns.costPrice] || '';
   const sellingPriceHeader = header.columns.sellingPrice === undefined ? '' : header.headers[header.columns.sellingPrice] || '';
   const includesVat = (value: string) => /incvat|inclvat|includingvat|vatinclusive|pricevat/.test(value);
-  const supplierPricesIncludeVat = catalog === 'TYRE_LIFE'
+  const supplierPricesIncludeVat = catalog === 'ALINE'
+    || catalog === 'TYRE_LIFE'
     || catalog === 'TYRE_LIFE_WHEELS';
   const genericPriceIncludesVat = supplierPricesIncludeVat || includesVat(genericPriceHeader);
   const costPriceIncludesVat = supplierPricesIncludeVat || includesVat(costPriceHeader);
@@ -222,9 +252,18 @@ export const normalizeManualSupplierGrid = (
     const description = cleanCell(get(row, 'description'));
     const descriptionForParsing = description.replace(/\bHL(?=\d)/i, '');
     const explicitSize = cleanCell(get(row, 'size'));
-    const wheelPcd = supplierMeta.productType === 'WHEEL' ? cleanCell(get(row, 'pcd')) : '';
-    const wheelOffset = supplierMeta.productType === 'WHEEL' ? cleanCell(get(row, 'offset')).replace(/^--/, '-') : '';
-    const wheelCenterBore = supplierMeta.productType === 'WHEEL' ? cleanCell(get(row, 'centerBore')) : '';
+    const alineWheel = catalog === 'ALINE' ? parseAlineWheelDescription(description) : null;
+    const wheelPcd = supplierMeta.productType === 'WHEEL'
+      ? cleanCell(get(row, 'pcd')) || alineWheel?.pcd || ''
+      : '';
+    const wheelOffset = supplierMeta.productType === 'WHEEL'
+      ? (cleanCell(get(row, 'offset')) || alineWheel?.offset || '').replace(/^--/, '-')
+      : '';
+    const wheelCenterBore = supplierMeta.productType === 'WHEEL'
+      ? cleanCell(get(row, 'centerBore')) || alineWheel?.centerBore || ''
+      : '';
+    const wheelPattern = explicitPattern || alineWheel?.wheelName || '';
+    const wheelSpecs = explicitSpecs || alineWheel?.finish || '';
     const joinedIdentity = [explicitSize, explicitBrand, explicitPattern, explicitRating, explicitIndex, explicitSpecs, description].filter(Boolean).join(' ');
     const parsedTyre = supplierMeta.productType === 'TYRE'
       ? parseSupplierTyreFields({
@@ -240,11 +279,14 @@ export const normalizeManualSupplierGrid = (
       : null;
     const size = parsedTyre?.size
       || extractSize(explicitSize)
+      || alineWheel?.size
       || extractSize(description)
       || extractSize(joinedIdentity)
       || (supplierMeta.productType === 'WHEEL' && explicitSize
         ? explicitSize.replace(/\s+/g, '').toUpperCase()
-        : /\d/.test(explicitSize)
+        : catalog === 'ALINE'
+          ? 'N/A'
+          : /\d/.test(explicitSize)
           ? explicitSize.replace(/\s+/g, '').toUpperCase()
           : '');
     const suppliedStockUnits = parseStock(get(row, 'quantity'));
@@ -272,14 +314,14 @@ export const normalizeManualSupplierGrid = (
     const brand = parsedTyre
       ? parsedTyre.brand
       : explicitBrand || descriptionWithoutSize.split(/\s+/)[0] || supplierMeta.supplier;
-    const tyrePattern = parsedTyre?.pattern || explicitPattern;
+    const tyrePattern = parsedTyre?.pattern || wheelPattern;
     const tyreRating = parsedTyre?.rating || '';
     const tyreIndex = parsedTyre?.index || '';
-    const tyreSpecs = parsedTyre?.specs || explicitSpecs;
+    const tyreSpecs = parsedTyre?.specs || wheelSpecs;
     const productName = parsedTyre
       ? [brand, tyrePattern, tyreRating, tyreIndex, tyreSpecs].filter(Boolean).join(' ') || description || size
-      : explicitPattern
-        ? [brand, explicitPattern, explicitSpecs].filter(Boolean).join(' ')
+      : wheelPattern
+        ? [brand, wheelPattern, wheelSpecs].filter(Boolean).join(' ')
         : descriptionWithoutSize || `${brand} ${size}`;
     const branchStockLocation = Object.entries(stockByLocation)
       .map(([location, quantity]) => `${location}: ${quantity}`)
