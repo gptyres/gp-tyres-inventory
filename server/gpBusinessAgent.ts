@@ -6,6 +6,8 @@ const NVIDIA_CHAT_COMPLETIONS_URL = 'https://integrate.api.nvidia.com/v1/chat/co
 const DEFAULT_MODEL = 'z-ai/glm-5.2';
 const MAX_TOOL_ROUNDS = 4;
 const MAX_SEARCH_RESULTS = 20;
+const NVIDIA_REQUEST_TIMEOUT_MS = 45_000;
+const NVIDIA_MAX_ATTEMPTS = 2;
 
 export type AgentMode = 'INTERNAL' | 'CUSTOMER_READY';
 
@@ -60,6 +62,12 @@ export const normalizeAgentSearchText = (value: unknown) => cleanText(value, 180
 const normalizeSearchText = normalizeAgentSearchText;
 const searchTerms = (value: unknown) => Array.from(new Set(normalizeSearchText(value).split(' ').filter((term) => term.length > 1))).slice(0, 6);
 const containsAllTerms = (haystack: string, terms: string[]) => terms.every((term) => haystack.includes(term));
+
+export const extractTyreSizeForAgentFallback = (value: unknown) => {
+  const normalized = normalizeSearchText(value);
+  const match = normalized.match(/\b(\d{3})\/(\d{2})\/(\d{2})\b/);
+  return match ? `${match[1]}/${match[2]}R${match[3]}` : '';
+};
 
 const customerProductField = (product: any, field: 'size' | 'brand' | 'pattern') => cleanText(
   product?.[field] ?? product?.specifications?.[field] ?? product?.specifications?.[field.toUpperCase()] ?? '',
@@ -602,26 +610,82 @@ const logToolRun = async (context: AgentContext, toolName: string, input: any, r
 };
 
 const requestCompletion = async (apiKey: string, model: string, messages: any[], tools: any[]) => {
-  const response = await fetch(process.env.NVIDIA_CHAT_COMPLETIONS_URL || NVIDIA_CHAT_COMPLETIONS_URL, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}`, Accept: 'application/json', 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model,
-      messages,
-      tools,
-      tool_choice: 'auto',
-      temperature: 0.15,
-      top_p: 0.9,
-      max_tokens: 4096,
-      seed: 42,
-      stream: false
-    })
-  });
-  const payload = await response.json().catch(() => null);
-  if (!response.ok) throw new Error(payload?.error?.message || payload?.detail || payload?.message || 'NVIDIA GLM request failed.');
-  const message = payload?.choices?.[0]?.message;
-  if (!message) throw new Error('NVIDIA GLM returned no message.');
-  return message;
+  const endpoint = process.env.NVIDIA_CHAT_COMPLETIONS_URL || NVIDIA_CHAT_COMPLETIONS_URL;
+  let lastError: Error | null = null;
+
+  for (let attempt = 1; attempt <= NVIDIA_MAX_ATTEMPTS; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), NVIDIA_REQUEST_TIMEOUT_MS);
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${apiKey}`, Accept: 'application/json', 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model,
+          messages,
+          tools,
+          tool_choice: 'auto',
+          temperature: 0.15,
+          top_p: 0.9,
+          max_tokens: 4096,
+          seed: 42,
+          stream: false
+        })
+      });
+      const responseText = await response.text();
+      let payload: any = null;
+      try {
+        payload = responseText ? JSON.parse(responseText) : null;
+      } catch {
+        payload = null;
+      }
+      if (!response.ok) {
+        const providerMessage = cleanText(payload?.error?.message || payload?.detail || payload?.message, 300);
+        const safePreview = cleanText(responseText, 500).replace(/nvapi-[A-Za-z0-9_-]+/g, '[REDACTED]');
+        console.error('[NVIDIA GLM UPSTREAM]', {
+          status: response.status,
+          attempt,
+          requestId: response.headers.get('x-request-id') || response.headers.get('nvidia-request-id') || null,
+          contentType: response.headers.get('content-type') || null,
+          body: safePreview || null
+        });
+        const error = new Error(
+          response.status === 401 || response.status === 403
+            ? 'NVIDIA authentication failed. An administrator must rotate the NVIDIA API key.'
+            : response.status === 429
+              ? 'NVIDIA GLM is rate-limited. Please retry in a moment.'
+              : providerMessage || `NVIDIA GLM is temporarily unavailable (provider status ${response.status}).`
+        );
+        (error as any).providerStatus = response.status;
+        (error as any).publicStatus = 503;
+        lastError = error;
+        if (attempt < NVIDIA_MAX_ATTEMPTS && (response.status === 429 || response.status >= 500)) {
+          await new Promise((resolve) => setTimeout(resolve, 750 * attempt));
+          continue;
+        }
+        throw error;
+      }
+      const message = payload?.choices?.[0]?.message;
+      if (!message) throw new Error('NVIDIA GLM returned no message.');
+      return message;
+    } catch (error) {
+      if ((error as any)?.providerStatus) throw error;
+      const timedOut = error instanceof Error && error.name === 'AbortError';
+      const wrapped = new Error(timedOut ? 'NVIDIA GLM timed out. Please retry in a moment.' : 'NVIDIA GLM connection failed. Please retry in a moment.');
+      (wrapped as any).publicStatus = 503;
+      lastError = wrapped;
+      console.error('[NVIDIA GLM CONNECTION]', { attempt, timedOut, message: cleanText(error instanceof Error ? error.message : error, 200) });
+      if (attempt < NVIDIA_MAX_ATTEMPTS) {
+        await new Promise((resolve) => setTimeout(resolve, 750 * attempt));
+        continue;
+      }
+      throw wrapped;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+  throw lastError || new Error('NVIDIA GLM request failed.');
 };
 
 export const runGpBusinessAgent = async (apiKey: string, context: AgentContext, inputMessages: AgentMessageInput[]) => {
@@ -639,7 +703,25 @@ export const runGpBusinessAgent = async (apiKey: string, context: AgentContext, 
   let answer = '';
 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round += 1) {
-    const assistantMessage = await requestCompletion(apiKey, model, messages, tools);
+    let assistantMessage: any;
+    try {
+      assistantMessage = await requestCompletion(apiKey, model, messages, tools);
+    } catch (error) {
+      const fallbackQuery = context.mode === 'CUSTOMER_READY' ? extractTyreSizeForAgentFallback(context.latestUserMessage) : '';
+      if (!fallbackQuery) throw error;
+      const startedAt = Date.now();
+      const result = await findAlternatives(context, { query: fallbackQuery });
+      sources.push(...result.sources);
+      const products = Array.isArray(result.data.products) ? result.data.products as any[] : [];
+      products.forEach((product) => {
+        const line = formatCustomerStockOption(product);
+        if (line) customerStockLines.push(line);
+      });
+      await logToolRun(context, 'find_alternative_products_fallback', { query: fallbackQuery }, result, startedAt);
+      verificationStatus = result.verificationStatus;
+      if (customerStockLines.length) break;
+      throw error;
+    }
     messages.push(assistantMessage);
     const toolCalls = Array.isArray(assistantMessage.tool_calls) ? assistantMessage.tool_calls : [];
     if (!toolCalls.length) {
