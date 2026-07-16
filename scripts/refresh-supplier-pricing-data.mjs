@@ -3,11 +3,17 @@ import { resolve } from 'node:path';
 
 const args = process.argv.slice(2);
 const exoticOnly = args[0] === '--exotic';
-const [apexSource, treadsSource, tubestoneSource] = exoticOnly ? [] : args;
+const tubestoneOnly = args[0] === '--tubestone';
+const [apexSource, treadsSource, tubestoneSource] = exoticOnly || tubestoneOnly ? [] : args;
 const exoticSource = exoticOnly ? args[1] : '';
+const singleTubestoneSource = tubestoneOnly ? args[1] : '';
 
-if ((!exoticOnly && (!apexSource || !treadsSource || !tubestoneSource)) || (exoticOnly && !exoticSource)) {
-  throw new Error('Usage: node scripts/refresh-supplier-pricing-data.mjs <apex.csv> <treads-unlimited.csv> <tubestone.csv> OR --exotic <exotic.csv>');
+if (
+  (!exoticOnly && !tubestoneOnly && (!apexSource || !treadsSource || !tubestoneSource))
+  || (exoticOnly && !exoticSource)
+  || (tubestoneOnly && !singleTubestoneSource)
+) {
+  throw new Error('Usage: node scripts/refresh-supplier-pricing-data.mjs <apex.csv> <treads-unlimited.csv> <tubestone.csv> OR --exotic <exotic.csv> OR --tubestone <tubestone.csv>');
 }
 
 const parseCsv = (text) => {
@@ -163,7 +169,7 @@ const standardRefreshes = [
     locations: ['Regional', 'National']
   },
   {
-    input: tubestoneSource,
+    input: tubestoneOnly ? singleTubestoneSource : tubestoneSource,
     output: 'supplier_data/tubestoneData.ts',
     exportName: 'TUBESTONE_RAW_DATA',
     supplier: 'Tubestone',
@@ -182,6 +188,12 @@ const exoticRefreshes = [
   }
 ];
 
-const results = await Promise.all((exoticOnly ? exoticRefreshes : standardRefreshes).map(refreshSupplier));
+const selectedRefreshes = exoticOnly
+  ? exoticRefreshes
+  : tubestoneOnly
+    ? standardRefreshes.filter(({ supplier }) => supplier === 'Tubestone')
+    : standardRefreshes;
+
+const results = await Promise.all(selectedRefreshes.map(refreshSupplier));
 
 console.log(JSON.stringify(results, null, 2));

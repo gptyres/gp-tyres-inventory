@@ -43,14 +43,15 @@ describe('15 July supplier pricing refresh', () => {
 
   it('consolidates Tubestone branch stock into one correctly priced listing per SKU', () => {
     const items = parseTubestoneData(TUBESTONE_RAW_DATA);
-    const sample = items.find((item) => item.supplierStockCode === '6016.35');
+    const sample = items.find((item) => item.supplierStockCode === '6016.301');
 
     expect(items).toHaveLength(1163);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(22149);
     expect(sample).toMatchObject({
-      costPrice: 3341.47,
-      sellingPrice: 3850,
-      quantity: 10,
-      stockByLocation: { BFN: 4, CPT: 0, DBN: 0, JHB: 6, NWH: 0 }
+      costPrice: 2520,
+      sellingPrice: 2900,
+      quantity: 56,
+      stockByLocation: { BFN: 48, CPT: 6, DBN: 0, JHB: 2, NWH: 0 }
     });
     expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
   });
