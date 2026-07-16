@@ -63,12 +63,14 @@ First-version tools:
 | `analyze_sales_history` | `sales_log` | Aggregates verified historical units and revenue. |
 | `create_quote` | deterministic application code + CRM | Preview first; saves a draft only after explicit staff confirmation. |
 | `search_business_knowledge` | approved knowledge only | Customer-ready mode retrieves only customer-safe documents. |
+| `save_staff_memory` | `ai_agent_staff_memories` | Saves only explicitly requested communication, workflow and recommendation preferences. |
 
 All tool names are allow-listed. Inputs are length/range validated. Tool output is treated as untrusted data, logged, and supplied to the model as evidence—not instructions.
 
 ## 5. Retrieval and memory strategy
 
 - Conversation memory: the current channel sends a bounded recent message window; full messages remain in Supabase.
+- Staff memory: a staff member can say “remember…” to save a safe preference. Up to 12 active terminal-scoped preferences are loaded into each request. Secrets, customer personal information, changing stock/prices, fitment facts and unapproved policy are rejected.
 - Customer memory: existing CRM customer and document records are the future consent-aware authority. The first release does not automatically attach a customer.
 - Business memory: only `APPROVED` knowledge documents are retrievable. Full-text search is indexed now; embeddings can be added for larger document collections.
 - Temporary memory: model/tool-loop messages exist only for the request and are not promoted into trusted knowledge.
@@ -86,6 +88,7 @@ Every durable memory record includes a source, timestamps, status and, where app
 | Quote preview | Yes | Yes | Yes |
 | Discounted quote | No | Admin authorisation | Approved result only |
 | Save quote draft | Explicit confirmation | Explicit confirmation | Staff action only |
+| Save staff preference | Explicit “remember” instruction | Explicit “remember” instruction | No customer write |
 | Submit correction | Yes | Yes | No direct customer write |
 | Approve knowledge | No | Yes | No |
 
@@ -126,6 +129,8 @@ Future adapters should translate their channel payload into the same message, mo
 The implemented version provides:
 
 - Staff and customer-ready modes in the portal agent.
+- Customer-ready stock options are limited to products with at least two units and rendered as `SIZE BRAND PATTERN @ RPRICE`.
+- Durable, terminal-scoped staff preference memory with explicit-save and server-side safety controls.
 - Live physical and supplier stock search with source timestamps.
 - Supplier comparison and safe alternatives.
 - Fitment questions that identify missing information and require physical confirmation.
