@@ -28,4 +28,13 @@ describe('customer-ready stock formatting', () => {
       stockUnits: 2
     })).toBe('205/55R16 Continental UltraContact @ R1525');
   });
+
+  it('normalises slash-separated tyre sizes and omits incomplete product rows', () => {
+    expect(formatCustomerStockOption({
+      size: '265/65/17', brand: 'Sailun', pattern: 'Terramax RT', sellingPrice: 2600, stockUnits: 8
+    })).toBe('265/65R17 Sailun Terramax RT @ R2600');
+    expect(formatCustomerStockOption({
+      size: '265/65R17', brand: 'Trazano', pattern: '', sellingPrice: 1850, stockUnits: 8
+    })).toBeNull();
+  });
 });
