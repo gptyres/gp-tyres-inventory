@@ -1,5 +1,5 @@
 
-import React, { lazy, Suspense, useState, useMemo, useEffect, useCallback } from 'react';
+import React, { lazy, Suspense, useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { InventoryView } from './components/InventoryView';
@@ -132,6 +132,9 @@ const App: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
+  const [isScrollToTopVisible, setIsScrollToTopVisible] = useState(false);
+  const mainScrollContainerRef = useRef<HTMLElement | null>(null);
+  const activeScrollContainerRef = useRef<HTMLElement | null>(null);
   
   // Modal States
   const [isStockModalOpen, setIsStockModalOpen] = useState(false);
@@ -160,6 +163,32 @@ const App: React.FC = () => {
   
   const [selectedItem, setSelectedItem] = useState<InventoryItem | undefined>(undefined);
   const [selectedBackorder, setSelectedBackorder] = useState<Backorder | undefined>(undefined);
+
+  useEffect(() => {
+    const handleScroll = (event: Event) => {
+      const mainContainer = mainScrollContainerRef.current;
+      const scrollContainer = event.target;
+      if (!mainContainer || !(scrollContainer instanceof HTMLElement) || !mainContainer.contains(scrollContainer)) return;
+
+      activeScrollContainerRef.current = scrollContainer;
+      setIsScrollToTopVisible(scrollContainer.scrollTop > 480);
+    };
+
+    document.addEventListener('scroll', handleScroll, true);
+    return () => document.removeEventListener('scroll', handleScroll, true);
+  }, []);
+
+  useEffect(() => {
+    const scrollContainer = activeScrollContainerRef.current || mainScrollContainerRef.current;
+    scrollContainer?.scrollTo({ top: 0 });
+    activeScrollContainerRef.current = mainScrollContainerRef.current;
+    setIsScrollToTopVisible(false);
+  }, [currentView, activeSupplierCatalog]);
+
+  const handleScrollToTop = useCallback(() => {
+    const scrollContainer = activeScrollContainerRef.current || mainScrollContainerRef.current;
+    scrollContainer?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedSearchQuery(searchQuery), 150);
@@ -1642,7 +1671,7 @@ const App: React.FC = () => {
           pageTitle={topNavTitle}
         />
 
-        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'RADAR_RED') ? '' : 'pb-20'}`}>
+        <main ref={mainScrollContainerRef} className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'RADAR_RED') ? '' : 'pb-20'}`}>
           {currentView === 'DASHBOARD' && (
             <DashboardView 
               currentUser={currentUser}
@@ -1818,6 +1847,20 @@ const App: React.FC = () => {
             <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} onMinimize={() => setIsChatOpen(false)} />
           </Suspense>
         )}
+
+        <button
+          type="button"
+          onClick={handleScrollToTop}
+          className={`fixed bottom-7 right-24 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-gp-border bg-gp-panel text-gp-text-main shadow-lg transition-all hover:-translate-y-0.5 hover:border-gp-red hover:text-gp-red active:translate-y-0 ${isScrollToTopVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0'}`}
+          title="Scroll to top"
+          aria-label="Scroll to top"
+          aria-hidden={!isScrollToTopVisible}
+          tabIndex={isScrollToTopVisible ? 0 : -1}
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
 
         <button
           onClick={() => {
