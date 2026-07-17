@@ -8,6 +8,8 @@ export const WHEEL_CATALOG_DRIVE_FOLDER_URL = `https://drive.google.com/drive/fo
 export const WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_LABEL = 'Staff Wheel Uploads';
 export const WHEEL_CATALOG_STAFF_UPLOAD_SOURCE_ROOT_ID = 'staff-wheel-catalog-uploads';
 const PAGE_SIZE = 1000;
+const DRIVE_SYNC_IMAGE_BATCH_SIZE = 15;
+const DRIVE_SYNC_MAX_BATCHES = 250;
 
 export interface WheelCatalogSyncResult {
   ok: boolean;
@@ -60,6 +62,24 @@ export interface LocalWheelCatalogImportPayload {
   base64: string;
 }
 
+const stringifyErrorValue = (value: unknown): string => {
+  if (value == null) return '';
+  if (typeof value === 'string') return value;
+  if (value instanceof Error) return value.message;
+  if (Array.isArray(value)) return value.map(stringifyErrorValue).filter(Boolean).join('\n');
+  if (typeof value === 'object') {
+    const record = value as Record<string, unknown>;
+    const message = stringifyErrorValue(record.error || record.message || record.msg);
+    if (message) return message;
+    try {
+      return JSON.stringify(value);
+    } catch {
+      return String(value);
+    }
+  }
+  return String(value);
+};
+
 const getFunctionErrorMessage = async (error: unknown, fallback: string) => {
   const normalizeMessage = (message: string) => {
     if (message.includes("Method doesn't allow unregistered callers") || message.includes('PERMISSION_DENIED')) {
@@ -79,18 +99,20 @@ const getFunctionErrorMessage = async (error: unknown, fallback: string) => {
           ? await response.json().catch(() => null) as { error?: string; errors?: string[] } | null
           : null;
 
-      if (payload?.error) return normalizeMessage(payload.error);
-      if (payload?.errors?.length) return normalizeMessage(payload.errors.join('\n'));
+      const payloadError = stringifyErrorValue(payload?.error);
+      if (payloadError) return normalizeMessage(payloadError);
+      const payloadErrors = stringifyErrorValue(payload?.errors);
+      if (payloadErrors) return normalizeMessage(payloadErrors);
 
-      const plainError = (context as { error?: string; message?: string }).error
-        ?? (context as { error?: string; message?: string }).message;
+      const plainError = stringifyErrorValue((context as { error?: unknown; message?: unknown }).error
+        ?? (context as { error?: unknown; message?: unknown }).message);
       if (plainError) return normalizeMessage(plainError);
     }
   } catch {
     // Fall through to the standard error message.
   }
 
-  return normalizeMessage(error instanceof Error ? error.message : fallback);
+  return normalizeMessage(stringifyErrorValue(error) || fallback);
 };
 
 const invokeLocalImport = async (body: Record<string, unknown>, importToken: string): Promise<WheelCatalogSyncResult> => {
@@ -201,7 +223,7 @@ export const syncGoogleDriveWheelCatalog = async (
   syncToken: string
 ): Promise<WheelCatalogSyncResult> => {
   let imageOffset = 0;
-  const imageLimit = 50;
+  const imageLimit = DRIVE_SYNC_IMAGE_BATCH_SIZE;
   const totals: WheelCatalogSyncResult = {
     ok: true,
     scanned: 0,
@@ -211,7 +233,7 @@ export const syncGoogleDriveWheelCatalog = async (
     errors: []
   };
 
-  for (let batch = 0; batch < 100; batch += 1) {
+  for (let batch = 0; batch < DRIVE_SYNC_MAX_BATCHES; batch += 1) {
     const { data, error } = await supabase.functions.invoke('sync-wheel-catalog', {
       body: {
         rootFolderId: WHEEL_CATALOG_DRIVE_ROOT_ID,
@@ -244,7 +266,7 @@ export const syncGoogleDriveWheelCatalog = async (
       return {
         ...totals,
         ok: false,
-        error: result.error || result.errors?.join('\n') || 'Google Drive wheel catalog sync failed.'
+        error: stringifyErrorValue(result.error) || stringifyErrorValue(result.errors) || 'Google Drive wheel catalog sync failed.'
       };
     }
 
@@ -267,6 +289,6 @@ export const syncGoogleDriveWheelCatalog = async (
   return {
     ...totals,
     ok: false,
-    error: 'Google Drive sync stopped after 100 batches before completion.'
+    error: `Google Drive sync stopped after ${DRIVE_SYNC_MAX_BATCHES} batches before completion.`
   };
 };

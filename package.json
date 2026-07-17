@@ -7,18 +7,29 @@
     "dev": "node ./node_modules/vite/bin/vite.js",
     "build": "node ./node_modules/vite/bin/vite.js build",
     "preview": "node ./node_modules/vite/bin/vite.js preview",
-    "test": "node ./node_modules/vitest/vitest.mjs run"
+    "test": "node ./node_modules/vitest/vitest.mjs run",
+    "wheel:audit": "node scripts/audit-wheel-catalog-cleanup.mjs audit",
+    "wheel:quarantine:dry-run": "node scripts/audit-wheel-catalog-cleanup.mjs quarantine --dry-run",
+    "wheel:quarantine": "node scripts/audit-wheel-catalog-cleanup.mjs quarantine",
+    "wheel:import": "node scripts/import-wheel-catalog-local.mjs",
+    "wheel:flatten-quarantine:dry-run": "node scripts/flatten-wheel-catalog-folder.mjs --dry-run",
+    "wheel:flatten-quarantine": "node scripts/flatten-wheel-catalog-folder.mjs",
+    "wheel:analyze": "node scripts/analyze-wheel-catalog-images.mjs",
+    "wheel:analysis:import": "node scripts/import-wheel-catalog-analysis.mjs",
+    "wheel:analysis:merge": "node scripts/merge-wheel-catalog-analysis.mjs",
+    "wheel:chrome-ocr:manifest": "node scripts/export-wheel-catalog-chrome-ocr-manifest.mjs",
+    "wheel:chrome-ocr:normalize": "node scripts/normalize-wheel-catalog-chrome-ocr.mjs"
   },
   "dependencies": {
+    "@e965/xlsx": "^0.20.3",
     "@google/genai": "^1.38.0",
     "@supabase/supabase-js": "^2.93.1",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
+    "pdfjs-dist": "^6.1.200",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "read-excel-file": "^5.8.7",
-    "@e965/xlsx": "^0.20.3",
-    "pdfjs-dist": "^6.1.200"
+    "read-excel-file": "^5.8.7"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

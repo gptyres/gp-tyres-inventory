@@ -6,7 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS'
 };
 
-const WHEEL_CATALOG_IMPORT_PIN = '786';
 const BUCKET_NAME = 'wheel-catalog-images';
 const IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
@@ -54,7 +53,25 @@ interface FinalizePayload {
   errorMessage?: string | null;
 }
 
-interface EnrichPayload {
+interface AnalysisFields {
+  brand?: string | null;
+  model?: string | null;
+  pcdAliases?: string[];
+  wheelSize?: string | null;
+  width?: string | null;
+  finish?: string | null;
+  colour?: string | null;
+  offset?: string | null;
+  centerBore?: string | null;
+  loadRating?: string | null;
+  vehicleHints?: string[];
+  confidence?: number | null;
+  needsReview?: boolean;
+  reviewReason?: string | null;
+  analysisModel?: string | null;
+}
+
+interface EnrichPayload extends AnalysisFields {
   action: 'enrich';
   driveFileId: string;
   imageOcrText?: string | null;
@@ -63,13 +80,18 @@ interface EnrichPayload {
   status?: 'completed' | 'failed';
 }
 
+interface EnrichBatchPayload {
+  action: 'enrich-batch';
+  items: Array<Omit<EnrichPayload, 'action'>>;
+}
+
 interface ReplaceFolderPayload {
   action: 'replace-folder';
   folderPath: string;
   seenDriveFileIds: string[];
 }
 
-type Payload = StartPayload | ImportPayload | FinalizePayload | EnrichPayload | ReplaceFolderPayload;
+type Payload = StartPayload | ImportPayload | FinalizePayload | EnrichPayload | EnrichBatchPayload | ReplaceFolderPayload;
 
 const jsonResponse = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -93,6 +115,23 @@ const chunk = <T>(items: T[], size: number) => {
   return chunks;
 };
 
+const fetchAllRows = async <T>(
+  buildQuery: (from: number, to: number) => Promise<{ data: T[] | null; error: unknown }>
+) => {
+  const pageSize = 1000;
+  const rows: T[] = [];
+
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await buildQuery(from, from + pageSize - 1);
+    if (error) throw error;
+    const page = data ?? [];
+    rows.push(...page);
+    if (page.length < pageSize) break;
+  }
+
+  return rows;
+};
+
 const normalizePcd = (value?: string | null) => {
   const normalized = (value ?? '').trim().replace(/\s+/g, '').replace(/x/i, 'X').toUpperCase();
   return normalized || null;
@@ -106,14 +145,17 @@ const normalizeRimSize = (value?: string | null) => {
 const getConfiguredImportToken = async (supabase: ReturnType<typeof createClient>) => {
   const { data, error } = await supabase
     .from('app_private_import_secrets')
-    .select('secret_value')
-    .eq('name', 'WHEEL_CATALOG_IMPORT_TOKEN')
-    .maybeSingle();
+    .select('name, secret_value')
+    .in('name', ['WHEEL_CATALOG_SYNC_TOKEN', 'WHEEL_CATALOG_IMPORT_TOKEN']);
 
   if (error) throw error;
-  if (data?.secret_value) return data.secret_value;
+  const privateSecrets = new Map((data ?? []).map((row) => [row.name, row.secret_value]));
 
-  return Deno.env.get('WHEEL_CATALOG_IMPORT_TOKEN') ?? WHEEL_CATALOG_IMPORT_PIN;
+  return privateSecrets.get('WHEEL_CATALOG_SYNC_TOKEN')
+    ?? Deno.env.get('WHEEL_CATALOG_SYNC_TOKEN')
+    ?? Deno.env.get('WHEEL_CATALOG_IMPORT_TOKEN')
+    ?? privateSecrets.get('WHEEL_CATALOG_IMPORT_TOKEN')
+    ?? '';
 };
 
 const base64ToBytes = (base64: string) => {
@@ -128,6 +170,7 @@ const base64ToBytes = (base64: string) => {
 const isStartPayload = (payload: Payload): payload is StartPayload => payload.action === 'start';
 const isFinalizePayload = (payload: Payload): payload is FinalizePayload => payload.action === 'finalize';
 const isEnrichPayload = (payload: Payload): payload is EnrichPayload => payload.action === 'enrich';
+const isEnrichBatchPayload = (payload: Payload): payload is EnrichBatchPayload => payload.action === 'enrich-batch';
 const isReplaceFolderPayload = (payload: Payload): payload is ReplaceFolderPayload => payload.action === 'replace-folder';
 
 const validateImportPayload = (payload: ImportPayload) => {
@@ -244,13 +287,14 @@ const finalizeImport = async (supabase: ReturnType<typeof createClient>, payload
   }
 
   const seenIds = new Set(payload.seenDriveFileIds.filter((id) => id.startsWith(LOCAL_SOURCE_PREFIX)));
-  const { data, error } = await supabase
-    .from('wheel_catalog_items')
-    .select('drive_file_id')
-    .eq('source_root_folder_id', payload.sourceRootFolderId)
-    .eq('active', true);
-
-  if (error) throw error;
+  const data = await fetchAllRows<{ drive_file_id: string }>((from, to) => (
+    supabase
+      .from('wheel_catalog_items')
+      .select('drive_file_id')
+      .eq('source_root_folder_id', payload.sourceRootFolderId)
+      .eq('active', true)
+      .range(from, to)
+  ));
 
   const staleIds = (data ?? [])
     .map((row) => row.drive_file_id as string)
@@ -297,8 +341,8 @@ const finalizeImport = async (supabase: ReturnType<typeof createClient>, payload
 };
 
 const enrichImport = async (supabase: ReturnType<typeof createClient>, payload: EnrichPayload) => {
-  if (!payload.driveFileId || !payload.driveFileId.startsWith(LOCAL_SOURCE_PREFIX)) {
-    return jsonResponse({ ok: false, error: 'Missing or invalid local wheel catalog row ID.' }, 400);
+  if (!payload.driveFileId) {
+    return jsonResponse({ ok: false, error: 'Missing wheel catalog row ID.' }, 400);
   }
 
   const status = payload.status ?? 'completed';
@@ -306,9 +350,13 @@ const enrichImport = async (supabase: ReturnType<typeof createClient>, payload: 
     .from('wheel_catalog_items')
     .select('tags')
     .eq('drive_file_id', payload.driveFileId)
+    .eq('active', true)
     .maybeSingle();
 
   if (existingError) throw existingError;
+  if (!existing) {
+    return jsonResponse({ ok: false, error: 'Wheel catalog row was not found or is inactive.' }, 404);
+  }
 
   const { error } = await supabase
     .from('wheel_catalog_items')
@@ -317,6 +365,21 @@ const enrichImport = async (supabase: ReturnType<typeof createClient>, payload: 
       image_spec_text: payload.imageSpecText ?? null,
       image_analysis_status: status,
       image_analyzed_at: new Date().toISOString(),
+      brand: payload.brand?.trim() || null,
+      model: payload.model?.trim() || null,
+      pcd_aliases: Array.from(new Set((payload.pcdAliases ?? []).map((value) => normalizePcd(value)).filter(Boolean))),
+      wheel_size: payload.wheelSize?.trim() || null,
+      width: payload.width?.trim() || null,
+      finish: payload.finish?.trim() || null,
+      colour: payload.colour?.trim() || null,
+      wheel_offset: payload.offset?.trim() || null,
+      center_bore: payload.centerBore?.trim() || null,
+      load_rating: payload.loadRating?.trim() || null,
+      vehicle_hints: Array.from(new Set((payload.vehicleHints ?? []).map((value) => String(value).trim()).filter(Boolean))),
+      analysis_confidence: Number.isFinite(payload.confidence) ? payload.confidence : null,
+      needs_review: Boolean(payload.needsReview),
+      review_reason: payload.reviewReason?.trim() || null,
+      image_analysis_model: payload.analysisModel?.trim() || null,
       tags: Array.from(new Set([
         ...((existing?.tags as string[] | null) ?? []),
         ...(payload.tags ?? [])
@@ -333,6 +396,35 @@ const enrichImport = async (supabase: ReturnType<typeof createClient>, payload: 
   });
 };
 
+const enrichBatch = async (supabase: ReturnType<typeof createClient>, payload: EnrichBatchPayload) => {
+  if (!Array.isArray(payload.items) || payload.items.length === 0 || payload.items.length > 50) {
+    return jsonResponse({ ok: false, error: 'Enrichment batch must contain between 1 and 50 items.' }, 400);
+  }
+
+  const results: Array<{ driveFileId: string; ok: boolean; error?: string }> = [];
+  for (const itemChunk of chunk(payload.items, 10)) {
+    const chunkResults = await Promise.all(itemChunk.map(async (item) => {
+      const response = await enrichImport(supabase, { ...item, action: 'enrich' });
+      const body = await response.json().catch(() => ({}));
+      return {
+        driveFileId: item.driveFileId,
+        ok: response.ok && body.ok !== false,
+        error: response.ok && body.ok !== false ? undefined : String(body.error || `HTTP ${response.status}`)
+      };
+    }));
+    results.push(...chunkResults);
+  }
+
+  const failed = results.filter((result) => !result.ok);
+  return jsonResponse({
+    ok: failed.length === 0,
+    processed: results.length,
+    completed: results.length - failed.length,
+    failed: failed.length,
+    errors: failed
+  }, failed.length === 0 ? 200 : 207);
+};
+
 const replaceFolder = async (supabase: ReturnType<typeof createClient>, payload: ReplaceFolderPayload) => {
   const folderPath = String(payload.folderPath ?? '').trim();
   if (!folderPath || !Array.isArray(payload.seenDriveFileIds)) {
@@ -340,13 +432,14 @@ const replaceFolder = async (supabase: ReturnType<typeof createClient>, payload:
   }
 
   const seenIds = new Set(payload.seenDriveFileIds.filter((id) => id.startsWith(LOCAL_SOURCE_PREFIX)));
-  const { data, error } = await supabase
-    .from('wheel_catalog_items')
-    .select('drive_file_id, storage_path')
-    .eq('folder_path', folderPath)
-    .eq('active', true);
-
-  if (error) throw error;
+  const data = await fetchAllRows<{ drive_file_id: string; storage_path: string | null }>((from, to) => (
+    supabase
+      .from('wheel_catalog_items')
+      .select('drive_file_id, storage_path')
+      .eq('folder_path', folderPath)
+      .eq('active', true)
+      .range(from, to)
+  ));
 
   const staleRows = (data ?? [])
     .map((row) => ({
@@ -424,6 +517,10 @@ Deno.serve(async (request) => {
 
     if (isEnrichPayload(payload)) {
       return await enrichImport(supabase, payload);
+    }
+
+    if (isEnrichBatchPayload(payload)) {
+      return await enrichBatch(supabase, payload);
     }
 
     if (isReplaceFolderPayload(payload)) {

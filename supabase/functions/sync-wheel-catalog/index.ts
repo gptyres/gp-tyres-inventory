@@ -12,8 +12,8 @@ const BUCKET_NAME = 'wheel-catalog-images';
 const IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.readonly';
 const MAX_SCAN_ITEMS = 5000;
-const DEFAULT_IMAGE_BATCH_LIMIT = 75;
-const MAX_IMAGE_BATCH_LIMIT = 150;
+const DEFAULT_IMAGE_BATCH_LIMIT = 15;
+const MAX_IMAGE_BATCH_LIMIT = 50;
 const FALLBACK_SYNC_PIN = '786';
 
 interface GoogleServiceAccount {
