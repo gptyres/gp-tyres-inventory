@@ -11,10 +11,23 @@ node_modules
 dist
 dist-ssr
 tmp
+coverage
 *.local
 .env
 .env.*
 !.env.example
+
+# Generated reports and local working artifacts
+# Existing tracked report fixtures remain tracked; this prevents new local outputs.
+reports/*
+!reports/*.sample.json
+!reports/*.sample.html
+facebook_cleanup_artifacts/
+marketplace-listing-assets/
+.facebook-playwright-profile/
+.codex-remote-attachments/
+scripts/__pycache__/
+*.py[cod]
 
 # Editor directories and files
 .vscode/*
