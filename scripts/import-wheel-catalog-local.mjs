@@ -26,6 +26,7 @@ const SOURCE_LABEL = process.env.WHEEL_CATALOG_SOURCE_LABEL || 'WHEEL CATALOG 20
 const BUCKET_NAME = 'wheel-catalog-images';
 const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
 const IMPORT_CONCURRENCY = Math.max(1, Number.parseInt(process.env.WHEEL_CATALOG_IMPORT_CONCURRENCY || '6', 10));
+const IMPORT_RETRIES = Math.max(0, Number.parseInt(process.env.WHEEL_CATALOG_IMPORT_RETRIES || '3', 10));
 
 const rootArg = process.argv[2] || DEFAULT_ROOT;
 const rootDir = isAbsolute(rootArg) ? resolve(rootArg) : resolve(rootArg);
@@ -97,6 +98,22 @@ const invokeImport = async (payload, options = {}) => {
   return body;
 };
 
+const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+const retry = async (operation, label) => {
+  let lastError;
+  for (let attempt = 0; attempt <= IMPORT_RETRIES; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      if (attempt === IMPORT_RETRIES) break;
+      await sleep(500 * (attempt + 1));
+    }
+  }
+  throw new Error(`${label}: ${lastError?.message ?? lastError}`);
+};
+
 const startImport = async () => {
   return await invokeImport({
     action: 'start',
@@ -136,6 +153,7 @@ console.log(`Found ${allImageFiles.length} image file(s) under ${rootDir}`);
 console.log(`Skipped ${allImageFiles.length - files.length} image file(s) in review/system folders`);
 console.log(`Importing ${files.length} customer-ready image file(s)`);
 console.log(`Import concurrency: ${IMPORT_CONCURRENCY}`);
+console.log(`Import retries: ${IMPORT_RETRIES}`);
 
 const startResult = await startImport();
 if (!startResult.ok || !startResult.importRunId) {
@@ -161,7 +179,7 @@ const importOne = async (absolutePath) => {
   const storagePath = toStoragePath(rel, contentSha256, fileName);
 
   try {
-    await invokeImport({
+    await retry(() => invokeImport({
       action: 'import',
       importRunId: startResult.importRunId,
       sourceRootFolderId: SOURCE_ROOT_FOLDER_ID,
@@ -187,7 +205,7 @@ const importOne = async (absolutePath) => {
       contentSha256,
       sourceModifiedAt: sourceStats.mtime.toISOString(),
       base64: bytes.toString('base64')
-    });
+    }), rel);
     seenDriveFileIds.push(driveFileId);
     imported += 1;
     if (imported % 25 === 0 || imported === files.length) {
