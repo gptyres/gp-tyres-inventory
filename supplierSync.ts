@@ -56,6 +56,7 @@ export interface SupplierSyncWorker {
 
 export interface SupplierSyncStatusResponse {
   activeJob: SupplierSyncJob | null;
+  blockingJob: SupplierSyncJob | null;
   latestJob: SupplierSyncJob | null;
   worker: SupplierSyncWorker;
   lastSuccessfulSync: {
@@ -118,7 +119,7 @@ export const triggerSupplierSync = async (
   });
   const data = await readJson(response);
   if (!response.ok && response.status !== 409) {
-    throw new Error(data.error || 'Could not queue supplier sync.');
+    throw new Error(data.error || 'Could not start supplier sync.');
   }
   return data as SupplierSyncStatusResponse;
 };

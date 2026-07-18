@@ -186,17 +186,18 @@ describe('STAMFORD supplier catalogue parsing', () => {
     expect(item.location).toContain('Cape Town: 2');
     expect(item.location).toContain('Durban: 0');
     expect(item.location).toContain('Johannesburg: 3');
+    expect(item.stockByLocation).toEqual({ 'Cape Town': 2, Durban: 0, Johannesburg: 3 });
   });
 });
 
 describe('TYREWAREHOUSE supplier catalogue parsing', () => {
-  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest R50', () => {
+  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest R25', () => {
     const [item] = parseTyreWarehouseData([
-      'SKU,Size,Brand,Pattern,Category,Stock Location,Stock Units Availability,Stock Units,Selling Price',
-      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,JHB,Out of stock,0 units,R3350',
-      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,GLK,Available,4 units,R3350',
-      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,CPT,Out of stock,0 units,R3350',
-      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,DBN,Out of stock,0 units,R3350'
+      'SKU,Size,Brand,Pattern,Category,Stock Location,Stock Units Availability,Stock Units,Cost Price',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,JHB,Out of stock,0 units,R1100',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,GLK,Available,4 units,R1100',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,CPT,Out of stock,0 units,R1100',
+      '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,DBN,Out of stock,0 units,R1100'
     ].join('\n'));
 
     expect(item).toMatchObject({
@@ -207,8 +208,8 @@ describe('TYREWAREHOUSE supplier catalogue parsing', () => {
       pattern: 'ContiCrossContact AT',
       size: '265/60R18',
       quantity: 4,
-      sellingPrice: 3850,
-      costPrice: 3350,
+      sellingPrice: 1275,
+      costPrice: 1100,
       imageDesignKey: 'CONTICROSSCONTACT AT',
       imageFinishKey: 'CONTINENTAL'
     });
@@ -216,6 +217,7 @@ describe('TYREWAREHOUSE supplier catalogue parsing', () => {
     expect(item.location).toContain('GLK: 4');
     expect(item.location).toContain('CPT: 0');
     expect(item.location).toContain('DBN: 0');
+    expect(item.stockByLocation).toEqual({ JHB: 0, GLK: 4, CPT: 0, DBN: 0 });
   });
 });
 
@@ -277,6 +279,12 @@ describe('TREAD ZONE supplier catalogue parsing', () => {
     expect(item.location).toContain('Durban: 15');
     expect(item.location).toContain('Jet Park: 120');
     expect(item.location).toContain('Port Elizabeth: 12');
+    expect(item.stockByLocation).toEqual({
+      'Cape Town': 30,
+      Durban: 15,
+      'Jet Park': 120,
+      'Port Elizabeth': 12
+    });
   });
 });
 
@@ -311,6 +319,14 @@ describe('SUMITOMO/DUNLOP supplier catalogue parsing', () => {
     expect(item.location).toContain('Eastport: 40');
     expect(item.location).toContain('Ladysmith: 17');
     expect(item.location).toContain('Port Elizabeth: 10');
+    expect(item.stockByLocation).toEqual({
+      'Cape Town': 18,
+      Durban: 16,
+      'Durban CDC': 19,
+      Eastport: 40,
+      Ladysmith: 17,
+      'Port Elizabeth': 10
+    });
   });
 });
 
@@ -339,6 +355,7 @@ describe('EXOTIC supplier catalogue parsing', () => {
     });
     expect(items[0].location).toContain('Cape Town: Available');
     expect(items[0].location).toContain('Johannesburg: Available');
+    expect(items[0].stockByLocation).toEqual({ 'Cape Town': 1, Johannesburg: 1 });
   });
 });
 
@@ -515,6 +532,40 @@ describe('supplier stock image matching', () => {
 
     expect(match.confidence).toBe('best');
     expect(match.imageUrl).toBe('https://example.test/a9303-gunmetal.jpg');
+  });
+
+  it('prefers a neutral design image over an image showing the wrong finish', () => {
+    const match = findBestSupplierStockImage({
+      id: 'tyrelifewheels-3',
+      productType: ProductType.WHEEL,
+      supplierName: 'TYRE LIFE WHEELS',
+      imageDesignKey: 'A8306 MAYHEM RIDGELINE',
+      imageFinishKey: 'SATIN BLACK',
+      size: '20x9',
+      pcd: '139.7'
+    }, [
+      {
+        supplierName: 'TYRE LIFE WHEELS',
+        designKey: 'A8306 MAYHEM RIDGELINE',
+        finishKey: 'BRONZE',
+        rimSize: null,
+        pcd: null,
+        publicImageUrl: 'https://example.test/ridgeline-bronze.jpg',
+        fileName: 'ridgeline-bronze.jpg'
+      },
+      {
+        supplierName: 'TYRE LIFE WHEELS',
+        designKey: 'A8306 MAYHEM RIDGELINE',
+        finishKey: null,
+        rimSize: null,
+        pcd: null,
+        publicImageUrl: 'https://example.test/ridgeline-design.jpg',
+        fileName: 'ridgeline-design.jpg'
+      }
+    ]);
+
+    expect(match.confidence).toBe('best');
+    expect(match.imageUrl).toBe('https://example.test/ridgeline-design.jpg');
   });
 });
 

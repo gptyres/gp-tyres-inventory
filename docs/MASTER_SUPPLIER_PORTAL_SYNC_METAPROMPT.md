@@ -271,15 +271,18 @@ Use the current-run normalized supplier export as the publishing input. Preserve
 - Stock Location;
 - Stock Units Availability;
 - Stock Units;
-- VAT-inclusive Cost Price;
+- exact supplier Cost Price before VAT;
+- Cost Price including VAT for audit;
 - Selling Price;
 - Product URL;
 - Source Stock Detail;
 - Source File.
 
-Every published row must contain both a non-negative VAT-inclusive cost price and a VAT-inclusive selling price. Prefer an explicit supplier cost including VAT; when a legacy normalized export does not expose cost separately, use its already VAT-inclusive price as the safe cost fallback rather than publishing zero. Never add VAT a second time to a final supplier selling price.
+Every sync-published row must keep the exact supplier cost before VAT, calculate the VAT-inclusive audit cost from that amount, and calculate the selling price as exact cost x 1.15 rounded to the nearest R25. If a legacy supplier export exposes only a clearly VAT-inclusive cost, remove VAT once to recover the exact ex-VAT cost before calculating the selling price. Never add VAT to an already VAT-inclusive cost or final supplier selling price.
 
-The supplier scripts already apply their approved price/VAT/rounding rules. Do not add VAT or rounding a second time during ingestion. Parse the final selling price and stock units safely for the frontend’s typed InventoryItem model while preserving the original display/source values for audit.
+The central normalizer owns the final sync pricing rule and records whether each supplier script exports an ex-VAT or VAT-inclusive amount. Parse prices and stock units safely for the frontend's typed InventoryItem model while preserving the original display/source values for audit.
+
+For Tyrewarehouse specifically, use the logged-in portal's displayed `product_price` as the discounted ex-VAT dealer cost. Do not use `up_min`, which is a separate minimum-price value and can be materially lower than the price shown on the portal. Calculate the selling price as `product_price x 1.15`, rounded to the nearest R25.
 
 Upload in bounded batches with deterministic keys and idempotency. Validate at least:
 
@@ -316,9 +319,9 @@ Required button behavior:
 - Render safe progress, worker state, and the last successful sync date/time whenever currentView is SUPPLIER_INVENTORY, including sales mode. Render the trigger action only in admin mode.
 - Label the idle action **Sync _Supplier Name_**.
 - One click queues only the registry supplier mapped to the catalogue currently open. Never silently expand a manual portal click to `ALL_ENABLED`.
-- Disable it while queueing or while a job is queued/running.
-- If the local worker heartbeat is stale, disable it and show **Sync Worker Offline** with a concise explanation.
-- While queued, show **Sync Queued**.
+- Disable it while starting, while its job is active, while another supplier is syncing, or when the worker heartbeat is stale.
+- If the local worker heartbeat is stale, do not create a job; show **Sync Worker Offline** with a concise restart instruction.
+- During the short claim handoff, show **Starting <supplier>** rather than exposing an internal queued state.
 - While running, show the current supplier, stage, stock rows discovered/published, and a percentage when a total is known. Poll safe server status frequently enough to feel live without exposing the private Supabase table.
 - On full success, show a success notice with refreshed supplier and row counts.
 - On partial success, show a warning listing failed/skipped suppliers with short non-secret reasons and make clear that their older snapshots remain active.
@@ -330,11 +333,11 @@ Required button behavior:
 
 Do not expose raw local paths or logs to ordinary users. Admin status may show safe artifact names and run ids.
 
-### 11. Manual document suppliers
+### 11. Supplier document imports
 
-SAILUN and SAFETY_GRIP do not have live portal credentials. In admin mode, provide an **Import Supplier File** workflow beside their catalogue status. Accept text PDFs, CSV, XLS, and XLSX files; detect the stock table; require a tyre identity, size, quantity, and price; preview accepted/rejected rows; and add 15% VAT when the detected source price is not explicitly VAT-inclusive.
+In admin mode, provide an **Upload Stock File** workflow beside every live supplier catalogue, including SAILUN and SAFETY_GRIP. Accept text PDFs, CSV, XLS, and XLSX files; detect the best stock table or worksheet; require a product identity, size, quantity, and at least one price; preserve branch-specific rows; preview accepted/rejected rows; and add 15% VAT only to detected cost or selling columns that are not explicitly VAT-inclusive.
 
-Publish both VAT-inclusive cost and selling prices. Replace only the supplier's dedicated `SUPPLIER_SAILUN` or `SUPPLIER_SAFETY_GRIP` Google Sheet tab, then publish the same validated rows as one atomic live snapshot. Do not activate the portal snapshot when the Sheet write fails. Never persist the uploaded document contents or expose the server-only Sheet token.
+Publish both VAT-inclusive cost and selling prices. Replace only the selected catalogue's dedicated `SUPPLIER_<CATALOG>` Google Sheet tab, then publish the same validated rows as one atomic live snapshot. Treat ALINE and TYRE_LIFE_WHEELS rows as wheels. Do not activate the portal snapshot when the Sheet write fails. Never persist the uploaded document contents or expose the server-only Sheet token.
 
 ### 12. Reliability and security rules
 
@@ -397,8 +400,8 @@ The task is complete only when all of the following are true:
 - Supplier credentials remain local and secret.
 - Near-real-time fetching, validating, and publishing stock progress plus final status are visible in the portal.
 - Sales mode can see progress and the last successful sync date/time without receiving sync permissions.
-- Sailun and Safety Grip can be imported from PDF/CSV/XLS/XLSX through Google Sheets into an atomic live snapshot.
-- Every newly published listing has VAT-inclusive cost and selling prices.
+- Every live supplier catalogue can be replaced in admin mode from PDF/CSV/XLS/XLSX through its dedicated Google Sheet tab and an atomic live snapshot.
+- Every newly sync-published listing keeps the exact supplier cost and has a selling price with VAT applied once and rounded to the nearest R25.
 - Successful current-run outputs publish through validated snapshots.
 - Failed suppliers retain their previous active snapshots.
 - The supplier catalogue refreshes without a frontend rebuild.

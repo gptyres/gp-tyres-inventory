@@ -2,9 +2,9 @@ import { getClientIpHash, verifyAdminSession } from '../server/adminSession.js';
 import { readApiBody } from '../server/readApiBody.js';
 import { createSupabaseAdmin } from '../server/supabaseAdmin.js';
 import {
-  isManualSupplierCatalog,
-  MANUAL_SUPPLIER_BY_CATALOG,
-  type ManualSupplierCatalog
+  isSupplierImportCatalog,
+  SUPPLIER_IMPORT_BY_CATALOG,
+  type SupplierImportCatalog
 } from '../supplierCatalogMapping.js';
 import type { SupplierCatalog } from '../types.js';
 
@@ -20,6 +20,14 @@ interface ImportRow {
   supplierSku: string;
   brand: string;
   productName: string;
+  tyrePattern: string;
+  tyreRating: string;
+  tyreIndex: string;
+  tyreSpecs: string;
+  wheelPcd: string;
+  wheelOffset: string;
+  wheelCenterBore: string;
+  stockByLocation: Record<string, number>;
   category: string;
   size: string;
   stockLocation: string;
@@ -39,11 +47,23 @@ const safeFileName = (value: unknown) => {
   return name.replace(/[^A-Za-z0-9._ -]+/g, '_');
 };
 
-const normalizeCatalog = (value: unknown): ManualSupplierCatalog | null => {
+const normalizeCatalog = (value: unknown): SupplierImportCatalog | null => {
   const catalog = typeof value === 'string' ? value.trim().toUpperCase() : '';
-  return isManualSupplierCatalog(catalog as SupplierCatalog)
-    ? catalog as ManualSupplierCatalog
+  return isSupplierImportCatalog(catalog as SupplierCatalog)
+    ? catalog as SupplierImportCatalog
     : null;
+};
+
+const safeStockByLocation = (value: unknown): Record<string, number> => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  return Object.entries(value as Record<string, unknown>).slice(0, 20).reduce<Record<string, number>>((stock, [key, rawQuantity]) => {
+    const location = safeText(key, 40).toUpperCase();
+    const quantity = Number(rawQuantity);
+    if (location && Number.isFinite(quantity) && quantity >= 0 && quantity <= 10_000_000) {
+      stock[location] = Math.trunc(quantity);
+    }
+    return stock;
+  }, {});
 };
 
 const validateRows = (value: unknown): ImportRow[] => {
@@ -57,13 +77,21 @@ const validateRows = (value: unknown): ImportRow[] => {
     const supplierSku = safeText(row.supplierSku, 120);
     const brand = safeText(row.brand, 120);
     const productName = safeText(row.productName, 300);
+    const tyrePattern = safeText(row.tyrePattern, 160);
+    const tyreRating = safeText(row.tyreRating, 80);
+    const tyreIndex = safeText(row.tyreIndex, 80);
+    const tyreSpecs = safeText(row.tyreSpecs, 240);
+    const wheelPcd = safeText(row.wheelPcd, 80);
+    const wheelOffset = safeText(row.wheelOffset, 80);
+    const wheelCenterBore = safeText(row.wheelCenterBore, 80);
+    const stockByLocation = safeStockByLocation(row.stockByLocation);
     const size = safeText(row.size, 80);
     const stockUnits = Number(row.stockUnits);
     const costPrice = Number(row.costPrice);
     const sellingPrice = Number(row.sellingPrice);
 
     if (!sourceKey || seen.has(sourceKey)) throw new Error(`Row ${index + 1} has a missing or duplicate source key.`);
-    if (!brand || !productName || !size) throw new Error(`Row ${index + 1} is missing brand, product, or size.`);
+    if (!productName || !size) throw new Error(`Row ${index + 1} is missing a product description or tyre size.`);
     if (!Number.isFinite(stockUnits) || stockUnits < 0 || stockUnits > 10_000_000) {
       throw new Error(`Row ${index + 1} has an invalid stock quantity.`);
     }
@@ -80,6 +108,14 @@ const validateRows = (value: unknown): ImportRow[] => {
       supplierSku: supplierSku || sourceKey,
       brand,
       productName,
+      tyrePattern,
+      tyreRating,
+      tyreIndex,
+      tyreSpecs,
+      wheelPcd,
+      wheelOffset,
+      wheelCenterBore,
+      stockByLocation,
       category: safeText(row.category, 120) || 'TYRE',
       size,
       stockLocation: safeText(row.stockLocation, 160) || 'Supplier',
@@ -107,7 +143,7 @@ const getPrivateSecret = async (
 
 const replaceSupplierSheet = async (
   supabase: ReturnType<typeof createSupabaseAdmin>,
-  catalog: ManualSupplierCatalog,
+  catalog: SupplierImportCatalog,
   sourceFile: string,
   rows: ImportRow[]
 ) => {
@@ -118,7 +154,7 @@ const replaceSupplierSheet = async (
   if (!appsScriptUrl || !token) throw new Error('The Google Sheet supplier import bridge is not configured.');
 
   const importedAt = new Date().toISOString();
-  const meta = MANUAL_SUPPLIER_BY_CATALOG[catalog];
+  const meta = SUPPLIER_IMPORT_BY_CATALOG[catalog];
   const sheetResponse = await fetch(appsScriptUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -177,11 +213,12 @@ export default async function handler(request: any, response: any) {
   try {
     const body = await readApiBody(request);
     const catalog = normalizeCatalog(body.catalog);
-    if (!catalog) return response.status(400).json({ error: 'Only Sailun and Safety Grip support manual document imports.' });
+    if (!catalog) return response.status(400).json({ error: 'Choose a supported supplier catalogue before importing.' });
     const rows = validateRows(body.rows);
     const sourceFile = safeFileName(body.sourceFile);
     const terminal = safeText(body.terminal, 80) || 'UNKNOWN';
-    const supplier = MANUAL_SUPPLIER_BY_CATALOG[catalog].supplier;
+    const supplierMeta = SUPPLIER_IMPORT_BY_CATALOG[catalog];
+    const supplier = supplierMeta.supplier;
 
     const { data: job, error: jobError } = await supabase
       .from('supplier_sync_jobs')
@@ -212,7 +249,7 @@ export default async function handler(request: any, response: any) {
 
     await supabase.from('supplier_sync_jobs').update({
       progress_stage: 'publishing',
-      progress_message: `Replacing ${MANUAL_SUPPLIER_BY_CATALOG[catalog].sheetName} in Google Sheets`,
+      progress_message: `Replacing ${supplierMeta.sheetName} in Google Sheets`,
       heartbeat_at: new Date().toISOString()
     }).eq('id', jobId);
 
@@ -238,11 +275,19 @@ export default async function handler(request: any, response: any) {
         snapshot_id: snapshotId,
         catalog_key: catalog,
         source_key: row.sourceKey,
-        product_type: 'TYRE',
+        product_type: supplierMeta.productType,
         supplier,
         supplier_sku: row.supplierSku,
         brand: row.brand,
         product_name: row.productName,
+        tyre_pattern: row.tyrePattern || null,
+        tyre_rating: row.tyreRating || null,
+        tyre_index: row.tyreIndex || null,
+        tyre_specs: row.tyreSpecs || null,
+        wheel_pcd: row.wheelPcd || null,
+        wheel_offset: row.wheelOffset || null,
+        wheel_center_bore: row.wheelCenterBore || null,
+        stock_by_location: row.stockByLocation,
         category: row.category,
         size: row.size,
         stock_location: row.stockLocation,

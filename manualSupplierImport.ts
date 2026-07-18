@@ -1,10 +1,23 @@
-import type { ManualSupplierCatalog } from './supplierCatalogMapping';
+import {
+  SUPPLIER_IMPORT_BY_CATALOG,
+  type SupplierImportCatalog
+} from './supplierCatalogMapping';
+import { parseAlineStockImageKeys } from './supplierStockImages';
+import { extractSupplierTyreSize, parseSupplierTyreFields } from './supplierTyreParsing';
 
 export interface ManualSupplierRow {
   sourceKey: string;
   supplierSku: string;
   brand: string;
   productName: string;
+  tyrePattern: string;
+  tyreRating: string;
+  tyreIndex: string;
+  tyreSpecs: string;
+  wheelPcd: string;
+  wheelOffset: string;
+  wheelCenterBore: string;
+  stockByLocation: Record<string, number>;
   category: string;
   size: string;
   stockLocation: string;
@@ -23,16 +36,24 @@ export interface ManualSupplierParseResult {
 }
 
 type GridRow = unknown[];
-type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'size' | 'quantity' | 'price' | 'location' | 'category';
+type FieldName = 'sku' | 'description' | 'brand' | 'pattern' | 'rating' | 'index' | 'specs' | 'size' | 'pcd' | 'offset' | 'centerBore' | 'quantity' | 'price' | 'costPrice' | 'sellingPrice' | 'location' | 'category';
 
 const HEADER_ALIASES: Record<FieldName, string[]> = {
-  sku: ['sku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
-  description: ['description', 'descrption', 'product', 'productname', 'item', 'itemdescription', 'tyredescription'],
-  brand: ['brand', 'make'],
-  pattern: ['pattern', 'tread', 'model'],
+  sku: ['sku', 'suppliersku', 'code', 'itemcode', 'productcode', 'stockcode', 'sap', 'sapcode', 'material'],
+  description: ['description', 'descrption', 'product', 'productname', 'item', 'itemdescription', 'tyredescription', 'brandandpattern', 'brandpattern', 'branddescription', 'patternanddescription'],
+  brand: ['brand', 'tyrebrand', 'make'],
+  pattern: ['pattern', 'tyrepattern', 'portalpattern', 'tread', 'model', 'wheelname'],
+  rating: ['rating', 'tyrerating', 'ply', 'plyrating', 'pr'],
+  index: ['index', 'tyreindex', 'loadindex', 'speedindex', 'loadspeed', 'loadspeedindex', 'loadspeedrating'],
+  specs: ['specs', 'tyrespecs', 'specifications', 'otherspecs', 'additionaldetails', 'sidewall', 'construction', 'finish'],
   size: ['size', 'tyresize', 'dimensions'],
-  quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'available', 'availability', 'onhand', 'freeqty'],
-  price: ['price', 'cost', 'costvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'sellingprice', 'unitprice'],
+  pcd: ['pcd', 'pitchcirclediameter', 'boltpattern'],
+  offset: ['offset', 'et', 'wheeloffset'],
+  centerBore: ['centerbore', 'centrebore', 'cb', 'hubdiameter'],
+  quantity: ['quantity', 'qty', 'stock', 'stockqty', 'stockquantity', 'stockunits', 'unitsinstock', 'availableunits', 'availableqty', 'qtyavailable', 'available', 'availability', 'onhand', 'freeqty', 'totalstockunits'],
+  price: ['price', 'unitprice', 'pricevat', 'priceincvat', 'priceinclvat'],
+  costPrice: ['cost', 'costprice', 'costvat', 'costincvat', 'costinclvat', 'costpriceincvat', 'costpriceinclvat', 'costpriceexvat', 'nett', 'nettprice', 'netprice', 'wholesale', 'buyprice', 'buyingprice', 'discountedprice', 'discountedpriceexvat', 'dealerprice', 'priceexvat'],
+  sellingPrice: ['selling', 'sellingprice', 'sellingincvat', 'sellinginclvat', 'sellingpriceincvat', 'sellingpriceinclvat', 'sellingpriceexvat', 'roundedinclvatr25', 'retail', 'retailprice', 'retailpriceincvat', 'retailpriceinclvat', 'rrp', 'recommendedretail', 'recommendedretailprice', 'recommendedretailfrom'],
   location: ['location', 'branch', 'warehouse', 'stocklocation'],
   category: ['category', 'type', 'segment']
 };
@@ -52,6 +73,7 @@ const parseNumber = (value: unknown) => {
     .replace(/[^0-9.,-]+/g, '')
     .replace(/,(?=\d{3}(?:\D|$))/g, '')
     .replace(',', '.');
+  if (!normalized || normalized === '-' || normalized === '.' || normalized === '-.') return Number.NaN;
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : Number.NaN;
 };
@@ -61,20 +83,71 @@ const parseStock = (value: unknown) => {
   return Number.isFinite(parsed) ? Math.max(0, Math.trunc(parsed)) : Number.NaN;
 };
 
-const TYRE_SIZE = /\b(?:\d{2,3}\s*\/\s*\d{2,3}\s*(?:ZR|RF|R)\s*\d{2}(?:\.\d)?|\d{2,3}\s*[Xx]\s*\d{1,2}(?:\.\d+)?\s*R\s*\d{2}(?:\.\d)?|\d{3}\s*R\s*\d{2}(?:\.\d)?|\d{3}\s*-\s*\d{2}(?:\.\d)?)\w*\b/i;
+const WHEEL_SIZE = /\b(?:1[2-9]|2[0-6])\s*[Xx]\s*\d{1,2}(?:\.\d+)?\b/i;
 
-const extractSize = (value: string) => {
-  const match = value.match(TYRE_SIZE);
-  return match ? match[0].replace(/\s+/g, '').toUpperCase() : '';
+const parseAlineWheelDescription = (value: string) => {
+  const compact = value.replace(/\s+/g, '');
+  const specMatch = compact.match(/^([3-6])(\d{3})(\d{2})X(\d{1,2}(?:\.\d+)?)/i);
+  const offsetMatch = value.match(/\bET\s*(-?\d+)/i);
+  const centerBoreMatch = value.match(/\b(\d{2,3}\.\d)\b/);
+  const imageKeys = parseAlineStockImageKeys(value);
+
+  if (!specMatch) {
+    return {
+      size: '',
+      pcd: '',
+      offset: '',
+      centerBore: '',
+      wheelName: '',
+      finish: ''
+    };
+  }
+
+  return {
+    size: `${specMatch[3]}X${specMatch[4]}`,
+    pcd: `${specMatch[1]}/${Number(specMatch[2])}`,
+    offset: offsetMatch?.[1] || '',
+    centerBore: centerBoreMatch?.[1] || '',
+    wheelName: imageKeys.designKey,
+    finish: imageKeys.finishKey
+  };
 };
 
-const sourceKeyFor = (catalog: ManualSupplierCatalog, sku: string, size: string, productName: string) => {
-  const value = `${catalog}-${sku || `${size}-${productName}`}`
-    .toLowerCase()
+const extractSize = (value: string) => {
+  const normalizedValue = value.replace(/[“”″"]/g, '').replace(/\bHL(?=\d)/i, '');
+  const tyreSize = extractSupplierTyreSize(normalizedValue);
+  if (tyreSize) return tyreSize;
+  const wheelMatch = normalizedValue.match(WHEEL_SIZE);
+  return wheelMatch ? wheelMatch[0].replace(/\s+/g, '').toUpperCase() : '';
+};
+
+const toVatInclusivePrice = (value: number, alreadyIncludesVat: boolean) => (
+  Number((Math.max(0, value) * (alreadyIncludesVat ? 1 : 1.15)).toFixed(2))
+);
+
+const toVatExclusivePrice = (value: number, alreadyIncludesVat: boolean) => (
+  Number((Math.max(0, value) / (alreadyIncludesVat ? 1.15 : 1)).toFixed(2))
+);
+
+const roundToNearest25 = (value: number) => Math.round((Math.max(0, value) / 25) + 1e-9) * 25;
+
+const stableIdentityHash = (value: string) => {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36).padStart(7, '0');
+};
+
+const sourceKeyFor = (catalog: SupplierImportCatalog, sku: string, size: string, productName: string, location: string) => {
+  const rawIdentity = `${catalog}-${sku || `${size}-${productName}`}-${location}`.toLowerCase();
+  const suffix = stableIdentityHash(rawIdentity);
+  const base = rawIdentity
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 180);
-  return value || `${catalog.toLowerCase()}-row`;
+    .replace(/^-+|-+$/g, '');
+  const maxBaseLength = 180 - suffix.length - 1;
+  return `${(base || `${catalog.toLowerCase()}-row`).slice(0, maxBaseLength)}-${suffix}`;
 };
 
 const fieldForHeader = (header: string): FieldName | null => {
@@ -105,20 +178,57 @@ const findHeader = (grid: GridRow[]) => {
   return best;
 };
 
+const BRANCH_HEADER_LABELS: Record<string, string> = {
+  jhb: 'JHB',
+  cpt: 'CPT',
+  dbn: 'DBN',
+  glk: 'GLK',
+  bfn: 'BFN',
+  bloemfontein: 'Bloemfontein',
+  nwh: 'NWH',
+  johannesburg: 'Johannesburg',
+  capetown: 'Cape Town',
+  durban: 'Durban',
+  jetpark: 'Jet Park',
+  portelizabeth: 'Port Elizabeth',
+  durbancdc: 'Durban CDC',
+  eastport: 'Eastport',
+  ladysmith: 'Ladysmith',
+  regional: 'Regional',
+  national: 'National'
+};
+
+const findBranchStockColumns = (headerRow: GridRow) => headerRow.flatMap((value, columnIndex) => {
+  const normalized = normalizeHeader(value);
+  const locationHeader = normalized.replace(/(?:stockunits?|stockqty|stockquantity|availableunits?|quantity|qty|stock)$/i, '');
+  const label = BRANCH_HEADER_LABELS[locationHeader];
+  return label ? [{ columnIndex, label }] : [];
+});
+
 export const normalizeManualSupplierGrid = (
-  catalog: ManualSupplierCatalog,
+  catalog: SupplierImportCatalog,
   grid: GridRow[]
 ): ManualSupplierParseResult => {
   const header = findHeader(grid);
   if (!header) {
     throw new Error('Could not identify a stock table. The document needs a Quantity/Stock column plus a Code, Description, or Size column.');
   }
-  if (header.columns.price === undefined) {
-    throw new Error('Could not identify a Price, Cost, or Nett Price column.');
+  if (header.columns.price === undefined && header.columns.costPrice === undefined && header.columns.sellingPrice === undefined) {
+    throw new Error('Could not identify a Price, Cost, Nett Price, or Selling Price column.');
   }
 
-  const priceHeader = header.headers[header.columns.price] || '';
-  const priceIncludesVat = /incvat|includingvat|vatinclusive|pricevat/.test(priceHeader);
+  const genericPriceHeader = header.columns.price === undefined ? '' : header.headers[header.columns.price] || '';
+  const costPriceHeader = header.columns.costPrice === undefined ? '' : header.headers[header.columns.costPrice] || '';
+  const sellingPriceHeader = header.columns.sellingPrice === undefined ? '' : header.headers[header.columns.sellingPrice] || '';
+  const includesVat = (value: string) => /incvat|inclvat|includingvat|vatinclusive|pricevat/.test(value);
+  const supplierPricesIncludeVat = catalog === 'ALINE'
+    || catalog === 'TYRE_LIFE'
+    || catalog === 'TYRE_LIFE_WHEELS';
+  const genericPriceIncludesVat = supplierPricesIncludeVat || includesVat(genericPriceHeader);
+  const costPriceIncludesVat = supplierPricesIncludeVat || includesVat(costPriceHeader);
+  const sellingPriceIncludesVat = supplierPricesIncludeVat || includesVat(sellingPriceHeader);
+  const supplierMeta = SUPPLIER_IMPORT_BY_CATALOG[catalog];
+  const branchStockColumns = findBranchStockColumns(grid[header.rowIndex] || []);
   const rows: ManualSupplierRow[] = [];
   const seen = new Set<string>();
   let rejectedRows = 0;
@@ -136,27 +246,107 @@ export const normalizeManualSupplierGrid = (
     const sku = cleanCell(get(row, 'sku'));
     const explicitBrand = cleanCell(get(row, 'brand'));
     const explicitPattern = cleanCell(get(row, 'pattern'));
+    const explicitRating = cleanCell(get(row, 'rating'));
+    const explicitIndex = cleanCell(get(row, 'index'));
+    const explicitSpecs = cleanCell(get(row, 'specs'));
     const description = cleanCell(get(row, 'description'));
+    const descriptionForParsing = description.replace(/\bHL(?=\d)/i, '');
     const explicitSize = cleanCell(get(row, 'size'));
-    const joinedIdentity = [explicitSize, explicitBrand, explicitPattern, description].filter(Boolean).join(' ');
-    const size = extractSize(explicitSize) || extractSize(description) || extractSize(joinedIdentity);
-    const stockUnits = parseStock(get(row, 'quantity'));
-    const suppliedPrice = parseNumber(get(row, 'price'));
+    const alineWheel = catalog === 'ALINE' ? parseAlineWheelDescription(description) : null;
+    const wheelPcd = supplierMeta.productType === 'WHEEL'
+      ? cleanCell(get(row, 'pcd')) || alineWheel?.pcd || ''
+      : '';
+    const wheelOffset = supplierMeta.productType === 'WHEEL'
+      ? (cleanCell(get(row, 'offset')) || alineWheel?.offset || '').replace(/^--/, '-')
+      : '';
+    const wheelCenterBore = supplierMeta.productType === 'WHEEL'
+      ? cleanCell(get(row, 'centerBore')) || alineWheel?.centerBore || ''
+      : '';
+    const wheelPattern = explicitPattern || alineWheel?.wheelName || '';
+    const wheelSpecs = explicitSpecs || alineWheel?.finish || '';
+    const joinedIdentity = [explicitSize, explicitBrand, explicitPattern, explicitRating, explicitIndex, explicitSpecs, description].filter(Boolean).join(' ');
+    const parsedTyre = supplierMeta.productType === 'TYRE'
+      ? parseSupplierTyreFields({
+          description: descriptionForParsing,
+          explicitSize,
+          explicitBrand,
+          explicitPattern,
+          explicitRating,
+          explicitIndex,
+          explicitSpecs,
+          inferBrandFromDescription: true
+        })
+      : null;
+    const size = parsedTyre?.size
+      || extractSize(explicitSize)
+      || alineWheel?.size
+      || extractSize(description)
+      || extractSize(joinedIdentity)
+      || (supplierMeta.productType === 'WHEEL' && explicitSize
+        ? explicitSize.replace(/\s+/g, '').toUpperCase()
+        : catalog === 'ALINE'
+          ? 'N/A'
+          : /\d/.test(explicitSize)
+          ? explicitSize.replace(/\s+/g, '').toUpperCase()
+          : '');
+    const suppliedStockUnits = parseStock(get(row, 'quantity'));
+    const stockByLocation = Object.fromEntries(branchStockColumns.map(({ columnIndex, label }) => {
+      const parsed = parseStock(row[columnIndex]);
+      return [label, Number.isFinite(parsed) ? parsed : 0];
+    }));
+    const branchStockTotal = Object.values(stockByLocation).reduce((total, quantity) => total + quantity, 0);
+    const stockUnits = branchStockColumns.length
+      ? Math.max(Number.isFinite(suppliedStockUnits) ? suppliedStockUnits : 0, branchStockTotal)
+      : suppliedStockUnits;
+    const genericPrice = parseNumber(get(row, 'price'));
+    const suppliedCost = parseNumber(get(row, 'costPrice'));
+    const suppliedSelling = parseNumber(get(row, 'sellingPrice'));
+    const hasGenericPrice = Number.isFinite(genericPrice);
+    const hasCostPrice = Number.isFinite(suppliedCost);
+    const hasSellingPrice = Number.isFinite(suppliedSelling);
 
-    if ((!sku && !description && !size) || !size || !Number.isFinite(stockUnits) || !Number.isFinite(suppliedPrice)) {
+    if ((!sku && !description && !size) || !size || !Number.isFinite(stockUnits) || (!hasGenericPrice && !hasCostPrice && !hasSellingPrice)) {
       rejectedRows += 1;
       return;
     }
 
-    const descriptionWithoutSize = description.replace(TYRE_SIZE, '').trim();
-    const brand = explicitBrand || (catalog === 'SAILUN'
-      ? 'Sailun'
-      : descriptionWithoutSize.split(/\s+/)[0] || 'Safety Grip');
-    const productName = explicitPattern
-      ? `${brand} ${explicitPattern}`.trim()
-      : descriptionWithoutSize || `${brand} ${size}`;
-    const vatInclusivePrice = Number((Math.max(0, suppliedPrice) * (priceIncludesVat ? 1 : 1.15)).toFixed(2));
-    const sourceKey = sourceKeyFor(catalog, sku, size, productName);
+    const descriptionWithoutSize = description.replace(WHEEL_SIZE, '').trim();
+    const brand = parsedTyre
+      ? parsedTyre.brand
+      : explicitBrand || descriptionWithoutSize.split(/\s+/)[0] || supplierMeta.supplier;
+    const tyrePattern = parsedTyre?.pattern || wheelPattern;
+    const tyreRating = parsedTyre?.rating || '';
+    const tyreIndex = parsedTyre?.index || '';
+    const tyreSpecs = parsedTyre?.specs || wheelSpecs;
+    const productName = parsedTyre
+      ? [brand, tyrePattern, tyreRating, tyreIndex, tyreSpecs].filter(Boolean).join(' ') || description || size
+      : wheelPattern
+        ? [brand, wheelPattern, wheelSpecs].filter(Boolean).join(' ')
+        : descriptionWithoutSize || `${brand} ${size}`;
+    const branchStockLocation = Object.entries(stockByLocation)
+      .map(([location, quantity]) => `${location}: ${quantity}`)
+      .join(' | ');
+    const stockLocation = branchStockLocation || cleanCell(get(row, 'location')) || supplierMeta.supplier;
+    const costSource: [number, boolean] = hasCostPrice
+      ? [suppliedCost, costPriceIncludesVat]
+      : hasGenericPrice
+        ? [genericPrice, genericPriceIncludesVat]
+        : [suppliedSelling, sellingPriceIncludesVat];
+    const sellingSource: [number, boolean] = hasSellingPrice
+      ? [suppliedSelling, sellingPriceIncludesVat]
+      : hasGenericPrice
+        ? [genericPrice, genericPriceIncludesVat]
+        : [suppliedCost, costPriceIncludesVat];
+    const isTyreWarehouse = catalog === 'TYREWAREHOUSE';
+    const normalizedCost = isTyreWarehouse
+      ? toVatExclusivePrice(...costSource)
+      : toVatInclusivePrice(...costSource);
+    const normalizedSelling = isTyreWarehouse
+      ? hasSellingPrice
+        ? Number(Math.max(0, suppliedSelling).toFixed(2))
+        : roundToNearest25(normalizedCost * 1.15)
+      : toVatInclusivePrice(...sellingSource);
+    const sourceKey = sourceKeyFor(catalog, sku, size, productName, stockLocation);
     if (seen.has(sourceKey)) {
       rejectedRows += 1;
       return;
@@ -168,13 +358,21 @@ export const normalizeManualSupplierGrid = (
       supplierSku: sku || sourceKey,
       brand,
       productName,
-      category: cleanCell(get(row, 'category')) || catalog.replace('_', ' '),
+      tyrePattern,
+      tyreRating,
+      tyreIndex,
+      tyreSpecs,
+      wheelPcd,
+      wheelOffset,
+      wheelCenterBore,
+      stockByLocation,
+      category: cleanCell(get(row, 'category')) || (supplierMeta.productType === 'WHEEL' ? 'Wheels' : 'Tyres'),
       size,
-      stockLocation: cleanCell(get(row, 'location')) || catalog.replace('_', ' '),
+      stockLocation,
       stockAvailability: stockUnits > 0 ? 'In stock' : 'Out of stock',
       stockUnits,
-      costPrice: vatInclusivePrice,
-      sellingPrice: vatInclusivePrice,
+      costPrice: normalizedCost,
+      sellingPrice: normalizedSelling,
       sourceStockDetail: cleanCell(get(row, 'quantity'))
     });
   });
@@ -183,14 +381,36 @@ export const normalizeManualSupplierGrid = (
     throw new Error('No valid tyre stock rows were extracted. Check that size, quantity, and price are present in the document.');
   }
 
-  const detectedColumns = Object.keys(header.columns);
+  const detectedColumns = [
+    ...Object.keys(header.columns),
+    ...(branchStockColumns.length ? ['branchStock'] : [])
+  ];
   const warnings = rejectedRows > 0 ? [`${rejectedRows} row${rejectedRows === 1 ? '' : 's'} could not be safely imported.`] : [];
-  if (!priceIncludesVat) warnings.push('15% VAT will be added to the supplied price column.');
+  if (catalog === 'TYREWAREHOUSE' && header.columns.sellingPrice === undefined) {
+    warnings.push('TyreWarehouse selling prices will be calculated from discounted cost plus 15% VAT and rounded to the nearest R25.');
+  } else if (
+    (header.columns.costPrice !== undefined && !costPriceIncludesVat)
+    || (header.columns.sellingPrice !== undefined && !sellingPriceIncludesVat)
+    || (header.columns.price !== undefined && !genericPriceIncludesVat)
+  ) warnings.push('15% VAT will be added to price columns that are not marked VAT-inclusive.');
 
   return { rows, rejectedRows, warnings, detectedColumns };
 };
 
 export const parseCsvGrid = (text: string): string[][] => {
+  const sample = text.split(/\r?\n/).filter((line) => line.trim()).slice(0, 10);
+  const countDelimiter = (line: string, candidate: string) => {
+    let quoted = false;
+    let count = 0;
+    for (let index = 0; index < line.length; index += 1) {
+      if (line[index] === '"') quoted = !quoted;
+      else if (!quoted && line[index] === candidate) count += 1;
+    }
+    return count;
+  };
+  const delimiter = [',', ';', '\t', '|']
+    .map((candidate) => ({ candidate, score: sample.reduce((total, line) => total + countDelimiter(line, candidate), 0) }))
+    .sort((left, right) => right.score - left.score)[0]?.candidate || ',';
   const rows: string[][] = [];
   let row: string[] = [];
   let cell = '';
@@ -204,7 +424,7 @@ export const parseCsvGrid = (text: string): string[][] => {
       index += 1;
     } else if (char === '"') {
       quoted = !quoted;
-    } else if (!quoted && char === ',') {
+    } else if (!quoted && char === delimiter) {
       row.push(cell);
       cell = '';
     } else if (!quoted && (char === '\n' || char === '\r')) {
@@ -252,9 +472,10 @@ const readPdfGrid = async (file: File): Promise<GridRow[]> => {
 };
 
 export const parseManualSupplierFile = async (
-  catalog: ManualSupplierCatalog,
+  catalog: SupplierImportCatalog,
   file: File
 ): Promise<ManualSupplierParseResult> => {
+  if (file.size > 20 * 1024 * 1024) throw new Error('The supplier document must be 20 MB or smaller.');
   const lowerName = file.name.toLowerCase();
   let grid: GridRow[];
 
@@ -265,9 +486,22 @@ export const parseManualSupplierFile = async (
   } else if (lowerName.endsWith('.xlsx') || lowerName.endsWith('.xls')) {
     const XLSX = await import('@e965/xlsx');
     const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array' });
-    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    if (!firstSheet) throw new Error('The workbook does not contain a worksheet.');
-    grid = XLSX.utils.sheet_to_json(firstSheet, { header: 1, raw: false, defval: '' }) as GridRow[];
+    const candidates = workbook.SheetNames.flatMap((sheetName) => {
+      const sheet = workbook.Sheets[sheetName];
+      if (!sheet) return [];
+      const sheetGrid = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' }) as GridRow[];
+      try {
+        return [{ sheetName, result: normalizeManualSupplierGrid(catalog, sheetGrid) }];
+      } catch {
+        return [];
+      }
+    }).sort((left, right) => right.result.rows.length - left.result.rows.length);
+    const best = candidates[0];
+    if (!best) throw new Error('No worksheet contains a recognizable supplier stock table.');
+    if (best.sheetName !== workbook.SheetNames[0]) {
+      best.result.warnings.unshift(`Stock table detected on worksheet “${best.sheetName}”.`);
+    }
+    return best.result;
   } else {
     throw new Error('Upload a PDF, CSV, XLS, or XLSX supplier document.');
   }
@@ -285,7 +519,7 @@ const readJson = async (response: Response) => {
 };
 
 export const publishManualSupplierRows = async (
-  catalog: ManualSupplierCatalog,
+  catalog: SupplierImportCatalog,
   terminal: string,
   sourceFile: string,
   rows: ManualSupplierRow[]
