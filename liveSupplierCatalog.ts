@@ -2,7 +2,7 @@ import { supabase } from './supabaseClient';
 import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
-import { parseSupplierWheelImageKeys } from './supplierStockImages';
+import { parseAlineStockImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
 import {
   normalizeStockByLocation,
   normalizeStockLocationName,
@@ -40,6 +40,21 @@ export interface LiveSupplierCatalogRow {
 }
 
 const PAGE_SIZE = 1_000;
+
+const parseAlinePortalWheel = (description: string) => {
+  const compact = description.replace(/\s+/g, '');
+  const specMatch = compact.match(/^([3-6])(\d{3})(\d{2})X(\d{1,2}(?:\.\d+)?)/i);
+  if (!specMatch) return null;
+
+  const imageKeys = parseAlineStockImageKeys(description);
+  return {
+    size: `${specMatch[3]}X${specMatch[4]}`,
+    pcd: `${specMatch[1]}/${Number(specMatch[2])}`,
+    offset: description.match(/\bET\s*(-?\d+)/i)?.[1] || '',
+    centerBore: description.match(/\b(\d{2,3}\.\d)\b/)?.[1] || '',
+    ...imageKeys
+  };
+};
 
 const stockEntries = (row: LiveSupplierCatalogRow): Array<[string, number]> => {
   const existing = normalizeStockByLocation(row.stock_by_location);
@@ -133,8 +148,15 @@ export const liveSupplierRowToInventoryItem = (
       .replace(brandPrefix ? new RegExp(`^${brandPrefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+`, 'i') : /^$/, '')
       .split('|')[0]
       .trim();
-    const wheelName = row.tyre_pattern?.trim() || fallbackName || row.supplier_sku || row.source_key;
-    const finish = row.tyre_specs?.trim() || '';
+    const alineWheel = row.catalog_key === 'ALINE'
+      ? parseAlinePortalWheel(row.product_name)
+      : null;
+    const wheelName = row.tyre_pattern?.trim()
+      || alineWheel?.designKey
+      || fallbackName
+      || row.supplier_sku
+      || row.source_key;
+    const finish = row.tyre_specs?.trim() || alineWheel?.finishKey || '';
     const imageKeys = parseSupplierWheelImageKeys(row.brand, wheelName, finish, row.supplier_sku || '');
     const wheel: WheelProduct = {
       ...common,
@@ -142,10 +164,10 @@ export const liveSupplierRowToInventoryItem = (
       code: wheelName,
       brand: row.brand,
       finish,
-      size: row.size || '',
-      pcd: row.wheel_pcd?.trim() || '',
-      offset: row.wheel_offset?.trim().replace(/^--/, '-') || '',
-      centerBore: row.wheel_center_bore?.trim() || '',
+      size: row.size || alineWheel?.size || '',
+      pcd: row.wheel_pcd?.trim() || alineWheel?.pcd || '',
+      offset: row.wheel_offset?.trim().replace(/^--/, '-') || alineWheel?.offset || '',
+      centerBore: row.wheel_center_bore?.trim() || alineWheel?.centerBore || '',
       colour: [row.brand, finish, row.category, row.supplier_sku].filter(Boolean).join(' | '),
       setQuantity: 1,
       location: buildLocation(row),

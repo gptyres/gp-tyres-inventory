@@ -164,6 +164,34 @@ describe('live supplier catalogue conversion', () => {
     expect(item.imageFinishKey).toBe('MACHINED BLACK');
   });
 
+  it('extracts visual lookup keys from compact live ALINE descriptions', () => {
+    const item = liveSupplierRowToInventoryItem({
+      ...baseRow,
+      catalog_key: 'ALINE',
+      product_type: 'WHEEL',
+      supplier: 'Aline',
+      supplier_sku: '82410224',
+      brand: 'A-Line',
+      product_name: '410015X8BLISS ET25 SSML ChRiv',
+      size: null,
+      tyre_pattern: null,
+      tyre_specs: null,
+      wheel_pcd: null,
+      wheel_offset: null,
+      wheel_center_bore: null
+    });
+
+    if (item.type !== ProductType.WHEEL) throw new Error('Expected wheel item');
+    expect(item.code).toBe('BLISS');
+    expect(item.finish).toBe('SILVER MACHINED LIP');
+    expect(item.size).toBe('15X8');
+    expect(item.pcd).toBe('4/100');
+    expect(item.offset).toBe('25');
+    expect(item.supplierName).toBe('Aline');
+    expect(item.imageDesignKey).toBe('BLISS');
+    expect(item.imageFinishKey).toBe('SILVER MACHINED LIP');
+  });
+
   it('parses legacy APEX product names into the requested card fields', () => {
     const item = liveSupplierRowToInventoryItem({
       ...baseRow,
