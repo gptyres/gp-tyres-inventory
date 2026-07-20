@@ -185,6 +185,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span className="font-bold text-sm">Photo Library</span>
           </button>
 
+          <button
+            onClick={() => handleOrderClick('WORKSHOP_TRACKER')}
+            className={`flex items-center w-full px-3 py-2 rounded transition-colors ${currentView === 'WORKSHOP_TRACKER' ? 'bg-gp-red/10 text-gp-red' : 'text-gp-text-muted hover:text-gp-text-main hover:bg-gp-border'}`}
+          >
+            <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.7 6.3a1 1 0 010 1.4l-6.9 6.9-2.5.5.5-2.5 6.9-6.9a1 1 0 011.4 0l.6.6ZM12 3v3m0 12v3M3 12h3m12 0h3" />
+            </svg>
+            <span className="font-bold text-sm">Workshop Tracker</span>
+          </button>
+
           {/* Products Group */}
           <div>
             <button 

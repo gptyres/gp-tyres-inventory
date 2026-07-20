@@ -28,6 +28,7 @@ const CourierLogisticsAssistantView = lazy(() => import('./components/CourierLog
 const TrainingPortalView = lazy(() => import('./components/TrainingPortalView').then((module) => ({ default: module.TrainingPortalView })));
 const CustomerHubView = lazy(() => import('./components/CustomerHubView').then((module) => ({ default: module.CustomerHubView })));
 const PhotoLibraryView = lazy(() => import('./components/photo-library/PhotoLibraryView').then((module) => ({ default: module.PhotoLibraryView })));
+const WorkshopTrackerView = lazy(() => import('./components/WorkshopTrackerView').then((module) => ({ default: module.WorkshopTrackerView })));
 import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { PricingPOSQuoteLine } from './pricing-processor/types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
@@ -1584,6 +1585,8 @@ const App: React.FC = () => {
       searchPlaceholder = "Search customers inside Customer Hub...";
   } else if (currentView === 'PHOTO_LIBRARY') {
       searchPlaceholder = "Search inside the photo library...";
+  } else if (currentView === 'WORKSHOP_TRACKER') {
+      searchPlaceholder = "Search workshop jobs inside the tracker...";
   }
 
   const topNavTitle = currentView === 'TRAINING_PORTAL'
@@ -1592,10 +1595,12 @@ const App: React.FC = () => {
       ? 'CUSTOMER HUB'
       : currentView === 'PHOTO_LIBRARY'
         ? 'PHOTO LIBRARY'
+        : currentView === 'WORKSHOP_TRACKER'
+          ? 'WORKSHOP TRACKER'
         : currentView === 'COURIER_LOGISTICS_ASSISTANT'
           ? 'COURIER LOGISTICS ASSISTANT'
         : undefined;
-  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'COURIER_LOGISTICS_ASSISTANT'
+  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER' || currentView === 'COURIER_LOGISTICS_ASSISTANT'
     ? false
     : isSearchVisible || currentView === 'WHEEL_CATALOG';
 
@@ -1635,7 +1640,7 @@ const App: React.FC = () => {
           pageTitle={topNavTitle}
         />
 
-        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY') ? '' : 'pb-20'}`}>
+        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER') ? '' : 'pb-20'}`}>
           {currentView === 'DASHBOARD' && (
             <DashboardView 
               currentUser={currentUser}
@@ -1781,6 +1786,12 @@ const App: React.FC = () => {
           {currentView === 'PHOTO_LIBRARY' && (
             <Suspense fallback={<LoadingPanel label="Loading customer photo library..." />}>
               <PhotoLibraryView isAdmin={isAdmin} />
+            </Suspense>
+          )}
+
+          {currentView === 'WORKSHOP_TRACKER' && (
+            <Suspense fallback={<LoadingPanel label="Loading workshop tracker..." />}>
+              <WorkshopTrackerView currentUser={currentUser} isAdmin={isAdmin} />
             </Suspense>
           )}
 
