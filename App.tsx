@@ -1,5 +1,5 @@
 
-import React, { lazy, Suspense, useState, useMemo, useEffect, useCallback } from 'react';
+import React, { lazy, Suspense, useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { InventoryView } from './components/InventoryView';
@@ -29,6 +29,7 @@ const TrainingPortalView = lazy(() => import('./components/TrainingPortalView').
 const CustomerHubView = lazy(() => import('./components/CustomerHubView').then((module) => ({ default: module.CustomerHubView })));
 const PhotoLibraryView = lazy(() => import('./components/photo-library/PhotoLibraryView').then((module) => ({ default: module.PhotoLibraryView })));
 const WorkshopTrackerView = lazy(() => import('./components/WorkshopTrackerView').then((module) => ({ default: module.WorkshopTrackerView })));
+const RadarRedView = lazy(() => import('./components/RadarRedView').then((module) => ({ default: module.RadarRedView })));
 import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { PricingPOSQuoteLine } from './pricing-processor/types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
@@ -51,7 +52,7 @@ import {
   loadSupplierCatalogItems
 } from './supplierCatalogLoader';
 import { authenticateAdminSession, clearAdminSession } from './supplierSync';
-import { isManualSupplierCatalog, isRegistryBackedSupplierCatalog, isLiveSupplierCatalog } from './supplierCatalogMapping';
+import { isRegistryBackedSupplierCatalog, isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { syncPortalInventoryItemsToSheet } from './sheetInventoryStatus';
 
 import {
@@ -133,6 +134,9 @@ const App: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
+  const [isScrollToTopVisible, setIsScrollToTopVisible] = useState(false);
+  const mainScrollContainerRef = useRef<HTMLElement | null>(null);
+  const activeScrollContainerRef = useRef<HTMLElement | null>(null);
   
   // Modal States
   const [isStockModalOpen, setIsStockModalOpen] = useState(false);
@@ -161,6 +165,32 @@ const App: React.FC = () => {
   
   const [selectedItem, setSelectedItem] = useState<InventoryItem | undefined>(undefined);
   const [selectedBackorder, setSelectedBackorder] = useState<Backorder | undefined>(undefined);
+
+  useEffect(() => {
+    const handleScroll = (event: Event) => {
+      const mainContainer = mainScrollContainerRef.current;
+      const scrollContainer = event.target;
+      if (!mainContainer || !(scrollContainer instanceof HTMLElement) || !mainContainer.contains(scrollContainer)) return;
+
+      activeScrollContainerRef.current = scrollContainer;
+      setIsScrollToTopVisible(scrollContainer.scrollTop > 480);
+    };
+
+    document.addEventListener('scroll', handleScroll, true);
+    return () => document.removeEventListener('scroll', handleScroll, true);
+  }, []);
+
+  useEffect(() => {
+    const scrollContainer = activeScrollContainerRef.current || mainScrollContainerRef.current;
+    scrollContainer?.scrollTo({ top: 0 });
+    activeScrollContainerRef.current = mainScrollContainerRef.current;
+    setIsScrollToTopVisible(false);
+  }, [currentView, activeSupplierCatalog]);
+
+  const handleScrollToTop = useCallback(() => {
+    const scrollContainer = activeScrollContainerRef.current || mainScrollContainerRef.current;
+    scrollContainer?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedSearchQuery(searchQuery), 150);
@@ -256,13 +286,18 @@ const App: React.FC = () => {
       note: 'Viewing External Supplier Data. Prices use ATT selling prices.',
       portalUrl: 'https://onlinestore.autoandtrucktyres.co.za/#!/evo-client-portal/dashboard'
     },
+    BRIDGESTONE: {
+      label: 'BRIDGESTONE',
+      note: 'Viewing Bridgestone and Firestone supplier stock. Prices include VAT and are rounded to the nearest R25.',
+      portalUrl: 'https://www.bsafonline.co.za/'
+    },
     SAFETY_GRIP: {
       label: 'SAFETY GRIP',
       note: 'Viewing External Supplier Data. Prices are calculated with 15% VAT added to the supplied price.'
     },
     ALINE: {
       label: 'ALINE',
-      note: 'Viewing External Supplier Data. Prices already include VAT, with branch wheel stock shown in the location field.',
+      note: 'Viewing External Supplier Data. Recommended selling prices include VAT and are a guide only, not the final selling price. Branch wheel stock is shown by location.',
       portalUrl: 'https://www.alinewheels.co.za/login-2/?arm_redirect=https%3A%2F%2Fwww.alinewheels.co.za%2Fedit_profile%2F'
     },
     STAMFORD: {
@@ -1587,6 +1622,10 @@ const App: React.FC = () => {
       searchPlaceholder = "Search inside the photo library...";
   } else if (currentView === 'WORKSHOP_TRACKER') {
       searchPlaceholder = "Search workshop jobs inside the tracker...";
+  } else if (currentView === 'WORKSHOP_TRACKER') {
+      searchPlaceholder = "Search workshop jobs inside the tracker...";
+  } else if (currentView === 'RADAR_RED') {
+      searchPlaceholder = "RADAR RED resources are available inside the folder...";
   }
 
   const topNavTitle = currentView === 'TRAINING_PORTAL'
@@ -1599,8 +1638,10 @@ const App: React.FC = () => {
           ? 'WORKSHOP TRACKER'
         : currentView === 'COURIER_LOGISTICS_ASSISTANT'
           ? 'COURIER LOGISTICS ASSISTANT'
+        : currentView === 'RADAR_RED'
+          ? 'RADAR RED'
         : undefined;
-  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER' || currentView === 'COURIER_LOGISTICS_ASSISTANT'
+  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'RADAR_RED'
     ? false
     : isSearchVisible || currentView === 'WHEEL_CATALOG';
 
@@ -1640,7 +1681,7 @@ const App: React.FC = () => {
           pageTitle={topNavTitle}
         />
 
-        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER') ? '' : 'pb-20'}`}>
+        <main ref={mainScrollContainerRef} className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER' || currentView === 'RADAR_RED') ? '' : 'pb-20'}`}>
           {currentView === 'DASHBOARD' && (
             <DashboardView 
               currentUser={currentUser}
@@ -1670,13 +1711,23 @@ const App: React.FC = () => {
               </div>
               <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
                 {currentView === 'SUPPLIER_INVENTORY' && (
-                    <div className="bg-blue-900/10 border border-blue-900/30 p-3 mb-4 rounded flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="mb-4 grid gap-4 rounded-xl border border-blue-900/30 bg-blue-900/10 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(560px,620px)] lg:items-start">
                       <div className="flex items-center gap-3">
                         <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <p className="text-xs text-blue-400"><strong>READ ONLY MODE:</strong> {supplierCatalogNote}</p>
                       </div>
                       {(supplierPortalUrl || supplierHasLiveSync) && (
-                        <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-start">
+                        <div className="grid w-full items-start gap-2 sm:grid-cols-3" aria-label={`${supplierCatalogLabel} supplier actions`}>
+                          {supplierPortalUrl && (
+                            <a
+                              href={supplierPortalUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex h-11 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg border border-red-400/60 bg-gp-red px-4 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gp-red/20 transition hover:-translate-y-px hover:bg-red-700 active:translate-y-0"
+                            >
+                              Live Portal
+                            </a>
+                          )}
                           <SupplierSyncButton
                             terminal={currentUser}
                             catalog={activeSupplierCatalog}
@@ -1684,26 +1735,19 @@ const App: React.FC = () => {
                             visible={supplierHasLiveSync}
                             canTrigger={isAdmin && supplierUsesPortalWorker}
                             workerRequired={supplierUsesPortalWorker}
+                            onAdminRequired={() => setShowAuthModal(true)}
                             onCompleted={handleSupplierSyncCompleted}
                           />
-                          {isAdmin && isManualSupplierCatalog(activeSupplierCatalog) && (
+                          {isLiveSupplierCatalog(activeSupplierCatalog) && (
                             <ManualSupplierImport
                               terminal={currentUser}
                               catalog={activeSupplierCatalog}
                               supplierLabel={supplierCatalogLabel}
                               visible
+                              canOpen={isAdmin}
+                              onAdminRequired={() => setShowAuthModal(true)}
                               onPublished={handleSupplierSyncCompleted}
                             />
-                          )}
-                          {supplierPortalUrl && (
-                            <a
-                              href={supplierPortalUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex shrink-0 items-center justify-center rounded bg-gp-red px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gp-red/20 transition hover:bg-red-700"
-                            >
-                              Live Supplier Portal
-                            </a>
                           )}
                         </div>
                       )}
@@ -1731,6 +1775,8 @@ const App: React.FC = () => {
                     onReserve={openReserveModal}
                     onBulkDelete={handleBulkDelete}
                     isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
+                    showSupplierName={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS'}
+                    priceLabel={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALINE' ? 'Recommended Selling Price' : undefined}
                   />
                 )}
               </div>
@@ -1795,6 +1841,12 @@ const App: React.FC = () => {
             </Suspense>
           )}
 
+          {currentView === 'RADAR_RED' && (
+            <Suspense fallback={<LoadingPanel label="Loading RADAR RED resources..." />}>
+              <RadarRedView />
+            </Suspense>
+          )}
+
           {(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL') && currentPortal && (
             <div className="w-full h-full flex flex-col bg-gp-black relative">
               <div className="bg-gp-input border-b border-gp-border p-2 flex items-center gap-2 sticky top-0 z-10 shadow-sm">
@@ -1817,6 +1869,20 @@ const App: React.FC = () => {
             <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} onMinimize={() => setIsChatOpen(false)} />
           </Suspense>
         )}
+
+        <button
+          type="button"
+          onClick={handleScrollToTop}
+          className={`fixed bottom-7 right-24 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-gp-border bg-gp-panel text-gp-text-main shadow-lg transition-all hover:-translate-y-0.5 hover:border-gp-red hover:text-gp-red active:translate-y-0 ${isScrollToTopVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0'}`}
+          title="Scroll to top"
+          aria-label="Scroll to top"
+          aria-hidden={!isScrollToTopVisible}
+          tabIndex={isScrollToTopVisible ? 0 : -1}
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
 
         <button
           onClick={() => {

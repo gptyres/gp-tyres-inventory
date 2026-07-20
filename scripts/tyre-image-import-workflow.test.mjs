@@ -26,8 +26,51 @@ describe('tyre image import workflow', () => {
       affectedSuppliers: ['TYREWAREHOUSE'],
       totalAvailableStock: 9
     });
-    expect(dunlop.affectedSkus).toEqual(['sku-1', 'sku-1', 'sku-2']);
+    expect(dunlop.affectedSkus).toEqual(['sku-1', 'sku-2']);
     expect(candidates).toHaveLength(2);
+  });
+
+  it('reads refreshed supplier catalogues by header instead of stale column positions', () => {
+    const rows = parseSupplierTyreRows('APEX', 'apex', [
+      'Supplier SKU,TYRE_SIZE,TYRE_BRAND,TYRE_PATTERN,TYRE_RATING,TYRE_INDEX,TYRE_SPECS,Category,Product Name,Cost Price,Selling Price,Cape Town Stock Units,Total Stock Units',
+      '307672,35X12.50R15,BF GOODRICH,MUD TERRAIN T/A KM3 GO,LRC,,LT,Tyres,LT 35X12 MUD TERRAIN T/A KM3 LRC GO,R5991,R6900,1 units,1 unit'
+    ].join('\n'));
+
+    expect(rows).toEqual([expect.objectContaining({
+      supplier: 'APEX',
+      supplierStockCode: '307672',
+      brand: 'BF GOODRICH',
+      pattern: 'MUD TERRAIN T/A KM3 GO',
+      quantity: 1,
+      finishKey: 'BF GOODRICH',
+      designKey: 'MUD TERRAIN T A KM3 GO'
+    })]);
+  });
+
+  it('supports Exotic and Bridgestone structured image-import rows', () => {
+    const exotic = parseSupplierTyreRows('EXOTIC', 'structured', [
+      'Supplier SKU,TYRE_SIZE,TYRE_BRAND,TYRE_PATTERN,Category,Total Stock Units',
+      'D1107017D61554H,110/70-17,Diamond,110/70-17 Diamond D-615 Motorcycle Tyre 54H TL,Motorcycle Tyres,5 units'
+    ].join('\n'));
+    const bridgestone = parseSupplierTyreRows('BRIDGESTONE', 'structured', [
+      'Brand,Requested Pattern,Portal Pattern,Description,Size,SKU,Stock Type,Stock Location,Stock Units',
+      'BRIDGESTONE,ALENZA 001,ALENZA 001,215/60R17 ALENZA 001 96H,215/60R17,021640,rep,National,4'
+    ].join('\n'));
+
+    expect(exotic[0]).toMatchObject({
+      brand: 'Diamond',
+      pattern: '110/70-17 Diamond D-615 Motorcycle Tyre 54H TL',
+      quantity: 5,
+      finishKey: 'DIAMOND',
+      designKey: 'D 615 MOTORCYCLE'
+    });
+    expect(bridgestone[0]).toMatchObject({
+      brand: 'BRIDGESTONE',
+      pattern: 'ALENZA 001',
+      quantity: 4,
+      finishKey: 'BRIDGESTONE',
+      designKey: 'ALENZA 001'
+    });
   });
 
   it('uses affected SKU count and stock totals to prioritize batches', () => {

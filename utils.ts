@@ -1,6 +1,7 @@
 
 import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
 import { parseAlineStockImageKeys, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
+import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-ZA', {
@@ -883,7 +884,7 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
       .join(' | ');
 
     const sellingPriceIncVat = entry.price * 1.15;
-    const roundedSellingPrice = Math.round(sellingPriceIncVat / 50) * 50;
+    const roundedSellingPrice = Math.round((sellingPriceIncVat / 25) + 1e-9) * 25;
 
     return {
       id: `tyrewarehouse-${index + 1}`,
@@ -895,6 +896,7 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
       location: location || 'TYREWAREHOUSE',
       quantity: entry.totalQuantity,
+      stockByLocation: entry.branchStock,
       costPrice: entry.price,
       sellingPrice: roundedSellingPrice,
       lastUpdated: today
@@ -905,6 +907,60 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
 // --- ATT PARSER ---
 export const parseAttData = (rawCsv: string): InventoryItem[] => {
   return parseSimpleSupplierCsv(rawCsv, 'att', 'ATT');
+};
+
+// --- BRIDGESTONE / FIRESTONE PARSER ---
+export const parseBridgestoneData = (rawCsv: string): InventoryItem[] => {
+  const lines = rawCsv.split('\n');
+  const today = new Date().toISOString().split('T')[0];
+
+  return lines.flatMap((line, index): InventoryItem[] => {
+    const trimmed = line.trim();
+    if (!trimmed) return [];
+
+    const cols = parseCSVLine(trimmed);
+    const brand = cols[0]?.trim();
+    const requestedPattern = cols[1]?.replace(/\s+/g, ' ').trim();
+    const portalPattern = cols[2]?.replace(/\s+/g, ' ').trim();
+    const description = cols[3]?.replace(/\s+/g, ' ').trim();
+    const sku = cols[5]?.trim();
+
+    if (index === 0 && brand?.toUpperCase() === 'BRAND') return [];
+    if (!brand || !description || !sku) return [];
+
+    const normalizedDescription = description.replace(/^HL(?=\d)/i, '');
+    const parsed = parseSupplierTyreFields({
+      description: normalizedDescription,
+      explicitSize: cols[4]?.trim(),
+      explicitBrand: brand,
+      explicitPattern: portalPattern || requestedPattern
+    });
+    if (!parsed.size || !parsed.pattern) return [];
+
+    const stockType = cols[6]?.trim();
+    const stockLocation = cols[7]?.trim();
+    const quantity = Math.max(0, parseStockUnits(cols[8]));
+    const costPriceExVat = parseCurrencyString(cols[9]);
+    const sellingPrice = parseCurrencyString(cols[11]) || parseCurrencyString(cols[10]);
+
+    return [{
+      id: `bridgestone-${sku}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('BRIDGESTONE', brand, parsed.pattern, sku),
+      brand,
+      pattern: parsed.pattern,
+      size: parsed.size,
+      loadSpeedIndex: buildTyreIndexDisplay(parsed.rating, parsed.index),
+      tyreRating: parsed.rating,
+      tyreIndex: parsed.index,
+      tyreSpecs: parsed.specs,
+      location: [stockLocation || 'Supplier', stockType].filter(Boolean).join(' | '),
+      quantity,
+      costPrice: costPriceExVat,
+      sellingPrice,
+      lastUpdated: today
+    }];
+  });
 };
 
 // --- SAFETY GRIP PARSER ---
@@ -1020,6 +1076,7 @@ export const parseStamfordData = (
       loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
       location: location || 'STAMFORD',
       quantity: entry.totalQuantity,
+      stockByLocation: entry.branchStock,
       costPrice: price,
       sellingPrice: price,
       lastUpdated: today
@@ -1093,9 +1150,10 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
       colour: [brand, description, category, catalogueNumber, recommendedRetail ? `RR ${formatCurrency(recommendedRetail)}` : ''].filter(Boolean).join(' | '),
       setQuantity: 4,
       location: `JHB: ${qtyJhb} | CPT: ${qtyCpt} | DBN: ${qtyDbn}`,
+      stockByLocation: { JHB: qtyJhb, CPT: qtyCpt, DBN: qtyDbn },
       quantity: qtyJhb + qtyCpt + qtyDbn,
       costPrice: priceIncVat,
-      sellingPrice: priceIncVat,
+      sellingPrice: recommendedRetail || priceIncVat,
       lastUpdated: today
     });
   });
@@ -1104,7 +1162,85 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
 };
 
 // --- APEX PARSER ---
+const parseStructuredSupplierRefreshData = (
+  rawCsv: string,
+  idPrefix: string,
+  supplierName: string
+): InventoryItem[] | null => {
+  const lines = rawCsv.split('\n').filter((line) => line.trim());
+  if (!lines.length) return [];
+
+  const headers = parseCSVLine(lines[0]).map((header) => header.trim());
+  const normalizedHeaders = headers.map((header) => header.toLowerCase().replace(/[^a-z0-9]+/g, ''));
+  const column = (name: string) => normalizedHeaders.indexOf(name.toLowerCase().replace(/[^a-z0-9]+/g, ''));
+  if (column('Supplier SKU') < 0 || column('Cost Price') < 0 || column('Selling Price') < 0) return null;
+
+  const locationColumns = headers.flatMap((header, index) => {
+    const match = header.match(/^(.+?)\s+Stock Units$/i);
+    return match && !/^total$/i.test(match[1].trim())
+      ? [{ index, location: match[1].trim() }]
+      : [];
+  });
+  const today = new Date().toISOString().split('T')[0];
+
+  return lines.slice(1).flatMap((line, index) => {
+    const cols = parseCSVLine(line);
+    const get = (name: string) => {
+      const position = column(name);
+      return position >= 0 ? cols[position]?.trim() || '' : '';
+    };
+    const sku = get('Supplier SKU');
+    const productName = get('Product Name');
+    const parsedTyre = parseSupplierTyreFields({
+      description: productName,
+      explicitSize: get('TYRE_SIZE'),
+      explicitBrand: get('TYRE_BRAND'),
+      explicitPattern: get('TYRE_PATTERN'),
+      explicitRating: get('TYRE_RATING'),
+      explicitIndex: get('TYRE_INDEX'),
+      explicitSpecs: get('TYRE_SPECS'),
+      inferBrandFromDescription: true
+    });
+    const skuSizeMatch = sku.match(/(\d{3})(\d{2})(\d{2})/);
+    const size = parsedTyre.size || (skuSizeMatch ? `${skuSizeMatch[1]}/${skuSizeMatch[2]}R${skuSizeMatch[3]}` : '');
+    const brand = parsedTyre.brand;
+    const pattern = parsedTyre.pattern;
+    if (!sku || !size || !brand || !pattern) return [];
+
+    const tyreRating = parsedTyre.rating;
+    const tyreIndex = parsedTyre.index;
+    const tyreSpecs = parsedTyre.specs;
+    const stockByLocation = Object.fromEntries(locationColumns.map(({ index: stockIndex, location }) => (
+      [location, parseStockUnits(cols[stockIndex])]
+    )));
+    const locationTotal = Object.values(stockByLocation).reduce((total, quantity) => total + quantity, 0);
+    const declaredTotal = parseStockUnits(get('Total Stock Units'));
+    const quantity = Math.max(locationTotal, declaredTotal);
+
+    return [{
+      id: `${idPrefix}-${index + 1}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata(supplierName, brand, pattern, sku),
+      brand,
+      pattern,
+      size,
+      loadSpeedIndex: [tyreRating, tyreIndex].filter(Boolean).join(' '),
+      tyreRating,
+      tyreIndex,
+      tyreSpecs,
+      location: locationColumns.map(({ location }) => `${location}: ${stockByLocation[location] || 0}`).join(' | ') || supplierName,
+      stockByLocation,
+      quantity,
+      costPrice: parseCurrencyString(get('Cost Price')),
+      sellingPrice: parseCurrencyString(get('Selling Price')),
+      lastUpdated: today
+    } satisfies TyreProduct];
+  });
+};
+
 export const parseApexData = (rawCsv: string): InventoryItem[] => {
+  const refreshedItems = parseStructuredSupplierRefreshData(rawCsv, 'apex', 'APEX');
+  if (refreshedItems) return refreshedItems;
   return parseSimpleSupplierCsv(rawCsv, 'apex', 'APEX', { normalizePattern: true });
 };
 
@@ -1128,6 +1264,8 @@ const extractExoticPattern = (productName: string, size: string, brand: string):
 
 // --- EXOTIC PARSER ---
 export const parseExoticData = (rawCsv: string): InventoryItem[] => {
+  const refreshedItems = parseStructuredSupplierRefreshData(rawCsv, 'exotic', 'EXOTIC');
+  if (refreshedItems) return refreshedItems;
   const groupedItems = new Map<string, {
     sku: string;
     category: string;
@@ -1135,6 +1273,7 @@ export const parseExoticData = (rawCsv: string): InventoryItem[] => {
     pattern: string;
     size: string;
     branchAvailability: Record<string, string>;
+    branchStock: Record<string, number>;
     totalQuantity: number;
     sellingPrice: number;
   }>();
@@ -1170,11 +1309,13 @@ export const parseExoticData = (rawCsv: string): InventoryItem[] => {
       pattern,
       size,
       branchAvailability: {},
+      branchStock: {},
       totalQuantity: 0,
       sellingPrice
     };
 
     existing.branchAvailability[stockLocation] = availability;
+    existing.branchStock[stockLocation] = (existing.branchStock[stockLocation] || 0) + branchQuantity;
     existing.totalQuantity += branchQuantity;
     if (!existing.sellingPrice && sellingPrice) existing.sellingPrice = sellingPrice;
     groupedItems.set(sku, existing);
@@ -1198,6 +1339,7 @@ export const parseExoticData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: [entry.sku, entry.category, 'Availability only'].filter(Boolean).join(' | '),
       location: location || 'EXOTIC',
       quantity: entry.totalQuantity,
+      stockByLocation: entry.branchStock,
       costPrice: entry.sellingPrice,
       sellingPrice: entry.sellingPrice,
       lastUpdated: today
@@ -1245,6 +1387,8 @@ export const parseArcData = (rawCsv: string): InventoryItem[] => {
 
 // --- TUBESTONE PARSER ---
 export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
+  const refreshedItems = parseStructuredSupplierRefreshData(rawCsv, 'tubestone', 'TUBESTONE');
+  if (refreshedItems) return refreshedItems;
   const items: InventoryItem[] = [];
   const lines = rawCsv.split('\n');
   const today = new Date().toISOString().split('T')[0];
@@ -1288,6 +1432,7 @@ export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
       size,
       loadSpeedIndex: [sku, category].filter(Boolean).join(' | '),
       location: `BFN: ${bfnQty} | CPT: ${cptQty} | DBN: ${dbnQty} | JHB: ${jhbQty} | NWH: ${nwhQty}`,
+      stockByLocation: { BFN: bfnQty, CPT: cptQty, DBN: dbnQty, JHB: jhbQty, NWH: nwhQty },
       quantity: totalQty,
       costPrice: sellingPrice,
       sellingPrice,
@@ -1300,6 +1445,8 @@ export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
 
 // --- TREADS UNLIMITED PARSER ---
 export const parseTreadsUnlimitedData = (rawCsv: string): InventoryItem[] => {
+  const refreshedItems = parseStructuredSupplierRefreshData(rawCsv, 'treads', 'TREADS UNLIMITED');
+  if (refreshedItems) return refreshedItems;
   const items: InventoryItem[] = [];
   const lines = rawCsv.split('\n');
   const today = new Date().toISOString().split('T')[0];
@@ -1338,6 +1485,7 @@ export const parseTreadsUnlimitedData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: sku || '',
       location: `Regional: ${regionalQty} | National: ${nationalQty}`,
       quantity: nationalQty,
+      stockByLocation: { Regional: regionalQty, National: nationalQty },
       costPrice: priceIncVat,
       sellingPrice: priceIncVat,
       lastUpdated: today
@@ -1415,6 +1563,7 @@ export const parseTreadZoneData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
       location: location || 'TREAD ZONE',
       quantity: entry.totalQuantity,
+      stockByLocation: entry.branchStock,
       costPrice: entry.price,
       sellingPrice: roundedSellingPrice,
       lastUpdated: today
@@ -1500,6 +1649,7 @@ export const parseSumitomoDunlopData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: [entry.sku, entry.category].filter(Boolean).join(' | '),
       location: location || 'SUMITOMO/DUNLOP',
       quantity: entry.totalQuantity,
+      stockByLocation: entry.branchStock,
       costPrice: entry.price,
       sellingPrice: roundedSellingPrice,
       lastUpdated: today
@@ -1544,6 +1694,7 @@ export const parseTyreLifeData = (rawCsv: string): InventoryItem[] => {
       size,
       loadSpeedIndex: loadSpeed || sku || '',
       location: `JHB: ${jhbQty} | CPT: ${cptQty} | DBN: ${dbnQty}`,
+      stockByLocation: { JHB: jhbQty, CPT: cptQty, DBN: dbnQty },
       quantity: totalQty,
       costPrice: priceIncVat,
       sellingPrice: priceIncVat,
@@ -1596,6 +1747,8 @@ export const parseTyreLifeWheelsData = (rawCsv: string): InventoryItem[] => {
       imageDesignKey: imageKeys.designKey,
       imageFinishKey: imageKeys.finishKey,
       code: wheelName,
+      brand,
+      finish,
       size: normalizeWheelSize(rawSize),
       pcd,
       offset,
@@ -1603,6 +1756,7 @@ export const parseTyreLifeWheelsData = (rawCsv: string): InventoryItem[] => {
       colour: [brand, finish, category, sku].filter(Boolean).join(' | '),
       setQuantity: 4,
       location: `JHB: ${jhbQty} | CPT: ${cptQty} | DBN: ${dbnQty}`,
+      stockByLocation: { JHB: jhbQty, CPT: cptQty, DBN: dbnQty },
       quantity,
       costPrice: sellingPrice,
       sellingPrice,

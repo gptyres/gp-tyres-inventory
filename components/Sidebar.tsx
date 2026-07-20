@@ -288,6 +288,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   ATT
                 </button>
                 <button
+                  onClick={() => handleSupplierClick('BRIDGESTONE')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'BRIDGESTONE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  BRIDGESTONE
+                </button>
+                <button
                   onClick={() => handleSupplierClick('SAFETY_GRIP')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'SAFETY_GRIP' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >
@@ -385,6 +391,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'WHATSAPP_PORTAL' ? 'text-gp-text-main hover:bg-gp-border border-l-2 border-gp-red bg-gp-input' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >
                   WhatsApp Web
+                </button>
+                <button
+                  onClick={() => handleOrderClick('RADAR_RED')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'RADAR_RED' ? 'text-gp-text-main hover:bg-gp-border border-l-2 border-gp-red bg-gp-input' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  RADAR RED
                 </button>
               </div>
             )}

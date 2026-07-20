@@ -11,6 +11,11 @@ import {
   supplierTyreMatchesUploadKeys
 } from '../supplierStockImages';
 import { supabase } from '../supabaseClient';
+import {
+  normalizeStockByLocation,
+  parseStockLocationSummary,
+  sortStockLocationEntries
+} from '../stockLocation';
 
 interface InventoryViewProps {
   items: InventoryItem[];
@@ -23,7 +28,9 @@ interface InventoryViewProps {
   onReserve: (item: InventoryItem) => void;
   onBulkDelete: (ids: string[]) => void;
   isReadOnly?: boolean; // New Prop for Supplier Views
+  showSupplierName?: boolean;
   currentUser?: string | null;
+  priceLabel?: string;
 }
 
 // --- CONFIG TYPES ---
@@ -74,27 +81,60 @@ const isSupplierTyre = (item: InventoryItem): item is TyreProduct => (
   item.type === ProductType.TYRE && Boolean((item as TyreProduct).supplierName)
 );
 
-const getItemDisplayName = (item: InventoryItem): string => {
+export const getItemSupplierName = (item: InventoryItem): string => (
+  String(item.supplierName || '').trim().toUpperCase()
+);
+
+const uniqueDisplayParts = (parts: Array<string | undefined>) => {
+  const seen = new Set<string>();
+  return parts.map((part) => String(part || '').trim()).filter((part) => {
+    const key = part.toLowerCase();
+    if (!key || /^(?:-|n\/?a|none|null|unknown|standard)$/.test(key) || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
+export const getItemDisplayName = (item: InventoryItem): string => {
   if (item.type === ProductType.TYRE) {
     const tyre = item as TyreProduct;
-    if (isSupplierTyre(item)) return tyre.pattern || tyre.imageDesignKey || tyre.size;
+    if (isSupplierTyre(item)) {
+      return uniqueDisplayParts([tyre.size, tyre.brand, tyre.pattern]).join(' ');
+    }
     return tyre.size;
   }
   if (item.type === ProductType.WHEEL) return getWheelDisplayName(item as WheelProduct);
   return (item as CoiloverProduct).vehicleCompatibility;
 };
 
-const getItemSecondaryLine = (item: InventoryItem): string => {
+const getWheelBrand = (wheel: WheelProduct): string => {
+  if (wheel.brand?.trim()) return wheel.brand.trim();
+  return String(wheel.colour || '').split('|')[0]?.trim() || '';
+};
+
+export const getItemSecondaryLine = (item: InventoryItem): string => {
   if (item.type === ProductType.TYRE) {
     const tyre = item as TyreProduct;
     if (isSupplierTyre(item)) {
-      return [tyre.size, tyre.brand, tyre.loadSpeedIndex].filter(Boolean).join(' / ');
+      return uniqueDisplayParts([
+        tyre.tyreRating,
+        tyre.tyreIndex,
+        tyre.tyreSpecs,
+        (!tyre.tyreRating && !tyre.tyreIndex && !tyre.tyreSpecs) ? tyre.loadSpeedIndex : undefined
+      ]).join(' / ');
     }
     return `${tyre.brand} ${tyre.pattern}`.trim();
   }
   if (item.type === ProductType.WHEEL) {
     const wheel = item as WheelProduct;
-    return [wheel.size, wheel.pcd, formatWheelOffset(wheel.offset), wheel.centerBore ? `CB ${wheel.centerBore}` : ''].filter(Boolean).join(' / ');
+    return uniqueDisplayParts([
+      getWheelBrand(wheel),
+      getWheelFinish(wheel),
+      wheel.size,
+      formatWheelPcd(wheel.pcd),
+      formatWheelOffset(wheel.offset),
+      wheel.centerBore ? `CB ${wheel.centerBore}` : ''
+    ]).join(' / ');
   }
   const coilover = item as CoiloverProduct;
   return `${coilover.brand} ${coilover.series}`.trim();
@@ -131,9 +171,61 @@ const splitWheelSize = (value: string | undefined): { diameter: string; width: s
 };
 
 const getWheelFinish = (wheel: WheelProduct): string => {
+  if (wheel.finish?.trim()) return wheel.finish.trim().toUpperCase();
   const colourParts = String(wheel.colour || '').split('|').map((part) => part.trim()).filter(Boolean);
   if (wheel.supplierName === 'TYRE LIFE WHEELS' && colourParts[1]) return colourParts[1].toUpperCase();
   return (wheel.imageFinishKey || colourParts[1] || wheel.colour || '').trim().toUpperCase();
+};
+
+const getStockEntries = (item: InventoryItem): Array<[string, number]> => {
+  const mappedStock = normalizeStockByLocation(item.stockByLocation);
+  if (Object.keys(mappedStock).length > 0) return sortStockLocationEntries(mappedStock);
+  const location = item.type === ProductType.TYRE
+    ? (item as TyreProduct).location
+    : item.type === ProductType.WHEEL
+      ? (item as WheelProduct).location
+      : '';
+  return sortStockLocationEntries(parseStockLocationSummary(location));
+};
+
+const getItemLocation = (item: InventoryItem): string => (
+  item.type === ProductType.TYRE
+    ? (item as TyreProduct).location
+    : item.type === ProductType.WHEEL
+      ? (item as WheelProduct).location || ''
+      : ''
+);
+
+const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
+  const structuredEntries = getStockEntries(item);
+  const availableEntries = structuredEntries.filter(([, quantity]) => quantity > 0);
+  const fallbackLocation = getItemLocation(item);
+
+  return (
+    <div className="col-span-full mt-2 border-t border-gp-border/70 pt-3">
+      <span className="block text-[9px] leading-none text-gp-text-muted uppercase font-bold tracking-wider">
+        Available locations
+      </span>
+      {availableEntries.length > 0 ? (
+        <div className="mt-2 grid grid-cols-[repeat(auto-fit,minmax(4rem,1fr))] gap-2">
+          {availableEntries.map(([location, quantity]) => (
+            <div
+              key={location}
+              className="flex min-h-10 min-w-0 items-center justify-between gap-2 rounded border border-gp-border bg-gp-black/70 px-2.5 py-2"
+              title={location}
+            >
+              <span className="truncate text-[10px] font-bold leading-none text-gp-text-muted">{location}</span>
+              <span className="shrink-0 font-mono text-xs font-black leading-none tabular-nums text-green-500">{quantity}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <span className="mt-2 block truncate text-[10px] font-mono font-bold text-gp-text-main">
+          {structuredEntries.length > 0 ? 'No branch stock' : fallbackLocation}
+        </span>
+      )}
+    </div>
+  );
 };
 
 const getWheelClipboardText = (item: InventoryItem): string => {
@@ -229,6 +321,18 @@ const SpecBadge = ({ label, value }: { label: string; value: string | number }) 
     <span className="text-xs text-gp-text-main font-mono font-bold truncate">{value}</span>
   </div>
 );
+
+const SupplierBadge = ({ item, className = '' }: { item: InventoryItem; className?: string }) => {
+  const supplierName = getItemSupplierName(item);
+  if (!supplierName) return null;
+
+  return (
+    <span className={`inline-flex max-w-full items-center gap-1.5 rounded border border-gp-red/40 bg-gp-red/10 px-2 py-1 text-[9px] font-black uppercase tracking-wider text-gp-red ${className}`}>
+      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gp-red" aria-hidden="true" />
+      <span className="truncate">Supplier: {supplierName}</span>
+    </span>
+  );
+};
 
 // --- IMAGE COMPONENT ---
 interface ProductImageProps {
@@ -658,7 +762,7 @@ interface ViewComponentProps extends InventoryViewProps {
   onCopyItem: (item: InventoryItem) => void;
 }
 
-const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
+const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
   
   const SortIcon = ({ colKey }: { colKey: SortKey }) => (
     <span className={`ml-1 inline-block transition-opacity ${sortConfig.key === colKey ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`}>
@@ -687,13 +791,14 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
             <th className="p-3 border-r border-b border-gp-border w-20 text-center">Copy</th>
             {showImages && <th className="p-3 border-r border-b border-gp-border w-24 text-center">Visual</th>}
             <th className="p-3 border-r border-b border-gp-border w-16 text-center">Type</th>
+            {showSupplierName && <th className="p-3 border-r border-b border-gp-border">Supplier</th>}
             <Header label="Main Spec" colKey="size" />
             {visibleColumns.specs && <Header label="Brand / Model" colKey="brand" />}
             {visibleColumns.specs && <th className="p-3 border-r border-b border-gp-border">Details</th>}
             {visibleColumns.location && <Header label="Location" colKey="location" />}
             <Header label="Qty" colKey="quantity" align="center" />
             {visibleColumns.cost && <th className="p-3 border-r border-b border-gp-border text-right text-green-600 bg-green-900/10">Cost</th>}
-            {visibleColumns.price && <Header label={isReadOnly ? "Selling Price" : "Sell Price"} colKey="price" align="right" />}
+            {visibleColumns.price && <Header label={isReadOnly ? priceLabel : "Sell Price"} colKey="price" align="right" />}
           </tr>
         </thead>
         <tbody className="divide-y divide-gp-border">
@@ -762,6 +867,12 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               <td className="p-3 border-r border-gp-border text-center">
                 <span className="text-[9px] font-bold bg-gp-overlay px-1.5 py-0.5 rounded text-gp-text-muted">{item.type.charAt(0)}</span>
               </td>
+
+              {showSupplierName && (
+                <td className="p-3 border-r border-gp-border">
+                  <SupplierBadge item={item} />
+                </td>
+              )}
               
               <td className="p-3 border-r border-gp-border font-bold text-gp-text-main">
                 {getItemDisplayName(item)}
@@ -770,7 +881,10 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               {visibleColumns.specs && (
                 <td className="p-3 border-r border-gp-border text-gp-text-main opacity-90">
                   {item.type === ProductType.TYRE ? (item as TyreProduct).brand : 
-                   item.type === ProductType.WHEEL ? (item as WheelProduct).code : 
+                   item.type === ProductType.WHEEL ? uniqueDisplayParts([
+                     getWheelBrand(item as WheelProduct),
+                     getWheelFinish(item as WheelProduct)
+                   ]).join(' / ') :
                    (item as CoiloverProduct).brand}
                 </td>
               )}
@@ -813,7 +927,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
   );
 };
 
-const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
+const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
       {items.map((item) => (
@@ -859,15 +973,25 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
           {/* Header */}
           <div className="bg-gp-overlay p-3 pt-4 border-b border-gp-border flex justify-between items-start">
             <div className="pt-4 overflow-hidden">
-              <span className="text-[9px] bg-gp-black text-gp-text-muted px-2 py-0.5 rounded font-bold uppercase tracking-wide border border-gp-border">
-                {item.type}
-              </span>
+              <div className="flex max-w-full flex-wrap items-center gap-2">
+                <span className="text-[9px] bg-gp-black text-gp-text-muted px-2 py-0.5 rounded font-bold uppercase tracking-wide border border-gp-border">
+                  {item.type}
+                </span>
+                {showSupplierName && <SupplierBadge item={item} />}
+              </div>
+              {item.type === ProductType.WHEEL && getWheelBrand(item as WheelProduct) && (
+                <p className="mt-2 text-[10px] font-black uppercase text-gp-red tracking-widest">
+                  {getWheelBrand(item as WheelProduct)}
+                </p>
+              )}
               <h3 className="text-xl font-black text-gp-text-main mt-2 leading-none font-display tracking-wide truncate max-w-full">
                 {getItemDisplayName(item)}
               </h3>
               {visibleColumns.specs && (
                 <p className="text-xs text-gp-silver mt-1 uppercase font-semibold truncate max-w-full">
-                    {getItemSecondaryLine(item)}
+                    {item.type === ProductType.WHEEL
+                      ? getWheelFinish(item as WheelProduct) || 'Finish not supplied'
+                      : getItemSecondaryLine(item)}
                 </p>
               )}
             </div>
@@ -885,23 +1009,19 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             <div className={`p-3 grid gap-2 flex-grow content-start bg-gradient-to-b from-gp-panel to-gp-overlay ${item.type === ProductType.WHEEL ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-3'}`}>
                 {item.type === ProductType.TYRE && (
                     <>
-                    <SpecBadge label="Index" value={(item as TyreProduct).loadSpeedIndex || '-'} />
-                    {visibleColumns.location && <SpecBadge label="Loc" value={(item as TyreProduct).location} />}
+                    <SpecBadge
+                      label="Index"
+                      value={(item as TyreProduct).loadSpeedIndex || (isSupplierTyre(item) ? '' : '-')}
+                    />
                     <SpecBadge label="Cat" value="PCR" />
                     </>
                 )}
                 {item.type === ProductType.WHEEL && (
                     <>
                     <SpecBadge label="Size" value={(item as WheelProduct).size} />
-                    <SpecBadge label="PCD" value={(item as WheelProduct).pcd} />
-                    <SpecBadge label="ET" value={(item as WheelProduct).offset} />
+                    <SpecBadge label="PCD" value={formatWheelPcd((item as WheelProduct).pcd) || '-'} />
+                    <SpecBadge label="ET" value={formatWheelOffset((item as WheelProduct).offset) || '-'} />
                     <SpecBadge label="CB" value={(item as WheelProduct).centerBore || '-'} />
-                    {(item as WheelProduct).location && (
-                       <div className="col-span-full mt-1 flex flex-col bg-black/10 p-1.5 rounded border border-gp-border/50">
-                           <span className="text-[9px] text-gp-text-muted uppercase font-bold tracking-wider">Warehouse Stock</span>
-                           <span className="text-[10px] font-mono font-bold text-gp-text-main truncate">{(item as WheelProduct).location}</span>
-                       </div>
-                    )}
                     </>
                 )}
                 {item.type === ProductType.COILOVER && (
@@ -909,6 +1029,9 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     <SpecBadge label="Series" value={(item as CoiloverProduct).series} />
                     <div className="col-span-2"><SpecBadge label="Fitment" value={(item as CoiloverProduct).vehicleCompatibility} /></div>
                     </>
+                )}
+                {visibleColumns.location && (item.type === ProductType.TYRE || item.type === ProductType.WHEEL) && (
+                  <StockLocationPanel item={item} />
                 )}
             </div>
           )}
@@ -926,7 +1049,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             {visibleColumns.price && (
                 <div className="bg-gp-black p-3 grid grid-cols-2 gap-3 items-center">
                     <div className="flex flex-col">
-                        <span className="text-[9px] text-gp-red uppercase font-bold tracking-wider">{isReadOnly ? "Selling Price" : "Selling Price"}</span>
+                        <span className="text-[9px] text-gp-red uppercase font-bold tracking-wider">{isReadOnly ? priceLabel : "Selling Price"}</span>
                         <span className="text-xl font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
                     </div>
 
@@ -962,7 +1085,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
   );
 };
 
-const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio }) => {
+const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
   return (
     <div className="flex flex-col divide-y divide-gp-border p-2 mb-6">
       {items.map((item) => (
@@ -996,6 +1119,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                )}
 
                <div className="flex flex-col cursor-pointer" onClick={() => !isReadOnly && onEdit(item)}>
+                  {showSupplierName && <SupplierBadge item={item} className="mb-1 self-start" />}
                   <span className="text-lg font-black text-gp-text-main font-display">
                     {getItemDisplayName(item)}
                   </span>
@@ -1026,7 +1150,12 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                  <span className="text-xs font-bold text-green-600 font-mono bg-green-900/10 px-1 rounded">{formatCurrency(item.costPrice)}</span>
               )}
 
-              {visibleColumns.price && <span className="text-base font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>}
+              {visibleColumns.price && (
+                <div className="flex flex-col items-end">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-gp-red">{isReadOnly ? priceLabel : 'Selling Price'}</span>
+                  <span className="text-base font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
+                </div>
+              )}
               
               <div className="flex gap-2">
                 <CopyItemButton item={item} onCopyItem={onCopyItem} />

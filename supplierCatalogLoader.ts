@@ -1,10 +1,12 @@
 import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { loadLiveSupplierCatalogItems } from './liveSupplierCatalog';
+import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import {
   parseAlineData,
   parseApexData,
   parseArcData,
   parseAttData,
+  parseBridgestoneData,
   parseExclusiveTyresData,
   parseExoticData,
   parseSafetyGripData,
@@ -26,6 +28,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'EXCLUSIVE_TYRES',
   'TYREWAREHOUSE',
   'ATT',
+  'BRIDGESTONE',
   'SAFETY_GRIP',
   'ALINE',
   'STAMFORD',
@@ -45,6 +48,7 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   EXCLUSIVE_TYRES: 'EXCLUSIVE TYRES',
   TYREWAREHOUSE: 'TYREWAREHOUSE',
   ATT: 'ATT',
+  BRIDGESTONE: 'BRIDGESTONE',
   SAFETY_GRIP: 'SAFETY GRIP',
   ALINE: 'ALINE',
   STAMFORD: 'STAMFORD',
@@ -64,6 +68,7 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   EXCLUSIVE_TYRES: 'exclusive',
   TYREWAREHOUSE: 'tyrewarehouse',
   ATT: 'att',
+  BRIDGESTONE: 'bridgestone',
   SAFETY_GRIP: 'safetygrip',
   ALINE: 'aline',
   STAMFORD: 'stamford',
@@ -83,6 +88,30 @@ let allSupplierPOSItemsCache: Promise<InventoryItem[]> | null = null;
 
 const cloneInventoryItems = (items: InventoryItem[]) => items.map((item) => ({ ...item } as InventoryItem));
 
+export const normalizeBundledSupplierTyres = (
+  catalog: ConcreteSupplierCatalog,
+  items: InventoryItem[]
+): InventoryItem[] => items.map((item) => {
+  if (item.type !== ProductType.TYRE) return item;
+  const tyre = item as TyreProduct;
+  const parsed = parseSupplierTyreFields({
+    description: [tyre.brand, tyre.pattern, tyre.loadSpeedIndex].filter(Boolean).join(' '),
+    explicitSize: tyre.size,
+    explicitBrand: tyre.brand
+  });
+  return {
+    ...tyre,
+    supplierName: tyre.supplierName || supplierDisplayNames[catalog],
+    size: parsed.size,
+    brand: parsed.brand,
+    pattern: parsed.pattern,
+    tyreRating: parsed.rating,
+    tyreIndex: parsed.index,
+    tyreSpecs: parsed.specs,
+    loadSpeedIndex: buildTyreIndexDisplay(parsed.rating, parsed.index)
+  };
+});
+
 const tagSupplierItems = (supplierName: string, supplierItems: InventoryItem[]): InventoryItem[] => {
   return supplierItems.map((item) => {
     if (item.type === ProductType.WHEEL) {
@@ -90,16 +119,18 @@ const tagSupplierItems = (supplierName: string, supplierItems: InventoryItem[]):
       return {
         ...wheel,
         id: `${supplierName}-${wheel.id}`,
+        supplierName,
         location: `${supplierName}: ${wheel.location || 'Supplier'}`
       };
     }
 
-    if (item.type !== ProductType.TYRE) return { ...item, id: `${supplierName}-${item.id}` };
+    if (item.type !== ProductType.TYRE) return { ...item, id: `${supplierName}-${item.id}`, supplierName };
 
     const tyre = item as TyreProduct;
     return {
       ...tyre,
       id: `${supplierName}-${tyre.id}`,
+      supplierName,
       location: `${supplierName}: ${tyre.location || 'Supplier'}`
     };
   });
@@ -129,6 +160,10 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     case 'ATT': {
       const { ATT_RAW_DATA } = await import('./supplier_data/attData');
       return parseAttData(ATT_RAW_DATA);
+    }
+    case 'BRIDGESTONE': {
+      const { BRIDGESTONE_RAW_DATA } = await import('./supplier_data/bridgestoneData');
+      return parseBridgestoneData(BRIDGESTONE_RAW_DATA);
     }
     case 'SAFETY_GRIP': {
       const { SAFETY_GRIP_RAW_DATA } = await import('./supplier_data/safetygripData');
@@ -189,7 +224,7 @@ const loadConcreteSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pr
     console.warn('Live supplier catalogue unavailable; using bundled fallback.', error);
   }
 
-  return loadBundledSupplierCatalog(catalog);
+  return normalizeBundledSupplierTyres(catalog, await loadBundledSupplierCatalog(catalog));
 };
 
 export const loadSupplierCatalogItems = async (catalog: SupplierCatalog): Promise<InventoryItem[]> => {

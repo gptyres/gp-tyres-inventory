@@ -11,8 +11,8 @@ export enum ViewMode {
   LIST = 'LIST'
 }
 
-export type AppView = 'DASHBOARD' | 'TRAINING_PORTAL' | 'CUSTOMER_HUB' | 'PHOTO_LIBRARY' | 'WORKSHOP_TRACKER' | 'INVENTORY' | 'ORDERS' | 'BACKORDERS' | 'SYSTEM_LOGS' | 'SUPPLIER_PORTAL' | 'SHIPPING_PORTAL' | 'PAYMENT_PORTAL' | 'TOOLS_PORTAL' | 'SUPPLIER_INVENTORY' | 'WHEEL_CATALOG' | 'WHATSAPP_PORTAL' | 'QUOTE_MODULE' | 'COURIER_LOGISTICS_ASSISTANT';
-export type SupplierCatalog = 'ALL_SUPPLIERS' | 'SAILUN' | 'EXCLUSIVE_TYRES' | 'TYREWAREHOUSE' | 'ATT' | 'SAFETY_GRIP' | 'ALINE' | 'STAMFORD' | 'TREAD_ZONE' | 'SUMITOMO_DUNLOP' | 'TYRE_LIFE_WHEELS' | 'TREADS_UNLIMITED' | 'TYRE_LIFE' | 'APEX' | 'TUBESTONE' | 'EXOTIC' | 'ARC';
+export type AppView = 'DASHBOARD' | 'TRAINING_PORTAL' | 'CUSTOMER_HUB' | 'PHOTO_LIBRARY' | 'WORKSHOP_TRACKER' | 'RADAR_RED' | 'INVENTORY' | 'ORDERS' | 'BACKORDERS' | 'SYSTEM_LOGS' | 'SUPPLIER_PORTAL' | 'SHIPPING_PORTAL' | 'PAYMENT_PORTAL' | 'TOOLS_PORTAL' | 'SUPPLIER_INVENTORY' | 'WHEEL_CATALOG' | 'WHATSAPP_PORTAL' | 'QUOTE_MODULE' | 'COURIER_LOGISTICS_ASSISTANT';
+export type SupplierCatalog = 'ALL_SUPPLIERS' | 'SAILUN' | 'EXCLUSIVE_TYRES' | 'TYREWAREHOUSE' | 'ATT' | 'BRIDGESTONE' | 'SAFETY_GRIP' | 'ALINE' | 'STAMFORD' | 'TREAD_ZONE' | 'SUMITOMO_DUNLOP' | 'TYRE_LIFE_WHEELS' | 'TREADS_UNLIMITED' | 'TYRE_LIFE' | 'APEX' | 'TUBESTONE' | 'EXOTIC' | 'ARC';
 
 // Changed to string to support dynamic config updates without type conflicts
 export type StaffName = string;
@@ -26,6 +26,7 @@ export interface BaseProduct {
   lastUpdated: string;
   supplierName?: string;
   supplierStockCode?: string;
+  stockByLocation?: Record<string, number>;
   imageDesignKey?: string;
   imageFinishKey?: string;
   sheetRowNumber?: number;
@@ -39,12 +40,17 @@ export interface TyreProduct extends BaseProduct {
   pattern: string; // e.g., AT3G
   size: string; // e.g., 265/65/17
   loadSpeedIndex: string; // e.g., 112T
+  tyreRating?: string; // e.g., 18PR
+  tyreIndex?: string; // e.g., 149/146K
+  tyreSpecs?: string; // e.g., TL / OWL
   location: string; // e.g., Deck, Home
 }
 
 export interface WheelProduct extends BaseProduct {
   type: ProductType.WHEEL;
   code: string;
+  brand?: string;
+  finish?: string;
   size: string; // e.g., 15x6.5
   pcd: string; // e.g., 5/100
   offset: string; // ET

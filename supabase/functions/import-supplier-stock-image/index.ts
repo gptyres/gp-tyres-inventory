@@ -129,7 +129,7 @@ Deno.serve(async (request) => {
       const { data: replacedRows, error: replaceError } = await supabase
         .from('supplier_stock_images')
         .update({ active: false })
-        .eq('supplier', payload.supplier)
+        .ilike('supplier', payload.supplier)
         .eq('source', 'staff-upload')
         .eq('design_key', payload.designKey)
         .eq('finish_key', payload.finishKey!.trim())

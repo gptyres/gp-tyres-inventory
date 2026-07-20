@@ -6,6 +6,10 @@ The portal implementation was deployed to production on 13 July 2026. The Supaba
 
 The admin button sends the supplier catalogue currently open in the portal to the Vercel API. The API maps that fixed catalogue key to one registry supplier and creates one private `SINGLE_SUPPLIER` Supabase job. A worker running in the local supplier automation folder claims that job, runs `sync_all_suppliers.py --supplier-exact <mapped supplier>`, validates the exact-run output, uploads its catalogue snapshot, and switches only that supplier's active catalogue pointer.
 
+For portal-button syncs, the worker keeps the exact supplier cost before VAT, applies 15% VAT once, and rounds only the final selling price to the nearest R25. Each supplier scraper has an explicit ex-VAT or VAT-inclusive price mapping so an already VAT-inclusive portal value is first converted back to its source cost instead of receiving VAT a second time.
+
+Tyrewarehouse uses the authenticated portal's displayed `product_price` as its discounted ex-VAT dealer cost. The API's separate `up_min` value is not used for catalogue pricing.
+
 Supplier usernames and passwords never leave:
 
     C:\Users\User\Documents\GP TYRES SITE\.env
@@ -118,11 +122,11 @@ This queues and processes a SYSTEM job through the same runner and snapshot publ
 
 The button queues only the supplier catalogue currently open. It never expands a manual click into `ALL_ENABLED`. Only one queued or running job is allowed at a time, and a failed supplier keeps its previous active catalogue snapshot. The weekly automation remains a deliberate full-registry batch because it has no current portal context.
 
-## 6. Sailun and Safety Grip document workflow
+## 6. Supplier document upload workflow
 
-Sailun and Safety Grip have no live supplier portal. In admin mode, open that supplier catalogue and choose **Import Supplier File**. Upload a text PDF, CSV, XLS, or XLSX document, confirm the extracted preview, and publish it. The server first replaces the dedicated `SUPPLIER_SAILUN` or `SUPPLIER_SAFETY_GRIP` Google Sheet tab and only then activates the matching live portal snapshot.
+In admin mode, open any live supplier catalogue and choose **Upload Stock File**. Upload a text PDF, CSV, XLS, or XLSX document, confirm the extracted preview, and publish it. The importer detects likely identity, size, stock, location, cost, and selling columns, including a stock table on a later Excel worksheet. The server first replaces that catalogue's dedicated `SUPPLIER_<CATALOG>` Google Sheet tab and only then activates the matching live portal snapshot.
 
-Both cost and selling prices are stored VAT-inclusive. If the uploaded price header is not explicitly VAT-inclusive, the importer adds 15% VAT once. The file contents are processed in the browser and are not retained by the server.
+Both cost and selling prices are stored VAT-inclusive. If either uploaded price header is not explicitly VAT-inclusive, the importer adds 15% VAT once to that column. The file contents are processed in the browser and are not retained by the server.
 
 ## 7. Safe verification
 
