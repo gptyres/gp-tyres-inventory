@@ -24,6 +24,7 @@ const WheelCatalogView = lazy(() => import('./components/WheelCatalogView').then
 const POSModal = lazy(() => import('./components/POSModal').then((module) => ({ default: module.POSModal })));
 const InvoiceModal = lazy(() => import('./components/InvoiceModal').then((module) => ({ default: module.InvoiceModal })));
 const QuoteModuleView = lazy(() => import('./components/QuoteModuleView').then((module) => ({ default: module.QuoteModuleView })));
+const CourierLogisticsAssistantView = lazy(() => import('./components/CourierLogisticsAssistantView').then((module) => ({ default: module.CourierLogisticsAssistantView })));
 const TrainingPortalView = lazy(() => import('./components/TrainingPortalView').then((module) => ({ default: module.TrainingPortalView })));
 const CustomerHubView = lazy(() => import('./components/CustomerHubView').then((module) => ({ default: module.CustomerHubView })));
 const PhotoLibraryView = lazy(() => import('./components/photo-library/PhotoLibraryView').then((module) => ({ default: module.PhotoLibraryView })));
@@ -1591,8 +1592,10 @@ const App: React.FC = () => {
       ? 'CUSTOMER HUB'
       : currentView === 'PHOTO_LIBRARY'
         ? 'PHOTO LIBRARY'
-      : undefined;
-  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY'
+        : currentView === 'COURIER_LOGISTICS_ASSISTANT'
+          ? 'COURIER LOGISTICS ASSISTANT'
+        : undefined;
+  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'COURIER_LOGISTICS_ASSISTANT'
     ? false
     : isSearchVisible || currentView === 'WHEEL_CATALOG';
 
@@ -1632,7 +1635,7 @@ const App: React.FC = () => {
           pageTitle={topNavTitle}
         />
 
-        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY') ? '' : 'pb-20'}`}>
+        <main className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY') ? '' : 'pb-20'}`}>
           {currentView === 'DASHBOARD' && (
             <DashboardView 
               currentUser={currentUser}
@@ -1749,6 +1752,12 @@ const App: React.FC = () => {
           {currentView === 'QUOTE_MODULE' && (
             <Suspense fallback={<LoadingPanel label="Loading quote module..." />}>
               <QuoteModuleView onPushToPOSQuote={handleQuoteModulePushToPOS} />
+            </Suspense>
+          )}
+
+          {currentView === 'COURIER_LOGISTICS_ASSISTANT' && (
+            <Suspense fallback={<LoadingPanel label="Loading Courier Logistics Assistant..." />}>
+              <CourierLogisticsAssistantView />
             </Suspense>
           )}
 

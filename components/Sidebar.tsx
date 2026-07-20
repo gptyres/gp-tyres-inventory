@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppView, ProductType, SupplierCatalog } from '../types';
+import { APP_VERSION } from '../config';
 import gpLogo from '../assets/gp-tyres-logo-transparent.png';
 
 interface SidebarProps {
@@ -493,6 +494,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   Quote Module
                 </button>
+                <button
+                  onClick={() => handleOrderClick('COURIER_LOGISTICS_ASSISTANT')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-bold rounded transition-colors ${currentView === 'COURIER_LOGISTICS_ASSISTANT' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-main bg-gp-input/60 hover:bg-gp-border'}`}
+                >
+                  Courier Logistics Assistant
+                </button>
                 <button 
                   onClick={() => handlePortalClick('Virtual Garage', 'https://gp-tyres-mags-virtual-garage-195826084752.us-west1.run.app/', 'TOOLS_PORTAL')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'TOOLS_PORTAL' && selectedPortalName === 'Virtual Garage' ? 'text-gp-text-main hover:bg-gp-border border-l-2 border-gp-red bg-gp-input' : 'text-gp-text-muted hover:text-gp-text-main'}`}
@@ -610,6 +617,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                 ONLINE
               </span>
+            </div>
+            <div className="border-t border-gp-border pt-2 text-center text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
+              Release {APP_VERSION}
             </div>
           </div>
         </div>
