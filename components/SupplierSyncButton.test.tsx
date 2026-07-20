@@ -84,6 +84,8 @@ describe('SupplierSyncButton', () => {
     expect(source).toContain('setIsPanelOpen((open) => !open)');
     expect(source).toContain('if (!canTrigger)');
     expect(source).toContain("activeStatus === 'queued' || activeStatus === 'running' || error");
+    expect(source).toContain('status?.worker?.online');
+    expect(source).toContain('!workerRequired || !canTrigger');
   });
 
   it('uses a symmetrical Live Portal, Sync Stock, Upload Stock action order', () => {

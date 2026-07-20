@@ -1,1 +1,78 @@
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-gp-black: #f3f4f6;
+  --color-gp-dark: #ffffff;
+  --color-gp-panel: #ffffff;
+  --color-gp-border: #e5e7eb;
+  --color-gp-text-main: #111827;
+  --color-gp-text-muted: #6b7280;
+  --color-gp-input: #f9fafb;
+  --color-gp-overlay: rgba(255, 255, 255, 0.5);
+}
+
+.dark {
+  --color-gp-black: #080808;
+  --color-gp-dark: #121212;
+  --color-gp-panel: #1e1e1e;
+  --color-gp-border: #27303d;
+  --color-gp-text-main: #f3f4f6;
+  --color-gp-text-muted: #9ca3af;
+  --color-gp-input: #0c0c0c;
+  --color-gp-overlay: rgba(0, 0, 0, 0.4);
+}
+
+@layer base {
+  html {
+    background: var(--color-gp-black);
+  }
+
+  body {
+    min-width: 320px;
+    background-color: var(--color-gp-black);
+    color: var(--color-gp-text-main);
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 220ms ease, color 220ms ease;
+  }
+
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    transition-duration: 220ms;
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid #ffd400;
+    outline-offset: 3px;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-gp-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: #3b414b;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e40000;
+}

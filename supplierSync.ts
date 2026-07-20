@@ -58,7 +58,7 @@ export interface SupplierSyncStatusResponse {
   activeJob: SupplierSyncJob | null;
   blockingJob: SupplierSyncJob | null;
   latestJob: SupplierSyncJob | null;
-  worker: SupplierSyncWorker;
+  worker?: SupplierSyncWorker | null;
   lastSuccessfulSync: {
     at: string;
     rowCount: number;

@@ -1489,7 +1489,13 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       }
 
       try {
-        const rows = await fetchSupplierStockImages();
+        const suppliers = Array.from(new Map(
+          supplierImageLookupItems
+            .map((item) => inventoryItemToSupplierImageLookup(item)?.supplierName?.trim())
+            .filter((supplier): supplier is string => Boolean(supplier))
+            .map((supplier) => [supplier.toUpperCase(), supplier])
+        ).values());
+        const rows = (await Promise.all(suppliers.map((supplier) => fetchSupplierStockImages(supplier)))).flat();
         if (!cancelled) setSupplierImages(buildSupplierImageMap(supplierImageLookupItems, rows));
       } catch (error) {
         console.error('Supplier image lookup failed', error);

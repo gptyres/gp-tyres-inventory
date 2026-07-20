@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const supabaseMockState = vi.hoisted(() => ({
   pages: [] as unknown[][],
   rangeCalls: [] as Array<{ from: number; to: number }>,
-  eqCalls: [] as Array<{ column: string; value: unknown }>
+  eqCalls: [] as Array<{ column: string; value: unknown }>,
+  ilikeCalls: [] as Array<{ column: string; value: string }>
 }));
 
 vi.mock('./supabaseClient', () => ({
@@ -13,6 +14,10 @@ vi.mock('./supabaseClient', () => ({
         select: vi.fn(() => builder),
         eq: vi.fn((column: string, value: unknown) => {
           supabaseMockState.eqCalls.push({ column, value });
+          return builder;
+        }),
+        ilike: vi.fn((column: string, value: string) => {
+          supabaseMockState.ilikeCalls.push({ column, value });
           return builder;
         }),
         order: vi.fn(() => builder),
@@ -49,6 +54,7 @@ beforeEach(() => {
   supabaseMockState.pages = [];
   supabaseMockState.rangeCalls = [];
   supabaseMockState.eqCalls = [];
+  supabaseMockState.ilikeCalls = [];
   clearSupplierStockImageCache();
 });
 
@@ -882,6 +888,6 @@ describe('supplier tyre image parsing and matching', () => {
       { from: 0, to: 999 },
       { from: 1000, to: 1999 }
     ]);
-    expect(supabaseMockState.eqCalls).toContainEqual({ column: 'supplier', value: 'APEX' });
+    expect(supabaseMockState.ilikeCalls).toContainEqual({ column: 'supplier', value: 'APEX' });
   });
 });

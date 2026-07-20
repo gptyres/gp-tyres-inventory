@@ -59,6 +59,7 @@ const chipBase = 'min-h-9 rounded-lg border px-3 py-2 text-xs font-bold uppercas
 const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif']);
 const CATEGORY_FOLDER_PATTERN = /^(1[3-9]|2[0-6])\s+[456]X\d{3}(?:\.\d)?$/i;
 const SYNC_CONCURRENCY = 4;
+const WHEEL_CATALOG_RENDER_CHUNK_SIZE = 120;
 const WHEEL_CATALOG_REPLACE_FOLDER_PIN = '786';
 const QUICK_WHEEL_SEARCHES = [
   { label: 'Model code', value: 'model' },
@@ -73,6 +74,42 @@ const normalizePath = (value: string) => value.replaceAll('\\', '/').split('/').
 const isIgnoredFolder = (value: string) => value.trim().startsWith('_');
 const isUpdatedFolder = (value: string) => /^UPDATED(?:\b|\s|\()/i.test(value.trim());
 const extensionFor = (fileName: string) => fileName.split('.').pop()?.toLowerCase() ?? '';
+
+const WheelCatalogImage = ({ item }: { item: WheelCatalogItemRow }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(false);
+    setHasError(false);
+  }, [item.public_image_url]);
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-white">
+      {!isLoaded && !hasError && (
+        <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-gray-100 via-gray-200 to-gray-100" aria-hidden="true" />
+      )}
+      {hasError ? (
+        <div className="flex max-w-[12rem] flex-col items-center gap-2 px-4 text-center text-gray-500" role="status">
+          <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.6-4.6a2 2 0 012.8 0L16 16m-2-2 1.6-1.6a2 2 0 012.8 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span className="text-[10px] font-black uppercase tracking-wider">Visual unavailable</span>
+        </div>
+      ) : (
+        <img
+          src={item.public_image_url}
+          alt={item.file_name}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setHasError(true)}
+          className={`h-full w-full object-contain transition-opacity duration-200 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+        />
+      )}
+    </div>
+  );
+};
 
 const sortSizes = (values: string[]) => {
   return [...values].sort((first, second) => (Number(first) || 0) - (Number(second) || 0));
@@ -354,6 +391,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
   const [selectedVehicleModel, setSelectedVehicleModel] = useState('ALL');
   const [catalogSearch, setCatalogSearch] = useState('');
   const [analysisFilter, setAnalysisFilter] = useState<AnalysisFilter>('ALL');
+  const [visibleCount, setVisibleCount] = useState(WHEEL_CATALOG_RENDER_CHUNK_SIZE);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [isMediaActionBusy, setIsMediaActionBusy] = useState(false);
   const [clipboardQueue, setClipboardQueue] = useState<File[]>([]);
@@ -433,14 +471,24 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
     ));
   }, [analysisFilter, deferredCatalogSearch, items, searchQuery, selectedFolder, selectedPcd, selectedSize, selectedVehicle]);
 
+  useEffect(() => {
+    setVisibleCount(WHEEL_CATALOG_RENDER_CHUNK_SIZE);
+  }, [analysisFilter, catalogSearch, searchQuery, selectedFolder, selectedPcd, selectedSize, selectedVehicleModel]);
+
+  const visibleFilteredItems = useMemo(
+    () => filteredItems.slice(0, visibleCount),
+    [filteredItems, visibleCount]
+  );
+  const hasMoreFilteredItems = visibleFilteredItems.length < filteredItems.length;
+
   const groupedItems = useMemo(() => {
     const groups = new Map<string, WheelCatalogItemRow[]>();
-    filteredItems.forEach((item) => {
+    visibleFilteredItems.forEach((item) => {
       const group = item.folder_path || 'Unsorted catalog';
       groups.set(group, [...(groups.get(group) ?? []), item]);
     });
     return Array.from(groups.entries());
-  }, [filteredItems]);
+  }, [visibleFilteredItems]);
 
   const selectedItems = useMemo(() => items.filter((item) => selectedIds.has(item.id)), [items, selectedIds]);
 
@@ -1302,7 +1350,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                 <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
                   <div>
                     <h2 className="text-lg font-black uppercase text-gp-text-main">{folder}</h2>
-                    <p className="text-xs font-bold uppercase tracking-widest text-gp-text-muted">{groupItems.length} images</p>
+                    <p className="text-xs font-bold uppercase tracking-widest text-gp-text-muted">{groupItems.length} shown</p>
                   </div>
                   <button
                     type="button"
@@ -1330,12 +1378,7 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                         className={`group aspect-square overflow-hidden rounded-lg border text-left transition-all ${selected ? 'border-gp-red bg-gp-red/10 shadow-[0_0_0_1px_rgba(255,0,0,0.45)]' : 'border-gp-border bg-gp-panel hover:border-gp-red/70'}`}
                       >
                         <div className="relative h-full w-full bg-white">
-                          <img
-                            src={item.public_image_url}
-                            alt={item.file_name}
-                            loading="lazy"
-                            className="h-full w-full object-contain"
-                          />
+                          <WheelCatalogImage item={item} />
                           <span className="absolute left-2 top-2 rounded border border-black/20 bg-white/90 px-2 py-1 text-[10px] font-black uppercase text-black">
                             {[item.rim_size ? `${item.rim_size}"` : '', item.pcd ?? ''].filter(Boolean).join(' ') || folder}
                           </span>
@@ -1349,6 +1392,17 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
                 </div>
               </section>
             ))}
+            {hasMoreFilteredItems && (
+              <div className="flex justify-center border-t border-gp-border pt-6">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((count) => count + WHEEL_CATALOG_RENDER_CHUNK_SIZE)}
+                  className={`${buttonBase} border border-gp-border bg-gp-panel text-gp-text-main hover:border-gp-red`}
+                >
+                  Load more visuals ({visibleFilteredItems.length} of {filteredItems.length})
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex min-h-[380px] items-center justify-center border border-dashed border-gp-border bg-gp-panel/50 px-4 text-center">

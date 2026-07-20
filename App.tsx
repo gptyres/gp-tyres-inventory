@@ -461,6 +461,8 @@ const App: React.FC = () => {
 
   // --- INITIAL LOAD & SYNC ---
   useEffect(() => {
+    if (!currentUser) return undefined;
+
     const loadCachedInventory = (): InventoryItem[] => {
       const storedItems = localStorage.getItem('gp-inventory');
       const appliedSeedVersion = localStorage.getItem('gp-inventory-seed-version');
@@ -618,7 +620,7 @@ const App: React.FC = () => {
     return () => {
       window.removeEventListener('online', flushQueuedWrites);
     };
-  }, []);
+  }, [currentUser]);
 
   // --- PERSISTENCE EFFECTS ---
   useEffect(() => {

@@ -518,7 +518,7 @@ export const fetchSupplierStockImages = async (supplier?: string): Promise<Suppl
           .eq('active', true);
 
         if (supplier) {
-          query = query.eq('supplier', supplier);
+          query = query.ilike('supplier', supplier);
         }
 
         const { data, error } = await query

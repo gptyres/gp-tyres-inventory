@@ -39,20 +39,20 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onAttempt }) 
     if (correctPassword && correctPassword === password) {
       setIsSubmitting(true);
       setError('');
-      try {
-        const response = await fetch('/api/staff-session', {
-          method: 'POST',
-          credentials: 'same-origin',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ terminalId: formattedUser, password })
-        });
+      if (import.meta.env.PROD) {
+        try {
+          const response = await fetch('/api/staff-session', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ terminalId: formattedUser, password })
+          });
 
-        if (!response.ok && import.meta.env.PROD) {
-          const payload = await response.json().catch(() => ({}));
-          throw new Error(payload.error || 'Secure staff session could not be started.');
-        }
-      } catch (sessionError) {
-        if (import.meta.env.PROD) {
+          if (!response.ok) {
+            const payload = await response.json().catch(() => ({}));
+            throw new Error(payload.error || 'Secure staff session could not be started.');
+          }
+        } catch (sessionError) {
           setError(sessionError instanceof Error ? sessionError.message : 'Secure staff session could not be started.');
           setIsSubmitting(false);
           onAttempt(formattedUser, false);
@@ -90,9 +90,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onAttempt }) 
 
         <form onSubmit={handleLogin} className="p-8 flex flex-col gap-6">
           <div>
-            <label className="block text-xs font-bold text-gp-text-muted uppercase mb-2">Terminal ID (e.g. USERPC1)</label>
+            <label htmlFor="terminal-id" className="block text-xs font-bold text-gp-text-muted uppercase mb-2">Terminal ID (e.g. USERPC1)</label>
             <input 
+              id="terminal-id"
               type="text" 
+              autoComplete="username"
               autoFocus
               className="w-full bg-gp-input border border-gp-border rounded p-3 text-gp-text-main focus:border-gp-red focus:outline-none transition-colors uppercase"
               placeholder="ENTER USERNAME"
@@ -102,9 +104,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onAttempt }) 
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gp-text-muted uppercase mb-2">Access Code</label>
+            <label htmlFor="access-code" className="block text-xs font-bold text-gp-text-muted uppercase mb-2">Access Code</label>
             <input 
+              id="access-code"
               type="password" 
+              autoComplete="current-password"
               className="w-full bg-gp-input border border-gp-border rounded p-3 text-gp-text-main focus:border-gp-red focus:outline-none transition-colors"
               placeholder="ENTER PASSWORD"
               value={password}
