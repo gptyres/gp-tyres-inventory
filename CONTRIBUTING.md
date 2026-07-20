@@ -25,6 +25,7 @@ Then confirm that:
 - The interface remains keyboard-accessible and usable on narrow screens.
 - Screenshots contain no private data.
 - Generated reports and local working files are not included.
+- The release version is incremented in `package.json` and `config.ts` before each GitHub and Vercel deployment.
 
 ## Pull requests
 

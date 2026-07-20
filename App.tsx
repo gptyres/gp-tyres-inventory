@@ -24,9 +24,11 @@ const WheelCatalogView = lazy(() => import('./components/WheelCatalogView').then
 const POSModal = lazy(() => import('./components/POSModal').then((module) => ({ default: module.POSModal })));
 const InvoiceModal = lazy(() => import('./components/InvoiceModal').then((module) => ({ default: module.InvoiceModal })));
 const QuoteModuleView = lazy(() => import('./components/QuoteModuleView').then((module) => ({ default: module.QuoteModuleView })));
+const CourierLogisticsAssistantView = lazy(() => import('./components/CourierLogisticsAssistantView').then((module) => ({ default: module.CourierLogisticsAssistantView })));
 const TrainingPortalView = lazy(() => import('./components/TrainingPortalView').then((module) => ({ default: module.TrainingPortalView })));
 const CustomerHubView = lazy(() => import('./components/CustomerHubView').then((module) => ({ default: module.CustomerHubView })));
 const PhotoLibraryView = lazy(() => import('./components/photo-library/PhotoLibraryView').then((module) => ({ default: module.PhotoLibraryView })));
+const WorkshopTrackerView = lazy(() => import('./components/WorkshopTrackerView').then((module) => ({ default: module.WorkshopTrackerView })));
 const RadarRedView = lazy(() => import('./components/RadarRedView').then((module) => ({ default: module.RadarRedView })));
 import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { PricingPOSQuoteLine } from './pricing-processor/types';
@@ -1618,6 +1620,10 @@ const App: React.FC = () => {
       searchPlaceholder = "Search customers inside Customer Hub...";
   } else if (currentView === 'PHOTO_LIBRARY') {
       searchPlaceholder = "Search inside the photo library...";
+  } else if (currentView === 'WORKSHOP_TRACKER') {
+      searchPlaceholder = "Search workshop jobs inside the tracker...";
+  } else if (currentView === 'WORKSHOP_TRACKER') {
+      searchPlaceholder = "Search workshop jobs inside the tracker...";
   } else if (currentView === 'RADAR_RED') {
       searchPlaceholder = "RADAR RED resources are available inside the folder...";
   }
@@ -1628,10 +1634,14 @@ const App: React.FC = () => {
       ? 'CUSTOMER HUB'
       : currentView === 'PHOTO_LIBRARY'
         ? 'PHOTO LIBRARY'
+        : currentView === 'WORKSHOP_TRACKER'
+          ? 'WORKSHOP TRACKER'
+        : currentView === 'COURIER_LOGISTICS_ASSISTANT'
+          ? 'COURIER LOGISTICS ASSISTANT'
         : currentView === 'RADAR_RED'
           ? 'RADAR RED'
-      : undefined;
-  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'RADAR_RED'
+        : undefined;
+  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'RADAR_RED'
     ? false
     : isSearchVisible || currentView === 'WHEEL_CATALOG';
 
@@ -1671,7 +1681,7 @@ const App: React.FC = () => {
           pageTitle={topNavTitle}
         />
 
-        <main ref={mainScrollContainerRef} className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'RADAR_RED') ? '' : 'pb-20'}`}>
+        <main ref={mainScrollContainerRef} className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER' || currentView === 'RADAR_RED') ? '' : 'pb-20'}`}>
           {currentView === 'DASHBOARD' && (
             <DashboardView 
               currentUser={currentUser}
@@ -1796,6 +1806,12 @@ const App: React.FC = () => {
             </Suspense>
           )}
 
+          {currentView === 'COURIER_LOGISTICS_ASSISTANT' && (
+            <Suspense fallback={<LoadingPanel label="Loading Courier Logistics Assistant..." />}>
+              <CourierLogisticsAssistantView />
+            </Suspense>
+          )}
+
           {currentView === 'TRAINING_PORTAL' && (
             <Suspense fallback={<LoadingPanel label="Loading training portal..." />}>
               <TrainingPortalView currentUser={currentUser} />
@@ -1816,6 +1832,12 @@ const App: React.FC = () => {
           {currentView === 'PHOTO_LIBRARY' && (
             <Suspense fallback={<LoadingPanel label="Loading customer photo library..." />}>
               <PhotoLibraryView isAdmin={isAdmin} />
+            </Suspense>
+          )}
+
+          {currentView === 'WORKSHOP_TRACKER' && (
+            <Suspense fallback={<LoadingPanel label="Loading workshop tracker..." />}>
+              <WorkshopTrackerView currentUser={currentUser} isAdmin={isAdmin} />
             </Suspense>
           )}
 
