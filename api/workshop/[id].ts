@@ -11,6 +11,10 @@ const TECHNICIANS = new Set(WORKSHOP_TECHNICIANS);
 const PAID_BY_OPTIONS = new Set(['Cash', 'Card', 'EFT', 'Account', 'Other']);
 const STARTED_STATUSES = new Set(['CHECK_IN', 'IN_PROGRESS', 'READY', 'COLLECTED']);
 const cleanText = (value: unknown, max = 240) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
+const cleanTechnicians = (value: unknown, legacyValue?: unknown) => {
+  const values = Array.isArray(value) ? value : value === undefined ? [legacyValue] : [];
+  return [...new Set(values.map((item) => cleanText(item, 80)).filter(Boolean))];
+};
 const cleanNote = (value: unknown) => typeof value === 'string' ? value.trim().slice(0, 2000) : '';
 const cleanDate = (value: unknown) => {
   if (value === null || value === '') return null;
@@ -63,10 +67,11 @@ export default async function handler(request: any, response: any) {
         update.agent = agent;
       }
     }
-    if (Object.prototype.hasOwnProperty.call(body, 'technician')) {
-      const technician = cleanText(body.technician, 80);
-      if (technician && !TECHNICIANS.has(technician)) return response.status(400).json({ error: 'Select a technician from the approved workshop team.' });
-      update.technician = technician || null;
+    if (Object.prototype.hasOwnProperty.call(body, 'technicians') || Object.prototype.hasOwnProperty.call(body, 'technician')) {
+      const technicians = cleanTechnicians(body.technicians, body.technician);
+      if (technicians.some((technician) => !TECHNICIANS.has(technician))) return response.status(400).json({ error: 'Select technicians from the approved workshop team.' });
+      update.technicians = technicians;
+      update.technician = technicians[0] || null;
     }
     if (Object.prototype.hasOwnProperty.call(body, 'notes')) update.notes = cleanNote(body.notes) || null;
     if (Object.prototype.hasOwnProperty.call(body, 'job_date')) {

@@ -28,6 +28,7 @@ export interface WorkshopJob {
   status: WorkshopJobStatus;
   priority: WorkshopPriority;
   technician: string | null;
+  technicians: string[];
   agent: string | null;
   job_date: string;
   ticket_number: string | null;
@@ -63,6 +64,7 @@ export interface WorkshopJobInput {
   service_type: string;
   priority?: WorkshopPriority;
   technician?: string;
+  technicians?: string[];
   agent?: string;
   job_date?: string;
   ticket_number?: string;
