@@ -4,7 +4,7 @@ export type WorkshopPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
 export const TECHNICIANS = [
   'Klassie',
   'Richard',
-  'Abdul Razak',
+  'Abu Bakr',
   'Saeed',
   'Rajab',
   'Ashley',
@@ -50,7 +50,7 @@ export interface WorkshopSummary {
   overdue: number;
 }
 
-export type WorkshopBreakType = 'TEA_1' | 'TEA_2' | 'LUNCH';
+export type WorkshopBreakType = 'TEA_1' | 'TEA_2' | 'LUNCH' | 'TYRE_COLLECTION';
 
 export interface WorkshopTechnicianBreak {
   id: string;

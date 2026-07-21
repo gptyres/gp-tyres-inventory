@@ -7,7 +7,7 @@ import { WORKSHOP_TECHNICIANS, getWorkshopAgents } from '../../server/workshopRo
 const PRIORITIES = new Set(['LOW', 'NORMAL', 'HIGH', 'URGENT']);
 const TECHNICIANS = new Set(WORKSHOP_TECHNICIANS);
 const PAID_BY_OPTIONS = new Set(['Cash', 'Card', 'EFT', 'Account', 'Other']);
-const BREAK_TYPES = new Set(['TEA_1', 'TEA_2', 'LUNCH']);
+const BREAK_TYPES = new Set(['TEA_1', 'TEA_2', 'LUNCH', 'TYRE_COLLECTION']);
 const cleanText = (value: unknown, max = 240) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
 const cleanTechnicians = (value: unknown, legacyValue?: unknown) => {
   const values = Array.isArray(value) ? value : value === undefined ? [legacyValue] : [];
@@ -75,7 +75,7 @@ export default async function handler(request: any, response: any) {
       const technician = cleanText(body.technician, 80);
       const breakType = cleanText(body.break_type, 16);
       if (!TECHNICIANS.has(technician)) return response.status(400).json({ error: 'Select a technician from the approved workshop team.' });
-      if (!BREAK_TYPES.has(breakType)) return response.status(400).json({ error: 'Select Tea 1, Tea 2 or Lunch.' });
+      if (!BREAK_TYPES.has(breakType)) return response.status(400).json({ error: 'Select Tea 1, Tea 2, Lunch or Tyre collection.' });
       const { data, error } = await supabase.from('workshop_technician_breaks').insert({
         organization_id: GP_ORGANIZATION_ID, technician, break_type: breakType, created_by: session.terminalId
       }).select('id, technician, break_type, started_at, ended_at').single();

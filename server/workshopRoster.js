@@ -1,6 +1,6 @@
 export const DEFAULT_WORKSHOP_AGENTS = ['Noor', 'Mac', 'Rafiek', 'Yaseen', 'Laeeq', 'Zahied', 'Niyaaz'];
 
-export const WORKSHOP_TECHNICIANS = ['Klassie', 'Richard', 'Abdul Razak', 'Saeed', 'Rajab', 'Ashley', 'Blessing', 'Clement', 'Patrick'];
+export const WORKSHOP_TECHNICIANS = ['Klassie', 'Richard', 'Abu Bakr', 'Saeed', 'Rajab', 'Ashley', 'Blessing', 'Clement', 'Patrick'];
 
 export const getWorkshopAgents = async (supabase) => {
   const agents = new Set(DEFAULT_WORKSHOP_AGENTS);
