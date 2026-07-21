@@ -197,6 +197,13 @@ const App: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [searchQuery]);
 
+  const handleSupplierCatalogChange = useCallback((catalog: SupplierCatalog) => {
+    // A catalogue-specific search should never hide the next supplier's stock.
+    setSearchQuery('');
+    setDebouncedSearchQuery('');
+    setActiveSupplierCatalog(catalog);
+  }, []);
+
   const shouldLoadSupplierCatalog = (
     currentView === 'SUPPLIER_INVENTORY'
     && (activeSupplierCatalog !== 'ALL_SUPPLIERS' || debouncedSearchQuery.trim().length >= 2)
@@ -1661,7 +1668,7 @@ const App: React.FC = () => {
         onOpenDataSync={() => setIsDataSyncModalOpen(true)}
         onOpenCashUp={() => setIsCashUpModalOpen(true)}
         activeSupplierCatalog={activeSupplierCatalog}
-        onSupplierCatalogChange={setActiveSupplierCatalog}
+        onSupplierCatalogChange={handleSupplierCatalogChange}
       />
 
       <div className="flex-1 flex flex-col overflow-hidden relative">
