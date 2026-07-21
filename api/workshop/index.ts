@@ -37,7 +37,7 @@ export default async function handler(request: any, response: any) {
   try {
     const supabase = createSupabaseAdmin();
     if (request.method === 'GET') {
-      const [{ data, error }, agents] = await Promise.all([
+      const [{ data, error }, agents, { data: breaks, error: breaksError }] = await Promise.all([
         supabase
           .from('workshop_jobs')
           .select('*')
@@ -45,9 +45,11 @@ export default async function handler(request: any, response: any) {
           .order('scheduled_for', { ascending: true, nullsFirst: false })
           .order('created_at', { ascending: false })
           .limit(1000),
-        getWorkshopAgents(supabase)
+        getWorkshopAgents(supabase),
+        supabase.from('workshop_technician_breaks').select('id, technician, break_type, started_at, ended_at').eq('organization_id', GP_ORGANIZATION_ID).order('started_at', { ascending: false }).limit(100)
       ]);
       if (error) throw new Error(error.message);
+      if (breaksError) throw new Error(breaksError.message);
       const jobs = data || [];
       const now = Date.now();
       const startOfToday = new Date();
@@ -57,6 +59,7 @@ export default async function handler(request: any, response: any) {
       return response.status(200).json({
         jobs,
         agents,
+        breaks: breaks || [],
         summary: {
           active: jobs.filter((job: any) => !['COLLECTED', 'CANCELLED'].includes(job.status)).length,
           today: jobs.filter((job: any) => job.scheduled_for && new Date(job.scheduled_for) >= startOfToday && new Date(job.scheduled_for) < endOfToday).length,
