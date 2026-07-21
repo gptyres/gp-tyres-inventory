@@ -6,8 +6,8 @@ const NVIDIA_CHAT_COMPLETIONS_URL = 'https://integrate.api.nvidia.com/v1/chat/co
 const DEFAULT_MODEL = 'z-ai/glm-5.2';
 const MAX_TOOL_ROUNDS = 4;
 const MAX_SEARCH_RESULTS = 20;
-const NVIDIA_REQUEST_TIMEOUT_MS = 45_000;
-const NVIDIA_MAX_ATTEMPTS = 2;
+const NVIDIA_REQUEST_TIMEOUT_MS = 35_000;
+const NVIDIA_MAX_ATTEMPTS = 1;
 
 export type AgentMode = 'INTERNAL' | 'CUSTOMER_READY';
 
@@ -97,6 +97,63 @@ export const getAgentProductOptions = (data: Record<string, unknown>) => {
   const supplierStock = Array.isArray(data.supplierStockOptions) ? data.supplierStockOptions as any[] : [];
   const bestAvailable = data.bestAvailableOption ? [data.bestAvailableOption as any] : [];
   return [...direct, ...gpStock, ...supplierStock, ...bestAvailable];
+};
+
+const formatRand = (value: unknown) => {
+  const amount = toMoney(value);
+  const [whole, cents] = amount.toFixed(2).split('.');
+  const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return cents === '00' ? `R${grouped}` : `R${grouped}.${cents}`;
+};
+
+const internalProductLabel = (product: any) => cleanText(
+  product?.title
+    || [product?.size, product?.brand, product?.pattern].filter(Boolean).join(' ')
+    || product?.productName
+    || product?.supplierSku
+    || 'Unlabelled product',
+  220
+);
+
+const internalStockLine = (product: any, includeCost: boolean) => {
+  const stockUnits = Math.max(0, Math.floor(Number(product?.stockUnits) || 0));
+  const supplier = cleanText(product?.supplier, 100);
+  const prefix = supplier ? `${supplier}: ` : '';
+  const sellingPrice = toMoney(product?.sellingPrice);
+  const costPrice = toMoney(product?.costPrice);
+  const priceParts = sellingPrice > 0 ? [`selling ${formatRand(sellingPrice)}`] : [];
+  if (includeCost && costPrice > 0) priceParts.push(`cost ${formatRand(costPrice)}`);
+  return `- ${prefix}${internalProductLabel(product)} — ${stockUnits} unit${stockUnits === 1 ? '' : 's'}${priceParts.length ? ` — ${priceParts.join(' — ')}` : ''}`;
+};
+
+export const formatInternalStockComparison = (
+  query: string,
+  data: Record<string, unknown>,
+  includeCost = false
+) => {
+  const gpStock = (Array.isArray(data.gpStockOptions) ? data.gpStockOptions as any[] : [])
+    .filter((product) => Number(product?.stockUnits) > 0);
+  const supplierStock = (Array.isArray(data.supplierStockOptions) ? data.supplierStockOptions as any[] : [])
+    .filter((product) => Number(product?.stockUnits) > 0);
+  if (!gpStock.length && !supplierStock.length) {
+    return `No verified ${query} stock is available in GP physical inventory or the active supplier catalogues right now.`;
+  }
+  const sections = [`Verified stock for ${query}`];
+  if (gpStock.length) {
+    sections.push(`GP physical stock (${gpStock.length})\n${gpStock.map((product) => internalStockLine(product, includeCost)).join('\n')}`);
+  }
+  if (supplierStock.length) {
+    sections.push(`Supplier stock (${supplierStock.length})\n${supplierStock.map((product) => internalStockLine(product, includeCost)).join('\n')}`);
+  }
+  sections.push('Stock and prices were checked against the live sources shown below.');
+  return sections.join('\n\n');
+};
+
+const isDeterministicInternalStockQuery = (value: unknown) => {
+  const normalized = normalizeSearchText(value);
+  const asksForStockOrPrice = /\b(stock|inventory|available|availability|supplier|price|pricing|cost|compare|options|offer|have|selling)\b/.test(normalized);
+  const asksForFitment = /\b(fit|fits|fitment|compatible|vehicle|bakkie|model|year)\b/.test(normalized);
+  return asksForStockOrPrice && !asksForFitment;
 };
 
 const productTitle = (row: any) => {
@@ -636,7 +693,7 @@ const requestCompletion = async (apiKey: string, model: string, messages: any[],
           tool_choice: 'auto',
           temperature: 0.15,
           top_p: 0.9,
-          max_tokens: 4096,
+          max_tokens: 1024,
           seed: 42,
           stream: false
         })
@@ -715,21 +772,26 @@ export const runGpBusinessAgent = async (apiKey: string, context: AgentContext, 
   let verificationStatus: 'VERIFIED' | 'PARTIAL' | 'UNVERIFIED' = 'UNVERIFIED';
   let answer = '';
 
-  const deterministicCustomerQuery = context.mode === 'CUSTOMER_READY'
-    ? extractTyreSizeForAgentFallback(context.latestUserMessage)
-    : '';
-  if (deterministicCustomerQuery) {
+  const exactTyreSizeQuery = extractTyreSizeForAgentFallback(context.latestUserMessage);
+  const deterministicStockQuery = context.mode === 'CUSTOMER_READY'
+    ? exactTyreSizeQuery
+    : (exactTyreSizeQuery && isDeterministicInternalStockQuery(context.latestUserMessage) ? exactTyreSizeQuery : '');
+  if (deterministicStockQuery) {
     const startedAt = Date.now();
-    const result = await findAlternatives(context, { query: deterministicCustomerQuery });
-    const lines = getAgentProductOptions(result.data)
-      .map((product) => formatCustomerStockOption(product))
-      .filter((line): line is string => Boolean(line));
-    await logToolRun(context, 'find_alternative_products_deterministic', { query: deterministicCustomerQuery }, result, startedAt);
+    const result = await findAlternatives(context, { query: deterministicStockQuery });
+    const lines = context.mode === 'CUSTOMER_READY'
+      ? getAgentProductOptions(result.data)
+        .map((product) => formatCustomerStockOption(product))
+        .filter((line): line is string => Boolean(line))
+      : [];
+    await logToolRun(context, 'find_alternative_products_deterministic', { query: deterministicStockQuery }, result, startedAt);
     const finalSources = dedupeSources(result.sources);
     return {
-      answer: lines.length
-        ? Array.from(new Set(lines)).join('\n')
-        : `No verified ${deterministicCustomerQuery} options with at least 2 units in stock are available right now.`,
+      answer: context.mode === 'CUSTOMER_READY'
+        ? (lines.length
+          ? Array.from(new Set(lines)).join('\n')
+          : `No verified ${deterministicStockQuery} options with at least 2 units in stock are available right now.`)
+        : formatInternalStockComparison(deterministicStockQuery, result.data, context.isAdmin),
       model: 'gp-verified-stock-tools',
       sources: finalSources,
       confidence: finalSources.length ? 0.93 : 0.45,
