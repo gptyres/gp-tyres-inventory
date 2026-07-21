@@ -1,6 +1,6 @@
 
 import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
-import { parseAlineStockImageKeys, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
+import { parseAlineWheelDescription, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 
 export const formatCurrency = (amount: number) => {
@@ -1084,20 +1084,6 @@ export const parseStamfordData = (
   });
 };
 
-const parseAlineWheelSpec = (description: string) => {
-  const compact = description.replace(/\s+/g, '');
-  const specMatch = compact.match(/^(\d)(\d{3})(\d{2})X([\d.]+)/i);
-  const offsetMatch = description.match(/\bET\s*(-?\d+)/i);
-  const centerBoreMatch = description.match(/\b(\d{2,3}\.\d)\b/);
-
-  return {
-    size: specMatch ? `${specMatch[3]}x${specMatch[4]}` : 'Accessory',
-    pcd: specMatch ? `${specMatch[1]}/${specMatch[2]}` : '',
-    offset: offsetMatch ? offsetMatch[1] : '',
-    centerBore: centerBoreMatch ? centerBoreMatch[1] : ''
-  };
-};
-
 const normalizeWheelSize = (value: string): string => (
   value
     .replace(/[“”"]/g, '')
@@ -1132,18 +1118,17 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
     const recommendedRetail = parseCurrencyString(cols[9]);
     const category = cols[4]?.trim();
     const catalogueNumber = cols[10]?.trim();
-    const spec = parseAlineWheelSpec(description);
-    const imageKeys = parseAlineStockImageKeys(description);
+    const spec = parseAlineWheelDescription(description);
 
     items.push({
       id: `aline-${idCounter++}`,
       type: ProductType.WHEEL,
       supplierName: 'ALINE',
       supplierStockCode: stockCode,
-      imageDesignKey: imageKeys.designKey,
-      imageFinishKey: imageKeys.finishKey,
+      imageDesignKey: spec.designKey,
+      imageFinishKey: spec.finishKey,
       code: stockCode,
-      size: spec.size,
+      size: spec.size || 'Accessory',
       pcd: spec.pcd,
       offset: spec.offset,
       centerBore: spec.centerBore,

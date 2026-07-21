@@ -38,6 +38,7 @@ import {
   inventoryItemToSupplierImageLookup,
   parseAlineImageFileName,
   parseAlineStockImageKeys,
+  parseAlineWheelDescription,
   parseSupplierTyreImageKeys,
   parseSupplierWheelImageKeys,
   supplierTyreMatchesUploadKeys
@@ -89,6 +90,32 @@ describe('ALINE supplier image parsing', () => {
 
     expect(parseAlineStockImageKeys('613914X7 STBLK MOD Dual Red Pinstripe 920kg')).toMatchObject({
       designKey: 'STEEL MODULAR BLACK'
+    });
+  });
+
+  it('extracts wheel size, single or dual PCD, offset and centre bore', () => {
+    expect(parseAlineWheelDescription('510018X8.5SPY ET38 ARCTICSIL Flow Form')).toEqual({
+      size: '18x8.5',
+      pcd: '5/100',
+      offset: '38',
+      centerBore: '',
+      designKey: 'SPY',
+      finishKey: 'ARCTIC SILVER'
+    });
+
+    expect(parseAlineWheelDescription('511418X8.5/100LE MANS 35 ARCTIC SILVER 73.1 820kg')).toMatchObject({
+      size: '18x8.5',
+      pcd: '5/114.3 & 5/100',
+      offset: '35',
+      centerBore: '73.1',
+      designKey: 'LE MANS',
+      finishKey: 'ARCTIC SILVER'
+    });
+
+    expect(parseAlineWheelDescription('613918X9 STBK Soft8 B/XF CB106.2 1250kg load')).toMatchObject({
+      pcd: '6/139.7',
+      offset: '',
+      centerBore: '106.2'
     });
   });
 });
@@ -690,7 +717,7 @@ describe('supplier tyre image parsing and matching', () => {
 
     expect(supplierTyreMatchesUploadKeys(first, 'ATT', 'Dunlop', 'Grandtrek AT3G')).toBe(true);
     expect(supplierTyreMatchesUploadKeys(second, 'ATT', 'Dunlop', 'Grandtrek AT3G')).toBe(true);
-    expect(supplierTyreMatchesUploadKeys(otherSupplier, 'ATT', 'Dunlop', 'Grandtrek AT3G')).toBe(false);
+    expect(supplierTyreMatchesUploadKeys(otherSupplier, 'ATT', 'Dunlop', 'Grandtrek AT3G')).toBe(true);
 
     const imageMap = buildSupplierImageMap([first, second, otherSupplier], [{
       id: 'image-1',
@@ -713,7 +740,40 @@ describe('supplier tyre image parsing and matching', () => {
 
     expect(imageMap[first.id]).toBe('https://example.test/grandtrek-at3g.jpg');
     expect(imageMap[second.id]).toBe('https://example.test/grandtrek-at3g.jpg');
-    expect(imageMap[otherSupplier.id]).toBeUndefined();
+    expect(imageMap[otherSupplier.id]).toBe('https://example.test/grandtrek-at3g.jpg');
+  });
+
+  it('reuses one exact tyre pattern image across supplier catalogues after reload', () => {
+    const [attTyre] = parseAttData([
+      'SIZE,BRAND_PATTERN,CATEGORY,PRICE,QTY',
+      '265/65R17,Dunlop - Grandtrek AT3G,SUV,R2999,4'
+    ].join('\n'));
+    const [warehouseTyre] = parseTyreWarehouseData([
+      'SKU,Size,Brand,Pattern,Category,Stock Location,Stock Units Availability,Stock Units,Selling Price',
+      'tw-1,265/65R17,Dunlop,Grandtrek AT3G,Passenger / SUV Tyres,JHB,Available,3 units,R2500'
+    ].join('\n'));
+
+    const imageMap = buildSupplierImageMap([attTyre, warehouseTyre], [{
+      id: 'global-pattern-image',
+      supplier: 'ATT',
+      source: 'staff-upload',
+      source_file_id: 'staff-upload:att:dunlop:grandtrek-at3g',
+      file_name: 'grandtrek-at3g.jpg',
+      storage_bucket: 'supplier-stock-images',
+      storage_path: 'tyres/staff-upload/att/dunlop/grandtrek-at3g/image.jpg',
+      public_image_url: 'https://example.test/grandtrek-at3g.jpg',
+      mime_type: 'image/jpeg',
+      design_key: 'GRANDTREK AT3G',
+      finish_key: 'DUNLOP',
+      rim_size: null,
+      pcd: null,
+      tags: ['staff-upload'],
+      active: true,
+      imported_at: '2026-07-16T00:00:00.000Z'
+    }]);
+
+    expect(imageMap[attTyre.id]).toBe('https://example.test/grandtrek-at3g.jpg');
+    expect(imageMap[warehouseTyre.id]).toBe('https://example.test/grandtrek-at3g.jpg');
   });
 
   it('matches supplier tyre replacements by brand and pattern while ignoring stock codes', () => {

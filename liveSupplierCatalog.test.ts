@@ -5,6 +5,7 @@ import {
   LiveSupplierCatalogRow
 } from './liveSupplierCatalog';
 import { ProductType } from './types';
+import { buildSupplierImageMap } from './supplierStockImages';
 
 const baseRow: LiveSupplierCatalogRow = {
   id: 1,
@@ -162,6 +163,58 @@ describe('live supplier catalogue conversion', () => {
     expect(item.supplierName).toBe('TYRE LIFE WHEELS');
     expect(item.imageDesignKey).toBe('A8306 MAYHEM RIDGELINE');
     expect(item.imageFinishKey).toBe('MACHINED BLACK');
+  });
+
+  it('normalizes legacy ALINE wheel descriptions and matches their stored visuals', () => {
+    const item = liveSupplierRowToInventoryItem({
+      ...baseRow,
+      catalog_key: 'ALINE',
+      source_key: 'aline-82403511',
+      product_type: 'WHEEL',
+      supplier: 'ALINE',
+      supplier_sku: '82403511',
+      brand: 'A-Line',
+      product_name: '510018X8.5SPY ET38 ARCTICSIL Flow Form',
+      tyre_pattern: null,
+      tyre_specs: null,
+      size: null,
+      wheel_pcd: null,
+      wheel_offset: null,
+      wheel_center_bore: null
+    });
+
+    expect(item).toMatchObject({
+      type: ProductType.WHEEL,
+      code: 'SPY',
+      finish: 'ARCTIC SILVER',
+      size: '18x8.5',
+      pcd: '5/100',
+      offset: '38',
+      centerBore: '',
+      imageDesignKey: 'SPY',
+      imageFinishKey: 'ARCTIC SILVER'
+    });
+
+    expect(buildSupplierImageMap([item], [{
+      id: 'aline-spy-arctic-silver',
+      supplier: 'ALINE',
+      source: 'catalog-import',
+      source_file_id: 'spy-arctic-silver',
+      design_key: 'SPY',
+      finish_key: 'ARCTIC SILVER',
+      rim_size: '19',
+      pcd: null,
+      tags: ['SPY', 'ARCTIC SILVER'],
+      file_name: 'Spy Arctic Silver.jpg',
+      storage_bucket: 'supplier-stock-images',
+      storage_path: 'aline/spy-arctic-silver.jpg',
+      public_image_url: 'https://example.test/aline-spy-arctic-silver.jpg',
+      mime_type: 'image/jpeg',
+      active: true,
+      imported_at: '2026-07-21T00:00:00Z'
+    }])).toEqual({
+      [item.id]: 'https://example.test/aline-spy-arctic-silver.jpg'
+    });
   });
 
   it('parses legacy APEX product names into the requested card fields', () => {

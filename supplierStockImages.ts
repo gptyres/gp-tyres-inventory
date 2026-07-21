@@ -249,6 +249,43 @@ export const parseAlineStockImageKeys = (description: string) => {
   };
 };
 
+const normalizeAlinePcdDiameter = (value: string): string => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return '';
+  if (parsed === 114) return '114.3';
+  if (parsed === 139) return '139.7';
+  return String(parsed);
+};
+
+export const parseAlineWheelDescription = (description: string) => {
+  const source = String(description || '').replace(/Ã—/g, 'X').trim();
+  const specification = source.match(
+    /^\s*([3-6])\s*(\d{3})\s*(\d{2})\s*X\s*(\d{1,2}(?:\.\d+)?)\s*(?:\/\s*(\d{2,3}(?:\.\d)?))?/i
+  );
+  const imageKeys = parseAlineStockImageKeys(source);
+  const primaryPcd = specification
+    ? `${specification[1]}/${normalizeAlinePcdDiameter(specification[2])}`
+    : '';
+  const secondaryPcd = specification?.[5]
+    ? `${specification[1]}/${normalizeAlinePcdDiameter(specification[5])}`
+    : '';
+  const explicitOffset = source.match(/\bET\s*(-?\d{1,3})(?:[FR])?\b/i)?.[1] || '';
+  const remainingDescription = specification ? source.slice(specification[0].length) : source;
+  const inferredOffset = explicitOffset
+    ? ''
+    : remainingDescription.match(/\b(-?\d{2})(?!\.\d)(?:\s*[FR])?(?:\s*\(RS\))?\b/i)?.[1] || '';
+  const centerBore = remainingDescription.match(/\b(?:CB\s*)?(\d{2,3}\.\d)\b/i)?.[1] || '';
+
+  return {
+    size: specification ? `${specification[3]}x${specification[4]}` : '',
+    pcd: [primaryPcd, secondaryPcd].filter(Boolean).join(' & '),
+    offset: explicitOffset || inferredOffset,
+    centerBore,
+    designKey: specification ? imageKeys.designKey : '',
+    finishKey: specification ? imageKeys.finishKey : ''
+  };
+};
+
 export const slugifySupplierImageToken = (value: string | undefined | null): string => (
   normalizeSupplierImageToken(value)
     .toLowerCase()
@@ -323,13 +360,12 @@ export const buildStaffSupplierTyreImageUploadPayload = ({
 
 export const supplierTyreMatchesUploadKeys = (
   item: InventoryItem,
-  supplier: string,
+  _supplier: string,
   brand: string,
   pattern: string
 ): boolean => {
   if (item.type !== ProductType.TYRE) return false;
   const tyre = item as TyreProduct;
-  if (normalizeSupplierImageToken(tyre.supplierName) !== normalizeSupplierImageToken(supplier)) return false;
 
   const targetKeys = parseSupplierTyreImageKeys(brand, pattern);
   const rawTyreKeys = parseSupplierTyreImageKeys(tyre.brand, tyre.pattern);
@@ -554,6 +590,10 @@ const supplierDesignGroupKey = (supplierName: string | undefined | null, designK
     .replace(/::(.+)$/, (_match, design) => `::${canonicalSupplierDesignKey(design)}`)
 );
 
+const globalTyreDesignGroupKey = (designKey: string | undefined | null): string => (
+  `GLOBAL_TYRE::${canonicalSupplierDesignKey(designKey)}`
+);
+
 export const buildSupplierImageMap = (
   items: InventoryItem[],
   imageRows: SupplierStockImageRow[]
@@ -561,7 +601,7 @@ export const buildSupplierImageMap = (
   const candidatesBySupplierAndDesign = imageRows.reduce<Record<string, SupplierImageMatchCandidate[]>>((groups, row) => {
     const groupKey = supplierDesignGroupKey(row.supplier, row.design_key);
     groups[groupKey] = groups[groupKey] ?? [];
-    groups[groupKey].push({
+    const candidate = {
       supplierName: row.supplier,
       source: row.source,
       sourceFileId: row.source_file_id,
@@ -573,7 +613,13 @@ export const buildSupplierImageMap = (
       fileName: row.file_name,
       importedAt: row.imported_at,
       updatedAt: row.updated_at
-    });
+    };
+    groups[groupKey].push(candidate);
+    if (row.storage_path.toLowerCase().startsWith('tyres/')) {
+      const globalGroupKey = globalTyreDesignGroupKey(row.design_key);
+      groups[globalGroupKey] = groups[globalGroupKey] ?? [];
+      groups[globalGroupKey].push(candidate);
+    }
     return groups;
   }, {});
 
@@ -581,8 +627,14 @@ export const buildSupplierImageMap = (
     const lookupItem = inventoryItemToSupplierImageLookup(item);
     if (!lookupItem) return imageMap;
 
-    const candidates = candidatesBySupplierAndDesign[supplierDesignGroupKey(lookupItem.supplierName, lookupItem.imageDesignKey)] ?? [];
-    const match = findBestSupplierStockImage(lookupItem, candidates);
+    const isTyre = lookupItem.productType === ProductType.TYRE;
+    const candidates = isTyre
+      ? candidatesBySupplierAndDesign[globalTyreDesignGroupKey(lookupItem.imageDesignKey)] ?? []
+      : candidatesBySupplierAndDesign[supplierDesignGroupKey(lookupItem.supplierName, lookupItem.imageDesignKey)] ?? [];
+    const match = findBestSupplierStockImage(
+      isTyre ? { ...lookupItem, supplierName: undefined } : lookupItem,
+      candidates
+    );
     if (match.imageUrl) imageMap[item.id] = match.imageUrl;
     return imageMap;
   }, {});

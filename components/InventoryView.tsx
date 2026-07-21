@@ -294,6 +294,26 @@ const CopyItemButton = ({ item, onCopyItem, className = '' }: { item: InventoryI
 const SUPPLIER_IMAGE_IMPORT_FUNCTION = 'import-supplier-stock-image';
 const MAX_STAFF_UPLOAD_IMAGE_SIZE = 10 * 1024 * 1024;
 const STAFF_UPLOAD_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+const STAFF_UPLOAD_MIME_BY_EXTENSION: Record<string, string> = {
+  gif: 'image/gif',
+  jpeg: 'image/jpeg',
+  jpg: 'image/jpeg',
+  png: 'image/png',
+  webp: 'image/webp'
+};
+
+export const getSupportedStaffImageMimeType = (file: Pick<File, 'name' | 'type'>): string => {
+  const declaredType = String(file.type || '').toLowerCase();
+  if (STAFF_UPLOAD_IMAGE_TYPES.has(declaredType)) return declaredType;
+  const extension = file.name.match(/\.([a-z0-9]+)$/i)?.[1]?.toLowerCase() ?? '';
+  return STAFF_UPLOAD_MIME_BY_EXTENSION[extension] ?? '';
+};
+
+const normalizeStaffImageFile = (file: File): File => {
+  const mimeType = getSupportedStaffImageMimeType(file);
+  if (!mimeType || file.type === mimeType) return file;
+  return new File([file], file.name, { type: mimeType, lastModified: file.lastModified });
+};
 
 const fileToBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -340,13 +360,14 @@ interface ProductImageProps {
   imageUrl?: string;
   isLoading: boolean;
   isError: boolean;
+  errorMessage?: string;
   onGenerate: () => void;
   canUploadImage?: boolean;
   onUploadImage?: (file?: File) => void;
   aspectRatio: AspectRatio;
 }
 
-const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, isError, onGenerate, canUploadImage, onUploadImage, aspectRatio }) => {
+const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, isError, errorMessage, onGenerate, canUploadImage, onUploadImage, aspectRatio }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   // Calculate height based on aspect ratio for placeholder
   let aspectClass = 'aspect-square';
@@ -381,8 +402,9 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
     event.preventDefault();
     event.stopPropagation();
     setIsDragOver(false);
-    const droppedFile = Array.from(event.dataTransfer.files).find((candidate) => candidate.type.startsWith('image/'));
-    if (droppedFile) onUploadImage?.(droppedFile);
+    const droppedFile = Array.from(event.dataTransfer.files as ArrayLike<File>)
+      .find((candidate) => Boolean(getSupportedStaffImageMimeType(candidate)));
+    if (droppedFile) onUploadImage?.(normalizeStaffImageFile(droppedFile));
   };
   
   return (
@@ -408,8 +430,9 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
         <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center">
           {isLoading ? (
             <div className="flex flex-col items-center gap-2">
-              <div className="w-6 h-6 border-2 border-gp-red border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-[10px] text-gp-text-muted font-bold animate-pulse">SOURCING IMAGE...</span>
+              <div className="w-7 h-7 border-2 border-gp-red border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-[10px] text-gp-text-main font-black uppercase tracking-wider animate-pulse">Checking official sources</span>
+              <span className="max-w-full truncate text-[9px] text-gp-text-muted font-bold">{getItemDisplayName(item)}</span>
             </div>
           ) : isError ? (
              <div className="flex flex-col items-center gap-1 text-gp-text-muted opacity-50">
@@ -419,7 +442,9 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
                     <div className="w-full h-0.5 bg-gp-red rotate-45 transform origin-center"></div>
                  </div>
                </div>
-               <span className="text-[9px] uppercase font-bold">No Image Found</span>
+               <span className="max-w-full px-2 text-[9px] uppercase font-bold" title={errorMessage || 'No image found'}>
+                 {errorMessage || 'No Image Found'}
+               </span>
              </div>
           ) : (
             <div className="flex flex-col items-center gap-2">
@@ -518,17 +543,19 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
       setMessage('');
       return;
     }
-    if (!nextFile.type.startsWith('image/') || !STAFF_UPLOAD_IMAGE_TYPES.has(nextFile.type)) {
-      setMessage('Drop a valid tyre image file.');
+    const mimeType = getSupportedStaffImageMimeType(nextFile);
+    if (!mimeType) {
+      setMessage('Use a JPG, PNG, WEBP or GIF tyre image.');
       return;
     }
     if (nextFile.size > MAX_STAFF_UPLOAD_IMAGE_SIZE) {
       setMessage('Image is too large. Maximum upload size is 10MB.');
       return;
     }
-    setFile(nextFile);
+    const normalizedFile = normalizeStaffImageFile(nextFile);
+    setFile(normalizedFile);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPreviewUrl(URL.createObjectURL(nextFile));
+    setPreviewUrl(URL.createObjectURL(normalizedFile));
     setMessage('Review the tyre visual, then confirm brand and tread pattern.');
   };
 
@@ -551,7 +578,8 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
     event.preventDefault();
     event.stopPropagation();
     setIsDropActive(false);
-    const nextFile = Array.from(event.dataTransfer.files).find((candidate) => candidate.type.startsWith('image/')) ?? null;
+    const nextFile = Array.from(event.dataTransfer.files as ArrayLike<File>)
+      .find((candidate) => Boolean(getSupportedStaffImageMimeType(candidate))) ?? null;
     if (!nextFile) {
       setMessage('Drop a tyre image file to continue.');
       return;
@@ -565,7 +593,7 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
       setMessage('Select the tyre tread image first.');
       return;
     }
-    if (!STAFF_UPLOAD_IMAGE_TYPES.has(file.type)) {
+    if (!getSupportedStaffImageMimeType(file)) {
       setMessage('Use a JPG, PNG, WEBP or GIF image.');
       return;
     }
@@ -757,12 +785,13 @@ interface ViewComponentProps extends InventoryViewProps {
   generatedImages: Record<string, string>;
   loadingImages: Set<string>;
   errorImages: Set<string>;
+  imageErrors: Record<string, string>;
   onGenerateImage: (item: InventoryItem) => void;
   onUploadSupplierTyreImage: (item: InventoryItem, file?: File) => void;
   onCopyItem: (item: InventoryItem) => void;
 }
 
-const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
+const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
   
   const SortIcon = ({ colKey }: { colKey: SortKey }) => (
     <span className={`ml-1 inline-block transition-opacity ${sortConfig.key === colKey ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`}>
@@ -853,8 +882,9 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                         <ProductImage 
                             item={item} 
                             imageUrl={generatedImages[item.id]} 
-                            isLoading={loadingImages.has(item.id)}
-                            isError={errorImages.has(item.id)}
+                             isLoading={loadingImages.has(item.id)}
+                             isError={errorImages.has(item.id)}
+                             errorMessage={imageErrors[item.id]}
                             onGenerate={() => onGenerateImage(item)}
                             canUploadImage={isSupplierTyre(item)}
                             onUploadImage={(file) => onUploadSupplierTyreImage(item, file)}
@@ -927,7 +957,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
   );
 };
 
-const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
+const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
       {items.map((item) => (
@@ -937,8 +967,9 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             <ProductImage 
                 item={item} 
                 imageUrl={generatedImages[item.id]} 
-                isLoading={loadingImages.has(item.id)}
-                isError={errorImages.has(item.id)}
+                 isLoading={loadingImages.has(item.id)}
+                 isError={errorImages.has(item.id)}
+                 errorMessage={imageErrors[item.id]}
                 onGenerate={() => onGenerateImage(item)}
                 canUploadImage={isSupplierTyre(item)}
                 onUploadImage={(file) => onUploadSupplierTyreImage(item, file)}
@@ -1018,10 +1049,10 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 )}
                 {item.type === ProductType.WHEEL && (
                     <>
-                    <SpecBadge label="Size" value={(item as WheelProduct).size} />
-                    <SpecBadge label="PCD" value={formatWheelPcd((item as WheelProduct).pcd) || '-'} />
-                    <SpecBadge label="ET" value={formatWheelOffset((item as WheelProduct).offset) || '-'} />
-                    <SpecBadge label="CB" value={(item as WheelProduct).centerBore || '-'} />
+                    <SpecBadge label="Size" value={(item as WheelProduct).size || ''} />
+                    <SpecBadge label="PCD" value={formatWheelPcd((item as WheelProduct).pcd)} />
+                    <SpecBadge label="ET" value={formatWheelOffset((item as WheelProduct).offset)} />
+                    <SpecBadge label="CB" value={(item as WheelProduct).centerBore || ''} />
                     </>
                 )}
                 {item.type === ProductType.COILOVER && (
@@ -1085,7 +1116,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
   );
 };
 
-const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
+const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
   return (
     <div className="flex flex-col divide-y divide-gp-border p-2 mb-6">
       {items.map((item) => (
@@ -1108,8 +1139,9 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                     <ProductImage 
                         item={item} 
                         imageUrl={generatedImages[item.id]} 
-                        isLoading={loadingImages.has(item.id)}
-                        isError={errorImages.has(item.id)}
+                         isLoading={loadingImages.has(item.id)}
+                         isError={errorImages.has(item.id)}
+                         errorMessage={imageErrors[item.id]}
                         onGenerate={() => onGenerateImage(item)}
                         canUploadImage={isSupplierTyre(item)}
                         onUploadImage={(file) => onUploadSupplierTyreImage(item, file)}
@@ -1205,6 +1237,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [supplierImages, setSupplierImages] = useState<Record<string, string>>({});
   const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
   const [errorImages, setErrorImages] = useState<Set<string>>(new Set());
+  const [imageErrors, setImageErrors] = useState<Record<string, string>>({});
   const [uploadImageItem, setUploadImageItem] = useState<InventoryItem | null>(null);
   const [uploadImageInitialFile, setUploadImageInitialFile] = useState<File | null>(null);
   const [supplierImageRefreshKey, setSupplierImageRefreshKey] = useState(0);
@@ -1212,7 +1245,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [uploadNotice, setUploadNotice] = useState('');
   const [visibleCount, setVisibleCount] = useState(RENDER_CHUNK_SIZE);
 
-  // Function to generate image using Gemini
+  // Find and persist an exact supplier tyre visual through the server-side AI workflow.
   const handleGenerateImage = async (item: InventoryItem) => {
     if (loadingImages.has(item.id)) return;
 
@@ -1222,64 +1255,58 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         next.delete(item.id);
         return next;
     });
+    setImageErrors((previous) => {
+      const next = { ...previous };
+      delete next[item.id];
+      return next;
+    });
 
     try {
-        const { GoogleGenAI } = await import('@google/genai');
-        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        
-        let prompt = '';
-        if (item.type === ProductType.TYRE) {
-            const t = item as TyreProduct;
-            prompt = `High quality studio photography of a ${t.brand} ${t.pattern} tyre tread pattern. Close up, detailed, professional lighting, white background. Size: ${t.size}`;
-        } else if (item.type === ProductType.WHEEL) {
-            const w = item as WheelProduct;
-            prompt = `High quality studio photography of a ${w.code} alloy wheel, color ${w.colour}. Professional lighting, white background.`;
-        } else {
-            const c = item as CoiloverProduct;
-            prompt = `High quality studio photography of ${c.brand} ${c.series} coilovers for ${c.vehicleCompatibility}. Professional lighting, white background.`;
-        }
+      if (!isSupplierTyre(item)) throw new Error('Official web search is available for supplier tyres only.');
+      const tyre = item as TyreProduct;
+      const lookupItem = inventoryItemToSupplierImageLookup(item);
+      if (!lookupItem?.supplierName || !lookupItem.imageDesignKey || !lookupItem.imageFinishKey) {
+        throw new Error('This tyre needs a confirmed supplier, brand and pattern first.');
+      }
 
-        const response = await ai.models.generateContent({
-            model: 'gemini-3-pro-image-preview',
-            contents: {
-                parts: [{ text: prompt }]
-            },
-            config: {
-                imageConfig: {
-                    aspectRatio: aspectRatio,
-                    imageSize: "1K"
-                },
-                tools: [{ googleSearch: {} }] // Use search to ground the generation for accuracy
-            }
-        });
+      const response = await fetch('/api/business-agent', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'FIND_TYRE_VISUAL',
+          supplier: lookupItem.supplierName,
+          supplierStockCode: lookupItem.supplierStockCode || item.id,
+          brand: tyre.brand,
+          pattern: tyre.pattern,
+          designKey: lookupItem.imageDesignKey,
+          finishKey: lookupItem.imageFinishKey
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data?.error || 'Official visual search failed.');
+      if (!data?.ok || !data?.publicImageUrl) {
+        throw new Error(data?.error || 'No exact official tyre image was found.');
+      }
 
-        // Find image part
-        let imageUrl = '';
-        if (response.candidates && response.candidates[0].content && response.candidates[0].content.parts) {
-            for (const part of response.candidates[0].content.parts) {
-                if (part.inlineData) {
-                    const base64String = part.inlineData.data;
-                    imageUrl = `data:image/png;base64,${base64String}`;
-                    break;
-                }
-            }
-        }
-
-        if (imageUrl) {
-            setGeneratedImages(prev => ({ ...prev, [item.id]: imageUrl }));
-        } else {
-            throw new Error("No image generated");
-        }
-
+      handleSupplierTyreImageUploaded(
+        item,
+        data.supplier || lookupItem.supplierName,
+        data.finishKey || lookupItem.imageFinishKey,
+        data.designKey || lookupItem.imageDesignKey,
+        data.publicImageUrl
+      );
     } catch (err) {
-        console.error("Image generation failed", err);
-        setErrorImages(prev => new Set(prev).add(item.id));
+      console.error('Official tyre visual search failed', err);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setImageErrors((previous) => ({ ...previous, [item.id]: errorMessage || 'No exact image found.' }));
+      setErrorImages(prev => new Set(prev).add(item.id));
     } finally {
-        setLoadingImages(prev => {
-            const next = new Set(prev);
-            next.delete(item.id);
-            return next;
-        });
+      setLoadingImages(prev => {
+        const next = new Set(prev);
+        next.delete(item.id);
+        return next;
+      });
     }
   };
 
@@ -1309,6 +1336,11 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     setErrorImages((previous) => {
       const next = new Set(previous);
       matchingIds.forEach((id) => next.delete(id));
+      return next;
+    });
+    setImageErrors((previous) => {
+      const next = { ...previous };
+      matchingIds.forEach((id) => delete next[id]);
       return next;
     });
     setUploadNotice(`Tyre visual replaced for ${matchingIds.size} matching stock item${matchingIds.size === 1 ? '' : 's'}.`);
@@ -1541,6 +1573,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         generatedImages: visualImages,
         loadingImages,
         errorImages,
+        imageErrors,
         onGenerateImage: handleGenerateImage,
         onUploadSupplierTyreImage: openSupplierTyreImageUploader,
         onCopyItem: handleCopyItem,
