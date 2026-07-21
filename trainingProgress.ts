@@ -62,6 +62,16 @@ export const TRAINING_TASKS: TrainingTask[] = [
     detail: 'Separate GP available stock from secondary supplier stock.'
   },
   {
+    id: 'inventory-verify',
+    title: 'Verify inventory before promising stock',
+    detail: 'Confirm the exact item, location, portal quantity and physical count before committing stock to a customer.'
+  },
+  {
+    id: 'inventory-movement',
+    title: 'Handle stock movement correctly',
+    detail: 'Use reservations for held stock, sales for paid stock, and escalate variances or receiving corrections to an authorised user.'
+  },
+  {
     id: 'supplier-visuals',
     title: 'Use supplier visuals',
     detail: 'Turn on visuals, load missing images, and replace wrong tyre images by brand and tread pattern.'
@@ -100,6 +110,16 @@ export const TRAINING_TASKS: TrainingTask[] = [
     id: 'backorder',
     title: 'Create a backorder',
     detail: 'Log supplier stock that needs to be ordered in.'
+  },
+  {
+    id: 'courier-declaration',
+    title: 'Prepare a courier declaration',
+    detail: 'Use Courier Logistics Assistant to select the parcel type and verify wheel size, tyre size, parcel count and address.'
+  },
+  {
+    id: 'courier-handover',
+    title: 'Complete courier handover',
+    detail: 'Use measured packed details when available, save the declaration, and retain the tracking reference with the customer order.'
   },
   {
     id: 'invoice-pdf',
