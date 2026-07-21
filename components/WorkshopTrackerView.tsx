@@ -61,7 +61,7 @@ const elapsedTimeLabel = (startedAt: string | null, completedAt: string | null, 
 };
 const isTimerRunning = (job: WorkshopJob) => Boolean(job.started_at && !job.completed_at && job.status !== 'CANCELLED');
 const technicianList = (job: WorkshopJob) => job.technicians?.length ? job.technicians : job.technician ? [job.technician] : [];
-const breakLabel = (type: WorkshopBreakType) => ({ TEA_1: 'Tea 1', TEA_2: 'Tea 2', LUNCH: 'Lunch', TYRE_COLLECTION: 'Tyre collection' }[type]);
+const breakLabel = (type: WorkshopBreakType) => ({ TEA_1: 'Tea 1', TEA_2: 'Tea 2', LUNCH: 'Lunch', TYRE_COLLECTION: 'Tyre collection', MISC_TASK: 'Misc task' }[type]);
 
 const Metric: React.FC<{ label: string; value: number; tone?: string }> = ({ label, value, tone = 'text-white' }) => (
   <div className="min-w-[108px] rounded-xl border border-gp-border bg-gp-panel px-3 py-2.5 shadow-sm">
@@ -399,13 +399,13 @@ const WorkshopOperationsPanel: React.FC<{
     </section>
 
     <section className="mb-4 rounded-xl border border-gp-border bg-gp-panel p-3">
-      <div className="mb-3 flex items-start justify-between gap-3"><div><p className="text-[10px] font-black uppercase tracking-[0.16em] text-gp-text-muted">Technician availability actions</p><p className="mt-0.5 text-xs text-gp-text-muted">Use the dropdown for Tea 1, Tea 2, Lunch or Collect tyres. Available ends the current activity.</p></div><span className="text-xs font-black text-amber-300">{activeBreaks.size} unavailable</span></div>
+      <div className="mb-3 flex items-start justify-between gap-3"><div><p className="text-[10px] font-black uppercase tracking-[0.16em] text-gp-text-muted">Technician availability actions</p><p className="mt-0.5 text-xs text-gp-text-muted">Use the dropdown for Tea 1, Tea 2, Lunch, Collect tyres or a Misc task. Available ends the current activity.</p></div><span className="text-xs font-black text-amber-300">{activeBreaks.size} unavailable</span></div>
       <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">{TECHNICIANS.map((technician) => {
         const activeBreak = activeBreaks.get(technician);
         const hasTakenLunch = lunchTaken.has(technician);
         return <div key={technician} className={`rounded-lg border p-2 ${activeBreak ? 'border-amber-500/40 bg-amber-500/10' : 'border-gp-border bg-gp-input'}`}>
           <div className="mb-2 flex items-center justify-between gap-2"><span className="min-w-0 truncate text-xs font-black text-white">{technician}</span><span className={`rounded px-1.5 py-0.5 text-[9px] font-black ${hasTakenLunch ? 'bg-emerald-500/15 text-emerald-300' : 'bg-gp-dark text-gp-text-muted'}`}>{hasTakenLunch ? 'Lunch logged' : 'Lunch pending'}</span></div>
-          <div className="flex items-center gap-2"><select aria-label={`${technician} availability status`} disabled={busy} value={activeBreak?.break_type || ''} onChange={(event) => onChangeBreak(technician, event.target.value as WorkshopBreakType | '')} className="min-w-0 flex-1 rounded-md border border-gp-border bg-gp-dark px-2 py-1.5 text-[10px] font-black text-white outline-none focus:border-gp-red disabled:opacity-50"><option value="">Available</option><option value="TEA_1">Tea 1</option><option value="TEA_2">Tea 2</option><option value="LUNCH">Lunch</option><option value="TYRE_COLLECTION">Collect tyres</option></select>{activeBreak && <span className="font-mono text-[10px] text-amber-300">{elapsedTimeLabel(activeBreak.started_at, null, now)}</span>}</div>
+          <div className="flex items-center gap-2"><select aria-label={`${technician} availability status`} disabled={busy} value={activeBreak?.break_type || ''} onChange={(event) => onChangeBreak(technician, event.target.value as WorkshopBreakType | '')} className="min-w-0 flex-1 rounded-md border border-gp-border bg-gp-dark px-2 py-1.5 text-[10px] font-black text-white outline-none focus:border-gp-red disabled:opacity-50"><option value="">Available</option><option value="TEA_1">Tea 1</option><option value="TEA_2">Tea 2</option><option value="LUNCH">Lunch</option><option value="TYRE_COLLECTION">Collect tyres</option><option value="MISC_TASK">Misc task</option></select>{activeBreak && <span className="font-mono text-[10px] text-amber-300">{elapsedTimeLabel(activeBreak.started_at, null, now)}</span>}</div>
         </div>;
       })}</div>
     </section>
