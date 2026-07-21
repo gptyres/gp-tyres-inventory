@@ -50,10 +50,21 @@ export interface WorkshopSummary {
   overdue: number;
 }
 
+export type WorkshopBreakType = 'TEA_1' | 'TEA_2' | 'LUNCH';
+
+export interface WorkshopTechnicianBreak {
+  id: string;
+  technician: string;
+  break_type: WorkshopBreakType;
+  started_at: string;
+  ended_at: string | null;
+}
+
 export interface WorkshopBoardResponse {
   jobs: WorkshopJob[];
   summary: WorkshopSummary;
   agents: string[];
+  breaks: WorkshopTechnicianBreak[];
 }
 
 export interface WorkshopJobInput {
@@ -96,6 +107,14 @@ export const updateWorkshopJob = (id: string, update: Partial<WorkshopJobInput> 
     body: JSON.stringify(update)
   })
 );
+
+export const startWorkshopBreak = (technician: string, break_type: WorkshopBreakType) => request<{ break: WorkshopTechnicianBreak }>('/api/workshop/breaks', {
+  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ technician, break_type })
+});
+
+export const endWorkshopBreak = (id: string) => request<{ break: WorkshopTechnicianBreak }>('/api/workshop/breaks', {
+  method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id })
+});
 
 export const deleteWorkshopJob = (id: string) => request<{ ok: boolean }>(`/api/workshop/${encodeURIComponent(id)}`, {
   method: 'DELETE'

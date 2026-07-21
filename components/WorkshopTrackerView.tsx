@@ -4,14 +4,18 @@ import {
   deleteWorkshopJob,
   fetchWorkshopBoard,
   PAID_BY_OPTIONS,
+  endWorkshopBreak,
   TECHNICIANS,
+  startWorkshopBreak,
   WORKSHOP_AGENTS,
   updateWorkshopJob,
   WorkshopJob,
   WorkshopJobInput,
   WorkshopJobStatus,
   WorkshopPriority,
-  WorkshopSummary
+  WorkshopSummary,
+  WorkshopTechnicianBreak,
+  WorkshopBreakType
 } from '../workshopTracker';
 
 interface WorkshopTrackerViewProps {
@@ -64,6 +68,7 @@ const Metric: React.FC<{ label: string; value: number; tone?: string }> = ({ lab
 export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ currentUser, isAdmin }) => {
   const [jobs, setJobs] = useState<WorkshopJob[]>([]);
   const [summary, setSummary] = useState<WorkshopSummary>({ active: 0, today: 0, ready: 0, overdue: 0 });
+  const [breaks, setBreaks] = useState<WorkshopTechnicianBreak[]>([]);
   const [agents, setAgents] = useState<string[]>(WORKSHOP_AGENTS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -86,6 +91,7 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
       const board = await fetchWorkshopBoard();
       setJobs(board.jobs);
       setSummary(board.summary);
+      setBreaks(board.breaks || []);
       setAgents(board.agents?.length ? board.agents : WORKSHOP_AGENTS);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Workshop board could not be loaded.');
@@ -101,7 +107,7 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
     return () => window.clearTimeout(timer);
   }, [toast]);
 
-  const hasRunningTimer = useMemo(() => jobs.some(isTimerRunning), [jobs]);
+  const hasRunningTimer = useMemo(() => jobs.some(isTimerRunning) || breaks.some((item) => !item.ended_at), [jobs, breaks]);
   useEffect(() => {
     if (!hasRunningTimer) return;
     setNow(Date.now());
@@ -257,6 +263,21 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
     } finally { setBusy(false); }
   };
 
+  const activeBreaks = useMemo(() => new Map(breaks.filter((item) => !item.ended_at).map((item) => [item.technician, item])), [breaks]);
+  const changeBreak = async (technician: string, nextBreak: WorkshopBreakType | '') => {
+    const activeBreak = activeBreaks.get(technician);
+    if (busy || (activeBreak?.break_type || '') === nextBreak) return;
+    setBusy(true);
+    try {
+      if (activeBreak) await endWorkshopBreak(activeBreak.id);
+      if (nextBreak) await startWorkshopBreak(technician, nextBreak);
+      setToast(nextBreak ? `${technician} is now on ${nextBreak.replace('_', ' ')}.` : `${technician} is back from break.`);
+      await loadBoard();
+    } catch (breakError) {
+      setToast(breakError instanceof Error ? breakError.message : 'Technician break could not be updated.');
+    } finally { setBusy(false); }
+  };
+
   const busyTechnicians = useMemo(() => new Set(jobs
     .filter((job) => ['CHECK_IN', 'IN_PROGRESS'].includes(job.status))
     .flatMap(technicianList)), [jobs]);
@@ -292,6 +313,14 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
           <div className="mt-3 flex flex-wrap gap-2">{TECHNICIANS.map((technician) => {
             const busyTechnician = busyTechnicians.has(technician);
             return <span key={technician} className={`rounded-full border px-2.5 py-1 text-[10px] font-black ${busyTechnician ? 'border-amber-500/40 bg-amber-500/10 text-amber-300' : 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'}`}>{technician} · {busyTechnician ? 'Busy' : 'Available'}</span>;
+          })}</div>
+        </section>
+
+        <section className="mb-4 rounded-xl border border-gp-border bg-gp-panel p-3">
+          <div className="mb-3 flex items-center justify-between"><div><p className="text-[10px] font-black uppercase tracking-[0.16em] text-gp-text-muted">Technician break tracker</p><p className="mt-0.5 text-xs text-gp-text-muted">Use the dropdown to start Tea 1, Tea 2 or Lunch. Select Available to end the break.</p></div><span className="text-xs font-black text-amber-300">{activeBreaks.size} on break</span></div>
+          <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">{TECHNICIANS.map((technician) => {
+            const activeBreak = activeBreaks.get(technician);
+            return <div key={technician} className={`flex items-center gap-2 rounded-lg border p-2 ${activeBreak ? 'border-amber-500/40 bg-amber-500/10' : 'border-gp-border bg-gp-input'}`}><span className="min-w-0 flex-1 truncate text-xs font-black text-white">{technician}<span className="ml-2 font-mono text-[10px] text-amber-300">{activeBreak ? elapsedTimeLabel(activeBreak.started_at, null, now) : ''}</span></span><select aria-label={`${technician} break status`} disabled={busy} value={activeBreak?.break_type || ''} onChange={(event) => void changeBreak(technician, event.target.value as WorkshopBreakType | '')} className="w-28 rounded-md border border-gp-border bg-gp-dark px-2 py-1.5 text-[10px] font-black text-white outline-none focus:border-gp-red disabled:opacity-50"><option value="">Available</option><option value="TEA_1">Tea 1</option><option value="TEA_2">Tea 2</option><option value="LUNCH">Lunch</option></select></div>;
           })}</div>
         </section>
 
