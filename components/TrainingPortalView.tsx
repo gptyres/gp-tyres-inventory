@@ -82,6 +82,27 @@ const trainingSections: TrainingSection[] = [
     ]
   },
   {
+    id: 'inventory-operations',
+    navLabel: 'Inventory SOP',
+    title: 'Inventory Accuracy And Stock Movement SOP',
+    summary: 'Follow this process whenever you search, receive, reserve, sell or correct stock. Accurate stock is more important than a fast promise to a customer.',
+    steps: [
+      'Search the exact tyre size, wheel specification, brand or stock code before checking availability.',
+      'Open the stock record and verify the description, quantity, location, selling price and whether it is GP stock or supplier stock.',
+      'Physically count the item before confirming availability or moving it from the shelf.',
+      'Use a reservation when stock must be held; do not rely on a verbal promise or a note outside the portal.',
+      'Complete a sale only after payment is confirmed. A quote does not deduct stock.',
+      'When stock arrives, confirm the delivery against the supplier paperwork before an authorised user receives or edits the inventory record.',
+      'Do not make a manual quantity correction to hide a variance. Escalate damaged, missing or incorrect stock to an admin and record the reason.'
+    ],
+    checks: [
+      'The physical count, portal quantity and stock location agree before stock is promised.',
+      'Reservations and completed sales can be found again in history.',
+      'Supplier stock is never presented to a customer as GP available stock.',
+      'Any variance has an authorised explanation before the shift handover.'
+    ]
+  },
+  {
     id: 'sales',
     navLabel: 'Quotes & Sales',
     title: 'Quotes, Sales And Invoice Rules',
@@ -187,6 +208,27 @@ const trainingSections: TrainingSection[] = [
       'Customer name and contact detail are captured for reservations.',
       'Expected dates are added to backorders.',
       'Refunds and corrections are handled by an authorised user.'
+    ]
+  },
+  {
+    id: 'courier-logistics',
+    navLabel: 'Courier SOP',
+    title: 'Courier Logistics And Dispatch SOP',
+    summary: 'Use the Courier Logistics Assistant to produce a clear courier declaration for wheels, tyres and complete wheel-and-tyre sets. The final packed measurement always wins over an estimate.',
+    steps: [
+      'Confirm the customer order, contact number, delivery address and collection or dispatch instruction before booking a courier.',
+      'Select the correct parcel type: rims only, tyres only, or rims and tyres together.',
+      'Enter the confirmed wheel size, tyre size and number of parcels in Courier Logistics Assistant. Read a pasted customer message only as a starting point, then verify it.',
+      'Use the generated dimensions and chargeable-weight estimate to prepare the courier portal declaration.',
+      'After packing, count every parcel and replace the estimate with the measured weight where a scale is available.',
+      'Copy the final declaration into the courier portal, save the estimate in the portal, then record the courier reference or tracking number on the customer order.',
+      'Before handover, verify the recipient address, number of pieces, packaging condition and tracking reference with a second staff member where possible.'
+    ],
+    checks: [
+      'Courier booking shows the correct item type, quantity and address.',
+      'Measured package details are used when they differ from the portal estimate.',
+      'The customer can be given the correct tracking reference after dispatch.',
+      'No stock is released from the workshop or storeroom without an order reference.'
     ]
   },
   {
