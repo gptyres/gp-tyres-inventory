@@ -4,9 +4,9 @@ import { requireStaffSession } from '../../server/photoLibrary.js';
 import { readApiBody } from '../../server/readApiBody.js';
 import { WORKSHOP_TECHNICIANS, getWorkshopAgents } from '../../server/workshopRoster.js';
 
-const STATUSES = new Set(['BOOKED', 'CHECK_IN', 'IN_PROGRESS', 'QUALITY_CHECK', 'READY', 'COLLECTED', 'CANCELLED']);
 const PRIORITIES = new Set(['LOW', 'NORMAL', 'HIGH', 'URGENT']);
 const TECHNICIANS = new Set(WORKSHOP_TECHNICIANS);
+const PAID_BY_OPTIONS = new Set(['Cash', 'Card', 'EFT', 'Account', 'Other']);
 const cleanText = (value: unknown, max = 240) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
 const cleanNote = (value: unknown) => typeof value === 'string' ? value.trim().slice(0, 2000) : '';
 const cleanDate = (value: unknown) => {
@@ -38,10 +38,9 @@ export default async function handler(request: any, response: any) {
           .from('workshop_jobs')
           .select('*')
           .eq('organization_id', GP_ORGANIZATION_ID)
-          .neq('status', 'CANCELLED')
           .order('scheduled_for', { ascending: true, nullsFirst: false })
           .order('created_at', { ascending: false })
-          .limit(300),
+          .limit(1000),
         getWorkshopAgents(supabase)
       ]);
       if (error) throw new Error(error.message);
@@ -75,7 +74,7 @@ export default async function handler(request: any, response: any) {
     const priority = cleanText(body.priority, 16) || 'NORMAL';
     const technician = cleanText(body.technician, 80);
     const agent = cleanText(body.agent, 80);
-    const attendedStaff = cleanText(body.attended_staff, 80);
+    const paidBy = cleanText(body.paid_by, 40);
     const jobDate = body.job_date === undefined || body.job_date === '' ? new Date().toISOString().slice(0, 10) : cleanDateOnly(body.job_date);
     const estimatedMinutes = Number(body.estimated_minutes);
     if (!customerName || !vehicleDetails || !serviceType || !PRIORITIES.has(priority)) {
@@ -87,10 +86,10 @@ export default async function handler(request: any, response: any) {
     if (technician && !TECHNICIANS.has(technician)) {
       return response.status(400).json({ error: 'Select a technician from the approved workshop team.' });
     }
+    if (paidBy && !PAID_BY_OPTIONS.has(paidBy)) return response.status(400).json({ error: 'Select a valid payment method.' });
     if (!jobDate) return response.status(400).json({ error: 'Enter a valid job date.' });
     const agents = await getWorkshopAgents(supabase);
     if (!agent || !agents.includes(agent)) return response.status(400).json({ error: 'Select an agent from the current staff roster.' });
-    if (attendedStaff && !agents.includes(attendedStaff)) return response.status(400).json({ error: 'Select attending staff from the current staff roster.' });
 
     const payload = {
       organization_id: GP_ORGANIZATION_ID,
@@ -100,14 +99,13 @@ export default async function handler(request: any, response: any) {
       vehicle_details: vehicleDetails,
       registration: cleanText(body.registration, 24).toUpperCase() || null,
       service_type: serviceType,
-      status: 'BOOKED',
+      status: 'CHECK_IN',
       priority,
       technician: technician || null,
       agent,
       job_date: jobDate,
       ticket_number: cleanText(body.ticket_number, 64) || null,
-      paid_by: cleanText(body.paid_by, 80) || null,
-      attended_staff: attendedStaff || null,
+      paid_by: paidBy || null,
       scheduled_for: cleanDate(body.scheduled_for),
       estimated_minutes: Number.isInteger(estimatedMinutes) ? estimatedMinutes : null,
       notes: cleanNote(body.notes) || null,
@@ -119,7 +117,7 @@ export default async function handler(request: any, response: any) {
       organization_id: GP_ORGANIZATION_ID,
       job_id: job.id,
       event_type: 'JOB_CREATED',
-      to_status: 'BOOKED',
+      to_status: 'CHECK_IN',
       note: `Created by ${session.terminalId}`,
       created_by: session.terminalId
     });

@@ -5,10 +5,11 @@ import { requireStaffSession } from '../../server/photoLibrary.js';
 import { readApiBody } from '../../server/readApiBody.js';
 import { WORKSHOP_TECHNICIANS, getWorkshopAgents } from '../../server/workshopRoster.js';
 
-const STATUSES = new Set(['BOOKED', 'CHECK_IN', 'IN_PROGRESS', 'QUALITY_CHECK', 'READY', 'COLLECTED', 'CANCELLED']);
+const STATUSES = new Set(['CHECK_IN', 'IN_PROGRESS', 'READY', 'COLLECTED', 'CANCELLED']);
 const PRIORITIES = new Set(['LOW', 'NORMAL', 'HIGH', 'URGENT']);
 const TECHNICIANS = new Set(WORKSHOP_TECHNICIANS);
-const STARTED_STATUSES = new Set(['CHECK_IN', 'IN_PROGRESS', 'QUALITY_CHECK', 'READY', 'COLLECTED']);
+const PAID_BY_OPTIONS = new Set(['Cash', 'Card', 'EFT', 'Account', 'Other']);
+const STARTED_STATUSES = new Set(['CHECK_IN', 'IN_PROGRESS', 'READY', 'COLLECTED']);
 const cleanText = (value: unknown, max = 240) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
 const cleanNote = (value: unknown) => typeof value === 'string' ? value.trim().slice(0, 2000) : '';
 const cleanDate = (value: unknown) => {
@@ -54,18 +55,12 @@ export default async function handler(request: any, response: any) {
     });
     if (typeof update.registration === 'string') update.registration = update.registration.toUpperCase();
     const hasAgentUpdate = Object.prototype.hasOwnProperty.call(body, 'agent');
-    const hasAttendedStaffUpdate = Object.prototype.hasOwnProperty.call(body, 'attended_staff');
-    if (hasAgentUpdate || hasAttendedStaffUpdate) {
+    if (hasAgentUpdate) {
       const agents = await getWorkshopAgents(supabase);
       if (hasAgentUpdate) {
         const agent = cleanText(body.agent, 80);
         if (!agent || !agents.includes(agent)) return response.status(400).json({ error: 'Select an agent from the current staff roster.' });
         update.agent = agent;
-      }
-      if (hasAttendedStaffUpdate) {
-        const attendedStaff = cleanText(body.attended_staff, 80);
-        if (attendedStaff && !agents.includes(attendedStaff)) return response.status(400).json({ error: 'Select attending staff from the current staff roster.' });
-        update.attended_staff = attendedStaff || null;
       }
     }
     if (Object.prototype.hasOwnProperty.call(body, 'technician')) {
@@ -79,10 +74,12 @@ export default async function handler(request: any, response: any) {
       if (!jobDate) return response.status(400).json({ error: 'Enter a valid job date.' });
       update.job_date = jobDate;
     }
-    const jobSheetTextFields: Array<[string, number]> = [['ticket_number', 64], ['paid_by', 80]];
-    jobSheetTextFields.forEach(([field, max]) => {
-      if (Object.prototype.hasOwnProperty.call(body, field)) update[field] = cleanText(body[field], max) || null;
-    });
+    if (Object.prototype.hasOwnProperty.call(body, 'ticket_number')) update.ticket_number = cleanText(body.ticket_number, 64) || null;
+    if (Object.prototype.hasOwnProperty.call(body, 'paid_by')) {
+      const paidBy = cleanText(body.paid_by, 40);
+      if (paidBy && !PAID_BY_OPTIONS.has(paidBy)) return response.status(400).json({ error: 'Select a valid payment method.' });
+      update.paid_by = paidBy || null;
+    }
     if (Object.prototype.hasOwnProperty.call(body, 'scheduled_for')) {
       const date = cleanDate(body.scheduled_for);
       if (date === undefined) return response.status(400).json({ error: 'Invalid scheduled time.' });
