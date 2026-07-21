@@ -50,7 +50,7 @@ export interface WorkshopSummary {
   overdue: number;
 }
 
-export type WorkshopBreakType = 'TEA_1' | 'TEA_2' | 'LUNCH' | 'TYRE_COLLECTION';
+export type WorkshopBreakType = 'TEA_1' | 'TEA_2' | 'LUNCH' | 'TYRE_COLLECTION' | 'MISC_TASK';
 
 export interface WorkshopTechnicianBreak {
   id: string;
