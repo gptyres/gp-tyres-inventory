@@ -360,13 +360,12 @@ export const buildStaffSupplierTyreImageUploadPayload = ({
 
 export const supplierTyreMatchesUploadKeys = (
   item: InventoryItem,
-  supplier: string,
+  _supplier: string,
   brand: string,
   pattern: string
 ): boolean => {
   if (item.type !== ProductType.TYRE) return false;
   const tyre = item as TyreProduct;
-  if (normalizeSupplierImageToken(tyre.supplierName) !== normalizeSupplierImageToken(supplier)) return false;
 
   const targetKeys = parseSupplierTyreImageKeys(brand, pattern);
   const rawTyreKeys = parseSupplierTyreImageKeys(tyre.brand, tyre.pattern);
@@ -591,6 +590,10 @@ const supplierDesignGroupKey = (supplierName: string | undefined | null, designK
     .replace(/::(.+)$/, (_match, design) => `::${canonicalSupplierDesignKey(design)}`)
 );
 
+const globalTyreDesignGroupKey = (designKey: string | undefined | null): string => (
+  `GLOBAL_TYRE::${canonicalSupplierDesignKey(designKey)}`
+);
+
 export const buildSupplierImageMap = (
   items: InventoryItem[],
   imageRows: SupplierStockImageRow[]
@@ -598,7 +601,7 @@ export const buildSupplierImageMap = (
   const candidatesBySupplierAndDesign = imageRows.reduce<Record<string, SupplierImageMatchCandidate[]>>((groups, row) => {
     const groupKey = supplierDesignGroupKey(row.supplier, row.design_key);
     groups[groupKey] = groups[groupKey] ?? [];
-    groups[groupKey].push({
+    const candidate = {
       supplierName: row.supplier,
       source: row.source,
       sourceFileId: row.source_file_id,
@@ -610,7 +613,13 @@ export const buildSupplierImageMap = (
       fileName: row.file_name,
       importedAt: row.imported_at,
       updatedAt: row.updated_at
-    });
+    };
+    groups[groupKey].push(candidate);
+    if (row.storage_path.toLowerCase().startsWith('tyres/')) {
+      const globalGroupKey = globalTyreDesignGroupKey(row.design_key);
+      groups[globalGroupKey] = groups[globalGroupKey] ?? [];
+      groups[globalGroupKey].push(candidate);
+    }
     return groups;
   }, {});
 
@@ -618,8 +627,14 @@ export const buildSupplierImageMap = (
     const lookupItem = inventoryItemToSupplierImageLookup(item);
     if (!lookupItem) return imageMap;
 
-    const candidates = candidatesBySupplierAndDesign[supplierDesignGroupKey(lookupItem.supplierName, lookupItem.imageDesignKey)] ?? [];
-    const match = findBestSupplierStockImage(lookupItem, candidates);
+    const isTyre = lookupItem.productType === ProductType.TYRE;
+    const candidates = isTyre
+      ? candidatesBySupplierAndDesign[globalTyreDesignGroupKey(lookupItem.imageDesignKey)] ?? []
+      : candidatesBySupplierAndDesign[supplierDesignGroupKey(lookupItem.supplierName, lookupItem.imageDesignKey)] ?? [];
+    const match = findBestSupplierStockImage(
+      isTyre ? { ...lookupItem, supplierName: undefined } : lookupItem,
+      candidates
+    );
     if (match.imageUrl) imageMap[item.id] = match.imageUrl;
     return imageMap;
   }, {});
