@@ -129,7 +129,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               Inventory Tracker
             </span>
             <span className="mt-1 text-[9px] font-black uppercase tracking-[0.16em] text-gp-red">
-              Release V4.1.0
+              Release V4.1.1
             </span>
             {currentUser && (
                <span className="mt-3 px-2 py-0.5 bg-gp-input border border-gp-border rounded text-[9px] font-mono text-gp-text-muted">
