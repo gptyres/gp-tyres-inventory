@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppView, ProductType, SupplierCatalog } from '../types';
+import { APP_VERSION } from '../config';
 import gpLogo from '../assets/gp-tyres-logo-transparent.png';
 
 interface SidebarProps {
@@ -127,6 +128,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span className="text-xs text-gp-text-muted font-bold tracking-[0.2em] uppercase block text-center">
               Inventory Tracker
             </span>
+            <span className="mt-1 text-[9px] font-black uppercase tracking-[0.16em] text-gp-red">
+              Release V4.1.0
+            </span>
             {currentUser && (
                <span className="mt-3 px-2 py-0.5 bg-gp-input border border-gp-border rounded text-[9px] font-mono text-gp-text-muted">
                  ID: {currentUser}
@@ -182,6 +186,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7h3l1.5-2h7L17 7h3v12H4V7Zm4 6a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z" />
             </svg>
             <span className="font-bold text-sm">Photo Library</span>
+          </button>
+
+          <button
+            onClick={() => handleOrderClick('WORKSHOP_TRACKER')}
+            className={`flex items-center w-full px-3 py-2 rounded transition-colors ${currentView === 'WORKSHOP_TRACKER' ? 'bg-gp-red/10 text-gp-red' : 'text-gp-text-muted hover:text-gp-text-main hover:bg-gp-border'}`}
+          >
+            <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <circle cx="9" cy="13" r="5.5" strokeWidth={1.8} />
+              <circle cx="9" cy="13" r="1.75" strokeWidth={1.8} />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="m14.25 7.1 2.65 2.65m-1.42-4.08a3.15 3.15 0 0 0 3.95 3.95l-5.35 5.35a2.3 2.3 0 1 0 3.25 3.25l5.35-5.35a3.15 3.15 0 0 0-3.95-3.95" />
+            </svg>
+            <span className="font-bold text-sm">Workshop Tracker</span>
           </button>
 
           {/* Products Group */}
@@ -505,6 +521,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   Quote Module
                 </button>
+                <button
+                  onClick={() => handleOrderClick('COURIER_LOGISTICS_ASSISTANT')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-bold rounded transition-colors ${currentView === 'COURIER_LOGISTICS_ASSISTANT' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-main bg-gp-input/60 hover:bg-gp-border'}`}
+                >
+                  Courier Logistics Assistant
+                </button>
                 <button 
                   onClick={() => handlePortalClick('Virtual Garage', 'https://gp-tyres-mags-virtual-garage-195826084752.us-west1.run.app/', 'TOOLS_PORTAL')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'TOOLS_PORTAL' && selectedPortalName === 'Virtual Garage' ? 'text-gp-text-main hover:bg-gp-border border-l-2 border-gp-red bg-gp-input' : 'text-gp-text-muted hover:text-gp-text-main'}`}
@@ -629,6 +651,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                 ONLINE
               </span>
+            </div>
+            <div className="border-t border-gp-border pt-2 text-center text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
+              Release {APP_VERSION}
             </div>
           </div>
         </div>
