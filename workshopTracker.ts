@@ -1,6 +1,20 @@
 export type WorkshopJobStatus = 'BOOKED' | 'CHECK_IN' | 'IN_PROGRESS' | 'QUALITY_CHECK' | 'READY' | 'COLLECTED' | 'CANCELLED';
 export type WorkshopPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
 
+export const TECHNICIANS = [
+  'Klassie',
+  'Richard',
+  'Abdul Razak',
+  'Saeed',
+  'Rajab',
+  'Ashley',
+  'Blessing',
+  'Clement',
+  'Patrick'
+] as const;
+
+export const WORKSHOP_AGENTS = ['Noor', 'Mac', 'Rafiek', 'Yaseen', 'Laeeq', 'Zahied', 'Niyaaz'];
+
 export interface WorkshopJob {
   id: string;
   job_number: string;
@@ -13,12 +27,18 @@ export interface WorkshopJob {
   status: WorkshopJobStatus;
   priority: WorkshopPriority;
   technician: string | null;
+  agent: string | null;
+  job_date: string;
+  ticket_number: string | null;
+  paid_by: string | null;
+  attended_staff: string | null;
   scheduled_for: string | null;
   estimated_minutes: number | null;
   notes: string | null;
   created_by: string;
   created_at: string;
   updated_at: string;
+  started_at: string | null;
   completed_at: string | null;
 }
 
@@ -32,6 +52,7 @@ export interface WorkshopSummary {
 export interface WorkshopBoardResponse {
   jobs: WorkshopJob[];
   summary: WorkshopSummary;
+  agents: string[];
 }
 
 export interface WorkshopJobInput {
@@ -42,6 +63,11 @@ export interface WorkshopJobInput {
   service_type: string;
   priority?: WorkshopPriority;
   technician?: string;
+  agent?: string;
+  job_date?: string;
+  ticket_number?: string;
+  paid_by?: string;
+  attended_staff?: string;
   scheduled_for?: string;
   estimated_minutes?: number;
   notes?: string;

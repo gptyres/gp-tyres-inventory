@@ -1,8 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   createWorkshopJob,
   deleteWorkshopJob,
   fetchWorkshopBoard,
+  TECHNICIANS,
+  WORKSHOP_AGENTS,
   updateWorkshopJob,
   WorkshopJob,
   WorkshopJobInput,
@@ -34,11 +36,23 @@ const PRIORITY_STYLE: Record<WorkshopPriority, string> = {
 const statusLabel = (status: WorkshopJobStatus) => status.replace('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 const emptyForm = (): WorkshopJobInput => ({
   customer_name: '', customer_phone: '', vehicle_details: '', registration: '', service_type: 'Tyre fitment',
-  priority: 'NORMAL', technician: '', scheduled_for: '', estimated_minutes: 60, notes: ''
+  priority: 'NORMAL', technician: '', agent: '', job_date: new Date().toISOString().slice(0, 10), ticket_number: '', paid_by: '', attended_staff: '', scheduled_for: '', estimated_minutes: 60, notes: ''
 });
 
 const dateTimeForInput = (value: string | null) => value ? new Date(value).toISOString().slice(0, 16) : '';
 const timeLabel = (value: string | null) => value ? new Intl.DateTimeFormat('en-ZA', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' }).format(new Date(value)) : 'Unscheduled';
+const jobDateLabel = (value: string) => new Intl.DateTimeFormat('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(`${value}T12:00:00`));
+const elapsedTimeLabel = (startedAt: string | null, completedAt: string | null, now: number) => {
+  if (!startedAt) return 'Not started';
+  const start = new Date(startedAt).getTime();
+  const end = completedAt ? new Date(completedAt).getTime() : now;
+  const seconds = Math.max(0, Math.floor((end - start) / 1000));
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainder = seconds % 60;
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`;
+};
+const isTimerRunning = (job: WorkshopJob) => Boolean(job.started_at && !job.completed_at && job.status !== 'CANCELLED');
 
 const Metric: React.FC<{ label: string; value: number; tone?: string }> = ({ label, value, tone = 'text-white' }) => (
   <div className="min-w-[108px] rounded-xl border border-gp-border bg-gp-panel px-3 py-2.5 shadow-sm">
@@ -50,6 +64,7 @@ const Metric: React.FC<{ label: string; value: number; tone?: string }> = ({ lab
 export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ currentUser, isAdmin }) => {
   const [jobs, setJobs] = useState<WorkshopJob[]>([]);
   const [summary, setSummary] = useState<WorkshopSummary>({ active: 0, today: 0, ready: 0, overdue: 0 });
+  const [agents, setAgents] = useState<string[]>(WORKSHOP_AGENTS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [toast, setToast] = useState('');
@@ -59,6 +74,10 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
   const [form, setForm] = useState<WorkshopJobInput>(emptyForm);
   const [selected, setSelected] = useState<WorkshopJob | null>(null);
   const [busy, setBusy] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  const [draggedJobId, setDraggedJobId] = useState<string | null>(null);
+  const [dragOverStatus, setDragOverStatus] = useState<WorkshopJobStatus | null>(null);
+  const touchDragTimer = useRef<number | null>(null);
 
   const loadBoard = async () => {
     setLoading(true);
@@ -67,6 +86,7 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
       const board = await fetchWorkshopBoard();
       setJobs(board.jobs);
       setSummary(board.summary);
+      setAgents(board.agents?.length ? board.agents : WORKSHOP_AGENTS);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : 'Workshop board could not be loaded.');
     } finally {
@@ -80,6 +100,17 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
     const timer = window.setTimeout(() => setToast(''), 3200);
     return () => window.clearTimeout(timer);
   }, [toast]);
+
+  const hasRunningTimer = useMemo(() => jobs.some(isTimerRunning), [jobs]);
+  useEffect(() => {
+    if (!hasRunningTimer) return;
+    setNow(Date.now());
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [hasRunningTimer]);
+  useEffect(() => () => {
+    if (touchDragTimer.current !== null) window.clearTimeout(touchDragTimer.current);
+  }, []);
 
   const visibleJobs = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -97,6 +128,7 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
   };
 
   const moveJob = async (job: WorkshopJob, status: WorkshopJobStatus) => {
+    if (busy || job.status === status) return;
     setBusy(true);
     try {
       const result = await updateWorkshopJob(job.id, { status });
@@ -105,6 +137,70 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
     } catch (moveError) {
       setToast(moveError instanceof Error ? moveError.message : 'The job could not be moved.');
     } finally { setBusy(false); }
+  };
+
+  const clearTouchDrag = () => {
+    if (touchDragTimer.current !== null) {
+      window.clearTimeout(touchDragTimer.current);
+      touchDragTimer.current = null;
+    }
+    setDraggedJobId(null);
+    setDragOverStatus(null);
+  };
+
+  const laneAtPoint = (clientX: number, clientY: number): WorkshopJobStatus | null => {
+    const element = document.elementFromPoint(clientX, clientY);
+    const lane = element?.closest<HTMLElement>('[data-workshop-lane]')?.dataset.workshopLane as WorkshopJobStatus | undefined;
+    return lane && (LANES.some((item) => item.status === lane) || lane === 'COLLECTED') ? lane : null;
+  };
+
+  const startDesktopDrag = (event: React.DragEvent<HTMLElement>, job: WorkshopJob) => {
+    if (busy) return;
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', job.id);
+    setDraggedJobId(job.id);
+  };
+
+  const dropInLane = (event: React.DragEvent<HTMLElement>, status: WorkshopJobStatus) => {
+    event.preventDefault();
+    const jobId = event.dataTransfer.getData('text/plain') || draggedJobId;
+    const job = jobs.find((item) => item.id === jobId);
+    setDraggedJobId(null);
+    setDragOverStatus(null);
+    if (job && !busy) void moveJob(job, status);
+  };
+
+  const startTouchDrag = (job: WorkshopJob) => {
+    if (busy) return;
+    clearTouchDrag();
+    touchDragTimer.current = window.setTimeout(() => {
+      touchDragTimer.current = null;
+      setDraggedJobId(job.id);
+    }, 280);
+  };
+
+  const moveTouchDrag = (clientX: number, clientY: number) => {
+    if (!draggedJobId) {
+      if (touchDragTimer.current !== null) {
+        window.clearTimeout(touchDragTimer.current);
+        touchDragTimer.current = null;
+      }
+      return false;
+    }
+    setDragOverStatus(laneAtPoint(clientX, clientY));
+    return true;
+  };
+
+  const completeTouchDrag = (clientX: number, clientY: number) => {
+    if (!draggedJobId) {
+      clearTouchDrag();
+      return false;
+    }
+    const job = jobs.find((item) => item.id === draggedJobId);
+    const target = laneAtPoint(clientX, clientY);
+    clearTouchDrag();
+    if (job && target && !busy) void moveJob(job, target);
+    return true;
   };
 
   const submitJob = async (event: React.FormEvent) => {
@@ -131,6 +227,11 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
     try {
       const result = await updateWorkshopJob(selected.id, {
         technician: String(formData.get('technician') || ''),
+        agent: String(formData.get('agent') || ''),
+        attended_staff: String(formData.get('attended_staff') || ''),
+        job_date: String(formData.get('job_date') || ''),
+        ticket_number: String(formData.get('ticket_number') || ''),
+        paid_by: String(formData.get('paid_by') || ''),
         notes: String(formData.get('notes') || ''),
         priority: String(formData.get('priority') || 'NORMAL') as WorkshopPriority,
         scheduled_for: String(formData.get('scheduled_for') || ''),
@@ -153,7 +254,7 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
       setToast('Workshop job deleted.');
       void loadBoard();
     } catch (deleteError) {
-      setToast(deleteError instanceof Error ? deleteError.message : 'The job could not be deleted.');
+      setToast(deleteError instanceof Error ? deleteError.message : 'Workshop job could not be deleted.');
     } finally { setBusy(false); }
   };
 
@@ -164,7 +265,7 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
           <div>
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gp-red"><span className="h-2 w-2 rounded-full bg-gp-red shadow-[0_0_10px_rgba(255,0,0,0.9)]" /> Live workshop floor</div>
             <h1 className="mt-1 text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">Workshop Tracker</h1>
-            <p className="mt-1 max-w-xl text-sm text-gp-text-muted">A single board for bookings, fitment progress, quality checks and customer collection.</p>
+            <p className="mt-1 max-w-xl text-sm text-gp-text-muted">Drag jobs between stages. On touch screens, hold a card briefly, then drag it to a lane. Timers start at check-in and stop when a job is collected.</p>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => void loadBoard()} className="rounded-lg border border-gp-border bg-gp-panel px-3 py-2.5 text-[10px] font-black uppercase tracking-wider text-gp-text-muted transition hover:border-gp-text-muted hover:text-white">Refresh</button>
@@ -191,11 +292,12 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
           <section className="grid gap-4 xl:grid-cols-5">
             {[...LANES, ...(showCollected ? [{ status: 'COLLECTED' as WorkshopJobStatus, label: 'Collected', accent: 'border-emerald-700' }] : [])].map((lane) => {
               const laneJobs = visibleJobs.filter((job) => job.status === lane.status);
-              return <div key={lane.status} className={`min-w-0 rounded-2xl border border-gp-border border-t-4 ${lane.accent} bg-gp-dark/70 p-3`}>
+              const isDropTarget = dragOverStatus === lane.status && Boolean(draggedJobId);
+              return <div key={lane.status} data-workshop-lane={lane.status} onDragOver={(event) => { event.preventDefault(); if (draggedJobId) setDragOverStatus(lane.status); }} onDrop={(event) => dropInLane(event, lane.status)} className={`min-w-0 rounded-2xl border border-gp-border border-t-4 ${lane.accent} bg-gp-dark/70 p-3 transition ${isDropTarget ? 'scale-[1.01] bg-gp-red/10 ring-2 ring-gp-red/70' : ''}`}>
                 <div className="mb-3 flex items-center justify-between"><h2 className="text-xs font-black uppercase tracking-wider text-white">{lane.label}</h2><span className="rounded-full bg-gp-input px-2 py-0.5 text-[10px] font-black text-gp-text-muted">{laneJobs.length}</span></div>
                 <div className="flex gap-3 overflow-x-auto pb-2 xl:flex-col xl:overflow-visible">
-                  {laneJobs.map((job) => <JobCard key={job.id} job={job} next={lane.next} onOpen={() => setSelected(job)} onMove={() => lane.next && void moveJob(job, lane.next)} busy={busy} />)}
-                  {!laneJobs.length && <div className="min-w-[185px] rounded-xl border border-dashed border-gp-border p-4 text-center text-[10px] font-bold uppercase tracking-wider text-gp-text-muted xl:min-w-0">Clear lane</div>}
+                  {laneJobs.map((job) => <JobCard key={job.id} job={job} next={lane.next} onOpen={() => setSelected(job)} onMove={() => lane.next && void moveJob(job, lane.next)} busy={busy} now={now} dragging={draggedJobId === job.id} onDesktopDragStart={startDesktopDrag} onDesktopDragEnd={clearTouchDrag} onTouchDragStart={startTouchDrag} onTouchDragMove={moveTouchDrag} onTouchDrop={completeTouchDrag} onTouchDragCancel={clearTouchDrag} />)}
+                  {!laneJobs.length && <div className={`min-w-[185px] rounded-xl border border-dashed p-4 text-center text-[10px] font-bold uppercase tracking-wider xl:min-w-0 ${isDropTarget ? 'border-gp-red text-gp-red' : 'border-gp-border text-gp-text-muted'}`}>{isDropTarget ? 'Drop job here' : 'Clear lane'}</div>}
                 </div>
               </div>;
             })}
@@ -204,31 +306,73 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
       </div>
 
       {toast && <div role="status" className="fixed bottom-5 left-1/2 z-[70] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-xl border border-gp-border bg-gp-panel px-4 py-3 text-center text-sm font-bold text-white shadow-2xl">{toast}</div>}
-      {formOpen && <JobForm currentUser={currentUser} form={form} setForm={setForm} onClose={() => setFormOpen(false)} onSubmit={submitJob} busy={busy} />}
-      {selected && <JobDetail job={selected} isAdmin={isAdmin} busy={busy} onClose={() => setSelected(null)} onMove={(status) => void moveJob(selected, status)} onSave={saveDetails} onDelete={() => void removeJob()} />}
+      {formOpen && <JobForm currentUser={currentUser} agents={agents} form={form} setForm={setForm} onClose={() => setFormOpen(false)} onSubmit={submitJob} busy={busy} />}
+      {selected && <JobDetail job={selected} agents={agents} isAdmin={isAdmin} busy={busy} now={now} onClose={() => setSelected(null)} onMove={(status) => void moveJob(selected, status)} onSave={saveDetails} onDelete={() => void removeJob()} />}
     </div>
   );
 };
 
-const JobCard: React.FC<{ job: WorkshopJob; next?: WorkshopJobStatus; onOpen: () => void; onMove: () => void; busy: boolean }> = ({ job, next, onOpen, onMove, busy }) => (
-  <article className="min-w-[248px] rounded-xl border border-gp-border bg-gp-panel p-3 shadow-sm transition hover:-translate-y-0.5 hover:border-gp-text-muted xl:min-w-0">
-    <button onClick={onOpen} className="w-full text-left">
+interface JobCardProps {
+  job: WorkshopJob;
+  next?: WorkshopJobStatus;
+  onOpen: () => void;
+  onMove: () => void;
+  busy: boolean;
+  now: number;
+  dragging: boolean;
+  onDesktopDragStart: (event: React.DragEvent<HTMLElement>, job: WorkshopJob) => void;
+  onDesktopDragEnd: () => void;
+  onTouchDragStart: (job: WorkshopJob) => void;
+  onTouchDragMove: (clientX: number, clientY: number) => boolean;
+  onTouchDrop: (clientX: number, clientY: number) => boolean;
+  onTouchDragCancel: () => void;
+}
+
+const JobCard: React.FC<JobCardProps> = ({ job, next, onOpen, onMove, busy, now, dragging, onDesktopDragStart, onDesktopDragEnd, onTouchDragStart, onTouchDragMove, onTouchDrop, onTouchDragCancel }) => {
+  const suppressCardClick = useRef(false);
+  const handleTouchPointerDown = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'touch' || busy) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    onTouchDragStart(job);
+  };
+  const handleTouchPointerMove = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'touch') return;
+    if (onTouchDragMove(event.clientX, event.clientY)) {
+      suppressCardClick.current = true;
+      event.preventDefault();
+    }
+  };
+  const handleTouchPointerUp = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'touch') return;
+    if (onTouchDrop(event.clientX, event.clientY)) {
+      suppressCardClick.current = true;
+      window.setTimeout(() => { suppressCardClick.current = false; }, 350);
+    }
+  };
+
+  return <article draggable={!busy} onDragStart={(event) => onDesktopDragStart(event, job)} onDragEnd={onDesktopDragEnd} onPointerDown={handleTouchPointerDown} onPointerMove={handleTouchPointerMove} onPointerUp={handleTouchPointerUp} onPointerCancel={onTouchDragCancel} style={{ touchAction: dragging ? 'none' : 'pan-y' }} className={`min-w-[248px] select-none rounded-xl border border-gp-border bg-gp-panel p-3 shadow-sm transition hover:-translate-y-0.5 hover:border-gp-text-muted xl:min-w-0 ${dragging ? 'scale-[0.98] cursor-grabbing opacity-45' : 'cursor-grab'}`}>
+    <button onClick={(event) => { if (suppressCardClick.current) { event.preventDefault(); return; } onOpen(); }} className="w-full text-left">
       <div className="flex items-start justify-between gap-2"><span className="font-mono text-[10px] font-bold text-gp-text-muted">{job.job_number}</span><span className={`rounded px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider ${PRIORITY_STYLE[job.priority]}`}>{job.priority}</span></div>
+      <div className="mt-1 flex items-center justify-between gap-2 text-[9px] font-black uppercase tracking-wider text-gp-text-muted"><span className="truncate">Agent · {job.agent || 'Unassigned'}</span><span className="shrink-0">Ticket · {job.ticket_number || '—'}</span></div>
       <h3 className="mt-2 truncate text-sm font-black text-white">{job.customer_name}</h3><p className="mt-0.5 truncate text-xs text-gp-text-muted">{job.vehicle_details}{job.registration ? ` · ${job.registration}` : ''}</p>
       <div className="mt-3 flex items-center justify-between gap-2 border-t border-gp-border pt-2 text-[10px] font-bold text-gp-text-muted"><span className="truncate">{job.service_type}</span><span className="shrink-0">{timeLabel(job.scheduled_for)}</span></div>
+      <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-1 text-[9px] font-bold uppercase tracking-wide text-gp-text-muted"><span className="truncate">Date · {jobDateLabel(job.job_date)}</span><span className="truncate text-right">Paid by · {job.paid_by || '—'}</span><span className="truncate">Attended · {job.attended_staff || '—'}</span><span className="truncate text-right">Status · {statusLabel(job.status)}</span></div>
+      {job.notes && <p className="mt-2 line-clamp-2 border-t border-gp-border pt-2 text-[10px] leading-relaxed text-gp-text-muted">{job.notes}</p>}
+      <div className="mt-2 flex items-center justify-between gap-2 text-[10px] font-bold"><span className="truncate text-gp-text-muted">{job.technician || 'Unassigned'}</span><span className={`shrink-0 font-mono ${isTimerRunning(job) ? 'text-amber-300' : 'text-gp-text-muted'}`}>{job.started_at ? elapsedTimeLabel(job.started_at, job.completed_at, now) : 'Time in —'}</span></div>
     </button>
+    <div className="mt-2 flex items-center justify-between text-[9px] font-black uppercase tracking-wider text-gp-text-muted"><span>⋮⋮ Drag job</span>{job.started_at && <span>{isTimerRunning(job) ? 'Timer running' : 'Time recorded'}</span>}</div>
     {next && <button disabled={busy} onClick={onMove} className="mt-3 w-full rounded-lg bg-gp-input px-2 py-2 text-[10px] font-black uppercase tracking-wider text-white transition hover:bg-gp-red disabled:opacity-50">Move to {statusLabel(next)} →</button>}
-  </article>
-);
-
-const JobForm: React.FC<{ currentUser: string; form: WorkshopJobInput; setForm: React.Dispatch<React.SetStateAction<WorkshopJobInput>>; onClose: () => void; onSubmit: (event: React.FormEvent) => void; busy: boolean }> = ({ currentUser, form, setForm, onClose, onSubmit, busy }) => {
-  const set = (field: keyof WorkshopJobInput, value: string | number) => setForm((current) => ({ ...current, [field]: value }));
-  return <div className="fixed inset-0 z-[60] overflow-y-auto bg-black/80 p-3 backdrop-blur-sm sm:p-6"><form onSubmit={onSubmit} className="mx-auto my-3 max-w-2xl rounded-2xl border border-gp-border bg-gp-dark shadow-2xl"><div className="flex items-center justify-between border-b border-gp-border p-4"><div><p className="text-[10px] font-black uppercase tracking-[0.18em] text-gp-red">Quick intake</p><h2 className="text-xl font-black uppercase text-white">Book workshop job</h2></div><button type="button" onClick={onClose} className="text-xl text-gp-text-muted hover:text-white">×</button></div><div className="grid gap-4 p-4 sm:grid-cols-2"><Field label="Customer name *"><input required value={form.customer_name} onChange={(e) => set('customer_name', e.target.value)} placeholder="Customer full name" /></Field><Field label="Mobile / phone"><input value={form.customer_phone} onChange={(e) => set('customer_phone', e.target.value)} placeholder="082 000 0000" inputMode="tel" /></Field><Field label="Vehicle *"><input required value={form.vehicle_details} onChange={(e) => set('vehicle_details', e.target.value)} placeholder="2022 VW Polo GTI" /></Field><Field label="Registration"><input value={form.registration} onChange={(e) => set('registration', e.target.value.toUpperCase())} placeholder="ABC 123 GP" /></Field><Field label="Service *"><select value={form.service_type} onChange={(e) => set('service_type', e.target.value)}><option>Tyre fitment</option><option>Wheel alignment</option><option>Wheel balancing</option><option>Puncture repair</option><option>Wheel repair</option><option>Suspension fitment</option><option>Inspection / quotation</option></select></Field><Field label="Priority"><select value={form.priority} onChange={(e) => set('priority', e.target.value)}>{(['LOW', 'NORMAL', 'HIGH', 'URGENT'] as WorkshopPriority[]).map((priority) => <option key={priority}>{priority}</option>)}</select></Field><Field label="Scheduled for"><input type="datetime-local" value={form.scheduled_for} onChange={(e) => set('scheduled_for', e.target.value)} /></Field><Field label="Estimated minutes"><input type="number" min="5" max="1440" value={form.estimated_minutes || ''} onChange={(e) => set('estimated_minutes', Number(e.target.value))} /></Field><Field label="Technician"><input value={form.technician} onChange={(e) => set('technician', e.target.value)} placeholder="Assign later if needed" /></Field><Field label="Logged by"><div className="rounded-lg border border-gp-border bg-gp-input px-3 py-2.5 text-sm font-bold text-gp-text-muted">{currentUser}</div></Field><div className="sm:col-span-2"><Field label="Workshop notes"><textarea value={form.notes} onChange={(e) => set('notes', e.target.value)} rows={3} placeholder="Tyre size, customer request, parts needed or fitment notes" /></Field></div></div><div className="flex gap-2 border-t border-gp-border p-4"><button type="button" onClick={onClose} className="flex-1 rounded-lg border border-gp-border px-4 py-3 text-xs font-black uppercase tracking-wider text-gp-text-muted">Cancel</button><button disabled={busy} className="flex-[1.5] rounded-lg bg-gp-red px-4 py-3 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">{busy ? 'Saving…' : 'Book job'}</button></div></form></div>;
+  </article>;
 };
 
-const JobDetail: React.FC<{ job: WorkshopJob; isAdmin: boolean; busy: boolean; onClose: () => void; onMove: (status: WorkshopJobStatus) => void; onSave: (event: React.FormEvent<HTMLFormElement>) => void; onDelete: () => void }> = ({ job, isAdmin, busy, onClose, onMove, onSave, onDelete }) => {
+const JobForm: React.FC<{ currentUser: string; agents: string[]; form: WorkshopJobInput; setForm: React.Dispatch<React.SetStateAction<WorkshopJobInput>>; onClose: () => void; onSubmit: (event: React.FormEvent) => void; busy: boolean }> = ({ currentUser, agents, form, setForm, onClose, onSubmit, busy }) => {
+  const set = (field: keyof WorkshopJobInput, value: string | number) => setForm((current) => ({ ...current, [field]: value }));
+  return <div className="fixed inset-0 z-[60] overflow-y-auto bg-black/80 p-3 backdrop-blur-sm sm:p-6"><form onSubmit={onSubmit} className="mx-auto my-3 max-w-2xl rounded-2xl border border-gp-border bg-gp-dark shadow-2xl"><div className="flex items-center justify-between border-b border-gp-border p-4"><div><p className="text-[10px] font-black uppercase tracking-[0.18em] text-gp-red">Quick intake</p><h2 className="text-xl font-black uppercase text-white">Book workshop job</h2></div><button type="button" onClick={onClose} className="text-xl text-gp-text-muted hover:text-white">×</button></div><div className="grid gap-4 p-4 sm:grid-cols-2"><Field label="Job date *"><input required type="date" value={form.job_date} onChange={(e) => set('job_date', e.target.value)} /></Field><Field label="Agent *"><select required value={form.agent} onChange={(e) => set('agent', e.target.value)}><option value="">Select agent</option>{agents.map((agent) => <option key={agent} value={agent}>{agent}</option>)}</select></Field><Field label="Ticket #"><input value={form.ticket_number} onChange={(e) => set('ticket_number', e.target.value)} placeholder="Ticket or reference number" /></Field><Field label="Paid by"><input value={form.paid_by} onChange={(e) => set('paid_by', e.target.value)} placeholder="Cash, card, EFT or payer" /></Field><Field label="Customer name *"><input required value={form.customer_name} onChange={(e) => set('customer_name', e.target.value)} placeholder="Customer full name" /></Field><Field label="Mobile / phone"><input value={form.customer_phone} onChange={(e) => set('customer_phone', e.target.value)} placeholder="082 000 0000" inputMode="tel" /></Field><Field label="Vehicle *"><input required value={form.vehicle_details} onChange={(e) => set('vehicle_details', e.target.value)} placeholder="2022 VW Polo GTI" /></Field><Field label="Registration"><input value={form.registration} onChange={(e) => set('registration', e.target.value.toUpperCase())} placeholder="ABC 123 GP" /></Field><Field label="Attended staff"><select value={form.attended_staff} onChange={(e) => set('attended_staff', e.target.value)}><option value="">Not recorded</option>{agents.map((agent) => <option key={agent} value={agent}>{agent}</option>)}</select></Field><Field label="Technician"><select value={form.technician} onChange={(e) => set('technician', e.target.value)}><option value="">Assign later</option>{TECHNICIANS.map((technician) => <option key={technician} value={technician}>{technician}</option>)}</select></Field><Field label="Service *"><select value={form.service_type} onChange={(e) => set('service_type', e.target.value)}><option>Tyre fitment</option><option>Wheel alignment</option><option>Wheel balancing</option><option>Puncture repair</option><option>Wheel repair</option><option>Suspension fitment</option><option>Inspection / quotation</option></select></Field><Field label="Priority"><select value={form.priority} onChange={(e) => set('priority', e.target.value)}>{(['LOW', 'NORMAL', 'HIGH', 'URGENT'] as WorkshopPriority[]).map((priority) => <option key={priority}>{priority}</option>)}</select></Field><Field label="Scheduled for"><input type="datetime-local" value={form.scheduled_for} onChange={(e) => set('scheduled_for', e.target.value)} /></Field><Field label="Estimated minutes"><input type="number" min="5" max="1440" value={form.estimated_minutes || ''} onChange={(e) => set('estimated_minutes', Number(e.target.value))} /></Field><Field label="Logged by"><div className="rounded-lg border border-gp-border bg-gp-input px-3 py-2.5 text-sm font-bold text-gp-text-muted">{currentUser}</div></Field><div className="sm:col-span-2"><Field label="Service notes"><textarea value={form.notes} onChange={(e) => set('notes', e.target.value)} rows={3} placeholder="Tyre size, customer request, parts needed or fitment notes" /></Field></div></div><div className="flex gap-2 border-t border-gp-border p-4"><button type="button" onClick={onClose} className="flex-1 rounded-lg border border-gp-border px-4 py-3 text-xs font-black uppercase tracking-wider text-gp-text-muted">Cancel</button><button disabled={busy} className="flex-[1.5] rounded-lg bg-gp-red px-4 py-3 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">{busy ? 'Saving…' : 'Book job'}</button></div></form></div>;
+};
+
+const JobDetail: React.FC<{ job: WorkshopJob; agents: string[]; isAdmin: boolean; busy: boolean; now: number; onClose: () => void; onMove: (status: WorkshopJobStatus) => void; onSave: (event: React.FormEvent<HTMLFormElement>) => void; onDelete: () => void }> = ({ job, agents, isAdmin, busy, now, onClose, onMove, onSave, onDelete }) => {
   const next = LANES.find((lane) => lane.status === job.status)?.next;
-  return <div className="fixed inset-0 z-[60] flex items-end bg-black/80 backdrop-blur-sm sm:items-center sm:justify-center sm:p-6"><section className="max-h-[92dvh] w-full max-w-xl overflow-y-auto rounded-t-2xl border border-gp-border bg-gp-dark shadow-2xl sm:rounded-2xl"><header className="flex items-start justify-between border-b border-gp-border p-4"><div><p className="font-mono text-[10px] font-bold text-gp-red">{job.job_number}</p><h2 className="mt-1 text-xl font-black uppercase text-white">{job.customer_name}</h2><p className="text-sm text-gp-text-muted">{job.vehicle_details}{job.registration ? ` · ${job.registration}` : ''}</p></div><button onClick={onClose} className="text-xl text-gp-text-muted hover:text-white">×</button></header><div className="grid grid-cols-2 gap-px bg-gp-border"><Info label="Service" value={job.service_type} /><Info label="Scheduled" value={timeLabel(job.scheduled_for)} /><Info label="Phone" value={job.customer_phone || 'Not added'} /><Info label="Status" value={statusLabel(job.status)} /></div><form onSubmit={onSave} className="space-y-4 p-4"><div className="grid gap-3 sm:grid-cols-2"><Field label="Technician"><input name="technician" defaultValue={job.technician || ''} placeholder="Assign technician" /></Field><Field label="Priority"><select name="priority" defaultValue={job.priority}>{(['LOW', 'NORMAL', 'HIGH', 'URGENT'] as WorkshopPriority[]).map((priority) => <option key={priority}>{priority}</option>)}</select></Field><Field label="Scheduled for"><input name="scheduled_for" type="datetime-local" defaultValue={dateTimeForInput(job.scheduled_for)} /></Field><Field label="Estimated minutes"><input name="estimated_minutes" type="number" min="5" max="1440" defaultValue={job.estimated_minutes || 60} /></Field></div><Field label="Workshop notes"><textarea name="notes" defaultValue={job.notes || ''} rows={4} placeholder="Add fitting, inspection or customer notes" /></Field><button disabled={busy} className="w-full rounded-lg border border-gp-border bg-gp-panel px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">Save details</button></form><div className="space-y-2 border-t border-gp-border p-4">{next && <button disabled={busy} onClick={() => onMove(next)} className="w-full rounded-lg bg-gp-red px-4 py-3 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">Move to {statusLabel(next)} →</button>}{job.status === 'READY' && <button disabled={busy} onClick={() => onMove('COLLECTED')} className="w-full rounded-lg border border-emerald-500/50 bg-emerald-500/10 px-4 py-3 text-xs font-black uppercase tracking-wider text-emerald-300">Mark collected</button>}{isAdmin && <button disabled={busy} onClick={onDelete} className="w-full py-2 text-[10px] font-black uppercase tracking-wider text-gp-red/80 hover:text-gp-red">Delete job</button>}</div></section></div>;
+  return <div className="fixed inset-0 z-[60] flex items-end bg-black/80 backdrop-blur-sm sm:items-center sm:justify-center sm:p-6"><section className="max-h-[92dvh] w-full max-w-xl overflow-y-auto rounded-t-2xl border border-gp-border bg-gp-dark shadow-2xl sm:rounded-2xl"><header className="flex items-start justify-between border-b border-gp-border p-4"><div><p className="font-mono text-[10px] font-bold text-gp-red">{job.job_number}</p><h2 className="mt-1 text-xl font-black uppercase text-white">{job.customer_name}</h2><p className="text-sm text-gp-text-muted">{job.vehicle_details}{job.registration ? ` · ${job.registration}` : ''}</p></div><button onClick={onClose} className="text-xl text-gp-text-muted hover:text-white">×</button></header><div className="grid grid-cols-2 gap-px bg-gp-border"><Info label="Agent" value={job.agent || 'Not added'} /><Info label="Job date" value={jobDateLabel(job.job_date)} /><Info label="Ticket #" value={job.ticket_number || 'Not added'} /><Info label="Paid by" value={job.paid_by || 'Not added'} /><Info label="Attended staff" value={job.attended_staff || 'Not added'} /><Info label="Technician" value={job.technician || 'Not assigned'} /><Info label="Time in" value={job.started_at ? timeLabel(job.started_at) : 'Not checked in'} /><Info label="Elapsed" value={elapsedTimeLabel(job.started_at, job.completed_at, now)} /></div><form onSubmit={onSave} className="space-y-4 p-4"><div className="grid gap-3 sm:grid-cols-2"><Field label="Agent *"><select required name="agent" defaultValue={job.agent || ''}><option value="">Select agent</option>{agents.map((agent) => <option key={agent} value={agent}>{agent}</option>)}</select></Field><Field label="Attended staff"><select name="attended_staff" defaultValue={job.attended_staff || ''}><option value="">Not recorded</option>{agents.map((agent) => <option key={agent} value={agent}>{agent}</option>)}</select></Field><Field label="Job date *"><input required name="job_date" type="date" defaultValue={job.job_date} /></Field><Field label="Ticket #"><input name="ticket_number" defaultValue={job.ticket_number || ''} placeholder="Ticket or reference number" /></Field><Field label="Paid by"><input name="paid_by" defaultValue={job.paid_by || ''} placeholder="Cash, card, EFT or payer" /></Field><Field label="Technician"><select name="technician" defaultValue={job.technician || ''}><option value="">Unassigned</option>{TECHNICIANS.map((technician) => <option key={technician} value={technician}>{technician}</option>)}</select></Field><Field label="Priority"><select name="priority" defaultValue={job.priority}>{(['LOW', 'NORMAL', 'HIGH', 'URGENT'] as WorkshopPriority[]).map((priority) => <option key={priority}>{priority}</option>)}</select></Field><Field label="Scheduled for"><input name="scheduled_for" type="datetime-local" defaultValue={dateTimeForInput(job.scheduled_for)} /></Field><Field label="Estimated minutes"><input name="estimated_minutes" type="number" min="5" max="1440" defaultValue={job.estimated_minutes || 60} /></Field></div><Field label="Service notes"><textarea name="notes" defaultValue={job.notes || ''} rows={4} placeholder="Add fitting, inspection or customer notes" /></Field><button disabled={busy} className="w-full rounded-lg border border-gp-border bg-gp-panel px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">Save details</button></form><div className="space-y-2 border-t border-gp-border p-4">{next && <button disabled={busy} onClick={() => onMove(next)} className="w-full rounded-lg bg-gp-red px-4 py-3 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">Move to {statusLabel(next)} →</button>}{job.status === 'READY' && <button disabled={busy} onClick={() => onMove('COLLECTED')} className="w-full rounded-lg border border-emerald-500/50 bg-emerald-500/10 px-4 py-3 text-xs font-black uppercase tracking-wider text-emerald-300">Mark collected</button>}{isAdmin && <button disabled={busy} onClick={onDelete} className="w-full py-2 text-[10px] font-black uppercase tracking-wider text-gp-red/80 hover:text-gp-red">Delete job</button>}</div></section></div>;
 };
 
 const Field: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => <label className="block"><span className="mb-1.5 block text-[10px] font-black uppercase tracking-wider text-gp-text-muted">{label}</span><div className="[&_input]:w-full [&_input]:rounded-lg [&_input]:border [&_input]:border-gp-border [&_input]:bg-gp-input [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-sm [&_input]:text-white [&_input]:outline-none [&_input:focus]:border-gp-red [&_select]:w-full [&_select]:rounded-lg [&_select]:border [&_select]:border-gp-border [&_select]:bg-gp-input [&_select]:px-3 [&_select]:py-2.5 [&_select]:text-sm [&_select]:text-white [&_textarea]:w-full [&_textarea]:resize-none [&_textarea]:rounded-lg [&_textarea]:border [&_textarea]:border-gp-border [&_textarea]:bg-gp-input [&_textarea]:px-3 [&_textarea]:py-2.5 [&_textarea]:text-sm [&_textarea]:text-white [&_textarea]:outline-none [&_textarea:focus]:border-gp-red">{children}</div></label>;

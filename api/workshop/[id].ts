@@ -3,15 +3,23 @@ import { createSupabaseAdmin } from '../../server/supabaseAdmin.js';
 import { GP_ORGANIZATION_ID } from '../../server/staffSession.js';
 import { requireStaffSession } from '../../server/photoLibrary.js';
 import { readApiBody } from '../../server/readApiBody.js';
+import { WORKSHOP_TECHNICIANS, getWorkshopAgents } from '../../server/workshopRoster.js';
 
 const STATUSES = new Set(['BOOKED', 'CHECK_IN', 'IN_PROGRESS', 'QUALITY_CHECK', 'READY', 'COLLECTED', 'CANCELLED']);
 const PRIORITIES = new Set(['LOW', 'NORMAL', 'HIGH', 'URGENT']);
+const TECHNICIANS = new Set(WORKSHOP_TECHNICIANS);
+const STARTED_STATUSES = new Set(['CHECK_IN', 'IN_PROGRESS', 'QUALITY_CHECK', 'READY', 'COLLECTED']);
 const cleanText = (value: unknown, max = 240) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
 const cleanNote = (value: unknown) => typeof value === 'string' ? value.trim().slice(0, 2000) : '';
 const cleanDate = (value: unknown) => {
   if (value === null || value === '') return null;
   const parsed = typeof value === 'string' ? Date.parse(value) : NaN;
   return Number.isFinite(parsed) ? new Date(parsed).toISOString() : undefined;
+};
+const cleanDateOnly = (value: unknown) => {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const date = new Date(`${value}T12:00:00Z`);
+  return Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value ? null : value;
 };
 
 export default async function handler(request: any, response: any) {
@@ -40,12 +48,41 @@ export default async function handler(request: any, response: any) {
     if (existingError || !existing) return response.status(404).json({ error: 'Workshop job not found.' });
 
     const update: Record<string, unknown> = {};
-    const textFields: Array<[string, number]> = [['customer_name', 120], ['customer_phone', 48], ['vehicle_details', 180], ['registration', 24], ['service_type', 120], ['technician', 80]];
+    const textFields: Array<[string, number]> = [['customer_name', 120], ['customer_phone', 48], ['vehicle_details', 180], ['registration', 24], ['service_type', 120]];
     textFields.forEach(([field, max]) => {
       if (Object.prototype.hasOwnProperty.call(body, field)) update[field] = cleanText(body[field], max) || null;
     });
     if (typeof update.registration === 'string') update.registration = update.registration.toUpperCase();
+    const hasAgentUpdate = Object.prototype.hasOwnProperty.call(body, 'agent');
+    const hasAttendedStaffUpdate = Object.prototype.hasOwnProperty.call(body, 'attended_staff');
+    if (hasAgentUpdate || hasAttendedStaffUpdate) {
+      const agents = await getWorkshopAgents(supabase);
+      if (hasAgentUpdate) {
+        const agent = cleanText(body.agent, 80);
+        if (!agent || !agents.includes(agent)) return response.status(400).json({ error: 'Select an agent from the current staff roster.' });
+        update.agent = agent;
+      }
+      if (hasAttendedStaffUpdate) {
+        const attendedStaff = cleanText(body.attended_staff, 80);
+        if (attendedStaff && !agents.includes(attendedStaff)) return response.status(400).json({ error: 'Select attending staff from the current staff roster.' });
+        update.attended_staff = attendedStaff || null;
+      }
+    }
+    if (Object.prototype.hasOwnProperty.call(body, 'technician')) {
+      const technician = cleanText(body.technician, 80);
+      if (technician && !TECHNICIANS.has(technician)) return response.status(400).json({ error: 'Select a technician from the approved workshop team.' });
+      update.technician = technician || null;
+    }
     if (Object.prototype.hasOwnProperty.call(body, 'notes')) update.notes = cleanNote(body.notes) || null;
+    if (Object.prototype.hasOwnProperty.call(body, 'job_date')) {
+      const jobDate = cleanDateOnly(body.job_date);
+      if (!jobDate) return response.status(400).json({ error: 'Enter a valid job date.' });
+      update.job_date = jobDate;
+    }
+    const jobSheetTextFields: Array<[string, number]> = [['ticket_number', 64], ['paid_by', 80]];
+    jobSheetTextFields.forEach(([field, max]) => {
+      if (Object.prototype.hasOwnProperty.call(body, field)) update[field] = cleanText(body[field], max) || null;
+    });
     if (Object.prototype.hasOwnProperty.call(body, 'scheduled_for')) {
       const date = cleanDate(body.scheduled_for);
       if (date === undefined) return response.status(400).json({ error: 'Invalid scheduled time.' });
@@ -65,6 +102,7 @@ export default async function handler(request: any, response: any) {
     if (nextStatus) {
       if (!STATUSES.has(nextStatus)) return response.status(400).json({ error: 'Invalid job status.' });
       update.status = nextStatus;
+      if (!existing.started_at && STARTED_STATUSES.has(nextStatus)) update.started_at = new Date().toISOString();
       if (nextStatus === 'COLLECTED') update.completed_at = new Date().toISOString();
       if (nextStatus !== 'COLLECTED' && existing.status === 'COLLECTED') update.completed_at = null;
     }

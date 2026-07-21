@@ -2,14 +2,21 @@ import { createSupabaseAdmin } from '../../server/supabaseAdmin.js';
 import { GP_ORGANIZATION_ID } from '../../server/staffSession.js';
 import { requireStaffSession } from '../../server/photoLibrary.js';
 import { readApiBody } from '../../server/readApiBody.js';
+import { WORKSHOP_TECHNICIANS, getWorkshopAgents } from '../../server/workshopRoster.js';
 
 const STATUSES = new Set(['BOOKED', 'CHECK_IN', 'IN_PROGRESS', 'QUALITY_CHECK', 'READY', 'COLLECTED', 'CANCELLED']);
 const PRIORITIES = new Set(['LOW', 'NORMAL', 'HIGH', 'URGENT']);
+const TECHNICIANS = new Set(WORKSHOP_TECHNICIANS);
 const cleanText = (value: unknown, max = 240) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
 const cleanNote = (value: unknown) => typeof value === 'string' ? value.trim().slice(0, 2000) : '';
 const cleanDate = (value: unknown) => {
   const parsed = typeof value === 'string' ? Date.parse(value) : NaN;
   return Number.isFinite(parsed) ? new Date(parsed).toISOString() : null;
+};
+const cleanDateOnly = (value: unknown) => {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const date = new Date(`${value}T12:00:00Z`);
+  return Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value ? null : value;
 };
 
 const buildJobNumber = () => {
@@ -26,14 +33,17 @@ export default async function handler(request: any, response: any) {
   try {
     const supabase = createSupabaseAdmin();
     if (request.method === 'GET') {
-      const { data, error } = await supabase
-        .from('workshop_jobs')
-        .select('*')
-        .eq('organization_id', GP_ORGANIZATION_ID)
-        .neq('status', 'CANCELLED')
-        .order('scheduled_for', { ascending: true, nullsFirst: false })
-        .order('created_at', { ascending: false })
-        .limit(300);
+      const [{ data, error }, agents] = await Promise.all([
+        supabase
+          .from('workshop_jobs')
+          .select('*')
+          .eq('organization_id', GP_ORGANIZATION_ID)
+          .neq('status', 'CANCELLED')
+          .order('scheduled_for', { ascending: true, nullsFirst: false })
+          .order('created_at', { ascending: false })
+          .limit(300),
+        getWorkshopAgents(supabase)
+      ]);
       if (error) throw new Error(error.message);
       const jobs = data || [];
       const now = Date.now();
@@ -43,6 +53,7 @@ export default async function handler(request: any, response: any) {
       endOfToday.setDate(endOfToday.getDate() + 1);
       return response.status(200).json({
         jobs,
+        agents,
         summary: {
           active: jobs.filter((job: any) => !['COLLECTED', 'CANCELLED'].includes(job.status)).length,
           today: jobs.filter((job: any) => job.scheduled_for && new Date(job.scheduled_for) >= startOfToday && new Date(job.scheduled_for) < endOfToday).length,
@@ -62,6 +73,10 @@ export default async function handler(request: any, response: any) {
     const vehicleDetails = cleanText(body.vehicle_details, 180);
     const serviceType = cleanText(body.service_type, 120);
     const priority = cleanText(body.priority, 16) || 'NORMAL';
+    const technician = cleanText(body.technician, 80);
+    const agent = cleanText(body.agent, 80);
+    const attendedStaff = cleanText(body.attended_staff, 80);
+    const jobDate = body.job_date === undefined || body.job_date === '' ? new Date().toISOString().slice(0, 10) : cleanDateOnly(body.job_date);
     const estimatedMinutes = Number(body.estimated_minutes);
     if (!customerName || !vehicleDetails || !serviceType || !PRIORITIES.has(priority)) {
       return response.status(400).json({ error: 'Customer, vehicle, service and priority are required.' });
@@ -69,6 +84,13 @@ export default async function handler(request: any, response: any) {
     if (body.estimated_minutes !== undefined && (!Number.isInteger(estimatedMinutes) || estimatedMinutes < 5 || estimatedMinutes > 1440)) {
       return response.status(400).json({ error: 'Estimated time must be between 5 and 1440 minutes.' });
     }
+    if (technician && !TECHNICIANS.has(technician)) {
+      return response.status(400).json({ error: 'Select a technician from the approved workshop team.' });
+    }
+    if (!jobDate) return response.status(400).json({ error: 'Enter a valid job date.' });
+    const agents = await getWorkshopAgents(supabase);
+    if (!agent || !agents.includes(agent)) return response.status(400).json({ error: 'Select an agent from the current staff roster.' });
+    if (attendedStaff && !agents.includes(attendedStaff)) return response.status(400).json({ error: 'Select attending staff from the current staff roster.' });
 
     const payload = {
       organization_id: GP_ORGANIZATION_ID,
@@ -80,7 +102,12 @@ export default async function handler(request: any, response: any) {
       service_type: serviceType,
       status: 'BOOKED',
       priority,
-      technician: cleanText(body.technician, 80) || null,
+      technician: technician || null,
+      agent,
+      job_date: jobDate,
+      ticket_number: cleanText(body.ticket_number, 64) || null,
+      paid_by: cleanText(body.paid_by, 80) || null,
+      attended_staff: attendedStaff || null,
       scheduled_for: cleanDate(body.scheduled_for),
       estimated_minutes: Number.isInteger(estimatedMinutes) ? estimatedMinutes : null,
       notes: cleanNote(body.notes) || null,
