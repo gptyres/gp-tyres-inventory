@@ -108,12 +108,12 @@ export const updateWorkshopJob = (id: string, update: Partial<WorkshopJobInput> 
   })
 );
 
-export const startWorkshopBreak = (technician: string, break_type: WorkshopBreakType) => request<{ break: WorkshopTechnicianBreak }>('/api/workshop/breaks', {
-  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ technician, break_type })
+export const startWorkshopBreak = (technician: string, break_type: WorkshopBreakType) => request<{ break: WorkshopTechnicianBreak }>('/api/workshop', {
+  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'START_BREAK', technician, break_type })
 });
 
-export const endWorkshopBreak = (id: string) => request<{ break: WorkshopTechnicianBreak }>('/api/workshop/breaks', {
-  method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id })
+export const endWorkshopBreak = (id: string) => request<{ break: WorkshopTechnicianBreak }>('/api/workshop', {
+  method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'END_BREAK', id })
 });
 
 export const deleteWorkshopJob = (id: string) => request<{ ok: boolean }>(`/api/workshop/${encodeURIComponent(id)}`, {
