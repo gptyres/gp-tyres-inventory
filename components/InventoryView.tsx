@@ -1049,10 +1049,10 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 )}
                 {item.type === ProductType.WHEEL && (
                     <>
-                    <SpecBadge label="Size" value={(item as WheelProduct).size} />
-                    <SpecBadge label="PCD" value={formatWheelPcd((item as WheelProduct).pcd) || '-'} />
-                    <SpecBadge label="ET" value={formatWheelOffset((item as WheelProduct).offset) || '-'} />
-                    <SpecBadge label="CB" value={(item as WheelProduct).centerBore || '-'} />
+                    <SpecBadge label="Size" value={(item as WheelProduct).size || ''} />
+                    <SpecBadge label="PCD" value={formatWheelPcd((item as WheelProduct).pcd)} />
+                    <SpecBadge label="ET" value={formatWheelOffset((item as WheelProduct).offset)} />
+                    <SpecBadge label="CB" value={(item as WheelProduct).centerBore || ''} />
                     </>
                 )}
                 {item.type === ProductType.COILOVER && (

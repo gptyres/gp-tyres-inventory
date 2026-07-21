@@ -2,7 +2,7 @@ import { supabase } from './supabaseClient';
 import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
-import { parseSupplierWheelImageKeys } from './supplierStockImages';
+import { parseAlineWheelDescription, parseSupplierWheelImageKeys } from './supplierStockImages';
 import {
   normalizeStockByLocation,
   normalizeStockLocationName,
@@ -128,13 +128,16 @@ export const liveSupplierRowToInventoryItem = (
   };
 
   if (row.product_type === 'WHEEL') {
+    const alineWheel = row.catalog_key === 'ALINE'
+      ? parseAlineWheelDescription(row.product_name)
+      : null;
     const brandPrefix = row.brand?.trim();
     const fallbackName = row.product_name
       .replace(brandPrefix ? new RegExp(`^${brandPrefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+`, 'i') : /^$/, '')
       .split('|')[0]
       .trim();
-    const wheelName = row.tyre_pattern?.trim() || fallbackName || row.supplier_sku || row.source_key;
-    const finish = row.tyre_specs?.trim() || '';
+    const wheelName = row.tyre_pattern?.trim() || alineWheel?.designKey || fallbackName || row.supplier_sku || row.source_key;
+    const finish = row.tyre_specs?.trim() || alineWheel?.finishKey || '';
     const imageKeys = parseSupplierWheelImageKeys(row.brand, wheelName, finish, row.supplier_sku || '');
     const wheel: WheelProduct = {
       ...common,
@@ -142,10 +145,10 @@ export const liveSupplierRowToInventoryItem = (
       code: wheelName,
       brand: row.brand,
       finish,
-      size: row.size || '',
-      pcd: row.wheel_pcd?.trim() || '',
-      offset: row.wheel_offset?.trim().replace(/^--/, '-') || '',
-      centerBore: row.wheel_center_bore?.trim() || '',
+      size: row.size?.trim() || alineWheel?.size || '',
+      pcd: row.wheel_pcd?.trim() || alineWheel?.pcd || '',
+      offset: row.wheel_offset?.trim().replace(/^--/, '-') || alineWheel?.offset || '',
+      centerBore: row.wheel_center_bore?.trim() || alineWheel?.centerBore || '',
       colour: [row.brand, finish, row.category, row.supplier_sku].filter(Boolean).join(' | '),
       setQuantity: 1,
       location: buildLocation(row),

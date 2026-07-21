@@ -249,6 +249,43 @@ export const parseAlineStockImageKeys = (description: string) => {
   };
 };
 
+const normalizeAlinePcdDiameter = (value: string): string => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return '';
+  if (parsed === 114) return '114.3';
+  if (parsed === 139) return '139.7';
+  return String(parsed);
+};
+
+export const parseAlineWheelDescription = (description: string) => {
+  const source = String(description || '').replace(/Ã—/g, 'X').trim();
+  const specification = source.match(
+    /^\s*([3-6])\s*(\d{3})\s*(\d{2})\s*X\s*(\d{1,2}(?:\.\d+)?)\s*(?:\/\s*(\d{2,3}(?:\.\d)?))?/i
+  );
+  const imageKeys = parseAlineStockImageKeys(source);
+  const primaryPcd = specification
+    ? `${specification[1]}/${normalizeAlinePcdDiameter(specification[2])}`
+    : '';
+  const secondaryPcd = specification?.[5]
+    ? `${specification[1]}/${normalizeAlinePcdDiameter(specification[5])}`
+    : '';
+  const explicitOffset = source.match(/\bET\s*(-?\d{1,3})(?:[FR])?\b/i)?.[1] || '';
+  const remainingDescription = specification ? source.slice(specification[0].length) : source;
+  const inferredOffset = explicitOffset
+    ? ''
+    : remainingDescription.match(/\b(-?\d{2})(?!\.\d)(?:\s*[FR])?(?:\s*\(RS\))?\b/i)?.[1] || '';
+  const centerBore = remainingDescription.match(/\b(?:CB\s*)?(\d{2,3}\.\d)\b/i)?.[1] || '';
+
+  return {
+    size: specification ? `${specification[3]}x${specification[4]}` : '',
+    pcd: [primaryPcd, secondaryPcd].filter(Boolean).join(' & '),
+    offset: explicitOffset || inferredOffset,
+    centerBore,
+    designKey: specification ? imageKeys.designKey : '',
+    finishKey: specification ? imageKeys.finishKey : ''
+  };
+};
+
 export const slugifySupplierImageToken = (value: string | undefined | null): string => (
   normalizeSupplierImageToken(value)
     .toLowerCase()
