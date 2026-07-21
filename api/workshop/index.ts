@@ -8,6 +8,10 @@ const PRIORITIES = new Set(['LOW', 'NORMAL', 'HIGH', 'URGENT']);
 const TECHNICIANS = new Set(WORKSHOP_TECHNICIANS);
 const PAID_BY_OPTIONS = new Set(['Cash', 'Card', 'EFT', 'Account', 'Other']);
 const cleanText = (value: unknown, max = 240) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
+const cleanTechnicians = (value: unknown, legacyValue?: unknown) => {
+  const values = Array.isArray(value) ? value : value === undefined ? [legacyValue] : [];
+  return [...new Set(values.map((item) => cleanText(item, 80)).filter(Boolean))];
+};
 const cleanNote = (value: unknown) => typeof value === 'string' ? value.trim().slice(0, 2000) : '';
 const cleanDate = (value: unknown) => {
   const parsed = typeof value === 'string' ? Date.parse(value) : NaN;
@@ -72,7 +76,7 @@ export default async function handler(request: any, response: any) {
     const vehicleDetails = cleanText(body.vehicle_details, 180);
     const serviceType = cleanText(body.service_type, 120);
     const priority = cleanText(body.priority, 16) || 'NORMAL';
-    const technician = cleanText(body.technician, 80);
+    const technicians = cleanTechnicians(body.technicians, body.technician);
     const agent = cleanText(body.agent, 80);
     const paidBy = cleanText(body.paid_by, 40);
     const jobDate = body.job_date === undefined || body.job_date === '' ? new Date().toISOString().slice(0, 10) : cleanDateOnly(body.job_date);
@@ -83,7 +87,7 @@ export default async function handler(request: any, response: any) {
     if (body.estimated_minutes !== undefined && (!Number.isInteger(estimatedMinutes) || estimatedMinutes < 5 || estimatedMinutes > 1440)) {
       return response.status(400).json({ error: 'Estimated time must be between 5 and 1440 minutes.' });
     }
-    if (technician && !TECHNICIANS.has(technician)) {
+    if (technicians.some((technician) => !TECHNICIANS.has(technician))) {
       return response.status(400).json({ error: 'Select a technician from the approved workshop team.' });
     }
     if (paidBy && !PAID_BY_OPTIONS.has(paidBy)) return response.status(400).json({ error: 'Select a valid payment method.' });
@@ -101,7 +105,8 @@ export default async function handler(request: any, response: any) {
       service_type: serviceType,
       status: 'CHECK_IN',
       priority,
-      technician: technician || null,
+      technician: technicians[0] || null,
+      technicians,
       agent,
       job_date: jobDate,
       ticket_number: cleanText(body.ticket_number, 64) || null,
