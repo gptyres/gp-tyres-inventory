@@ -135,7 +135,7 @@ export function SupplierSyncButton({
   const activeJob = status?.activeJob;
   const blockingJob = status?.blockingJob;
   const latestJob = status?.latestJob;
-  const workerOnline = Boolean(status?.worker.online);
+  const workerOnline = Boolean(status?.worker?.online);
   const isActive = activeJob?.status === 'queued' || activeJob?.status === 'running';
   const workerUnavailable = workerRequired && Boolean(status) && !workerOnline;
   const disabled = loading || isActive || Boolean(blockingJob) || workerUnavailable;

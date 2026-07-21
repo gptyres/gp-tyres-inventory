@@ -2,7 +2,7 @@ import {
   SUPPLIER_IMPORT_BY_CATALOG,
   type SupplierImportCatalog
 } from './supplierCatalogMapping';
-import { parseAlineStockImageKeys } from './supplierStockImages';
+import { parseAlineWheelDescription } from './supplierStockImages';
 import { extractSupplierTyreSize, parseSupplierTyreFields } from './supplierTyreParsing';
 
 export interface ManualSupplierRow {
@@ -84,34 +84,6 @@ const parseStock = (value: unknown) => {
 };
 
 const WHEEL_SIZE = /\b(?:1[2-9]|2[0-6])\s*[Xx]\s*\d{1,2}(?:\.\d+)?\b/i;
-
-const parseAlineWheelDescription = (value: string) => {
-  const compact = value.replace(/\s+/g, '');
-  const specMatch = compact.match(/^([3-6])(\d{3})(\d{2})X(\d{1,2}(?:\.\d+)?)/i);
-  const offsetMatch = value.match(/\bET\s*(-?\d+)/i);
-  const centerBoreMatch = value.match(/\b(\d{2,3}\.\d)\b/);
-  const imageKeys = parseAlineStockImageKeys(value);
-
-  if (!specMatch) {
-    return {
-      size: '',
-      pcd: '',
-      offset: '',
-      centerBore: '',
-      wheelName: '',
-      finish: ''
-    };
-  }
-
-  return {
-    size: `${specMatch[3]}X${specMatch[4]}`,
-    pcd: `${specMatch[1]}/${Number(specMatch[2])}`,
-    offset: offsetMatch?.[1] || '',
-    centerBore: centerBoreMatch?.[1] || '',
-    wheelName: imageKeys.designKey,
-    finish: imageKeys.finishKey
-  };
-};
 
 const extractSize = (value: string) => {
   const normalizedValue = value.replace(/[“”″"]/g, '').replace(/\bHL(?=\d)/i, '');
@@ -262,8 +234,8 @@ export const normalizeManualSupplierGrid = (
     const wheelCenterBore = supplierMeta.productType === 'WHEEL'
       ? cleanCell(get(row, 'centerBore')) || alineWheel?.centerBore || ''
       : '';
-    const wheelPattern = explicitPattern || alineWheel?.wheelName || '';
-    const wheelSpecs = explicitSpecs || alineWheel?.finish || '';
+    const wheelPattern = explicitPattern || alineWheel?.designKey || '';
+    const wheelSpecs = explicitSpecs || alineWheel?.finishKey || '';
     const joinedIdentity = [explicitSize, explicitBrand, explicitPattern, explicitRating, explicitIndex, explicitSpecs, description].filter(Boolean).join(' ');
     const parsedTyre = supplierMeta.productType === 'TYRE'
       ? parseSupplierTyreFields({
@@ -279,7 +251,7 @@ export const normalizeManualSupplierGrid = (
       : null;
     const size = parsedTyre?.size
       || extractSize(explicitSize)
-      || alineWheel?.size
+      || (alineWheel?.size ? alineWheel.size.toUpperCase() : '')
       || extractSize(description)
       || extractSize(joinedIdentity)
       || (supplierMeta.productType === 'WHEEL' && explicitSize
