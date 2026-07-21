@@ -38,6 +38,7 @@ import {
   inventoryItemToSupplierImageLookup,
   parseAlineImageFileName,
   parseAlineStockImageKeys,
+  parseAlineWheelDescription,
   parseSupplierTyreImageKeys,
   parseSupplierWheelImageKeys,
   supplierTyreMatchesUploadKeys
@@ -89,6 +90,32 @@ describe('ALINE supplier image parsing', () => {
 
     expect(parseAlineStockImageKeys('613914X7 STBLK MOD Dual Red Pinstripe 920kg')).toMatchObject({
       designKey: 'STEEL MODULAR BLACK'
+    });
+  });
+
+  it('extracts wheel size, single or dual PCD, offset and centre bore', () => {
+    expect(parseAlineWheelDescription('510018X8.5SPY ET38 ARCTICSIL Flow Form')).toEqual({
+      size: '18x8.5',
+      pcd: '5/100',
+      offset: '38',
+      centerBore: '',
+      designKey: 'SPY',
+      finishKey: 'ARCTIC SILVER'
+    });
+
+    expect(parseAlineWheelDescription('511418X8.5/100LE MANS 35 ARCTIC SILVER 73.1 820kg')).toMatchObject({
+      size: '18x8.5',
+      pcd: '5/114.3 & 5/100',
+      offset: '35',
+      centerBore: '73.1',
+      designKey: 'LE MANS',
+      finishKey: 'ARCTIC SILVER'
+    });
+
+    expect(parseAlineWheelDescription('613918X9 STBK Soft8 B/XF CB106.2 1250kg load')).toMatchObject({
+      pcd: '6/139.7',
+      offset: '',
+      centerBore: '106.2'
     });
   });
 });
