@@ -1,4 +1,4 @@
-export type WorkshopJobStatus = 'BOOKED' | 'CHECK_IN' | 'IN_PROGRESS' | 'QUALITY_CHECK' | 'READY' | 'COLLECTED' | 'CANCELLED';
+export type WorkshopJobStatus = 'CHECK_IN' | 'IN_PROGRESS' | 'READY' | 'COLLECTED' | 'CANCELLED';
 export type WorkshopPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
 
 export const TECHNICIANS = [
@@ -14,6 +14,7 @@ export const TECHNICIANS = [
 ] as const;
 
 export const WORKSHOP_AGENTS = ['Noor', 'Mac', 'Rafiek', 'Yaseen', 'Laeeq', 'Zahied', 'Niyaaz'];
+export const PAID_BY_OPTIONS = ['Cash', 'Card', 'EFT', 'Account', 'Other'] as const;
 
 export interface WorkshopJob {
   id: string;
@@ -31,7 +32,6 @@ export interface WorkshopJob {
   job_date: string;
   ticket_number: string | null;
   paid_by: string | null;
-  attended_staff: string | null;
   scheduled_for: string | null;
   estimated_minutes: number | null;
   notes: string | null;
@@ -67,7 +67,6 @@ export interface WorkshopJobInput {
   job_date?: string;
   ticket_number?: string;
   paid_by?: string;
-  attended_staff?: string;
   scheduled_for?: string;
   estimated_minutes?: number;
   notes?: string;
