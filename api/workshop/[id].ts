@@ -100,6 +100,15 @@ export default async function handler(request: any, response: any) {
       if (!PRIORITIES.has(priority)) return response.status(400).json({ error: 'Invalid priority.' });
       update.priority = priority;
     }
+    if (Object.prototype.hasOwnProperty.call(body, 'tyre_quantity')) {
+      const tyreQuantity = Number(body.tyre_quantity);
+      if (!Number.isInteger(tyreQuantity) || tyreQuantity < 0 || tyreQuantity > 12) return response.status(400).json({ error: 'Tyre quantity must be between 0 and 12.' });
+      update.tyre_quantity = tyreQuantity;
+    }
+    if (Object.prototype.hasOwnProperty.call(body, 'wheel_fitment')) {
+      if (typeof body.wheel_fitment !== 'boolean') return response.status(400).json({ error: 'Wheel fitment must be true or false.' });
+      update.wheel_fitment = body.wheel_fitment;
+    }
     const nextStatus = Object.prototype.hasOwnProperty.call(body, 'status') ? cleanText(body.status, 24) : '';
     if (nextStatus) {
       if (!STATUSES.has(nextStatus)) return response.status(400).json({ error: 'Invalid job status.' });

@@ -25,6 +25,8 @@ export interface WorkshopJob {
   vehicle_details: string;
   registration: string | null;
   service_type: string;
+  tyre_quantity: number;
+  wheel_fitment: boolean;
   status: WorkshopJobStatus;
   priority: WorkshopPriority;
   technician: string | null;
@@ -50,7 +52,7 @@ export interface WorkshopSummary {
   overdue: number;
 }
 
-export type WorkshopBreakType = 'TEA_1' | 'TEA_2' | 'LUNCH' | 'TYRE_COLLECTION' | 'MISC_TASK';
+export type WorkshopBreakType = 'TEA_1' | 'TEA_2' | 'LUNCH' | 'TYRE_COLLECTION' | 'MISC_TASK' | 'ABSENT';
 
 export interface WorkshopTechnicianBreak {
   id: string;
@@ -73,6 +75,8 @@ export interface WorkshopJobInput {
   vehicle_details: string;
   registration?: string;
   service_type: string;
+  tyre_quantity?: number;
+  wheel_fitment?: boolean;
   priority?: WorkshopPriority;
   technician?: string;
   technicians?: string[];
