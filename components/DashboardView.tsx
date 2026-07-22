@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { AppView, InventoryStats, ProductType } from '../types';
 import { StatsDashboard } from './StatsDashboard';
 import { STAFF_NAMES } from '../config';
+import { fetchWorkshopBoard, WorkshopSummary } from '../workshopTracker';
 import {
   TERMINAL_STAFF_NAMES,
   TRAINING_PROGRESS_EVENT,
@@ -32,6 +33,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [trainingProgress, setTrainingProgress] = useState<TrainingProgressSummary[]>(() =>
     getAllStaffTrainingProgress(STAFF_NAMES, loadTrainingProgressStore())
   );
+  const [workshopSummary, setWorkshopSummary] = useState<WorkshopSummary>({
+    active: 0,
+    today: 0,
+    ready: 0,
+    overdue: 0
+  });
+  const [techniciansUnavailable, setTechniciansUnavailable] = useState(0);
+  const [workshopLoaded, setWorkshopLoaded] = useState(false);
 
   useEffect(() => {
     const updateGreeting = () => {
@@ -45,6 +54,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     // Update every minute to keep greeting accurate if app is left open
     const interval = setInterval(updateGreeting, 60000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const refreshWorkshopOverview = async () => {
+      try {
+        const board = await fetchWorkshopBoard(controller.signal);
+        setWorkshopSummary(board.summary);
+        setTechniciansUnavailable(board.breaks.filter((entry) => !entry.ended_at).length);
+      } catch (error) {
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Dashboard workshop overview failed', error);
+        }
+      } finally {
+        if (!controller.signal.aborted) setWorkshopLoaded(true);
+      }
+    };
+
+    void refreshWorkshopOverview();
+    const interval = window.setInterval(() => void refreshWorkshopOverview(), 60000);
+
+    return () => {
+      controller.abort();
+      window.clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -201,6 +236,42 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <div>
         <h2 className="text-sm font-bold text-gp-text-muted uppercase tracking-widest mb-4">System Overview</h2>
         <StatsDashboard stats={stats} visible={isAdmin} />
+      </div>
+
+      <div>
+        <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-widest text-gp-text-muted">Workshop Tracker</h2>
+            <p className="mt-1 text-sm text-gp-text-muted">Live workshop activity, refreshed every minute.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => onNavigate('WORKSHOP_TRACKER')}
+            className="self-start rounded bg-gp-red px-4 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-red-700 md:self-auto"
+          >
+            Open Workshop Tracker
+          </button>
+        </div>
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+          {[
+            { label: 'Jobs on floor', value: workshopSummary.active, tone: 'text-amber-300' },
+            { label: 'Jobs today', value: workshopSummary.today, tone: 'text-blue-300' },
+            { label: 'Ready for collection', value: workshopSummary.ready, tone: 'text-emerald-300' },
+            { label: 'Technicians unavailable', value: techniciansUnavailable, tone: 'text-gp-red' }
+          ].map((metric) => (
+            <div key={metric.label} className="rounded-xl border border-gp-border bg-gp-panel p-4 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[10px] font-black uppercase tracking-wider text-gp-text-muted">{metric.label}</p>
+                <svg className="h-5 w-5 shrink-0 text-gp-red" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 3h6m-3 0v3m-5 4h10l2 9H5l2-9zm2 0V6a3 3 0 016 0v4" />
+                </svg>
+              </div>
+              <p className={`mt-3 text-3xl font-black ${metric.tone}`}>
+                {workshopLoaded ? metric.value : '—'}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div>

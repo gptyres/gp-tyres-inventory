@@ -24,4 +24,4 @@ export const USER_CREDENTIALS: Record<string, string> = {
 export const APP_TITLE = "Inventory Tracker 2.0";
 
 // Keep this in step with package.json for every GitHub and Vercel release.
-export const APP_VERSION = 'V4.1.1';
+export const APP_VERSION = 'V4.5.1';
