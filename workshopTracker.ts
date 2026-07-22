@@ -77,6 +77,7 @@ export interface WorkshopJobInput {
   service_type: string;
   tyre_quantity?: number;
   wheel_fitment?: boolean;
+  start_in_progress?: boolean;
   priority?: WorkshopPriority;
   technician?: string;
   technicians?: string[];

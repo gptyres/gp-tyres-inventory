@@ -32,7 +32,7 @@ const LANES: Array<{ status: WorkshopJobStatus; label: string; accent: string; p
 const statusLabel = (status: WorkshopJobStatus) => status.replace('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 const emptyForm = (): WorkshopJobInput => ({
   customer_name: '', customer_phone: '', vehicle_details: '', registration: '', service_type: 'Tyre fitment',
-  technician: '', technicians: [], agent: '', job_date: new Date().toISOString().slice(0, 10), ticket_number: '', paid_by: '', tyre_quantity: 4, wheel_fitment: false, notes: ''
+  technician: '', technicians: [], agent: '', job_date: new Date().toISOString().slice(0, 10), ticket_number: '', paid_by: '', tyre_quantity: 4, wheel_fitment: false, start_in_progress: false, notes: ''
 });
 
 const dateTimeForInput = (value: string | null) => value ? new Date(value).toISOString().slice(0, 16) : '';
@@ -523,6 +523,7 @@ const FastIntakeForm: React.FC<{ currentUser: string; agents: string[]; form: Wo
         <Field label="Service *"><select value={form.service_type} disabled={walkInPuncture} onChange={(event) => set('service_type', event.target.value)}>{quickServices.map((service) => <option key={service}>{service}</option>)}<option>Suspension fitment</option></select></Field>
         <Field label="Tyres being fitted"><select value={String(form.tyre_quantity ?? 0)} onChange={(event) => set('tyre_quantity', Number(event.target.value))}>{[0, 1, 2, 3, 4, 5, 6, 8].map((quantity) => <option key={quantity} value={quantity}>{quantity} tyre{quantity === 1 ? '' : 's'}</option>)}</select></Field>
         <div className="sm:col-span-2 rounded-xl border border-gp-border bg-gp-panel p-3"><p className="text-[10px] font-black uppercase tracking-wider text-gp-text-muted">Quick fitment toggle</p><button type="button" onClick={() => set('wheel_fitment', !form.wheel_fitment)} className={`mt-2 w-full rounded-lg border px-3 py-2.5 text-left text-xs font-black ${form.wheel_fitment ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300' : 'border-gp-border bg-gp-input text-gp-text-muted'}`}>{form.wheel_fitment ? '✓ Wheels are being fitted' : 'Wheels are not being fitted'}</button></div>
+        <div className="sm:col-span-2 rounded-xl border border-gp-border bg-gp-panel p-3"><p className="text-[10px] font-black uppercase tracking-wider text-gp-text-muted">Workflow start</p><button type="button" onClick={() => set('start_in_progress', !form.start_in_progress)} className={`mt-2 w-full rounded-lg border px-3 py-2.5 text-left text-xs font-black ${form.start_in_progress ? 'border-amber-500/50 bg-amber-500/10 text-amber-300' : 'border-gp-border bg-gp-input text-gp-text-muted'}`}>{form.start_in_progress ? 'Start straight in progress' : 'Start in Check-in'}</button><p className="mt-1.5 text-[10px] text-gp-text-muted">Starting in progress begins the job timer immediately.</p></div>
         <Field label="Logged by"><div className="rounded-lg border border-gp-border bg-gp-input px-3 py-2.5 text-sm font-bold text-gp-text-muted">{currentUser}</div></Field>
         <div className="sm:col-span-2"><Field label="Service notes"><textarea value={form.notes} onChange={(event) => set('notes', event.target.value)} rows={3} placeholder="Tyre size, customer request, parts needed or fitment notes" /></Field></div>
       </div>

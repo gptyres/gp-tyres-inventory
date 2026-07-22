@@ -104,6 +104,11 @@ export default async function handler(request: any, response: any) {
     const estimatedMinutes = Number(body.estimated_minutes);
     const tyreQuantity = body.tyre_quantity === undefined ? 0 : Number(body.tyre_quantity);
     const wheelFitment = body.wheel_fitment === true;
+    if (body.start_in_progress !== undefined && typeof body.start_in_progress !== 'boolean') {
+      return response.status(400).json({ error: 'Start-in-progress must be true or false.' });
+    }
+    const startInProgress = body.start_in_progress === true;
+    const initialStatus = startInProgress ? 'IN_PROGRESS' : 'CHECK_IN';
     if (!customerName || !vehicleDetails || !serviceType || !PRIORITIES.has(priority)) {
       return response.status(400).json({ error: 'Customer, vehicle and service are required.' });
     }
@@ -131,7 +136,7 @@ export default async function handler(request: any, response: any) {
       service_type: serviceType,
       tyre_quantity: tyreQuantity,
       wheel_fitment: wheelFitment,
-      status: 'CHECK_IN',
+      status: initialStatus,
       priority,
       technician: technicians[0] || null,
       technicians,
@@ -142,6 +147,7 @@ export default async function handler(request: any, response: any) {
       scheduled_for: cleanDate(body.scheduled_for),
       estimated_minutes: Number.isInteger(estimatedMinutes) ? estimatedMinutes : null,
       notes: cleanNote(body.notes) || null,
+      started_at: startInProgress ? new Date().toISOString() : null,
       created_by: session.terminalId
     };
     const { data: job, error } = await supabase.from('workshop_jobs').insert(payload).select('*').single();
@@ -150,8 +156,8 @@ export default async function handler(request: any, response: any) {
       organization_id: GP_ORGANIZATION_ID,
       job_id: job.id,
       event_type: 'JOB_CREATED',
-      to_status: 'CHECK_IN',
-      note: `Created by ${session.terminalId}`,
+      to_status: initialStatus,
+      note: `Created by ${session.terminalId}${startInProgress ? ' and started in progress' : ''}`,
       created_by: session.terminalId
     });
     if (eventError) throw new Error(eventError.message);
