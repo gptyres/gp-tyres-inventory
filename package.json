@@ -1,7 +1,7 @@
 {
   "name": "gp-tyres-&-mags-inventory-tracker",
   "private": true,
-  "version": "4.4.3",
+  "version": "4.5.1",
   "type": "module",
   "scripts": {
     "dev": "node ./node_modules/vite/bin/vite.js",
