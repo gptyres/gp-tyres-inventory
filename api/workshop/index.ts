@@ -7,7 +7,7 @@ import { WORKSHOP_TECHNICIANS, getWorkshopAgents } from '../../server/workshopRo
 const PRIORITIES = new Set(['LOW', 'NORMAL', 'HIGH', 'URGENT']);
 const TECHNICIANS = new Set(WORKSHOP_TECHNICIANS);
 const PAID_BY_OPTIONS = new Set(['Cash', 'Card', 'EFT', 'Account', 'Other']);
-const BREAK_TYPES = new Set(['TEA_1', 'TEA_2', 'LUNCH', 'TYRE_COLLECTION', 'MISC_TASK']);
+const BREAK_TYPES = new Set(['TEA_1', 'TEA_2', 'LUNCH', 'TYRE_COLLECTION', 'MISC_TASK', 'ABSENT']);
 const cleanText = (value: unknown, max = 240) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
 const cleanTechnicians = (value: unknown, legacyValue?: unknown) => {
   const values = Array.isArray(value) ? value : value === undefined ? [legacyValue] : [];
@@ -53,19 +53,16 @@ export default async function handler(request: any, response: any) {
       if (breaksError) throw new Error(breaksError.message);
       const jobs = data || [];
       const now = Date.now();
-      const startOfToday = new Date();
-      startOfToday.setHours(0, 0, 0, 0);
-      const endOfToday = new Date(startOfToday);
-      endOfToday.setDate(endOfToday.getDate() + 1);
+      const todayKey = new Date(now + 2 * 60 * 60 * 1000).toISOString().slice(0, 10);
       return response.status(200).json({
         jobs,
         agents,
         breaks: breaks || [],
         summary: {
           active: jobs.filter((job: any) => !['COLLECTED', 'CANCELLED'].includes(job.status)).length,
-          today: jobs.filter((job: any) => job.scheduled_for && new Date(job.scheduled_for) >= startOfToday && new Date(job.scheduled_for) < endOfToday).length,
+          today: jobs.filter((job: any) => job.job_date === todayKey).length,
           ready: jobs.filter((job: any) => job.status === 'READY').length,
-          overdue: jobs.filter((job: any) => job.scheduled_for && new Date(job.scheduled_for).getTime() < now && !['READY', 'COLLECTED', 'CANCELLED'].includes(job.status)).length
+          overdue: 0
         }
       });
     }
@@ -75,7 +72,7 @@ export default async function handler(request: any, response: any) {
       const technician = cleanText(body.technician, 80);
       const breakType = cleanText(body.break_type, 16);
       if (!TECHNICIANS.has(technician)) return response.status(400).json({ error: 'Select a technician from the approved workshop team.' });
-      if (!BREAK_TYPES.has(breakType)) return response.status(400).json({ error: 'Select Tea 1, Tea 2, Lunch, Tyre collection or Misc task.' });
+      if (!BREAK_TYPES.has(breakType)) return response.status(400).json({ error: 'Select Tea 1, Tea 2, Lunch, Tyre collection, Misc task or Absent.' });
       const { data, error } = await supabase.from('workshop_technician_breaks').insert({
         organization_id: GP_ORGANIZATION_ID, technician, break_type: breakType, created_by: session.terminalId
       }).select('id, technician, break_type, started_at, ended_at').single();
@@ -105,11 +102,16 @@ export default async function handler(request: any, response: any) {
     const paidBy = cleanText(body.paid_by, 40);
     const jobDate = body.job_date === undefined || body.job_date === '' ? new Date().toISOString().slice(0, 10) : cleanDateOnly(body.job_date);
     const estimatedMinutes = Number(body.estimated_minutes);
+    const tyreQuantity = body.tyre_quantity === undefined ? 0 : Number(body.tyre_quantity);
+    const wheelFitment = body.wheel_fitment === true;
     if (!customerName || !vehicleDetails || !serviceType || !PRIORITIES.has(priority)) {
-      return response.status(400).json({ error: 'Customer, vehicle, service and priority are required.' });
+      return response.status(400).json({ error: 'Customer, vehicle and service are required.' });
     }
     if (body.estimated_minutes !== undefined && (!Number.isInteger(estimatedMinutes) || estimatedMinutes < 5 || estimatedMinutes > 1440)) {
       return response.status(400).json({ error: 'Estimated time must be between 5 and 1440 minutes.' });
+    }
+    if (!Number.isInteger(tyreQuantity) || tyreQuantity < 0 || tyreQuantity > 12) {
+      return response.status(400).json({ error: 'Tyre quantity must be between 0 and 12.' });
     }
     if (technicians.some((technician) => !TECHNICIANS.has(technician))) {
       return response.status(400).json({ error: 'Select a technician from the approved workshop team.' });
@@ -127,6 +129,8 @@ export default async function handler(request: any, response: any) {
       vehicle_details: vehicleDetails,
       registration: cleanText(body.registration, 24).toUpperCase() || null,
       service_type: serviceType,
+      tyre_quantity: tyreQuantity,
+      wheel_fitment: wheelFitment,
       status: 'CHECK_IN',
       priority,
       technician: technicians[0] || null,
