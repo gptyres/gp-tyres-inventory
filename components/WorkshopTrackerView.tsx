@@ -335,13 +335,13 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
 
         {error && <div className="mb-4 rounded-xl border border-gp-red/50 bg-gp-red/10 p-4 text-sm text-gp-red">{error}</div>}
         {loading ? <div className="flex min-h-72 items-center justify-center text-xs font-black uppercase tracking-wider text-gp-text-muted"><span className="mr-3 h-4 w-4 animate-spin rounded-full border-2 border-gp-red border-t-transparent" />Loading workshop board</div> : (
-          <section className="grid gap-4 xl:grid-cols-3">
+          <section className="space-y-4">
             {LANES.map((lane) => {
               const laneJobs = visibleJobs.filter((job) => job.status === lane.status);
               const isDropTarget = dragOverStatus === lane.status && Boolean(draggedJobId);
               return <div key={lane.status} data-workshop-lane={lane.status} onDragOver={(event) => { event.preventDefault(); if (draggedJobId) setDragOverStatus(lane.status); }} onDrop={(event) => dropInLane(event, lane.status)} className={`min-w-0 rounded-2xl border border-gp-border border-t-4 ${lane.accent} bg-gp-dark/70 p-3 transition ${isDropTarget ? 'scale-[1.01] bg-gp-red/10 ring-2 ring-gp-red/70' : ''}`}>
                 <div className="mb-3 flex items-center justify-between"><h2 className="text-xs font-black uppercase tracking-wider text-white">{lane.label}</h2><span className="rounded-full bg-gp-input px-2 py-0.5 text-[10px] font-black text-gp-text-muted">{laneJobs.length}</span></div>
-                <div className="space-y-3">
+                <div className="grid grid-flow-dense gap-3 md:grid-cols-2 xl:grid-cols-3">
                   {laneJobs.map((job) => <JobCard key={job.id} job={job} previous={lane.previous} next={lane.next} onOpen={() => setSelected(job)} onMove={(status) => void moveJob(job, status)} busy={busy} now={now} dragging={draggedJobId === job.id} onDesktopDragStart={startDesktopDrag} onDesktopDragEnd={clearTouchDrag} onTouchDragStart={startTouchDrag} onTouchDragMove={moveTouchDrag} onTouchDrop={completeTouchDrag} onTouchDragCancel={clearTouchDrag} />)}
                   {!laneJobs.length && <div className={`rounded-xl border border-dashed p-4 text-center text-[10px] font-bold uppercase tracking-wider ${isDropTarget ? 'border-gp-red text-gp-red' : 'border-gp-border text-gp-text-muted'}`}>{isDropTarget ? 'Drop job here' : 'Clear lane'}</div>}
                 </div>
