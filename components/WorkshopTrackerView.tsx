@@ -232,6 +232,11 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
     setBusy(true);
     try {
       const result = await updateWorkshopJob(selected.id, {
+        customer_name: String(formData.get('customer_name') || ''),
+        customer_phone: String(formData.get('customer_phone') || ''),
+        vehicle_details: String(formData.get('vehicle_details') || ''),
+        registration: String(formData.get('registration') || ''),
+        service_type: String(formData.get('service_type') || ''),
         technicians: formData.getAll('technicians').map(String),
         agent: String(formData.get('agent') || ''),
         job_date: String(formData.get('job_date') || ''),
@@ -242,7 +247,7 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
         wheel_fitment: formData.get('wheel_fitment') === 'YES'
       });
       updateLocalJob(result.job);
-      setToast('Workshop details saved.');
+      setToast('Job card updated.');
     } catch (saveError) {
       setToast(saveError instanceof Error ? saveError.message : 'Workshop details could not be saved.');
     } finally { setBusy(false); }
@@ -470,7 +475,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, previous, next, onOpen, onMove, 
   };
 
   return <article draggable={!busy} onDragStart={(event) => onDesktopDragStart(event, job)} onDragEnd={onDesktopDragEnd} onPointerDown={handleTouchPointerDown} onPointerMove={handleTouchPointerMove} onPointerUp={handleTouchPointerUp} onPointerCancel={onTouchDragCancel} style={{ touchAction: dragging ? 'none' : 'pan-y' }} className={`w-full select-none rounded-xl border border-gp-border bg-gp-panel p-3 shadow-sm transition hover:-translate-y-0.5 hover:border-gp-text-muted ${dragging ? 'scale-[0.98] cursor-grabbing opacity-45' : 'cursor-grab'}`}>
-    <button onClick={(event) => { if (suppressCardClick.current) { event.preventDefault(); return; } onOpen(); }} className="w-full text-left">
+    <button onClick={(event) => { if (suppressCardClick.current) { event.preventDefault(); return; } onOpen(); }} className="w-full text-left" aria-label={`Edit ${job.job_number}`}>
       <div className="flex items-start justify-between gap-2"><span className="font-mono text-[10px] font-bold text-gp-text-muted">{job.job_number}</span><span className="rounded bg-gp-input px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">{statusLabel(job.status)}</span></div>
       <div className="mt-1 flex items-center justify-between gap-2 text-[9px] font-black uppercase tracking-wider text-gp-text-muted"><span className="truncate">Agent · {job.agent || 'Unassigned'}</span><span className="shrink-0">Ticket · {job.ticket_number || '—'}</span></div>
       <h3 className="mt-2 truncate text-sm font-black text-white">{job.customer_name}</h3><p className="mt-0.5 truncate text-xs text-gp-text-muted">{job.vehicle_details}{job.registration ? ` · ${job.registration}` : ''}</p>
@@ -570,12 +575,17 @@ const WorkshopJobDetail: React.FC<{ job: WorkshopJob; agents: string[]; isAdmin:
           <Field label="Job date *"><input required name="job_date" type="date" defaultValue={job.job_date} /></Field>
           <Field label="Ticket #"><input name="ticket_number" defaultValue={job.ticket_number || ''} placeholder="Auto-generated when blank" /></Field>
           <Field label="Paid by"><select name="paid_by" defaultValue={job.paid_by || ''}><option value="">Not recorded</option>{PAID_BY_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}</select></Field>
+          <Field label="Customer name *"><input required name="customer_name" defaultValue={job.customer_name} placeholder="Customer full name" /></Field>
+          <Field label="Mobile / phone"><input name="customer_phone" defaultValue={job.customer_phone || ''} placeholder="082 000 0000" inputMode="tel" /></Field>
+          <Field label="Vehicle *"><input required name="vehicle_details" defaultValue={job.vehicle_details} placeholder="Vehicle details" /></Field>
+          <Field label="Registration"><input name="registration" defaultValue={job.registration || ''} placeholder="ABC 123 GP" className="uppercase" /></Field>
+          <Field label="Service *"><select required name="service_type" defaultValue={job.service_type}><option>Tyre fitment</option><option>Wheel alignment</option><option>Wheel balancing</option><option>Puncture repair</option><option>Wheel repair</option><option>Suspension fitment</option><option>Inspection / quotation</option></select></Field>
           <div className="sm:col-span-2"><Field label="Technicians"><TechnicianPicker selected={technicians} onChange={setTechnicians} />{technicians.map((technician) => <input key={technician} type="hidden" name="technicians" value={technician} />)}</Field></div>
           <Field label="Tyres being fitted"><select name="tyre_quantity" defaultValue={String(job.tyre_quantity || 0)}>{[0, 1, 2, 3, 4, 5, 6, 8].map((quantity) => <option key={quantity} value={quantity}>{quantity} tyre{quantity === 1 ? '' : 's'}</option>)}</select></Field>
           <Field label="Wheel fitment"><select name="wheel_fitment" defaultValue={job.wheel_fitment ? 'YES' : 'NO'}><option value="NO">No wheels</option><option value="YES">Wheels fitted</option></select></Field>
         </div>
         <Field label="Service notes"><textarea name="notes" defaultValue={job.notes || ''} rows={4} placeholder="Add fitting, inspection or customer notes" /></Field>
-        <button disabled={busy} className="w-full rounded-lg border border-gp-border bg-gp-panel px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">Save details</button>
+        <button disabled={busy} className="w-full rounded-lg border border-gp-border bg-gp-panel px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">{busy ? 'Saving…' : 'Save job changes'}</button>
       </form>
       <div className="grid gap-2 border-t border-gp-border p-4 sm:grid-cols-2">{previous && <button disabled={busy} onClick={() => onMove(previous)} className="rounded-lg border border-gp-border bg-gp-input px-4 py-3 text-xs font-black uppercase tracking-wider text-gp-text-muted hover:text-white disabled:opacity-60">← Move back to {statusLabel(previous)}</button>}{next && <button disabled={busy} onClick={() => onMove(next)} className="rounded-lg bg-gp-red px-4 py-3 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">Move to {statusLabel(next)} →</button>}{isAdmin && <button disabled={busy} onClick={onDelete} className="sm:col-span-2 py-2 text-[10px] font-black uppercase tracking-wider text-gp-red/80 hover:text-gp-red">Delete job</button>}</div>
     </section>
