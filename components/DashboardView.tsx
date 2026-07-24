@@ -62,8 +62,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     const refreshWorkshopOverview = async () => {
       try {
         const board = await fetchWorkshopBoard(controller.signal);
-        setWorkshopSummary(board.summary);
-        setTechniciansUnavailable(board.breaks.filter((entry) => !entry.ended_at).length);
+        setWorkshopSummary(board.summary || {
+          active: 0,
+          today: 0,
+          ready: 0,
+          overdue: 0
+        });
+        setTechniciansUnavailable((board.breaks || []).filter((entry) => !entry.ended_at).length);
       } catch (error) {
         if ((error as Error).name !== 'AbortError') {
           console.error('Dashboard workshop overview failed', error);
