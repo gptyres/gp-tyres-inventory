@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import gpLogo from '../assets/gp-tyres-logo-transparent.png';
 import {
   createWorkshopJob,
   deleteWorkshopJob,
@@ -17,6 +18,7 @@ import {
   WorkshopTechnicianBreak,
   WorkshopBreakType
 } from '../workshopTracker';
+import { generateWorkshopReport, getWorkshopReportRange, WorkshopReportAction, WorkshopReportPeriod } from '../workshopReport';
 
 interface WorkshopTrackerViewProps {
   currentUser: string;
@@ -76,6 +78,7 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
   const [query, setQuery] = useState('');
   const [showCollected, setShowCollected] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
   const [form, setForm] = useState<WorkshopJobInput>(emptyForm);
   const [selected, setSelected] = useState<WorkshopJob | null>(null);
   const [busy, setBusy] = useState(false);
@@ -254,13 +257,17 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
   };
 
   const removeJob = async () => {
-    if (!selected || !isAdmin || !window.confirm(`Delete ${selected.job_number}? This cannot be undone.`)) return;
+    if (!selected || !isAdmin) return;
+    const confirmed = window.confirm(
+      `Delete job card ${selected.job_number} for ${selected.customer_name}?\n\nThis permanently removes the job and its saved workshop history. This cannot be undone.`
+    );
+    if (!confirmed) return;
     setBusy(true);
     try {
       await deleteWorkshopJob(selected.id);
       setJobs((current) => current.filter((job) => job.id !== selected.id));
       setSelected(null);
-      setToast('Workshop job deleted.');
+      setToast('Job card permanently deleted.');
       void loadBoard();
     } catch (deleteError) {
       setToast(deleteError instanceof Error ? deleteError.message : 'Workshop job could not be deleted.');
@@ -298,6 +305,7 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => void loadBoard()} className="rounded-lg border border-gp-border bg-gp-panel px-3 py-2.5 text-[10px] font-black uppercase tracking-wider text-gp-text-muted transition hover:border-gp-text-muted hover:text-white">Refresh</button>
+            <button onClick={() => setReportOpen(true)} className="inline-flex items-center gap-2 rounded-lg border border-gp-border bg-gp-panel px-3 py-2.5 text-[10px] font-black uppercase tracking-wider text-white transition hover:border-gp-red hover:text-gp-red" aria-label="Create workshop report"><svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-2"><path d="M6 3h9l3 3v15H6z" /><path d="M15 3v4h4M9 12h6M9 16h6" /></svg>Reports</button>
             <button onClick={() => setFormOpen(true)} className="inline-flex items-center gap-2 rounded-lg bg-gp-red px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-gp-red/25 transition hover:bg-red-700" aria-label="Create new workshop job"><svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-2"><path d="M6 3h9l3 3v15H6z" /><path d="M15 3v4h4M9 12h6M9 16h4" /></svg>New job</button>
           </div>
         </header>
@@ -360,9 +368,44 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
        {!loading && <TechnicianHistoryPanel jobs={jobs} breaks={breaks} now={now} />}
        {toast && <div role="status" className="fixed bottom-5 left-1/2 z-[70] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-xl border border-gp-border bg-gp-panel px-4 py-3 text-center text-sm font-bold text-white shadow-2xl">{toast}</div>}
       {formOpen && <JobForm currentUser={currentUser} agents={agents} form={form} setForm={setForm} onClose={() => setFormOpen(false)} onSubmit={submitJob} busy={busy} />}
+      {reportOpen && <WorkshopReportModal jobs={jobs} breaks={breaks} onClose={() => setReportOpen(false)} />}
       {selected && <JobDetail job={selected} agents={agents} isAdmin={isAdmin} busy={busy} now={now} onClose={() => setSelected(null)} onMove={(status) => void moveJob(selected, status)} onSave={saveDetails} onDelete={() => void removeJob()} />}
     </div>
   );
+};
+
+const WorkshopReportModal: React.FC<{ jobs: WorkshopJob[]; breaks: WorkshopTechnicianBreak[]; onClose: () => void }> = ({ jobs, breaks, onClose }) => {
+  const [period, setPeriod] = useState<WorkshopReportPeriod>('DAILY');
+  const [reportDate, setReportDate] = useState(localDateKey());
+  const [generating, setGenerating] = useState<WorkshopReportAction | null>(null);
+  const [error, setError] = useState('');
+  const range = getWorkshopReportRange(period, reportDate);
+  const periodLabel = period === 'DAILY' ? 'Daily report' : 'Weekly report';
+
+  const createReport = async (action: WorkshopReportAction) => {
+    setGenerating(action);
+    setError('');
+    try {
+      await generateWorkshopReport({ action, period, reportDate, jobs, breaks, logoUrl: gpLogo });
+    } catch (reportError) {
+      setError(reportError instanceof Error ? reportError.message : 'The workshop report could not be created.');
+    } finally {
+      setGenerating(null);
+    }
+  };
+
+  return <div className="fixed inset-0 z-[80] flex items-end bg-black/80 p-3 backdrop-blur-sm sm:items-center sm:justify-center sm:p-6">
+    <section role="dialog" aria-modal="true" aria-labelledby="workshop-report-title" className="w-full max-w-lg rounded-2xl border border-gp-border bg-gp-dark shadow-2xl">
+      <header className="flex items-start justify-between border-b border-gp-border p-4"><div><p className="text-[10px] font-black uppercase tracking-[0.18em] text-gp-red">A4 PDF reports</p><h2 id="workshop-report-title" className="mt-1 text-xl font-black uppercase text-white">Workshop reports</h2><p className="mt-1 text-xs text-gp-text-muted">Includes GP Tyres branding, technician activity and full job-card details.</p></div><button type="button" onClick={onClose} className="text-xl text-gp-text-muted hover:text-white" aria-label="Close workshop reports">×</button></header>
+      <div className="space-y-4 p-4">
+        <div className="grid grid-cols-2 gap-2"><button type="button" onClick={() => setPeriod('DAILY')} className={`rounded-lg border px-3 py-3 text-left text-xs font-black uppercase tracking-wider ${period === 'DAILY' ? 'border-gp-red bg-gp-red/15 text-white' : 'border-gp-border bg-gp-panel text-gp-text-muted'}`}>Daily report</button><button type="button" onClick={() => setPeriod('WEEKLY')} className={`rounded-lg border px-3 py-3 text-left text-xs font-black uppercase tracking-wider ${period === 'WEEKLY' ? 'border-gp-red bg-gp-red/15 text-white' : 'border-gp-border bg-gp-panel text-gp-text-muted'}`}>Weekly report</button></div>
+        <label className="block"><span className="mb-1.5 block text-[10px] font-black uppercase tracking-wider text-gp-text-muted">{period === 'DAILY' ? 'Report date' : 'Any day in the reporting week'}</span><input type="date" value={reportDate} onChange={(event) => setReportDate(event.target.value)} className="w-full rounded-lg border border-gp-border bg-gp-input px-3 py-2.5 text-sm font-bold text-white outline-none focus:border-gp-red" /></label>
+        <div className="rounded-xl border border-gp-border bg-gp-panel p-3"><p className="text-[10px] font-black uppercase tracking-wider text-gp-text-muted">Report period</p><p className="mt-1 text-sm font-black text-white">{periodLabel} · {range.label}</p><p className="mt-2 text-xs leading-relaxed text-gp-text-muted">The landscape A4 report records jobs, time in and elapsed time, assigned technicians, service and payment details, plus each technician's job totals and breaks or tasks.</p></div>
+        {error && <p role="alert" className="rounded-lg border border-gp-red/50 bg-gp-red/10 px-3 py-2 text-xs font-bold text-gp-red">{error}</p>}
+      </div>
+      <footer className="grid gap-2 border-t border-gp-border p-4 sm:grid-cols-2"><button type="button" disabled={generating !== null} onClick={() => void createReport('DOWNLOAD')} className="rounded-lg bg-gp-red px-4 py-3 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">{generating === 'DOWNLOAD' ? 'Creating PDF…' : 'Download A4 PDF'}</button><button type="button" disabled={generating !== null} onClick={() => void createReport('PRINT')} className="rounded-lg border border-gp-border bg-gp-panel px-4 py-3 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">{generating === 'PRINT' ? 'Opening PDF…' : 'Print PDF'}</button></footer>
+    </section>
+  </div>;
 };
 
 const WorkshopOperationsPanel: React.FC<{
@@ -591,7 +634,7 @@ const WorkshopJobDetail: React.FC<{ job: WorkshopJob; agents: string[]; isAdmin:
         <Field label="Service notes"><textarea name="notes" defaultValue={job.notes || ''} rows={4} placeholder="Add fitting, inspection or customer notes" /></Field>
         <button disabled={busy} className="w-full rounded-lg border border-gp-border bg-gp-panel px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">{busy ? 'Saving…' : 'Save job changes'}</button>
       </form>
-      <div className="grid gap-2 border-t border-gp-border p-4 sm:grid-cols-2">{previous && <button disabled={busy} onClick={() => onMove(previous)} className="rounded-lg border border-gp-border bg-gp-input px-4 py-3 text-xs font-black uppercase tracking-wider text-gp-text-muted hover:text-white disabled:opacity-60">← Move back to {statusLabel(previous)}</button>}{next && <button disabled={busy} onClick={() => onMove(next)} className="rounded-lg bg-gp-red px-4 py-3 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">Move to {statusLabel(next)} →</button>}{isAdmin && <button disabled={busy} onClick={onDelete} className="sm:col-span-2 py-2 text-[10px] font-black uppercase tracking-wider text-gp-red/80 hover:text-gp-red">Delete job</button>}</div>
+      <div className="grid gap-2 border-t border-gp-border p-4 sm:grid-cols-2">{previous && <button disabled={busy} onClick={() => onMove(previous)} className="rounded-lg border border-gp-border bg-gp-input px-4 py-3 text-xs font-black uppercase tracking-wider text-gp-text-muted hover:text-white disabled:opacity-60">← Move back to {statusLabel(previous)}</button>}{next && <button disabled={busy} onClick={() => onMove(next)} className="rounded-lg bg-gp-red px-4 py-3 text-xs font-black uppercase tracking-wider text-white disabled:opacity-60">Move to {statusLabel(next)} →</button>}{isAdmin && <button disabled={busy} onClick={onDelete} className="sm:col-span-2 rounded-lg border border-gp-red/50 bg-gp-red/10 px-4 py-3 text-xs font-black uppercase tracking-wider text-gp-red transition hover:bg-gp-red hover:text-white disabled:opacity-60">Delete job card</button>}</div>
     </section>
   </div>;
 };
