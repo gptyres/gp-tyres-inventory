@@ -14,6 +14,7 @@ import { SellModal } from './components/SellModal';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { SupplierSyncButton } from './components/SupplierSyncButton';
 import { ManualSupplierImport } from './components/ManualSupplierImport';
+import { SupplierSearchFilters } from './components/SupplierSearchFilters';
 import { BackorderModal } from './components/BackorderModal';
 import { DataSyncModal } from './components/DataSyncModal';
 import { ReserveModal } from './components/ReserveModal';
@@ -50,7 +51,10 @@ import { customerRowToCustomerInfo, saveCRMDocumentFromPOS } from './crmSync';
 import {
   invalidateSupplierCatalogCache,
   loadAllSupplierPOSItems,
-  loadSupplierCatalogItems
+  loadSelectedSupplierCatalogItems,
+  loadSupplierCatalogItems,
+  SUPPLIER_CATALOG_OPTIONS,
+  type ConcreteSupplierCatalog
 } from './supplierCatalogLoader';
 import { authenticateAdminSession, clearAdminSession } from './supplierSync';
 import { isRegistryBackedSupplierCatalog, isLiveSupplierCatalog } from './supplierCatalogMapping';
@@ -61,6 +65,10 @@ import {
   searchOrders,
   searchBackorders
 } from './utils';
+import {
+  getSupplierSizeSearchSummary,
+  searchSupplierInventory
+} from './supplierInventorySearch';
 
 const POS_REFERENCE_COUNTERS: Record<InvoiceDocument['documentType'], { storageKey: string; startAt: number }> = {
   INVOICE: {
@@ -112,6 +120,19 @@ const App: React.FC = () => {
   // Portal State
   const [currentPortal, setCurrentPortal] = useState<{name: string, url: string} | null>(null);
   const [activeSupplierCatalog, setActiveSupplierCatalog] = useState<SupplierCatalog>('SAILUN');
+  const [selectedSupplierCatalogs, setSelectedSupplierCatalogs] = useState<ConcreteSupplierCatalog[]>(() => {
+    const allCatalogs = SUPPLIER_CATALOG_OPTIONS.map((option) => option.catalog);
+    try {
+      const storedValue = localStorage.getItem('gp-supplier-search-selection');
+      if (!storedValue) return allCatalogs;
+      const stored = JSON.parse(storedValue);
+      if (!Array.isArray(stored)) return allCatalogs;
+      const selected = allCatalogs.filter((catalog) => stored.includes(catalog));
+      return selected;
+    } catch {
+      return allCatalogs;
+    }
+  });
   
   // Theme State
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
@@ -198,6 +219,12 @@ const App: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [searchQuery]);
 
+  useEffect(() => {
+    localStorage.setItem('gp-supplier-search-selection', JSON.stringify(selectedSupplierCatalogs));
+  }, [selectedSupplierCatalogs]);
+
+  const selectedSupplierCatalogKey = selectedSupplierCatalogs.join('|');
+
   const handleSupplierCatalogChange = useCallback((catalog: SupplierCatalog) => {
     // A catalogue-specific search should never hide the next supplier's stock.
     setSearchQuery('');
@@ -207,7 +234,10 @@ const App: React.FC = () => {
 
   const shouldLoadSupplierCatalog = (
     currentView === 'SUPPLIER_INVENTORY'
-    && (activeSupplierCatalog !== 'ALL_SUPPLIERS' || debouncedSearchQuery.trim().length >= 2)
+    && (
+      activeSupplierCatalog !== 'ALL_SUPPLIERS'
+      || (selectedSupplierCatalogs.length > 0 && debouncedSearchQuery.trim().length >= 2)
+    )
   );
 
   // --- SUPPLIER DATA: lazy loaded and cached by supplierCatalogLoader ---
@@ -228,7 +258,9 @@ const App: React.FC = () => {
       setSupplierCatalogError('');
 
       try {
-        const loadedItems = await loadSupplierCatalogItems(activeSupplierCatalog);
+        const loadedItems = activeSupplierCatalog === 'ALL_SUPPLIERS'
+          ? await loadSelectedSupplierCatalogItems(selectedSupplierCatalogs)
+          : await loadSupplierCatalogItems(activeSupplierCatalog);
         if (!cancelled) setSupplierItems(loadedItems);
       } catch (error) {
         console.error('Supplier catalogue load failed', error);
@@ -245,7 +277,7 @@ const App: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [currentView, activeSupplierCatalog, shouldLoadSupplierCatalog, supplierCatalogRefreshVersion]);
+  }, [currentView, activeSupplierCatalog, shouldLoadSupplierCatalog, supplierCatalogRefreshVersion, selectedSupplierCatalogKey]);
 
   useEffect(() => {
     let cancelled = false;
@@ -273,7 +305,7 @@ const App: React.FC = () => {
   const supplierCatalogMeta: Record<SupplierCatalog, { label: string; note: string; portalUrl?: string }> = {
     ALL_SUPPLIERS: {
       label: 'All Supplier Stock',
-      note: 'Search every supplier catalogue at once. Enter at least 2 characters to show results; supplier names appear in the location field.'
+      note: 'Choose the suppliers to include, then search. A size search shows every available brand for that size, with any requested brand listed first.'
     },
     SAILUN: {
       label: 'Sailun (Inc. VAT)',
@@ -690,9 +722,17 @@ const App: React.FC = () => {
     if (activeFilter !== 'ALL' && currentView !== 'SUPPLIER_INVENTORY') {
       result = result.filter(item => item.type === activeFilter);
     }
-    result = searchInventory(result, debouncedSearchQuery);
+    result = currentView === 'SUPPLIER_INVENTORY'
+      ? searchSupplierInventory(result, debouncedSearchQuery)
+      : searchInventory(result, debouncedSearchQuery);
     return result;
   }, [items, supplierItems, activeFilter, debouncedSearchQuery, currentView, activeSupplierCatalog]);
+
+  const supplierSizeSearchSummary = useMemo(() => (
+    currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS'
+      ? getSupplierSizeSearchSummary(filteredItems, debouncedSearchQuery)
+      : null
+  ), [currentView, activeSupplierCatalog, filteredItems, debouncedSearchQuery]);
 
   const filteredOrders = useMemo(() => {
     return searchOrders(orders, debouncedSearchQuery);
@@ -1619,7 +1659,9 @@ const App: React.FC = () => {
   } else if (currentView === 'WHEEL_CATALOG') {
       searchPlaceholder = "Search Wheel Catalog (Name, Size, PCD...)";
   } else if (currentView === 'SUPPLIER_INVENTORY') {
-      searchPlaceholder = `Search ${supplierCatalogLabel} Catalog...`;
+      searchPlaceholder = activeSupplierCatalog === 'ALL_SUPPLIERS'
+        ? 'Search size and optional brand (e.g. 205/55R16 Dunlop)...'
+        : `Search ${supplierCatalogLabel} Catalog...`;
   } else if (currentView === 'QUOTE_MODULE') {
       searchPlaceholder = "Quote Module uses the paste box below...";
   } else if (currentView === 'TRAINING_PORTAL') {
@@ -1724,7 +1766,13 @@ const App: React.FC = () => {
                         <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <p className="text-xs text-blue-400"><strong>READ ONLY MODE:</strong> {supplierCatalogNote}</p>
                       </div>
-                      {(supplierPortalUrl || supplierHasLiveSync) && (
+                      {activeSupplierCatalog === 'ALL_SUPPLIERS' ? (
+                        <SupplierSearchFilters
+                          options={SUPPLIER_CATALOG_OPTIONS}
+                          selected={selectedSupplierCatalogs}
+                          onChange={setSelectedSupplierCatalogs}
+                        />
+                      ) : (supplierPortalUrl || supplierHasLiveSync) ? (
                         <div className="grid w-full items-start gap-2 sm:grid-cols-3" aria-label={`${supplierCatalogLabel} supplier actions`}>
                           {supplierPortalUrl && (
                             <a
@@ -1758,8 +1806,17 @@ const App: React.FC = () => {
                             />
                           )}
                         </div>
-                      )}
+                      ) : null}
                     </div>
+                )}
+                {currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS' && !isSupplierCatalogLoading && supplierSizeSearchSummary && (
+                  <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border border-blue-800/50 bg-gp-panel px-4 py-3 text-xs" aria-live="polite">
+                    <span className="font-black uppercase tracking-wider text-blue-300">{supplierSizeSearchSummary.size}</span>
+                    <span className="text-gp-text-muted"><strong className="text-gp-text-main">{supplierSizeSearchSummary.brands}</strong> brands</span>
+                    <span className="text-gp-text-muted"><strong className="text-gp-text-main">{supplierSizeSearchSummary.suppliers}</strong> suppliers</span>
+                    <span className="text-gp-text-muted"><strong className="text-gp-text-main">{supplierSizeSearchSummary.options}</strong> stock options</span>
+                    <span className="basis-full text-[11px] text-gp-text-muted sm:ml-auto sm:basis-auto">Requested brand matches appear first; alternatives stay visible.</span>
+                  </div>
                 )}
                 {currentView === 'WHEEL_CATALOG' ? (
                   <Suspense fallback={<LoadingPanel label="Loading wheel catalogue..." />}>

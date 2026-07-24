@@ -21,7 +21,7 @@ import {
   parseTyreWarehouseData
 } from './utils';
 
-type ConcreteSupplierCatalog = Exclude<SupplierCatalog, 'ALL_SUPPLIERS'>;
+export type ConcreteSupplierCatalog = Exclude<SupplierCatalog, 'ALL_SUPPLIERS'>;
 
 const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'SAILUN',
@@ -62,6 +62,11 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   TYRE_LIFE: 'TYRE LIFE',
   TYRE_LIFE_WHEELS: 'TYRE LIFE WHEELS'
 };
+
+export const SUPPLIER_CATALOG_OPTIONS = supplierCatalogOrder.map((catalog) => ({
+  catalog,
+  label: supplierDisplayNames[catalog]
+}));
 
 const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   SAILUN: 'sailun',
@@ -244,6 +249,21 @@ export const loadSupplierCatalogItems = async (catalog: SupplierCatalog): Promis
   }
 
   return cloneInventoryItems(await supplierItemCache.get(catalog)!);
+};
+
+export const loadSelectedSupplierCatalogItems = async (
+  catalogs: ConcreteSupplierCatalog[]
+): Promise<InventoryItem[]> => {
+  const selected = new Set(catalogs);
+  const orderedCatalogs = supplierCatalogOrder.filter((catalog) => selected.has(catalog));
+  const loadedCatalogs = await Promise.all(orderedCatalogs.map(async (catalog) => ({
+    catalog,
+    items: await loadSupplierCatalogItems(catalog)
+  })));
+
+  return loadedCatalogs.flatMap(({ catalog, items }) => (
+    tagSupplierItems(supplierDisplayNames[catalog], items)
+  ));
 };
 
 export const loadAllSupplierPOSItems = async (): Promise<InventoryItem[]> => {
