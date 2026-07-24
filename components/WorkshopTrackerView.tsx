@@ -354,7 +354,7 @@ export const WorkshopTrackerView: React.FC<WorkshopTrackerViewProps> = ({ curren
             })}
           </section>
         )}
-        {showCollected && !loading && <section className="mt-4 rounded-2xl border border-gp-border bg-gp-dark/70 p-3"><div className="mb-3 flex items-center justify-between"><div><h2 className="text-xs font-black uppercase tracking-wider text-white">Job history</h2><p className="mt-0.5 text-[10px] text-gp-text-muted">Collected and cancelled jobs are retained in Supabase for recall.</p></div><span className="rounded-full bg-gp-input px-2 py-0.5 text-[10px] font-black text-gp-text-muted">{visibleJobs.filter((job) => ['COLLECTED', 'CANCELLED'].includes(job.status)).length}</span></div><div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{visibleJobs.filter((job) => ['COLLECTED', 'CANCELLED'].includes(job.status)).map((job) => <JobCard key={job.id} job={job} previous={workflowPrevious(job.status)} onOpen={() => setSelected(job)} onMove={(status) => void moveJob(job, status)} busy={busy} now={now} dragging={draggedJobId === job.id} onDesktopDragStart={startDesktopDrag} onDesktopDragEnd={clearTouchDrag} onTouchDragStart={startTouchDrag} onTouchDragMove={moveTouchDrag} onTouchDrop={completeTouchDrag} onTouchDragCancel={clearTouchDrag} />)}{!visibleJobs.some((job) => ['COLLECTED', 'CANCELLED'].includes(job.status)) && <p className="rounded-xl border border-dashed border-gp-border p-4 text-center text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">No matching historic jobs</p>}</div></section>}
+{showCollected && !loading && <section className="mt-4 rounded-2xl border border-gp-border bg-gp-dark/70 p-3"><div className="mb-3 flex items-center justify-between"><div><h2 className="text-xs font-black uppercase tracking-wider text-white">Job history</h2><p className="mt-0.5 text-[10px] text-gp-text-muted">Collected and cancelled jobs are retained in Supabase for recall and can still be edited.</p></div><span className="rounded-full bg-gp-input px-2 py-0.5 text-[10px] font-black text-gp-text-muted">{visibleJobs.filter((job) => ['COLLECTED', 'CANCELLED'].includes(job.status)).length}</span></div><div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{visibleJobs.filter((job) => ['COLLECTED', 'CANCELLED'].includes(job.status)).map((job) => <JobCard key={job.id} job={job} previous={workflowPrevious(job.status)} onOpen={() => setSelected(job)} onMove={(status) => void moveJob(job, status)} busy={busy} now={now} dragging={draggedJobId === job.id} isHistory onDesktopDragStart={startDesktopDrag} onDesktopDragEnd={clearTouchDrag} onTouchDragStart={startTouchDrag} onTouchDragMove={moveTouchDrag} onTouchDrop={completeTouchDrag} onTouchDragCancel={clearTouchDrag} />)}{!visibleJobs.some((job) => ['COLLECTED', 'CANCELLED'].includes(job.status)) && <p className="rounded-xl border border-dashed border-gp-border p-4 text-center text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">No matching historic jobs</p>}</div></section>}
       </div>
 
        {!loading && <TechnicianHistoryPanel jobs={jobs} breaks={breaks} now={now} />}
@@ -443,6 +443,7 @@ interface JobCardProps {
   busy: boolean;
   now: number;
   dragging: boolean;
+  isHistory?: boolean;
   onDesktopDragStart: (event: React.DragEvent<HTMLElement>, job: WorkshopJob) => void;
   onDesktopDragEnd: () => void;
   onTouchDragStart: (job: WorkshopJob) => void;
@@ -451,7 +452,7 @@ interface JobCardProps {
   onTouchDragCancel: () => void;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ job, previous, next, onOpen, onMove, busy, now, dragging, onDesktopDragStart, onDesktopDragEnd, onTouchDragStart, onTouchDragMove, onTouchDrop, onTouchDragCancel }) => {
+const JobCard: React.FC<JobCardProps> = ({ job, previous, next, onOpen, onMove, busy, now, dragging, isHistory = false, onDesktopDragStart, onDesktopDragEnd, onTouchDragStart, onTouchDragMove, onTouchDrop, onTouchDragCancel }) => {
   const technicians = technicianList(job);
   const suppressCardClick = useRef(false);
   const handleTouchPointerDown = (event: React.PointerEvent<HTMLElement>) => {
@@ -483,6 +484,9 @@ const JobCard: React.FC<JobCardProps> = ({ job, previous, next, onOpen, onMove, 
       <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-1 text-[9px] font-bold uppercase tracking-wide text-gp-text-muted"><span className="truncate">Date · {jobDateLabel(job.job_date)}</span><span className="truncate text-right">Paid by · {job.paid_by || '—'}</span><span className="col-span-2 truncate text-right">Status · {statusLabel(job.status)}</span></div>
       {job.notes && <p className="mt-2 line-clamp-2 border-t border-gp-border pt-2 text-[10px] leading-relaxed text-gp-text-muted">{job.notes}</p>}
       <div className="mt-2 flex items-center justify-between gap-2 text-[10px] font-bold"><span className={`truncate ${technicians.length ? 'text-amber-300' : 'text-gp-text-muted'}`}>{technicians.length ? `Technicians · ${technicians.join(', ')}` : 'Technicians unassigned'}</span><span className={`shrink-0 font-mono ${isTimerRunning(job) ? 'text-amber-300' : 'text-gp-text-muted'}`}>{job.started_at ? elapsedTimeLabel(job.started_at, job.completed_at, now) : 'Time in —'}</span></div>
+    </button>
+    <button type="button" disabled={busy} onClick={onOpen} className="mt-3 w-full rounded-lg border border-gp-red/50 bg-gp-red/10 px-2 py-2 text-[10px] font-black uppercase tracking-wider text-gp-red transition hover:bg-gp-red hover:text-white disabled:opacity-50">
+      {isHistory ? 'Edit completed job' : 'Edit job'}
     </button>
     <div className="mt-2 flex items-center justify-between text-[9px] font-black uppercase tracking-wider text-gp-text-muted"><span>⋮⋮ Drag job</span>{job.started_at && <span>{isTimerRunning(job) ? 'Timer running' : 'Time recorded'}</span>}</div>
     {previous && <button disabled={busy} onClick={() => onMove(previous)} className="mt-3 w-full rounded-lg border border-gp-border bg-gp-input px-2 py-2 text-[10px] font-black uppercase tracking-wider text-gp-text-muted transition hover:border-gp-text-muted hover:text-white disabled:opacity-50">Move back to {statusLabel(previous)}</button>}
