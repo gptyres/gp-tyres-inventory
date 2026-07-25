@@ -22,7 +22,8 @@ export const REGISTRY_SUPPLIER_BY_CATALOG: Record<RegistryBackedSupplierCatalog,
   SUMITOMO_DUNLOP: 'Sumitomo/Dunlop',
   TREADS_UNLIMITED: 'Threads Unlimited',
   TYRE_LIFE: 'Tyre Life',
-  TYRE_LIFE_WHEELS: 'Tyre Life'
+  TYRE_LIFE_WHEELS: 'Tyre Life',
+  NDT: 'NDT'
 };
 
 export const isRegistryBackedSupplierCatalog = (
@@ -61,7 +62,8 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
   SUMITOMO_DUNLOP: { supplier: 'Sumitomo/Dunlop', sheetName: 'SUPPLIER_SUMITOMO_DUNLOP', productType: 'TYRE' },
   TREADS_UNLIMITED: { supplier: 'Threads Unlimited', sheetName: 'SUPPLIER_TREADS_UNLIMITED', productType: 'TYRE' },
   TYRE_LIFE: { supplier: 'Tyre Life', sheetName: 'SUPPLIER_TYRE_LIFE', productType: 'TYRE' },
-  TYRE_LIFE_WHEELS: { supplier: 'Tyre Life', sheetName: 'SUPPLIER_TYRE_LIFE_WHEELS', productType: 'WHEEL' }
+  TYRE_LIFE_WHEELS: { supplier: 'Tyre Life', sheetName: 'SUPPLIER_TYRE_LIFE_WHEELS', productType: 'WHEEL' },
+  NDT: { supplier: 'NDT', sheetName: 'SUPPLIER_NDT', productType: 'WHEEL' }
 };
 
 export const isSupplierImportCatalog = (

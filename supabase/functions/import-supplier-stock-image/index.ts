@@ -66,7 +66,7 @@ const base64ToBytes = (base64: string) => {
 const isStaffUploadPayload = (payload: ImportPayload) => (
   payload.source === 'staff-upload'
   && payload.sourceFileId.startsWith('staff-upload:')
-  && payload.storagePath.startsWith('tyres/staff-upload/')
+  && (payload.storagePath.startsWith('tyres/staff-upload/') || payload.storagePath.startsWith('wheels/staff-upload/'))
   && Boolean(payload.finishKey?.trim())
 );
 

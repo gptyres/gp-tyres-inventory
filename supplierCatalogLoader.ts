@@ -40,7 +40,8 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'SUMITOMO_DUNLOP',
   'TREADS_UNLIMITED',
   'TYRE_LIFE',
-  'TYRE_LIFE_WHEELS'
+  'TYRE_LIFE_WHEELS',
+  'NDT'
 ];
 
 const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
@@ -60,7 +61,8 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   SUMITOMO_DUNLOP: 'SUMITOMO/DUNLOP',
   TREADS_UNLIMITED: 'TREADS UNLIMITED',
   TYRE_LIFE: 'TYRE LIFE',
-  TYRE_LIFE_WHEELS: 'TYRE LIFE WHEELS'
+  TYRE_LIFE_WHEELS: 'TYRE LIFE WHEELS',
+  NDT: 'NDT'
 };
 
 export const SUPPLIER_CATALOG_OPTIONS = supplierCatalogOrder.map((catalog) => ({
@@ -85,7 +87,8 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   SUMITOMO_DUNLOP: 'sumitomo-dunlop',
   TREADS_UNLIMITED: 'treads',
   TYRE_LIFE: 'tyrelife',
-  TYRE_LIFE_WHEELS: 'tyrelifewheels'
+  TYRE_LIFE_WHEELS: 'tyrelifewheels',
+  NDT: 'ndt'
 };
 
 const supplierItemCache = new Map<ConcreteSupplierCatalog, Promise<InventoryItem[]>>();
@@ -218,6 +221,9 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
       const { TYRE_LIFE_WHEELS_RAW_DATA } = await import('./supplier_data/tyreLifeWheelsData');
       return parseTyreLifeWheelsData(TYRE_LIFE_WHEELS_RAW_DATA);
     }
+    case 'NDT':
+      // NDT is published from the verified catalogue snapshot in Supabase.
+      return [];
   }
 };
 

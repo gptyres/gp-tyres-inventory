@@ -358,6 +358,69 @@ export const buildStaffSupplierTyreImageUploadPayload = ({
   };
 };
 
+export const buildStaffSupplierWheelImageUploadPayload = ({
+  item,
+  finish,
+  design,
+  fileName,
+  mimeType,
+  base64,
+  hash,
+  uploadedBy
+}: {
+  item: InventoryItem;
+  finish: string;
+  design: string;
+  fileName: string;
+  mimeType: string;
+  base64: string;
+  hash: string;
+  uploadedBy?: string;
+}): StaffSupplierTyreImageUploadPayload => {
+  if (item.type !== ProductType.WHEEL) throw new Error('Only supplier wheel images can be uploaded here.');
+
+  const wheel = item as WheelProduct;
+  const supplier = wheel.supplierName?.trim();
+  if (!supplier) throw new Error('This wheel is not linked to a supplier catalogue.');
+
+  const imageKeys = parseSupplierWheelImageKeys(
+    wheel.brand,
+    design || wheel.code || wheel.imageDesignKey || '',
+    finish || wheel.finish || wheel.imageFinishKey || '',
+    wheel.supplierStockCode || ''
+  );
+  if (!imageKeys.designKey || !imageKeys.finishKey) {
+    throw new Error('Confirm both wheel code/design and finish before uploading.');
+  }
+
+  const supplierSlug = slugifySupplierImageToken(supplier);
+  const finishSlug = slugifySupplierImageToken(imageKeys.finishKey);
+  const designSlug = slugifySupplierImageToken(imageKeys.designKey);
+  const extension = extensionFromMimeType(mimeType, fileName);
+
+  return {
+    supplier,
+    source: 'staff-upload',
+    sourceFileId: `staff-upload:${supplierSlug}:${finishSlug}:${designSlug}`,
+    fileName,
+    storagePath: `wheels/staff-upload/${supplierSlug}/${finishSlug}/${designSlug}/${hash}.${extension}`,
+    mimeType,
+    designKey: imageKeys.designKey,
+    finishKey: imageKeys.finishKey,
+    rimSize: wheel.size.match(/\b(1[3-9]|2[0-6])\s*x/i)?.[1] ?? null,
+    pcd: wheel.pcd || null,
+    tags: Array.from(new Set([
+      'staff-upload',
+      supplier,
+      imageKeys.finishKey,
+      imageKeys.designKey,
+      uploadedBy ? `uploaded-by:${uploadedBy}` : ''
+    ].filter(Boolean))),
+    base64,
+    uploadedBy
+  };
+};
+
 export const supplierTyreMatchesUploadKeys = (
   item: InventoryItem,
   _supplier: string,
@@ -383,6 +446,26 @@ export const supplierTyreMatchesUploadKeys = (
   ].filter(Boolean));
 
   return designCandidates.has(targetKeys.designKey) && finishCandidates.has(targetKeys.finishKey);
+};
+
+export const supplierWheelMatchesUploadKeys = (
+  item: InventoryItem,
+  supplier: string,
+  finish: string,
+  design: string
+): boolean => {
+  if (item.type !== ProductType.WHEEL) return false;
+  const wheel = item as WheelProduct;
+  if (normalizeSupplierImageToken(wheel.supplierName) !== normalizeSupplierImageToken(supplier)) return false;
+
+  const imageKeys = parseSupplierWheelImageKeys(
+    wheel.brand,
+    wheel.code || wheel.imageDesignKey || '',
+    wheel.finish || wheel.imageFinishKey || '',
+    wheel.supplierStockCode || ''
+  );
+  return imageKeys.designKey === normalizeSupplierImageToken(design)
+    && imageKeys.finishKey === normalizeSupplierImageToken(finish);
 };
 
 export const parseSupplierWheelImageKeys = (brand: string, wheelName: string, finish: string, stockCode = '') => {

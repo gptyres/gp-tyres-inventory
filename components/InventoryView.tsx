@@ -3,12 +3,14 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { InventoryItem, ProductType, TyreProduct, WheelProduct, CoiloverProduct, ViewMode } from '../types';
 import { formatCurrency, getStatusColor } from '../utils';
 import {
+  buildStaffSupplierWheelImageUploadPayload,
   buildStaffSupplierTyreImageUploadPayload,
   buildSupplierImageMap,
   clearSupplierStockImageCache,
   fetchSupplierStockImages,
   inventoryItemToSupplierImageLookup,
-  supplierTyreMatchesUploadKeys
+  supplierTyreMatchesUploadKeys,
+  supplierWheelMatchesUploadKeys
 } from '../supplierStockImages';
 import { supabase } from '../supabaseClient';
 import {
@@ -79,6 +81,10 @@ const getWheelDisplayName = (wheel: WheelProduct): string => (
 
 const isSupplierTyre = (item: InventoryItem): item is TyreProduct => (
   item.type === ProductType.TYRE && Boolean((item as TyreProduct).supplierName)
+);
+
+const isSupplierWheel = (item: InventoryItem): item is WheelProduct => (
+  item.type === ProductType.WHEEL && Boolean((item as WheelProduct).supplierName)
 );
 
 export const getItemSupplierName = (item: InventoryItem): string => (
@@ -369,6 +375,7 @@ interface ProductImageProps {
 
 const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, isError, errorMessage, onGenerate, canUploadImage, onUploadImage, aspectRatio }) => {
   const [isDragOver, setIsDragOver] = useState(false);
+  const imageKind = item.type === ProductType.WHEEL ? 'wheel' : 'tyre';
   // Calculate height based on aspect ratio for placeholder
   let aspectClass = 'aspect-square';
   if (aspectRatio === '16:9') aspectClass = 'aspect-video';
@@ -481,7 +488,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
         <button
           onClick={(e) => { e.stopPropagation(); onUploadImage?.(); }}
           className="absolute left-2 bottom-2 bg-gp-red/90 px-2 py-1 rounded text-[8px] font-black uppercase tracking-wider text-white opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
-          title="Upload a corrected tyre tread image"
+          title={`Upload a corrected ${imageKind} image`}
         >
           Replace
         </button>
@@ -489,7 +496,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
       {canUploadImage && (
         <div className={`pointer-events-none absolute inset-0 flex items-center justify-center bg-black/75 p-3 text-center transition-opacity ${isDragOver ? 'opacity-100' : 'opacity-0'}`}>
           <div className="rounded border border-gp-red bg-gp-black/90 px-3 py-2 text-[10px] font-black uppercase tracking-wider text-white shadow-xl">
-            Drop tyre image to confirm upload
+            Drop ${imageKind} image to confirm upload
           </div>
         </div>
       )}
@@ -507,6 +514,11 @@ interface SupplierTyreImageUploadModalProps {
 
 const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> = ({ item, initialFile, currentUser, onClose, onUploaded }) => {
   const tyre = item?.type === ProductType.TYRE ? item as TyreProduct : null;
+  const wheel = item?.type === ProductType.WHEEL ? item as WheelProduct : null;
+  const isWheel = Boolean(wheel);
+  const imageKind = isWheel ? 'wheel' : 'tyre';
+  const supplierName = wheel?.supplierName ?? tyre?.supplierName ?? '';
+  const supplierStockCode = wheel?.supplierStockCode ?? tyre?.supplierStockCode ?? item?.id ?? '';
   const [brand, setBrand] = useState('');
   const [pattern, setPattern] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -516,24 +528,24 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (!tyre) {
+    if (!tyre && !wheel) {
       setFile(null);
       setPreviewUrl('');
       setMessage('');
       return;
     }
-    setBrand(tyre.brand || tyre.imageFinishKey || '');
-    setPattern(tyre.pattern || tyre.imageDesignKey || '');
+    setBrand(isWheel ? wheel?.finish || wheel?.imageFinishKey || '' : tyre?.brand || tyre?.imageFinishKey || '');
+    setPattern(isWheel ? wheel?.code || wheel?.imageDesignKey || '' : tyre?.pattern || tyre?.imageDesignKey || '');
     setFile(initialFile ?? null);
     setPreviewUrl(initialFile ? URL.createObjectURL(initialFile) : '');
     setMessage('');
-  }, [tyre, initialFile]);
+  }, [tyre, wheel, isWheel, initialFile]);
 
   useEffect(() => () => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
   }, [previewUrl]);
 
-  if (!tyre || !item) return null;
+  if ((!tyre && !wheel) || !item) return null;
 
   const selectImageFile = (nextFile: File | null) => {
     if (!nextFile) {
@@ -545,7 +557,7 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
     }
     const mimeType = getSupportedStaffImageMimeType(nextFile);
     if (!mimeType) {
-      setMessage('Use a JPG, PNG, WEBP or GIF tyre image.');
+      setMessage('Use a JPG, PNG, WEBP or GIF image.');
       return;
     }
     if (nextFile.size > MAX_STAFF_UPLOAD_IMAGE_SIZE) {
@@ -556,7 +568,7 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
     setFile(normalizedFile);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(URL.createObjectURL(normalizedFile));
-    setMessage('Review the tyre visual, then confirm brand and tread pattern.');
+    setMessage(`Review the ${imageKind} visual, then confirm its details.`);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -581,7 +593,7 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
     const nextFile = Array.from(event.dataTransfer.files as ArrayLike<File>)
       .find((candidate) => Boolean(getSupportedStaffImageMimeType(candidate))) ?? null;
     if (!nextFile) {
-      setMessage('Drop a tyre image file to continue.');
+      setMessage('Drop an image file to continue.');
       return;
     }
     selectImageFile(nextFile);
@@ -590,7 +602,7 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
   const handleUpload = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!file) {
-      setMessage('Select the tyre tread image first.');
+      setMessage(`Select the ${imageKind} image first.`);
       return;
     }
     if (!getSupportedStaffImageMimeType(file)) {
@@ -602,25 +614,36 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
       return;
     }
     if (!brand.trim() || !pattern.trim()) {
-      setMessage('Confirm both tyre brand and tread/pattern.');
+      setMessage(isWheel ? 'Confirm both wheel code/design and finish.' : 'Confirm both tyre brand and tread/pattern.');
       return;
     }
 
     setIsUploading(true);
-    setMessage('Uploading confirmed tyre visual...');
+    setMessage(`Uploading confirmed ${imageKind} visual...`);
 
     try {
       const [base64, hash] = await Promise.all([fileToBase64(file), hashFile(file)]);
-      const payload = buildStaffSupplierTyreImageUploadPayload({
-        item,
-        brand: brand.trim(),
-        pattern: pattern.trim(),
-        fileName: file.name,
-        mimeType: file.type,
-        base64,
-        hash,
-        uploadedBy: currentUser ?? undefined
-      });
+      const payload = isWheel
+        ? buildStaffSupplierWheelImageUploadPayload({
+          item,
+          finish: brand.trim(),
+          design: pattern.trim(),
+          fileName: file.name,
+          mimeType: file.type,
+          base64,
+          hash,
+          uploadedBy: currentUser ?? undefined
+        })
+        : buildStaffSupplierTyreImageUploadPayload({
+          item,
+          brand: brand.trim(),
+          pattern: pattern.trim(),
+          fileName: file.name,
+          mimeType: file.type,
+          base64,
+          hash,
+          uploadedBy: currentUser ?? undefined
+        });
 
       const { data, error } = await supabase.functions.invoke(SUPPLIER_IMAGE_IMPORT_FUNCTION, {
         body: payload
@@ -636,7 +659,7 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
         data.designKey || payload.designKey,
         data.publicImageUrl
       );
-      setMessage('Uploaded. Matching supplier tyres now use this visual.');
+      setMessage(`Uploaded. Matching supplier ${imageKind}s now use this visual.`);
       onClose();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -651,9 +674,9 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
       <form onSubmit={handleUpload} className="w-full max-w-2xl bg-gp-panel border border-gp-border rounded-lg shadow-2xl overflow-hidden">
         <div className="bg-gp-black border-b border-gp-border p-5 flex items-start justify-between gap-4">
           <div>
-            <h2 className="font-display text-2xl font-black uppercase text-gp-text-main">Upload Tyre Visual</h2>
+            <h2 className="font-display text-2xl font-black uppercase text-gp-text-main">Upload {isWheel ? 'Wheel' : 'Tyre'} Visual</h2>
             <p className="mt-1 text-xs font-bold uppercase tracking-widest text-gp-text-muted">
-              Confirm supplier, brand and tread before uploading
+              Confirm supplier and {isWheel ? 'wheel code/design and finish' : 'brand and tread'} before uploading
             </p>
           </div>
           <button
@@ -675,10 +698,10 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
             className={`relative min-h-[220px] rounded border bg-gp-black flex items-center justify-center overflow-hidden transition-colors ${isDropActive ? 'border-gp-red ring-2 ring-gp-red/70' : 'border-gp-border'}`}
           >
             {previewUrl ? (
-              <img src={previewUrl} alt="Selected tyre tread preview" className="h-full w-full object-contain bg-white p-2" />
+              <img src={previewUrl} alt={`Selected ${imageKind} preview`} className="h-full w-full object-contain bg-white p-2" />
             ) : (
               <div className="px-4 text-center text-xs font-bold uppercase tracking-wider text-gp-text-muted">
-                Drop tyre image here or choose a file
+                Drop {imageKind} image here or choose a file
               </div>
             )}
             <div className={`pointer-events-none absolute inset-0 flex items-center justify-center bg-black/75 p-4 text-center transition-opacity ${isDropActive ? 'opacity-100' : 'opacity-0'}`}>
@@ -693,7 +716,7 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
               <div>
                 <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Supplier</label>
                 <input
-                  value={tyre.supplierName ?? ''}
+                  value={supplierName}
                   disabled
                   className="w-full rounded border border-gp-border bg-gp-black p-2 text-sm font-bold text-gp-text-main opacity-80"
                 />
@@ -701,7 +724,7 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
               <div>
                 <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Stock Code</label>
                 <input
-                  value={tyre.supplierStockCode ?? item.id}
+                  value={supplierStockCode}
                   disabled
                   className="w-full rounded border border-gp-border bg-gp-black p-2 text-sm font-bold text-gp-text-main opacity-80"
                 />
@@ -710,29 +733,29 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Tyre Brand</label>
+                <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">{isWheel ? 'Wheel Finish' : 'Tyre Brand'}</label>
                 <input
                   value={brand}
                   onChange={(event) => setBrand(event.target.value)}
                   className="w-full rounded border border-gp-border bg-gp-input p-2 text-sm font-bold text-gp-text-main focus:border-gp-red focus:outline-none"
-                  placeholder="e.g. Sailun"
+                  placeholder={isWheel ? 'e.g. Black Machined Face' : 'e.g. Sailun'}
                   required
                 />
               </div>
               <div>
-                <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Tread / Pattern</label>
+                <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">{isWheel ? 'Wheel Code / Design' : 'Tread / Pattern'}</label>
                 <input
                   value={pattern}
                   onChange={(event) => setPattern(event.target.value)}
                   className="w-full rounded border border-gp-border bg-gp-input p-2 text-sm font-bold text-gp-text-main focus:border-gp-red focus:outline-none"
-                  placeholder="e.g. TERRAMAX RT"
+                  placeholder={isWheel ? 'e.g. DX381' : 'e.g. TERRAMAX RT'}
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Tyre Image</label>
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">{isWheel ? 'Wheel Image' : 'Tyre Image'}</label>
               <input
                 type="file"
                 accept="image/png,image/jpeg,image/webp,image/gif"
@@ -740,7 +763,7 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
                 className="w-full rounded border border-gp-border bg-gp-input p-2 text-sm text-gp-text-main file:mr-3 file:rounded file:border-0 file:bg-gp-red file:px-3 file:py-1.5 file:text-xs file:font-black file:uppercase file:text-white"
               />
               <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
-                You can also drag a tyre image into the preview box.
+                You can also drag an image into the preview box.
               </p>
             </div>
 
@@ -754,7 +777,7 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
 
         <div className="border-t border-gp-border bg-gp-black p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
-            This visual will apply to matching tyres from the same supplier, brand and tread pattern.
+            This visual will apply to matching {isWheel ? 'wheels with the same supplier, code/design and finish.' : 'tyres from the same supplier, brand and tread pattern.'}
           </p>
           <div className="flex gap-2">
             <button type="button" onClick={onClose} className="rounded border border-gp-border px-4 py-2 text-xs font-black uppercase text-gp-text-muted hover:text-white">
@@ -886,7 +909,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                              isError={errorImages.has(item.id)}
                              errorMessage={imageErrors[item.id]}
                             onGenerate={() => onGenerateImage(item)}
-                            canUploadImage={isSupplierTyre(item)}
+                            canUploadImage={isSupplierTyre(item) || isSupplierWheel(item)}
                             onUploadImage={(file) => onUploadSupplierTyreImage(item, file)}
                             aspectRatio={aspectRatio}
                         />
@@ -971,7 +994,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                  isError={errorImages.has(item.id)}
                  errorMessage={imageErrors[item.id]}
                 onGenerate={() => onGenerateImage(item)}
-                canUploadImage={isSupplierTyre(item)}
+                canUploadImage={isSupplierTyre(item) || isSupplierWheel(item)}
                 onUploadImage={(file) => onUploadSupplierTyreImage(item, file)}
                 aspectRatio={aspectRatio}
             />
@@ -1143,7 +1166,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                          isError={errorImages.has(item.id)}
                          errorMessage={imageErrors[item.id]}
                         onGenerate={() => onGenerateImage(item)}
-                        canUploadImage={isSupplierTyre(item)}
+                        canUploadImage={isSupplierTyre(item) || isSupplierWheel(item)}
                         onUploadImage={(file) => onUploadSupplierTyreImage(item, file)}
                         aspectRatio={aspectRatio}
                     />
@@ -1314,7 +1337,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     clearSupplierStockImageCache(supplier);
     const matchingIds = new Set<string>([item.id]);
     props.items.forEach((candidate) => {
-      if (supplierTyreMatchesUploadKeys(candidate, supplier, brand, pattern)) {
+      const isMatch = item.type === ProductType.WHEEL
+        ? supplierWheelMatchesUploadKeys(candidate, supplier, brand, pattern)
+        : supplierTyreMatchesUploadKeys(candidate, supplier, brand, pattern);
+      if (isMatch) {
         matchingIds.add(candidate.id);
       }
     });
@@ -1343,7 +1369,8 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       matchingIds.forEach((id) => delete next[id]);
       return next;
     });
-    setUploadNotice(`Tyre visual replaced for ${matchingIds.size} matching stock item${matchingIds.size === 1 ? '' : 's'}.`);
+    const productLabel = item.type === ProductType.WHEEL ? 'Wheel' : 'Tyre';
+    setUploadNotice(`${productLabel} visual replaced for ${matchingIds.size} matching stock item${matchingIds.size === 1 ? '' : 's'}.`);
     setSupplierImageRefreshKey((value) => value + 1);
   };
 

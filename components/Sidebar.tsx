@@ -370,6 +370,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   TYRE LIFE WHEELS
                 </button>
+                <button
+                  onClick={() => handleSupplierClick('NDT')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'NDT' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  NDT
+                </button>
               </div>
             )}
           </div>

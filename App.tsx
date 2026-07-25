@@ -388,6 +388,11 @@ const App: React.FC = () => {
       label: 'TYRE LIFE WHEELS',
       note: 'Viewing External Supplier Wheel Data. Prices already include VAT, with branch wheel stock shown in the location field.',
       portalUrl: 'https://dealers.tyrelifesolutions.co.za/dealer/dashboard'
+    },
+    NDT: {
+      label: 'NDT',
+      note: 'Viewing the verified NDT wheel catalogue. Catalogue prices are shown as supplied; VAT and live stock availability need confirmation with NDT.',
+      portalUrl: 'https://smarttyres.co.za/'
     }
   };
 
