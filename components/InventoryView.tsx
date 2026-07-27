@@ -1526,6 +1526,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
           lookupItem.supplierStockCode ?? '',
           lookupItem.imageDesignKey ?? '',
           lookupItem.imageFinishKey ?? '',
+          lookupItem.imageSourceKey ?? '',
           lookupItem.size ?? '',
           lookupItem.pcd ?? ''
         ].join(':');

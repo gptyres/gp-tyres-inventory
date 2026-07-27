@@ -48,6 +48,7 @@ export interface SupplierImageLookupItem {
   supplierStockCode?: string;
   imageDesignKey?: string;
   imageFinishKey?: string;
+  imageSourceKey?: string;
   size?: string;
   pcd?: string;
 }
@@ -586,7 +587,7 @@ export const inventoryItemToSupplierImageLookup = (item: InventoryItem): Supplie
   if (item.type === ProductType.WHEEL) {
     const wheel = item as WheelProduct;
     const supplierName = wheel.supplierName ?? (item.id.toUpperCase().includes('ALINE') ? 'ALINE' : undefined);
-    if (!supplierName || !wheel.imageDesignKey) return null;
+    if (!supplierName || (!wheel.imageDesignKey && !wheel.imageSourceKey)) return null;
 
     return {
       id: item.id,
@@ -595,6 +596,7 @@ export const inventoryItemToSupplierImageLookup = (item: InventoryItem): Supplie
       supplierStockCode: wheel.supplierStockCode,
       imageDesignKey: wheel.imageDesignKey,
       imageFinishKey: wheel.imageFinishKey,
+      imageSourceKey: wheel.imageSourceKey,
       size: wheel.size,
       pcd: wheel.pcd
     };
@@ -709,6 +711,21 @@ export const buildSupplierImageMap = (
   return items.reduce<Record<string, string>>((imageMap, item) => {
     const lookupItem = inventoryItemToSupplierImageLookup(item);
     if (!lookupItem) return imageMap;
+
+    const sourceKey = lookupItem.imageSourceKey?.trim();
+    if (sourceKey) {
+      const sourcePrefix = `${sourceKey}::`;
+      const directMatches = imageRows
+        .filter((row) => (
+          normalizeSupplierImageToken(row.supplier) === normalizeSupplierImageToken(lookupItem.supplierName)
+          && row.source_file_id.startsWith(sourcePrefix)
+        ))
+        .sort((first, second) => first.source_file_id.localeCompare(second.source_file_id));
+      if (directMatches.length) {
+        imageMap[item.id] = directMatches[0].public_image_url;
+        return imageMap;
+      }
+    }
 
     const isTyre = lookupItem.productType === ProductType.TYRE;
     const candidates = isTyre
