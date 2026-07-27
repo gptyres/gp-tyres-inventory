@@ -29,6 +29,7 @@ export interface BaseProduct {
   stockByLocation?: Record<string, number>;
   imageDesignKey?: string;
   imageFinishKey?: string;
+  imageSourceKey?: string;
   sheetRowNumber?: number;
   sheetFingerprint?: string;
   sheetSyncedAt?: string;
