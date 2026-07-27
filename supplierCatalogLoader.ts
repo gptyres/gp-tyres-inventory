@@ -41,7 +41,8 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'TREADS_UNLIMITED',
   'TYRE_LIFE',
   'TYRE_LIFE_WHEELS',
-  'NDT'
+  'NDT',
+  'WHEEL_TECH'
 ];
 
 const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
@@ -62,7 +63,8 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   TREADS_UNLIMITED: 'TREADS UNLIMITED',
   TYRE_LIFE: 'TYRE LIFE',
   TYRE_LIFE_WHEELS: 'TYRE LIFE WHEELS',
-  NDT: 'NDT'
+  NDT: 'NDT',
+  WHEEL_TECH: 'WHEEL TECH'
 };
 
 export const SUPPLIER_CATALOG_OPTIONS = supplierCatalogOrder.map((catalog) => ({
@@ -88,7 +90,8 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   TREADS_UNLIMITED: 'treads',
   TYRE_LIFE: 'tyrelife',
   TYRE_LIFE_WHEELS: 'tyrelifewheels',
-  NDT: 'ndt'
+  NDT: 'ndt',
+  WHEEL_TECH: 'wheel-tech'
 };
 
 const supplierItemCache = new Map<ConcreteSupplierCatalog, Promise<InventoryItem[]>>();
@@ -223,6 +226,9 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     }
     case 'NDT':
       // NDT is published from the verified catalogue snapshot in Supabase.
+      return [];
+    case 'WHEEL_TECH':
+      // WHEEL TECH is published from the verified Facebook Marketplace snapshot in Supabase.
       return [];
   }
 };

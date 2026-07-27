@@ -23,7 +23,8 @@ export const REGISTRY_SUPPLIER_BY_CATALOG: Record<RegistryBackedSupplierCatalog,
   TREADS_UNLIMITED: 'Threads Unlimited',
   TYRE_LIFE: 'Tyre Life',
   TYRE_LIFE_WHEELS: 'Tyre Life',
-  NDT: 'NDT'
+  NDT: 'NDT',
+  WHEEL_TECH: 'WHEEL TECH'
 };
 
 export const isRegistryBackedSupplierCatalog = (
@@ -63,7 +64,8 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
   TREADS_UNLIMITED: { supplier: 'Threads Unlimited', sheetName: 'SUPPLIER_TREADS_UNLIMITED', productType: 'TYRE' },
   TYRE_LIFE: { supplier: 'Tyre Life', sheetName: 'SUPPLIER_TYRE_LIFE', productType: 'TYRE' },
   TYRE_LIFE_WHEELS: { supplier: 'Tyre Life', sheetName: 'SUPPLIER_TYRE_LIFE_WHEELS', productType: 'WHEEL' },
-  NDT: { supplier: 'NDT', sheetName: 'SUPPLIER_NDT', productType: 'WHEEL' }
+  NDT: { supplier: 'NDT', sheetName: 'SUPPLIER_NDT', productType: 'WHEEL' },
+  WHEEL_TECH: { supplier: 'WHEEL TECH', sheetName: 'SUPPLIER_WHEEL_TECH', productType: 'WHEEL' }
 };
 
 export const isSupplierImportCatalog = (
