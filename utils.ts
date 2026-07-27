@@ -55,6 +55,9 @@ const getInventorySearchIndex = (item: InventoryItem): InventorySearchIndex => {
       tyre.pattern,
       tyre.size,
       tyre.loadSpeedIndex,
+      tyre.tyreRating,
+      tyre.tyreIndex,
+      tyre.tyreSpecs,
       tyre.location,
       'Tyre'
     ];
@@ -911,37 +914,52 @@ export const parseAttData = (rawCsv: string): InventoryItem[] => {
 
 // --- BRIDGESTONE / FIRESTONE PARSER ---
 export const parseBridgestoneData = (rawCsv: string): InventoryItem[] => {
-  const lines = rawCsv.split('\n');
+  const lines = rawCsv.split('\n').filter((line) => line.trim());
+  if (lines.length < 2) return [];
+
+  const headers = parseCSVLine(lines[0]).map((header) => header.trim().toLowerCase());
+  const headerIndex = new Map(headers.map((header, index) => [header, index]));
+  const readColumn = (cols: string[], name: string) => {
+    const index = headerIndex.get(name.toLowerCase());
+    return index === undefined ? '' : cols[index]?.trim() || '';
+  };
   const today = new Date().toISOString().split('T')[0];
 
-  return lines.flatMap((line, index): InventoryItem[] => {
+  return lines.slice(1).flatMap((line): InventoryItem[] => {
     const trimmed = line.trim();
     if (!trimmed) return [];
 
     const cols = parseCSVLine(trimmed);
-    const brand = cols[0]?.trim();
-    const requestedPattern = cols[1]?.replace(/\s+/g, ' ').trim();
-    const portalPattern = cols[2]?.replace(/\s+/g, ' ').trim();
-    const description = cols[3]?.replace(/\s+/g, ' ').trim();
-    const sku = cols[5]?.trim();
+    const brand = readColumn(cols, 'Brand').toUpperCase();
+    const requestedPattern = readColumn(cols, 'Requested Pattern').replace(/\s+/g, ' ');
+    const portalPattern = readColumn(cols, 'Portal Pattern').replace(/\s+/g, ' ');
+    const description = readColumn(cols, 'Description').replace(/\s+/g, ' ');
+    const sku = readColumn(cols, 'SKU');
 
-    if (index === 0 && brand?.toUpperCase() === 'BRAND') return [];
     if (!brand || !description || !sku) return [];
 
     const normalizedDescription = description.replace(/^HL(?=\d)/i, '');
     const parsed = parseSupplierTyreFields({
       description: normalizedDescription,
-      explicitSize: cols[4]?.trim(),
+      explicitSize: readColumn(cols, 'Size'),
       explicitBrand: brand,
       explicitPattern: portalPattern || requestedPattern
     });
     if (!parsed.size || !parsed.pattern) return [];
 
-    const stockType = cols[6]?.trim();
-    const stockLocation = cols[7]?.trim();
-    const quantity = Math.max(0, parseStockUnits(cols[8]));
-    const costPriceExVat = parseCurrencyString(cols[9]);
-    const sellingPrice = parseCurrencyString(cols[11]) || parseCurrencyString(cols[10]);
+    const catalogueSegment = readColumn(cols, 'Catalogue Segment') || readColumn(cols, 'Category Code');
+    const normalizedSegment = catalogueSegment.toUpperCase();
+    const stockType = readColumn(cols, 'Stock Type');
+    const stockLocation = readColumn(cols, 'Stock Location');
+    const quantity = Math.max(0, parseStockUnits(readColumn(cols, 'Stock Units')));
+    const costPriceExVat = parseCurrencyString(readColumn(cols, 'Discounted Price Ex VAT'));
+    const sellingPrice = costPriceExVat > 0
+      ? Math.round(((costPriceExVat * 1.15) / 25) + 1e-9) * 25
+      : 0;
+    const tyreSpecs = [normalizedSegment, parsed.specs]
+      .filter(Boolean)
+      .filter((value, index, values) => values.indexOf(value) === index)
+      .join(' / ');
 
     return [{
       id: `bridgestone-${sku}`,
@@ -953,9 +971,10 @@ export const parseBridgestoneData = (rawCsv: string): InventoryItem[] => {
       loadSpeedIndex: buildTyreIndexDisplay(parsed.rating, parsed.index),
       tyreRating: parsed.rating,
       tyreIndex: parsed.index,
-      tyreSpecs: parsed.specs,
+      tyreSpecs,
       location: [stockLocation || 'Supplier', stockType].filter(Boolean).join(' | '),
       quantity,
+      ...(stockLocation ? { stockByLocation: { [stockLocation]: quantity } } : {}),
       costPrice: costPriceExVat,
       sellingPrice,
       lastUpdated: today
