@@ -158,10 +158,11 @@ export const CourierLogisticsAssistantView: React.FC = () => {
     setLiveQuoteStatus('Requesting live courier rates…');
     setLiveRates([]);
     try {
-      const response = await fetch('/api/courier-quote', {
+      const response = await fetch('/api/business-agent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          action: 'COURIER_QUOTE',
           reference: quoteReference,
           destination: {
             name: recipientName,

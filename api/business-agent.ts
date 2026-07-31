@@ -7,6 +7,7 @@ import { loadStaffMemories } from '../server/gpBusinessAgentMemory.js';
 import adminHandler from '../server/gpBusinessAgentAdminHandler.js';
 import feedbackHandler from '../server/gpBusinessAgentFeedbackHandler.js';
 import tyreVisualHandler from '../server/gpTyreVisualHandler.js';
+import { requestParcelPerfectQuote } from '../server/parcelPerfect.js';
 
 const requestsByTerminal = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -71,6 +72,25 @@ export default async function handler(request: any, response: any) {
 
   const staffSession = verifyStaffSession(request);
   if (!staffSession) return response.status(401).json({ error: 'A valid staff login is required.' });
+
+  if (routingBody.action === 'COURIER_QUOTE') {
+    try {
+      const quote = await requestParcelPerfectQuote(
+        routingBody.destination,
+        routingBody.parcel,
+        routingBody.reference
+      );
+      const result = quote?.results?.[0] || {};
+      return response.status(200).json({
+        quoteNumber: typeof result.quoteno === 'string' ? result.quoteno : null,
+        rates: Array.isArray(result.rates) ? result.rates : []
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Courier quote could not be requested.';
+      return response.status(400).json({ error: message });
+    }
+  }
+
   if (!checkRateLimit(staffSession.terminalId)) return response.status(429).json({ error: 'Too many agent requests. Please wait one minute.' });
 
   const apiKey = process.env.NVIDIA_API_KEY || process.env.NGC_API_KEY;

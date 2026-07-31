@@ -1,6 +1,6 @@
 # Parcel Perfect courier quotes
 
-The Courier Logistics Assistant can request a live Parcel Perfect / Siyanqoba quote through the server route at `/api/courier-quote`.
+The Courier Logistics Assistant can request a live Parcel Perfect / Siyanqoba quote through the existing staff-protected server route at `/api/business-agent` using the `COURIER_QUOTE` action.
 
 ## Configure Vercel environment variables
 
