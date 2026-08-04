@@ -1641,9 +1641,9 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       />
       
       {/* View Configuration Toolbar */}
-      <div className="bg-gp-panel border border-gp-border rounded-lg p-3 flex flex-col lg:flex-row gap-4 lg:items-center justify-between shadow-sm sticky top-0 z-20">
+      <div className="sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-3 rounded-lg border border-gp-border bg-gp-panel p-3 shadow-sm lg:grid-cols-[minmax(0,1fr)_auto]">
         
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
             {/* Sorting */}
             <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase text-gp-text-muted tracking-wider">Sort:</span>
@@ -1667,7 +1667,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
             </div>
 
             {/* Grouping */}
-            <div className="flex items-center gap-2 border-l border-gp-border pl-4">
+            <div className="flex items-center gap-2 sm:border-l sm:border-gp-border sm:pl-4">
                 <span className="text-[10px] font-bold uppercase text-gp-text-muted tracking-wider">Group:</span>
                 <select 
                     value={groupBy}
@@ -1694,7 +1694,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
             )}
         </div>
 
-        <div className="flex bg-gp-input border border-gp-border rounded-lg p-1 gap-1 shadow-inner lg:mx-4">
+        <div className="flex w-fit justify-self-start gap-1 rounded-lg border border-gp-border bg-gp-input p-1 shadow-inner lg:justify-self-end">
             <button
                 onClick={() => props.onViewModeChange(ViewMode.TABLE)}
                 className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${props.viewMode === ViewMode.TABLE ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}
@@ -1716,10 +1716,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         </div>
 
         {/* Filters & Toggles */}
-        <div className="flex items-center gap-3 lg:border-l border-gp-border lg:pl-4 overflow-x-auto">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 border-t border-gp-border pt-3 lg:col-span-2">
              
              {/* Show Images Toggle */}
-             <label className="flex items-center gap-1.5 cursor-pointer mr-2 border-r border-gp-border pr-4">
+             <label className="flex items-center gap-1.5 cursor-pointer border-r border-gp-border pr-3 sm:mr-1">
                 <input 
                     type="checkbox" 
                     checked={showImages} 
@@ -1734,7 +1734,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
              {/* Aspect Ratio Selector - Only visible if images enabled */}
              {showImages && (
-                <div className="flex items-center gap-1 mr-4 border-r border-gp-border pr-4">
+                <div className="flex items-center gap-1 border-r border-gp-border pr-3 sm:mr-1">
                     <span className="text-[10px] font-bold uppercase text-gp-text-muted">Ratio:</span>
                     <select
                         value={aspectRatio}
@@ -1750,7 +1750,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
              )}
 
              {/* Hide Low Stock Toggle */}
-             <label className="flex items-center gap-1.5 cursor-pointer mr-4 border-r border-gp-border pr-4">
+             <label className="flex items-center gap-1.5 cursor-pointer border-r border-gp-border pr-3 sm:mr-1">
                 <input 
                     type="checkbox" 
                     checked={hideLowStock} 
