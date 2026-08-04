@@ -1588,7 +1588,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
   // Helper to render the correct view component
   const renderView = (items: InventoryItem[]) => {
-    const visualImages = { ...generatedImages, ...supplierImages };
+    const sourceImages = Object.fromEntries(
+      items.flatMap((item) => item.imageUrl ? [[item.id, item.imageUrl]] : [])
+    );
+    const visualImages = { ...sourceImages, ...generatedImages, ...supplierImages };
     const viewProps = { 
         ...props, 
         items, 

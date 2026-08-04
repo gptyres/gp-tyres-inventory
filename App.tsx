@@ -343,7 +343,7 @@ const App: React.FC = () => {
     ALINE: {
       label: 'ALINE',
       note: 'Viewing External Supplier Data. Recommended selling prices include VAT and are a guide only, not the final selling price. Branch wheel stock is shown by location.',
-      portalUrl: 'https://www.alinewheels.co.za/login-2/?arm_redirect=https%3A%2F%2Fwww.alinewheels.co.za%2Fedit_profile%2F'
+      portalUrl: 'https://alinewheels.cataloghive.com/'
     },
     STAMFORD: {
       label: 'STAMFORD',

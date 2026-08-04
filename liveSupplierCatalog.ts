@@ -35,6 +35,7 @@ export interface LiveSupplierCatalogRow {
   stock_units: number;
   cost_price: number | string;
   selling_price: number | string;
+  product_url?: string | null;
   source_file: string;
   imported_at: string;
 }
@@ -124,7 +125,8 @@ export const liveSupplierRowToInventoryItem = (
     lastUpdated: row.imported_at.slice(0, 10),
     supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS' : row.supplier,
     supplierStockCode: row.supplier_sku || undefined,
-    stockByLocation: row.stock_by_location || undefined
+    stockByLocation: row.stock_by_location || undefined,
+    imageUrl: row.product_url?.trim() || undefined
   };
 
   if (row.product_type === 'WHEEL') {
@@ -204,7 +206,7 @@ export const loadLiveSupplierCatalogItems = async (
     const { data, error } = await (supabase
       .from('supplier_catalog_items') as any)
       .select(
-        'id,snapshot_id,catalog_key,source_key,product_type,supplier,supplier_sku,brand,product_name,tyre_pattern,tyre_rating,tyre_index,tyre_specs,wheel_pcd,wheel_offset,wheel_center_bore,stock_by_location,category,size,stock_location,stock_units_availability,stock_units,cost_price,selling_price,source_file,imported_at'
+        'id,snapshot_id,catalog_key,source_key,product_type,supplier,supplier_sku,brand,product_name,tyre_pattern,tyre_rating,tyre_index,tyre_specs,wheel_pcd,wheel_offset,wheel_center_bore,stock_by_location,category,size,stock_location,stock_units_availability,stock_units,cost_price,selling_price,product_url,source_file,imported_at'
       )
       .eq('snapshot_id', source.active_snapshot_id)
       .gt('id', lastId)
