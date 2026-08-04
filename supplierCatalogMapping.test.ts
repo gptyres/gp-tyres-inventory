@@ -14,6 +14,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(REGISTRY_SUPPLIER_BY_CATALOG.EXCLUSIVE_TYRES).toBe('Exclusive Tyres');
     expect(REGISTRY_SUPPLIER_BY_CATALOG.TREADS_UNLIMITED).toBe('Threads Unlimited');
     expect(REGISTRY_SUPPLIER_BY_CATALOG.SUMITOMO_DUNLOP).toBe('Sumitomo/Dunlop');
+    expect(REGISTRY_SUPPLIER_BY_CATALOG.REVOLUTION_TYRES).toBe('Revolution Tyres');
   });
 
   it('maps both Tyre Life catalogues to one registry job', () => {
@@ -40,6 +41,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(isSupplierImportCatalog('APEX')).toBe(true);
     expect(isSupplierImportCatalog('SAILUN')).toBe(true);
     expect(isSupplierImportCatalog('BRIDGESTONE')).toBe(true);
+    expect(isSupplierImportCatalog('REVOLUTION_TYRES')).toBe(true);
     expect(isSupplierImportCatalog('TYRE_LIFE_WHEELS')).toBe(true);
     expect(isSupplierImportCatalog('ALL_SUPPLIERS')).toBe(false);
     expect(isSupplierImportCatalog('ARC')).toBe(false);

@@ -30,6 +30,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'ATT',
   'BRIDGESTONE',
   'SAFETY_GRIP',
+  'REVOLUTION_TYRES',
   'ALINE',
   'STAMFORD',
   'APEX',
@@ -52,6 +53,7 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   ATT: 'ATT',
   BRIDGESTONE: 'BRIDGESTONE',
   SAFETY_GRIP: 'SAFETY GRIP',
+  REVOLUTION_TYRES: 'REVOLUTION TYRES',
   ALINE: 'ALINE',
   STAMFORD: 'STAMFORD',
   APEX: 'APEX',
@@ -79,6 +81,7 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   ATT: 'att',
   BRIDGESTONE: 'bridgestone',
   SAFETY_GRIP: 'safetygrip',
+  REVOLUTION_TYRES: 'revolution-tyres',
   ALINE: 'aline',
   STAMFORD: 'stamford',
   APEX: 'apex',
@@ -180,6 +183,9 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
       const { SAFETY_GRIP_RAW_DATA } = await import('./supplier_data/safetygripData');
       return parseSafetyGripData(SAFETY_GRIP_RAW_DATA);
     }
+    case 'REVOLUTION_TYRES':
+      // Revolution Tyres is served from its authenticated live catalogue snapshot.
+      return [];
     case 'ALINE': {
       const { ALINE_RAW_DATA } = await import('./supplier_data/alineData');
       return parseAlineData(ALINE_RAW_DATA);

@@ -1007,7 +1007,7 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
     const { brand, pattern } = splitBrandPattern(brandPattern, 'SAFETY GRIP');
     const quantity = parseStockUnits(cols[2]);
     const priceExVat = parseCurrencyString(cols[3]);
-    const priceIncVat = Number((priceExVat * 1.15).toFixed(2));
+    const priceIncVat = Math.round(((priceExVat * 1.15) / 25) + 1e-9) * 25;
 
     const itemId = `safetygrip-${idCounter++}`;
     items.push({

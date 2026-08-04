@@ -333,7 +333,12 @@ const App: React.FC = () => {
     },
     SAFETY_GRIP: {
       label: 'SAFETY GRIP',
-      note: 'Viewing External Supplier Data. Prices are calculated with 15% VAT added to the supplied price.'
+      note: 'Viewing External Supplier Data. Cost is the supplied nett price; selling price adds 15% VAT once and rounds to the nearest R25.'
+    },
+    REVOLUTION_TYRES: {
+      label: 'REVOLUTION TYRES',
+      note: 'Viewing authenticated Revolution Tyres supplier stock. Cost is the portal nett price; selling price adds 15% VAT once and rounds to the nearest R25.',
+      portalUrl: 'https://revolutiontyres.com/login'
     },
     ALINE: {
       label: 'ALINE',
