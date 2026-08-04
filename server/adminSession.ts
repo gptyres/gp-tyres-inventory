@@ -1,4 +1,5 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
+import { getSessionReleaseId } from './deploymentVersion.js';
 
 export const ADMIN_SESSION_COOKIE = 'gp_admin_session';
 const SESSION_MAX_AGE_SECONDS = 4 * 60 * 60;
@@ -6,6 +7,7 @@ const ALLOWED_ADMINS = new Set(['Noor', 'Mac', 'Rafiek']);
 
 interface AdminSessionPayload {
   staffName: string;
+  releaseId: string;
   issuedAt: number;
   expiresAt: number;
 }
@@ -61,6 +63,7 @@ export const createAdminSessionCookie = (staffName: string) => {
   const issuedAt = Math.floor(Date.now() / 1000);
   const payload: AdminSessionPayload = {
     staffName,
+    releaseId: getSessionReleaseId(),
     issuedAt,
     expiresAt: issuedAt + SESSION_MAX_AGE_SECONDS
   };
@@ -87,7 +90,12 @@ export const verifyAdminSession = (request: ApiRequestLike): AdminSessionPayload
   try {
     const payload = JSON.parse(Buffer.from(encodedPayload, 'base64url').toString('utf8')) as AdminSessionPayload;
     const now = Math.floor(Date.now() / 1000);
-    if (!isAllowedAdmin(payload.staffName) || payload.expiresAt <= now || payload.issuedAt > now + 60) return null;
+    if (
+      !isAllowedAdmin(payload.staffName)
+      || payload.releaseId !== getSessionReleaseId()
+      || payload.expiresAt <= now
+      || payload.issuedAt > now + 60
+    ) return null;
     return payload;
   } catch {
     return null;

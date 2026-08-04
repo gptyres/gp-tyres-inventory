@@ -7,6 +7,7 @@ import {
   verifyAdminSession
 } from '../server/adminSession.js';
 import { readApiBody } from '../server/readApiBody.js';
+import { getSessionReleaseId } from '../server/deploymentVersion.js';
 
 const failedAttempts = new Map<string, { count: number; resetAt: number }>();
 const MAX_ATTEMPTS = 5;
@@ -31,7 +32,8 @@ export default async function handler(request: any, response: any) {
       const session = verifyAdminSession(request);
       return response.status(200).json({
         authenticated: Boolean(session),
-        staffName: session?.staffName || null
+        staffName: session?.staffName || null,
+        releaseId: getSessionReleaseId()
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Admin session is not configured.';
@@ -67,7 +69,7 @@ export default async function handler(request: any, response: any) {
 
     failedAttempts.delete(ipHash);
     response.setHeader('Set-Cookie', createAdminSessionCookie(staffName));
-    return response.status(200).json({ ok: true, staffName });
+    return response.status(200).json({ ok: true, staffName, releaseId: getSessionReleaseId() });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Admin login failed.';
     return response.status(503).json({ error: message });

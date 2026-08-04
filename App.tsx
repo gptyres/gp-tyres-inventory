@@ -104,6 +104,7 @@ const filterSheetManagedInventory = (inventoryItems: InventoryItem[]) => {
 const App: React.FC = () => {
   // --- AUTH STATE ---
   const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [sessionReleaseId, setSessionReleaseId] = useState<string | null>(null);
 
   // --- DATA STATE (with Persistence) ---
   const [items, setItems] = useState<InventoryItem[]>([]);
@@ -201,6 +202,60 @@ const App: React.FC = () => {
     document.addEventListener('scroll', handleScroll, true);
     return () => document.removeEventListener('scroll', handleScroll, true);
   }, []);
+
+  useEffect(() => {
+    if (!currentUser || !sessionReleaseId) return;
+
+    let cancelled = false;
+    let signingOut = false;
+
+    const signOutForDeployment = async () => {
+      if (cancelled || signingOut) return;
+      signingOut = true;
+      await Promise.allSettled([
+        fetch('/api/staff-session', { method: 'DELETE', credentials: 'same-origin' }),
+        clearAdminSession()
+      ]);
+      if (cancelled) return;
+      setIsAdmin(false);
+      setCurrentUser(null);
+      setSessionReleaseId(null);
+      window.location.reload();
+    };
+
+    const verifyCurrentDeployment = async () => {
+      try {
+        const response = await fetch(`/api/staff-session?release_check=${Date.now()}`, {
+          method: 'GET',
+          credentials: 'same-origin',
+          cache: 'no-store',
+          headers: { Accept: 'application/json' }
+        });
+        if (!response.ok) return;
+        const result = await response.json() as { authenticated?: boolean; releaseId?: string };
+        if (result.authenticated === false || (result.releaseId && result.releaseId !== sessionReleaseId)) {
+          await signOutForDeployment();
+        }
+      } catch {
+        // A temporary connection problem must never sign a working user out.
+      }
+    };
+
+    const handleWindowFocus = () => { void verifyCurrentDeployment(); };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') void verifyCurrentDeployment();
+    };
+    const intervalId = window.setInterval(() => { void verifyCurrentDeployment(); }, 30_000);
+    window.addEventListener('focus', handleWindowFocus);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+      window.removeEventListener('focus', handleWindowFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [currentUser, sessionReleaseId]);
 
   useEffect(() => {
     const scrollContainer = activeScrollContainerRef.current || mainScrollContainerRef.current;
@@ -854,8 +909,9 @@ const App: React.FC = () => {
     setLoginLogs(prev => mergeLoginLogsUnique([newLog], prev));
   };
 
-  const handleLoginSuccess = (username: string) => {
+  const handleLoginSuccess = (username: string, releaseId: string | null) => {
     setCurrentUser(username);
+    setSessionReleaseId(releaseId);
   };
 
   const handleAdminToggle = () => {
