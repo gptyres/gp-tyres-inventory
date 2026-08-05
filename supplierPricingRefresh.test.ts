@@ -21,8 +21,8 @@ describe('supplier pricing refresh', () => {
     const items = parseApexData(APEX_RAW_DATA);
     const sample = items.find((item) => item.supplierStockCode === '307672');
 
-    expect(items).toHaveLength(1699);
-    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(15295);
+    expect(items).toHaveLength(1706);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(15350);
     expect(sample).toMatchObject({ costPrice: 5991, sellingPrice: 6900, quantity: 1, supplierLeadTime: '6 Hours' });
     expect(items.every((item) => item.supplierLeadTime === '6 Hours')).toBe(true);
     expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
