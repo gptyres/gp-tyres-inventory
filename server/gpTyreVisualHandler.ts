@@ -8,6 +8,10 @@ const NVIDIA_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
 const BUCKET = 'supplier-stock-images';
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const allowedImageTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+const blockedSearchHosts = new Set([
+  'bing.com', 'duckduckgo.com', 'google.com', 'search.brave.com',
+  'facebook.com', 'instagram.com', 'pinterest.com', 'tiktok.com', 'x.com', 'youtube.com'
+]);
 const officialDomains: Record<string, string[]> = {
   apollo: ['apollotyres.com'], bridgestone: ['bridgestone.com', 'bridgestone.co.za'], continental: ['continental-tires.com'],
   dunlop: ['dunloptyres.co.za', 'dunlop.eu'], goodyear: ['goodyear.com', 'goodyear.co.za'], hankook: ['hankooktire.com'],
@@ -43,7 +47,16 @@ const isSafePublicHttpsUrl = (value: string) => {
   }
 };
 
-const extractSearchLinks = (html: string) => {
+const isBlockedSearchUrl = (value: string) => {
+  try {
+    const host = new URL(value).hostname.toLowerCase().replace(/^www\./, '');
+    return Array.from(blockedSearchHosts).some((blockedHost) => host === blockedHost || host.endsWith(`.${blockedHost}`));
+  } catch {
+    return true;
+  }
+};
+
+const extractHtmlSearchLinks = (html: string) => {
   const links: string[] = [];
   for (const match of html.matchAll(/href=["']([^"']+)["']/gi)) {
     let href = decodeHtml(match[1]);
@@ -54,9 +67,32 @@ const extractSearchLinks = (html: string) => {
     } catch {
       continue;
     }
-    if (isSafePublicHttpsUrl(href) && !href.includes('duckduckgo.com')) links.push(href);
+    if (isSafePublicHttpsUrl(href) && !isBlockedSearchUrl(href)) links.push(href);
   }
-  return Array.from(new Set(links)).slice(0, 12);
+  return Array.from(new Set(links));
+};
+
+export const extractBingRssSearchLinks = (xml: string) => Array.from(xml.matchAll(/<item>[\s\S]*?<link>([^<]+)<\/link>/gi))
+  .map((match) => decodeHtml(match[1]).trim())
+  .filter((href) => isSafePublicHttpsUrl(href) && !isBlockedSearchUrl(href));
+
+type SearchFetcher = (url: string, init?: RequestInit, timeoutMs?: number) => Promise<Response>;
+
+export const searchTyreProductPages = async (query: string, fetcher: SearchFetcher = fetchWithTimeout) => {
+  const encodedQuery = encodeURIComponent(query);
+  const headers = { 'User-Agent': 'Mozilla/5.0 (compatible; GP-Tyres-Visual-Research/1.1)', Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' };
+  const attempts = [
+    { url: `https://search.brave.com/search?q=${encodedQuery}&source=web`, parser: extractHtmlSearchLinks },
+    { url: `https://html.duckduckgo.com/html/?q=${encodedQuery}`, parser: extractHtmlSearchLinks },
+    { url: `https://www.bing.com/search?format=rss&q=${encodedQuery}`, parser: extractBingRssSearchLinks }
+  ];
+  const settled = await Promise.allSettled(attempts.map(async ({ url, parser }) => {
+    const searchResponse = await fetcher(url, { headers }, 7000);
+    if (!searchResponse.ok) return [];
+    return parser(await searchResponse.text());
+  }));
+
+  return Array.from(new Set(settled.flatMap((result) => result.status === 'fulfilled' ? result.value : []))).slice(0, 30);
 };
 
 const metaContent = (html: string, property: string) => {
@@ -75,12 +111,8 @@ const metaContent = (html: string, property: string) => {
 interface PageCandidate { pageUrl: string; imageUrl: string; title: string; excerpt: string; official: boolean; }
 
 const collectCandidates = async (brand: string, pattern: string) => {
-  const query = `"${brand}" "${pattern}" tyre official`;
-  const searchResponse = await fetchWithTimeout(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; GP-Tyres-Visual-Research/1.0)' }
-  }, 7000);
-  if (!searchResponse.ok) throw new Error('Official-site search is temporarily unavailable.');
-  const links = extractSearchLinks(await searchResponse.text());
+  const query = `${brand} ${pattern} tyre product image`;
+  const links = await searchTyreProductPages(query);
   const preferredDomains = officialDomains[keyText(brand)] || [];
   const rankedLinks = links.sort((left, right) => {
     const leftOfficial = preferredDomains.some((domain) => new URL(left).hostname.endsWith(domain));
@@ -142,6 +174,26 @@ const selectCandidateWithGlm = async (apiKey: string, brand: string, pattern: st
   return { candidate: candidates[index], confidence: Number(selection.confidence), reason: clean(selection.reason, 300) };
 };
 
+export const selectExactMetadataCandidate = (brand: string, pattern: string, candidates: PageCandidate[]) => {
+  const brandKey = keyText(brand);
+  const patternKey = keyText(pattern);
+  const ranked = candidates.map((candidate) => {
+    const titleKey = keyText(candidate.title);
+    const excerptKey = keyText(candidate.excerpt);
+    const exactTitle = titleKey.includes(brandKey) && titleKey.includes(patternKey);
+    const exactPageText = `${titleKey}${excerptKey}`.includes(brandKey) && `${titleKey}${excerptKey}`.includes(patternKey);
+    return { candidate, exactTitle, exactPageText, score: Number(exactTitle) * 4 + Number(exactPageText) * 2 + Number(candidate.official) * 3 };
+  }).filter((entry) => entry.exactTitle || (entry.candidate.official && entry.exactPageText))
+    .sort((left, right) => right.score - left.score);
+  const best = ranked[0];
+  if (!best) return null;
+  return {
+    candidate: best.candidate,
+    confidence: best.exactTitle && best.candidate.official ? 0.96 : best.exactTitle ? 0.9 : 0.86,
+    reason: best.candidate.official ? 'Exact brand and pattern metadata on an official product page.' : 'Exact brand and pattern metadata on a product page.'
+  };
+};
+
 export default async function handler(request: any, response: any) {
   response.setHeader('Cache-Control', 'no-store');
   if (request.method !== 'POST') {
@@ -172,10 +224,22 @@ export default async function handler(request: any, response: any) {
     if (existing?.public_image_url) return response.status(200).json({ ok: true, ...existing, reused: true });
 
     const candidates = await collectCandidates(brand, pattern);
-    const selection = await selectCandidateWithGlm(apiKey, brand, pattern, candidates);
+    let selection = null;
+    try {
+      selection = await selectCandidateWithGlm(apiKey, brand, pattern, candidates);
+    } catch (error) {
+      console.warn('[TYRE VISUAL GLM FALLBACK]', error instanceof Error ? error.message : error);
+    }
+    selection ||= selectExactMetadataCandidate(brand, pattern, candidates);
     if (!selection) return response.status(404).json({ error: `No exact, high-confidence official visual was found for ${brand} ${pattern}. You can still drag and drop a verified image.` });
 
-    const imageResponse = await fetchWithTimeout(selection.candidate.imageUrl, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; GP-Tyres-Visual-Research/1.0)' } }, 10000);
+    const imageResponse = await fetchWithTimeout(selection.candidate.imageUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; GP-Tyres-Visual-Research/1.1)',
+        Accept: 'image/webp,image/png,image/jpeg,image/gif,image/*;q=0.8',
+        Referer: selection.candidate.pageUrl
+      }
+    }, 10000);
     if (!imageResponse.ok) throw new Error('The selected official image could not be downloaded.');
     const mimeType = (imageResponse.headers.get('content-type') || '').split(';')[0].toLowerCase();
     if (!allowedImageTypes.has(mimeType)) throw new Error('The selected official visual is not a supported image type.');
