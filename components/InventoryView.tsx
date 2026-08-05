@@ -289,6 +289,50 @@ const copyTextToClipboard = async (value: string) => {
   document.body.removeChild(textarea);
 };
 
+const imageBlobToPng = async (blob: Blob): Promise<Blob> => {
+  if (blob.type === 'image/png') return blob;
+
+  const objectUrl = URL.createObjectURL(blob);
+  try {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const element = new Image();
+      element.onload = () => resolve(element);
+      element.onerror = () => reject(new Error('Could not prepare the product visual.'));
+      element.src = objectUrl;
+    });
+    const canvas = document.createElement('canvas');
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('Image conversion is unavailable.');
+    context.drawImage(image, 0, 0);
+    return await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (pngBlob) => pngBlob ? resolve(pngBlob) : reject(new Error('Could not convert the product visual.')),
+        'image/png'
+      );
+    });
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+};
+
+const copyImageAndTextToClipboard = async (text: string, imageUrl: string): Promise<void> => {
+  if (!navigator.clipboard?.write || typeof ClipboardItem === 'undefined') {
+    throw new Error('Image clipboard is not supported by this browser.');
+  }
+
+  const response = await fetch(imageUrl);
+  if (!response.ok) throw new Error('Could not download the product visual.');
+  const imageBlob = await imageBlobToPng(await response.blob());
+  await navigator.clipboard.write([
+    new ClipboardItem({
+      'text/plain': new Blob([text], { type: 'text/plain' }),
+      'image/png': imageBlob
+    })
+  ]);
+};
+
 const CopyItemButton = ({ item, onCopyItem, className = '' }: { item: InventoryItem; onCopyItem: (item: InventoryItem) => void; className?: string }) => {
   if (item.type !== ProductType.TYRE && item.type !== ProductType.WHEEL) return null;
 
@@ -1570,9 +1614,26 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     const clipboardText = getItemClipboardText(item);
     if (!clipboardText) return;
 
+    const visualUrl = showImages
+      ? supplierImages[item.id] || generatedImages[item.id] || item.imageUrl
+      : undefined;
+
     try {
+      if (visualUrl) {
+        try {
+          await copyImageAndTextToClipboard(clipboardText, visualUrl);
+          setClipboardNotice(`Copied visual + details: ${clipboardText.split('\n')[0]}`);
+          return;
+        } catch (imageError) {
+          console.warn('Visual clipboard copy failed; copying details only.', imageError);
+        }
+      }
+
       await copyTextToClipboard(clipboardText);
-      setClipboardNotice(`Copied: ${clipboardText.split('\n')[0]}`);
+      setClipboardNotice(visualUrl
+        ? `Visual unavailable; copied details: ${clipboardText.split('\n')[0]}`
+        : `Copied details: ${clipboardText.split('\n')[0]}`
+      );
     } catch (error) {
       console.error('Clipboard copy failed', error);
       setClipboardNotice('Could not copy to clipboard.');
