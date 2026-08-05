@@ -161,7 +161,7 @@ const getDragFileName = (item: InventoryItem): string => (
 const getTyreClipboardText = (item: InventoryItem): string => {
   if (item.type !== ProductType.TYRE) return '';
   const tyre = item as TyreProduct;
-  return [tyre.size, tyre.brand, tyre.pattern]
+  return [tyre.size, tyre.brand, tyre.pattern, `@ R${Math.round(item.sellingPrice)}`]
     .map((part) => String(part || '').trim())
     .filter(Boolean)
     .join(' ');
@@ -263,7 +263,8 @@ const getWheelClipboardText = (item: InventoryItem): string => {
   return [
     [wheelName, finish].filter(Boolean).join(' '),
     [diameterText, pcd].filter(Boolean).join(' '),
-    detailLine
+    detailLine,
+    `@ R${Math.round(item.sellingPrice)}`
   ].join('\n');
 };
 
