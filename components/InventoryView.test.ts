@@ -107,6 +107,31 @@ describe('customer stock clipboard formatting', () => {
 
     expect(formatBulkClipboardText(duplicateTyres)).toBe('195/50R15 APOLLO ALNAC 4G @ R1375');
   });
+
+  it('capitalizes every letter in bulk clipboard output', () => {
+    const mixedCaseWheel: WheelProduct = {
+      id: 'aline-dazzle',
+      type: ProductType.WHEEL,
+      quantity: 2,
+      sellingPrice: 3200,
+      costPrice: 2800,
+      lastUpdated: '2026-08-05',
+      code: 'Dazzle',
+      brand: 'Aline',
+      finish: 'Gloss Black',
+      size: '15x6.5',
+      pcd: '4/100',
+      offset: '35',
+      centerBore: '67.1',
+      colour: 'Aline | Gloss Black',
+      setQuantity: 1,
+      location: 'CPT: 2'
+    };
+
+    const clipboardText = formatBulkClipboardText([mixedCaseWheel]);
+    expect(clipboardText).toBe(clipboardText.toUpperCase());
+    expect(clipboardText).toContain('DAZZLE GLOSS BLACK');
+  });
 });
 
 describe('supplier wheel card formatting', () => {

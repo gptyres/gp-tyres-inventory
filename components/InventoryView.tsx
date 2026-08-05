@@ -333,7 +333,8 @@ export const formatBulkClipboardText = (items: InventoryItem[]): string => {
   return Array.from(uniqueItems.values())
     .map((item) => getItemClipboardText(item).split('\n').filter(Boolean).join(' | '))
     .filter(Boolean)
-    .join('\n');
+    .join('\n')
+    .toUpperCase();
 };
 
 const copyTextToClipboard = async (value: string) => {
