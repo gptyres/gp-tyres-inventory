@@ -19,6 +19,7 @@ const adjustmentKey = (adjustment: SupplierMarkupAdjustment) => (
 
 export const SupplierMarkupAdjuster: React.FC<SupplierMarkupAdjusterProps> = ({ adjustment, onChange }) => {
   const selectedKey = adjustmentKey(adjustment);
+  const isAdjusted = adjustment.mode !== 'BASE';
   const selectAdjustment = (key: string) => {
     if (key === 'BASE') {
       onChange({ mode: 'BASE', value: 0 });
@@ -32,17 +33,32 @@ export const SupplierMarkupAdjuster: React.FC<SupplierMarkupAdjusterProps> = ({ 
   };
 
   return (
-    <div className="min-w-0 border-gp-border xl:border-l xl:pl-4" aria-label="Supplier selling price markup">
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="shrink-0">
-          <p className="text-[10px] font-black uppercase tracking-wider text-gp-text-main">Markup</p>
-          <p className="text-[8px] font-bold uppercase text-gp-text-muted">From cost incl. VAT</p>
+    <div className="min-w-0 xl:border-l xl:border-gp-border xl:pl-4" aria-label="Supplier selling price markup">
+      <div className="mb-1.5 flex min-h-5 items-center gap-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <p className="shrink-0 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">Price markup</p>
+          <span className="truncate rounded-sm border border-sky-500/20 bg-sky-500/10 px-1.5 py-0.5 text-[8px] font-bold uppercase text-sky-300">
+            Cost incl. VAT
+          </span>
         </div>
+        {isAdjusted && (
+          <button
+            type="button"
+            onClick={() => selectAdjustment('BASE')}
+            className="shrink-0 border-l border-gp-border pl-3 text-[9px] font-black uppercase text-gp-text-muted transition-colors hover:text-gp-text-main"
+            title="Reset supplier selling prices"
+          >
+            Reset
+          </button>
+        )}
+      </div>
+
+      <div className="flex min-w-0 items-center gap-2">
 
         <select
           value={selectedKey}
           onChange={(event) => selectAdjustment(event.target.value)}
-          className="h-9 min-w-32 flex-1 rounded border border-gp-border bg-gp-input px-2 text-xs font-bold text-gp-text-main focus:border-gp-red focus:outline-none sm:hidden"
+          className="h-9 min-w-0 flex-1 rounded-md border border-gp-border bg-gp-input px-3 text-xs font-bold text-gp-text-main focus:border-gp-red focus:outline-none sm:hidden"
           aria-label="Select supplier markup"
         >
           <option value="BASE">Base price</option>
@@ -52,11 +68,12 @@ export const SupplierMarkupAdjuster: React.FC<SupplierMarkupAdjusterProps> = ({ 
           <option value="FIXED">Custom Rand markup</option>
         </select>
 
-        <div className="hidden flex-wrap items-center gap-1 sm:flex" role="group" aria-label="Supplier markup presets">
+        <div className="hidden min-w-0 items-center rounded-md border border-gp-border bg-gp-black/50 p-1 sm:flex" role="group" aria-label="Supplier markup presets">
           <button
             type="button"
             onClick={() => selectAdjustment('BASE')}
-            className={`h-8 rounded border px-2 text-[10px] font-black uppercase transition ${selectedKey === 'BASE' ? 'border-gp-red bg-gp-red text-white' : 'border-gp-border bg-gp-input text-gp-text-muted hover:text-gp-text-main'}`}
+            aria-pressed={selectedKey === 'BASE'}
+            className={`h-7 rounded px-2 text-[9px] font-black uppercase transition-colors ${selectedKey === 'BASE' ? 'bg-gp-panel text-white shadow-sm' : 'text-gp-text-muted hover:bg-gp-panel/70 hover:text-gp-text-main'}`}
           >
             Base
           </button>
@@ -65,36 +82,28 @@ export const SupplierMarkupAdjuster: React.FC<SupplierMarkupAdjusterProps> = ({ 
               key={percentage}
               type="button"
               onClick={() => selectAdjustment(String(percentage))}
-              className={`h-8 rounded border px-2 text-[10px] font-black transition ${selectedKey === String(percentage) ? 'border-gp-red bg-gp-red text-white' : 'border-gp-border bg-gp-input text-gp-text-muted hover:text-gp-text-main'}`}
+              aria-pressed={selectedKey === String(percentage)}
+              className={`h-7 rounded px-2 text-[9px] font-black transition-colors ${selectedKey === String(percentage) ? 'bg-gp-red text-white shadow-sm' : 'text-gp-text-muted hover:bg-gp-panel/70 hover:text-gp-text-main'}`}
             >
               {percentage}%
             </button>
           ))}
-          <button
-            type="button"
-            onClick={() => selectAdjustment('FIXED')}
-            className={`h-8 rounded border px-2 text-[10px] font-black uppercase transition ${selectedKey === 'FIXED' ? 'border-gp-red bg-gp-red text-white' : 'border-gp-border bg-gp-input text-gp-text-muted hover:text-gp-text-main'}`}
-          >
-            +R
-          </button>
         </div>
 
-        {adjustment.mode === 'FIXED' && (
-          <label className="flex h-9 min-w-36 flex-1 items-center overflow-hidden rounded border border-gp-red/60 bg-gp-input focus-within:border-gp-red sm:max-w-40">
-            <span className="pl-3 text-xs font-black text-gp-red">R</span>
-            <input
-              type="number"
-              min="0"
-              step="50"
-              inputMode="decimal"
-              value={adjustment.value || ''}
-              onChange={(event) => onChange({ mode: 'FIXED', value: Math.max(0, Number(event.target.value) || 0) })}
-              placeholder="Custom markup"
-              className="h-full min-w-0 flex-1 bg-transparent px-2 text-xs font-bold text-gp-text-main outline-none"
-              aria-label="Custom Rand markup amount"
-            />
-          </label>
-        )}
+        <label className={`flex h-9 w-28 shrink-0 items-center overflow-hidden rounded-md border bg-gp-black/55 transition-colors sm:w-32 ${adjustment.mode === 'FIXED' ? 'border-gp-red/60' : 'border-gp-border hover:border-gp-text-muted'}`}>
+          <span className={`pl-3 text-[10px] font-black ${adjustment.mode === 'FIXED' ? 'text-gp-red' : 'text-gp-text-muted'}`}>+R</span>
+          <input
+            type="number"
+            min="0"
+            step="50"
+            inputMode="decimal"
+            value={adjustment.mode === 'FIXED' && adjustment.value ? adjustment.value : ''}
+            onChange={(event) => onChange({ mode: 'FIXED', value: Math.max(0, Number(event.target.value) || 0) })}
+            placeholder="Custom"
+            className="h-full min-w-0 flex-1 appearance-none bg-transparent px-2 font-mono text-xs font-bold text-gp-text-main outline-none focus:outline-none focus:ring-0"
+            aria-label="Custom Rand markup amount"
+          />
+        </label>
       </div>
     </div>
   );

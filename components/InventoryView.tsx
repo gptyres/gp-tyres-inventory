@@ -311,6 +311,33 @@ const CopyItemButton = ({ item, onCopyItem, className = '' }: { item: InventoryI
   );
 };
 
+const ToolbarToggle = ({
+  checked,
+  label,
+  onChange
+}: {
+  checked: boolean;
+  label: string;
+  onChange: (checked: boolean) => void;
+}) => (
+  <label className={`inline-flex h-8 cursor-pointer select-none items-center gap-2 rounded-md border px-2.5 text-[10px] font-bold transition-colors ${checked ? 'border-gp-red/35 bg-gp-red/10 text-gp-text-main' : 'border-gp-border bg-gp-black/30 text-gp-text-muted hover:text-gp-text-main'}`}>
+    <input
+      type="checkbox"
+      checked={checked}
+      onChange={(event) => onChange(event.target.checked)}
+      className="sr-only"
+    />
+    <span className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${checked ? 'border-gp-red bg-gp-red text-white' : 'border-gp-text-muted/60 bg-gp-input'}`} aria-hidden="true">
+      {checked && (
+        <svg className="h-2.5 w-2.5" viewBox="0 0 12 12" fill="none">
+          <path d="M2.25 6.25 4.75 8.5 9.75 3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+    </span>
+    <span className="whitespace-nowrap">{label}</span>
+  </label>
+);
+
 const formatBatteryCurrency = (amount: number) => new Intl.NumberFormat('en-ZA', {
   style: 'currency',
   currency: 'ZAR',
@@ -1802,16 +1829,17 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       />
       
       {/* View Configuration Toolbar */}
-      <div className={`sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-3 rounded-lg border border-gp-border bg-gp-panel p-3 shadow-sm ${hasMarkupAdjuster ? 'xl:grid-cols-[auto_minmax(330px,1fr)_auto] xl:items-center' : 'lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center'}`}>
+      <div data-testid="inventory-toolbar" className={`sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-x-4 gap-y-3 rounded-md border border-gp-border bg-gp-panel/95 px-3 py-2.5 shadow-xl backdrop-blur ${hasMarkupAdjuster ? 'xl:grid-cols-[minmax(250px,auto)_minmax(420px,1fr)_auto] xl:items-end' : 'lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end'}`}>
         
-        <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="flex min-w-0 flex-wrap items-end gap-3">
             {/* Sorting */}
-            <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase text-gp-text-muted tracking-wider">Sort:</span>
-                <select 
+            <div className="min-w-0">
+                <span className="mb-1 block text-[9px] font-black uppercase tracking-wider text-gp-text-muted">Sort by</span>
+                <div className="flex items-center gap-1.5">
+                  <select
                     value={sortConfig.key}
                     onChange={(e) => setSortConfig(prev => ({ ...prev, key: e.target.value as SortKey }))}
-                    className="bg-gp-input border border-gp-border text-xs rounded p-1.5 text-gp-text-main focus:outline-none focus:border-gp-red font-medium"
+                    className="h-9 min-w-28 rounded-md border border-gp-border bg-gp-input px-2.5 text-xs font-bold text-gp-text-main focus:border-gp-red focus:outline-none"
                 >
                     <option value="size">{isBatteryCatalog ? 'Battery Type' : 'Size / Name'}</option>
                     <option value="brand">{isBatteryCatalog ? 'Description' : 'Brand'}</option>
@@ -1819,21 +1847,27 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
                     <option value="price">Price</option>
                     {!isBatteryCatalog && <option value="location">Location</option>}
                 </select>
-                <button 
+                  <button
+                    type="button"
                     onClick={() => setSortConfig(prev => ({ ...prev, direction: prev.direction === 'asc' ? 'desc' : 'asc' }))}
-                    className="p-1.5 bg-gp-input border border-gp-border rounded text-gp-text-main hover:bg-gp-border"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-gp-border bg-gp-input text-gp-text-main transition-colors hover:border-gp-text-muted hover:bg-gp-border"
+                    title={sortConfig.direction === 'asc' ? 'Sort ascending' : 'Sort descending'}
+                    aria-label={sortConfig.direction === 'asc' ? 'Sort ascending' : 'Sort descending'}
                 >
-                    {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                </button>
+                    <svg className={`h-4 w-4 transition-transform ${sortConfig.direction === 'desc' ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 19V5M6.5 10.5 12 5l5.5 5.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </div>
             </div>
 
             {/* Grouping */}
-            {!isBatteryCatalog && <div className="flex items-center gap-2 sm:border-l sm:border-gp-border sm:pl-4">
-                <span className="text-[10px] font-bold uppercase text-gp-text-muted tracking-wider">Group:</span>
+            {!isBatteryCatalog && <div className="min-w-0 sm:border-l sm:border-gp-border sm:pl-3">
+                <span className="mb-1 block text-[9px] font-black uppercase tracking-wider text-gp-text-muted">Group by</span>
                 <select 
                     value={groupBy}
                     onChange={(e) => setGroupBy(e.target.value as GroupMode)}
-                    className="bg-gp-input border border-gp-border text-xs rounded p-1.5 text-gp-text-main focus:outline-none focus:border-gp-red font-medium"
+                    className="h-9 min-w-24 rounded-md border border-gp-border bg-gp-input px-2.5 text-xs font-bold text-gp-text-main focus:border-gp-red focus:outline-none"
                 >
                     <option value="none">None</option>
                     <option value="location">Location</option>
@@ -1844,10 +1878,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
             {/* Bulk Selection (Admin Only) */}
             {props.isAdmin && !props.isReadOnly && (
-                <div className="flex items-center gap-2 border-l border-gp-border pl-4">
+                <div className="flex h-9 items-center border-l border-gp-border pl-3">
                     <button 
                         onClick={() => handleSelectAll(sortedItems)}
-                        className="text-xs font-bold text-gp-text-muted hover:text-gp-text-main uppercase"
+                        className="text-[10px] font-bold uppercase text-gp-text-muted hover:text-gp-text-main"
                     >
                         {selectedIds.size === sortedItems.length ? 'Deselect All' : 'Select All'}
                     </button>
@@ -1863,52 +1897,48 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
           />
         )}
 
-        <div className="flex w-fit justify-self-start gap-1 rounded-lg border border-gp-border bg-gp-input p-1 shadow-inner xl:justify-self-end">
+        <div className="min-w-0 justify-self-start xl:justify-self-end">
+          <span className="mb-1 block text-[9px] font-black uppercase tracking-wider text-gp-text-muted">View</span>
+          <div className="flex w-fit gap-0.5 rounded-md border border-gp-border bg-gp-black/50 p-1">
             <button
                 onClick={() => props.onViewModeChange(ViewMode.TABLE)}
-                className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${props.viewMode === ViewMode.TABLE ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                className={`flex h-7 items-center rounded px-2.5 text-[9px] font-black uppercase transition-colors ${props.viewMode === ViewMode.TABLE ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:bg-gp-panel/70 hover:text-gp-text-main'}`}
+                aria-pressed={props.viewMode === ViewMode.TABLE}
             >
                 <span>Sheet</span>
             </button>
             <button
                 onClick={() => props.onViewModeChange(ViewMode.GRID)}
-                className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${props.viewMode === ViewMode.GRID ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                className={`flex h-7 items-center rounded px-2.5 text-[9px] font-black uppercase transition-colors ${props.viewMode === ViewMode.GRID ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:bg-gp-panel/70 hover:text-gp-text-main'}`}
+                aria-pressed={props.viewMode === ViewMode.GRID}
             >
                 <span>Card</span>
             </button>
             <button
                 onClick={() => props.onViewModeChange(ViewMode.LIST)}
-                className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${props.viewMode === ViewMode.LIST ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                className={`flex h-7 items-center rounded px-2.5 text-[9px] font-black uppercase transition-colors ${props.viewMode === ViewMode.LIST ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:bg-gp-panel/70 hover:text-gp-text-main'}`}
+                aria-pressed={props.viewMode === ViewMode.LIST}
             >
                 <span>List</span>
             </button>
+          </div>
         </div>
 
         {/* Filters & Toggles */}
-        {!isBatteryCatalog && <div className={`flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 border-t border-gp-border pt-3 ${hasMarkupAdjuster ? 'xl:col-span-3' : 'lg:col-span-2'}`}>
-             
+        {!isBatteryCatalog && <div className={`flex min-w-0 flex-wrap items-center gap-2 border-t border-gp-border pt-2.5 ${hasMarkupAdjuster ? 'xl:col-span-3' : 'lg:col-span-2'}`}>
+             <span className="mr-1 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">Display</span>
+
              {/* Show Images Toggle */}
-             <label className="flex items-center gap-1.5 cursor-pointer border-r border-gp-border pr-3 sm:mr-1">
-                <input 
-                    type="checkbox" 
-                    checked={showImages} 
-                    onChange={e => setShowImages(e.target.checked)}
-                    className="rounded border-gp-border bg-gp-input text-gp-red focus:ring-gp-red"
-                />
-                <span className="text-xs text-gp-text-main font-bold select-none whitespace-nowrap flex items-center gap-1">
-                    <svg className="w-4 h-4 text-gp-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                    Enable Visuals
-                </span>
-             </label>
+             <ToolbarToggle checked={showImages} onChange={setShowImages} label="Visuals" />
 
              {/* Aspect Ratio Selector - Only visible if images enabled */}
              {showImages && (
-                <div className="flex items-center gap-1 border-r border-gp-border pr-3 sm:mr-1">
-                    <span className="text-[10px] font-bold uppercase text-gp-text-muted">Ratio:</span>
+                <div className="flex h-8 items-center gap-1.5 rounded-md border border-gp-border bg-gp-black/30 px-2.5">
+                    <span className="text-[9px] font-bold uppercase text-gp-text-muted">Ratio</span>
                     <select
                         value={aspectRatio}
                         onChange={(e) => setAspectRatio(e.target.value as AspectRatio)}
-                        className="bg-gp-input border border-gp-border text-xs rounded p-1 text-gp-text-main focus:outline-none focus:border-gp-red"
+                        className="bg-transparent text-[10px] font-bold text-gp-text-main focus:outline-none"
                     >
                         <option value="1:1">1:1</option>
                         <option value="4:3">4:3</option>
@@ -1919,54 +1949,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
              )}
 
              {/* Hide Low Stock Toggle */}
-             <label className="flex items-center gap-1.5 cursor-pointer border-r border-gp-border pr-3 sm:mr-1">
-                <input 
-                    type="checkbox" 
-                    checked={hideLowStock} 
-                    onChange={e => setHideLowStock(e.target.checked)}
-                    className="rounded border-gp-border bg-gp-input text-gp-red focus:ring-gp-red"
-                />
-                <span className="text-xs text-gp-text-main font-medium select-none whitespace-nowrap">Hide Low Stock</span>
-             </label>
-
-             <span className="text-[10px] font-bold uppercase text-gp-text-muted tracking-wider whitespace-nowrap">Show:</span>
-             <label className="flex items-center gap-1.5 cursor-pointer">
-                <input 
-                    type="checkbox" 
-                    checked={visibleColumns.location} 
-                    onChange={e => setVisibleColumns({...visibleColumns, location: e.target.checked})}
-                    className="rounded border-gp-border bg-gp-input text-gp-red focus:ring-gp-red"
-                />
-                <span className="text-xs text-gp-text-main font-medium select-none">Loc</span>
-             </label>
-             <label className="flex items-center gap-1.5 cursor-pointer">
-                <input 
-                    type="checkbox" 
-                    checked={visibleColumns.specs} 
-                    onChange={e => setVisibleColumns({...visibleColumns, specs: e.target.checked})}
-                    className="rounded border-gp-border bg-gp-input text-gp-red focus:ring-gp-red"
-                />
-                <span className="text-xs text-gp-text-main font-medium select-none">Specs</span>
-             </label>
-             <label className="flex items-center gap-1.5 cursor-pointer">
-                <input 
-                    type="checkbox" 
-                    checked={visibleColumns.price} 
-                    onChange={e => setVisibleColumns({...visibleColumns, price: e.target.checked})}
-                    className="rounded border-gp-border bg-gp-input text-gp-red focus:ring-gp-red"
-                />
-                <span className="text-xs text-gp-text-main font-medium select-none">Price</span>
-             </label>
-             
-             <label className="flex items-center gap-1.5 cursor-pointer">
-                <input 
-                    type="checkbox" 
-                    checked={visibleColumns.cost} 
-                    onChange={e => setVisibleColumns({...visibleColumns, cost: e.target.checked})}
-                    className="rounded border-gp-border bg-gp-input text-gp-red focus:ring-gp-red"
-                />
-                <span className="text-xs text-gp-text-main font-medium select-none">Cost</span>
-             </label>
+             <ToolbarToggle checked={hideLowStock} onChange={setHideLowStock} label="Hide low stock" />
+             <span className="mx-1 hidden h-5 w-px bg-gp-border sm:block" aria-hidden="true" />
+             <ToolbarToggle checked={visibleColumns.location} onChange={(checked) => setVisibleColumns({...visibleColumns, location: checked})} label="Locations" />
+             <ToolbarToggle checked={visibleColumns.specs} onChange={(checked) => setVisibleColumns({...visibleColumns, specs: checked})} label="Specs" />
+             <ToolbarToggle checked={visibleColumns.price} onChange={(checked) => setVisibleColumns({...visibleColumns, price: checked})} label="Price" />
+             <ToolbarToggle checked={visibleColumns.cost} onChange={(checked) => setVisibleColumns({...visibleColumns, cost: checked})} label="Cost" />
         </div>}
 
       </div>
