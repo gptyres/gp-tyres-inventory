@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { loadSupplierCatalogItems, normalizeBundledSupplierTyres } from './supplierCatalogLoader';
+import {
+  loadSupplierCatalogItems,
+  normalizeBundledSupplierTyres,
+  restoreAttStockFromBundledCatalog
+} from './supplierCatalogLoader';
 import { ProductType, type BatteryProduct, type TyreProduct } from './types';
 
 const bundledTyre: TyreProduct = {
@@ -47,5 +51,46 @@ describe('site-wide supplier catalogue formatting', () => {
       supplierName: 'DIXON BATTERIES'
     });
     expect(battery).not.toHaveProperty('scrapLoading');
+  });
+
+  it('restores ATT quantities when the entire live snapshot incorrectly reports zero stock', () => {
+    const liveItem: TyreProduct = {
+      ...bundledTyre,
+      id: 'live-att-1',
+      brand: '',
+      pattern: 'CEAT AAYUSHMAAN',
+      size: '18.4-30',
+      quantity: 0,
+      costPrice: 9159.60,
+      sellingPrice: 10525,
+      location: 'Supplier network | Out of stock'
+    };
+    const bundledItem: TyreProduct = {
+      ...liveItem,
+      id: 'att-1',
+      brand: 'CEAT',
+      pattern: 'AAYUSHMAAN',
+      quantity: 10,
+      costPrice: 10500,
+      sellingPrice: 10500,
+      location: 'Agricultural'
+    };
+
+    expect(restoreAttStockFromBundledCatalog([liveItem], [bundledItem])).toEqual([
+      expect.objectContaining({
+        id: 'live-att-1',
+        quantity: 10,
+        costPrice: 9159.60,
+        sellingPrice: 10525,
+        stockByLocation: { 'Supplier network': 10 }
+      })
+    ]);
+  });
+
+  it('does not replace ATT stock when the live snapshot already contains available units', () => {
+    const liveItem: TyreProduct = { ...bundledTyre, id: 'live-att-2', quantity: 3 };
+    const bundledItem: TyreProduct = { ...bundledTyre, id: 'att-2', quantity: 10 };
+
+    expect(restoreAttStockFromBundledCatalog([liveItem], [bundledItem])).toEqual([liveItem]);
   });
 });

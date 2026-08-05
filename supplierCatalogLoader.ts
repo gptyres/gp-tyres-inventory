@@ -105,6 +105,55 @@ let allSupplierPOSItemsCache: Promise<InventoryItem[]> | null = null;
 
 const cloneInventoryItems = (items: InventoryItem[]) => items.map((item) => ({ ...item } as InventoryItem));
 
+const attStockMatchKey = (item: InventoryItem): string => {
+  if (item.type !== ProductType.TYRE) return '';
+  const tyre = item as TyreProduct;
+  return [tyre.size, tyre.brand, tyre.pattern]
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toUpperCase();
+};
+
+export const restoreAttStockFromBundledCatalog = (
+  liveItems: InventoryItem[],
+  bundledItems: InventoryItem[]
+): InventoryItem[] => {
+  const liveHasStock = liveItems.some((item) => item.quantity > 0);
+  if (liveHasStock) return liveItems;
+
+  const bundledByKey = new Map<string, InventoryItem[]>();
+  bundledItems.forEach((item) => {
+    const key = attStockMatchKey(item);
+    if (!key) return;
+    bundledByKey.set(key, [...(bundledByKey.get(key) || []), item]);
+  });
+
+  const liveCounts = liveItems.reduce<Map<string, number>>((counts, item) => {
+    const key = attStockMatchKey(item);
+    if (key) counts.set(key, (counts.get(key) || 0) + 1);
+    return counts;
+  }, new Map());
+  const matchedIndexes = new Map<string, number>();
+
+  return liveItems.map((item) => {
+    const key = attStockMatchKey(item);
+    const bundledMatches = bundledByKey.get(key) || [];
+    if (!key || bundledMatches.length === 0 || bundledMatches.length !== liveCounts.get(key)) return item;
+
+    const matchIndex = matchedIndexes.get(key) || 0;
+    matchedIndexes.set(key, matchIndex + 1);
+    const fallback = bundledMatches[matchIndex];
+    if (!fallback || fallback.quantity <= 0) return item;
+
+    return {
+      ...item,
+      quantity: fallback.quantity,
+      stockByLocation: fallback.stockByLocation || { 'Supplier network': fallback.quantity }
+    } as InventoryItem;
+  });
+};
+
 export const normalizeBundledSupplierTyres = (
   catalog: ConcreteSupplierCatalog,
   items: InventoryItem[]
@@ -263,7 +312,13 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
 const loadConcreteSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Promise<InventoryItem[]> => {
   try {
     const liveItems = await loadLiveSupplierCatalogItems(catalog);
-    if (liveItems) return liveItems;
+    if (liveItems) {
+      if (catalog === 'ATT' && !liveItems.some((item) => item.quantity > 0)) {
+        const bundledItems = normalizeBundledSupplierTyres(catalog, await loadBundledSupplierCatalog(catalog));
+        return restoreAttStockFromBundledCatalog(liveItems, bundledItems);
+      }
+      return liveItems;
+    }
   } catch (error) {
     console.warn('Live supplier catalogue unavailable; using bundled fallback.', error);
   }
