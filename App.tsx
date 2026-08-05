@@ -373,8 +373,8 @@ const App: React.FC = () => {
       note: 'Choose the suppliers to include, then search. A size search shows every available brand for that size, with any requested brand listed first.'
     },
     SAILUN: {
-      label: 'Sailun (Inc. VAT)',
-      note: 'Viewing External Supplier Data. Prices calculated with 15% VAT added to Nett Price.'
+      label: 'SAILUN',
+      note: 'Viewing External Supplier Data. Prices use the P2 cost with 15% VAT added and are rounded to the nearest R25.'
     },
     EXCLUSIVE_TYRES: {
       label: 'EXCLUSIVE TYRES',

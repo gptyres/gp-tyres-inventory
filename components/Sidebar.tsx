@@ -272,7 +272,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onClick={() => handleSupplierClick('SAILUN')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'SAILUN' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >
-                  Sailun (Inc. VAT)
+                  SAILUN
                 </button>
                 <button
                   onClick={() => handleSupplierClick('EXCLUSIVE_TYRES')}

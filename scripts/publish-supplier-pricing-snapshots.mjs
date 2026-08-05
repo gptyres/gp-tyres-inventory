@@ -12,6 +12,12 @@ if (!dryRun && !exportItemsJson && !exportItemsFile && !serviceKey) throw new Er
 
 const sources = [
   {
+    catalog: 'SAILUN',
+    supplier: 'SAILUN',
+    dataFile: 'supplier_data/sailunData.ts',
+    sourceFile: 'PCR PRICING FILE AUGUST 2026.pdf'
+  },
+  {
     catalog: 'ALINE',
     supplier: 'Aline',
     dataFile: 'supplier_data/alineData.ts',

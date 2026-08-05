@@ -39,7 +39,7 @@ export const MANUAL_SUPPLIER_BY_CATALOG: Record<ManualSupplierCatalog, {
   supplier: string;
   sheetName: string;
 }> = {
-  SAILUN: { supplier: 'Sailun', sheetName: 'SUPPLIER_SAILUN' },
+  SAILUN: { supplier: 'SAILUN', sheetName: 'SUPPLIER_SAILUN' },
   SAFETY_GRIP: { supplier: 'Safety Grip', sheetName: 'SUPPLIER_SAFETY_GRIP' },
   BRIDGESTONE: { supplier: 'Bridgestone', sheetName: 'SUPPLIER_BRIDGESTONE' }
 };
@@ -49,7 +49,7 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
   sheetName: string;
   productType: 'TYRE' | 'WHEEL';
 }> = {
-  SAILUN: { supplier: 'Sailun', sheetName: 'SUPPLIER_SAILUN', productType: 'TYRE' },
+  SAILUN: { supplier: 'SAILUN', sheetName: 'SUPPLIER_SAILUN', productType: 'TYRE' },
   SAFETY_GRIP: { supplier: 'Safety Grip', sheetName: 'SUPPLIER_SAFETY_GRIP', productType: 'TYRE' },
   BRIDGESTONE: { supplier: 'Bridgestone', sheetName: 'SUPPLIER_BRIDGESTONE', productType: 'TYRE' },
   EXCLUSIVE_TYRES: { supplier: 'Exclusive Tyres', sheetName: 'SUPPLIER_EXCLUSIVE_TYRES', productType: 'TYRE' },

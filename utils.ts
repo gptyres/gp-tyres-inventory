@@ -688,81 +688,60 @@ export const parseRawData = (tyreCsv: string, coiloverCsv: string): InventoryIte
 
 // --- SAILUN PARSER ---
 export const parseSailunData = (rawText: string): InventoryItem[] => {
-  const items: InventoryItem[] = [];
-  const lines = rawText.split('\n');
+  const lines = rawText.split('\n').filter((line) => line.trim());
+  if (lines.length < 2) return [];
+
+  const headers = parseCSVLine(lines[0]).map((header) => header.trim().toLowerCase());
+  const headerIndex = new Map(headers.map((header, index) => [header, index]));
+  const readColumn = (cols: string[], name: string) => {
+    const index = headerIndex.get(name.toLowerCase());
+    return index === undefined ? '' : cols[index]?.trim() || '';
+  };
   const today = new Date().toISOString().split('T')[0];
 
-  lines.forEach((line) => {
-    // Basic validation: Line needs SAP code (starts with 322...) and reasonable length
-    if (!line.trim() || !line.trim().startsWith('322')) return;
+  return lines.slice(1).flatMap((line): InventoryItem[] => {
+    const cols = parseCSVLine(line.trim());
+    const sku = readColumn(cols, 'Supplier SKU');
+    const size = readColumn(cols, 'TYRE_SIZE');
+    const brand = readColumn(cols, 'TYRE_BRAND').toUpperCase();
+    const pattern = readColumn(cols, 'TYRE_PATTERN').toUpperCase();
+    const tyreRating = readColumn(cols, 'TYRE_RATING');
+    const tyreIndex = readColumn(cols, 'TYRE_INDEX');
+    const tyreSpecs = readColumn(cols, 'TYRE_SPECS');
 
-    // Split by spaces, handling multiple spaces
-    const parts = line.trim().split(/\s+/);
-    
-    // Expected Minimum Parts: SAP, Factory, Sidewall, Size, Inch, Pattern(1+), LI, SR, Price(1-7)
-    // Example: 3220002265 8800 BSW 155/80R13 13 ATREZZO SH406 79 T 553 512 502
-    
-    if (parts.length < 9) return;
+    if (!sku || !size || !brand || !pattern) return [];
 
-    const size = parts[3];
-    
-    // Find where numerical stats begin (LI is usually index 6 or 7 depending on Pattern length)
-    // We look from the end backwards for the prices
-    const price1Index = parts.length - 3; // "1-7" price column
-    const nettPrice = parseCurrencyString(parts[price1Index]);
-    
-    // Calculate VAT (15%)
-    const sellingPrice = Math.ceil(nettPrice * 1.15); 
+    const quantity = Math.max(
+      0,
+      parseStockUnits(
+        readColumn(cols, 'Total Stock Units')
+        || readColumn(cols, 'Supplier Stock Units')
+      )
+    );
+    const p2PriceExVat = parseCurrencyString(readColumn(cols, 'Cost Price'));
+    const sellingPrice = p2PriceExVat > 0
+      ? Math.round(((p2PriceExVat * 1.15) / 25) + 1e-9) * 25
+      : 0;
 
-    // Pattern is everything between index 5 and the LI index
-    // LI is usually the 3rd to last non-price element? 
-    // Let's rely on standard column structure roughly
-    // 0:SAP 1:Fact 2:Side 3:Size 4:Inch 5:PatStart ... LI SR PLY? Price1 Price2 Price3
-    
-    // Heuristic: Load Index is usually 2 or 3 digits followed by a Speed Rating letter
-    // Finding index of Load Index
-    let liIndex = -1;
-    for(let i=5; i < parts.length - 3; i++) {
-        if (/^\d{2,3}$/.test(parts[i]) && /^[A-Z]$/.test(parts[i+1])) {
-            liIndex = i;
-            break;
-        }
-    }
-
-    let pattern = "Standard";
-    let loadIndex = "";
-    let speedRating = "";
-
-    if (liIndex > -1) {
-        pattern = parts.slice(5, liIndex).join(' ');
-        loadIndex = parts[liIndex];
-        speedRating = parts[liIndex+1];
-    } else {
-        // Fallback if regex fails, assume pattern is index 5+6
-        pattern = parts[5] + (parts[6] ? " " + parts[6] : "");
-    }
-
-    const loadSpeed = `${loadIndex}${speedRating}`;
-
-    const item: TyreProduct = {
-        id: parts[0], // Use SAP as ID
-        type: ProductType.TYRE,
-        ...supplierTyreImageMetadata('SAILUN', 'Sailun', pattern, parts[0]),
-        brand: 'Sailun',
-        pattern: pattern,
-        size: size,
-        loadSpeedIndex: loadSpeed,
-        location: 'Supplier',
-        quantity: 100, // Dummy high quantity for supplier view
-        costPrice: nettPrice,
-        sellingPrice: sellingPrice, // VAT Inclusive
-        lastUpdated: today
-    };
-
-    items.push(item);
+    return [{
+      id: `sailun-${sku}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('SAILUN', 'SAILUN', pattern, sku),
+      brand: 'SAILUN',
+      pattern,
+      size,
+      loadSpeedIndex: tyreIndex,
+      tyreRating,
+      tyreIndex,
+      tyreSpecs,
+      location: 'Supplier',
+      quantity,
+      stockByLocation: { Supplier: quantity },
+      costPrice: p2PriceExVat,
+      sellingPrice,
+      lastUpdated: today
+    }];
   });
-
-  return items;
 };
 
 // --- EXCLUSIVE TYRES PARSER ---

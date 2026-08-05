@@ -5,9 +5,11 @@ import { APEX_RAW_DATA } from './supplier_data/apexData';
 import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
 import { EXOTIC_RAW_DATA } from './supplier_data/exoticData';
+import { SAILUN_RAW_DATA } from './supplier_data/sailunData';
 import {
   parseApexData,
   parseExoticData,
+  parseSailunData,
   parseTreadsUnlimitedData,
   parseTubestoneData,
   parseTyreLifeData,
@@ -17,6 +19,25 @@ import {
 const nearestVatInclusive25 = (costPrice: number) => Math.round((costPrice * 1.15 / 25) + 1e-9) * 25;
 
 describe('supplier pricing refresh', () => {
+  it('embeds the complete Sailun P2 catalogue with 100 units and rounded VAT-inclusive pricing', () => {
+    const items = parseSailunData(SAILUN_RAW_DATA);
+    const sample = items.find((item) => item.supplierStockCode === '3220002264');
+
+    expect(items).toHaveLength(283);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(28300);
+    expect(sample).toMatchObject({
+      brand: 'SAILUN',
+      pattern: 'ATREZZO SH406',
+      size: '155/65R13',
+      costPrice: 469,
+      sellingPrice: 550,
+      quantity: 100,
+      stockByLocation: { Supplier: 100 }
+    });
+    expect(items.every((item) => item.quantity === 100)).toBe(true);
+    expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
+  });
+
   it('embeds the complete APEX snapshot with exact cost and rounded VAT-inclusive selling prices', () => {
     const items = parseApexData(APEX_RAW_DATA);
     const sample = items.find((item) => item.supplierStockCode === '307672');

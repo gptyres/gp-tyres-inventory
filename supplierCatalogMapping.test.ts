@@ -36,6 +36,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(isLiveSupplierCatalog('ARC')).toBe(false);
     expect(isLiveSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.sheetName).toBe('SUPPLIER_SAILUN');
+    expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.supplier).toBe('SAILUN');
     expect(MANUAL_SUPPLIER_BY_CATALOG.BRIDGESTONE.sheetName).toBe('SUPPLIER_BRIDGESTONE');
   });
 
