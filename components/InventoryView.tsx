@@ -1829,7 +1829,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       />
       
       {/* View Configuration Toolbar */}
-      <div data-testid="inventory-toolbar" className={`sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-x-4 gap-y-3 rounded-md border border-gp-border bg-gp-panel/95 px-3 py-2.5 shadow-xl backdrop-blur ${hasMarkupAdjuster ? 'xl:grid-cols-[minmax(250px,auto)_minmax(420px,1fr)_auto] xl:items-end' : 'lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end'}`}>
+      <div data-testid="inventory-toolbar" className={`sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-x-4 gap-y-3 rounded-md border border-gp-border bg-gp-panel px-3 py-2.5 shadow-xl ${hasMarkupAdjuster ? 'xl:grid-cols-[minmax(250px,auto)_minmax(420px,1fr)_auto] xl:items-end' : 'lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end'}`}>
         
         <div className="flex min-w-0 flex-wrap items-end gap-3">
             {/* Sorting */}
