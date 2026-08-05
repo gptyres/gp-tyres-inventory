@@ -158,11 +158,38 @@ const getDragFileName = (item: InventoryItem): string => (
   `${getItemDisplayName(item).replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() || 'gp-wheel'}.jpg`
 );
 
+const cleanCustomerCopyPart = (value: string | undefined): string => String(value || '')
+  .replace(/\s+/g, ' ')
+  .trim()
+  .toUpperCase();
+
+const removeCopyPart = (value: string, part: string): string => {
+  if (!value || !part) return value;
+  const escapedPart = part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return value
+    .replace(new RegExp(`(^|\\s)${escapedPart}(?=\\s|$)`, 'gi'), ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
+const getCleanTyreClipboardParts = (tyre: TyreProduct) => {
+  const size = cleanCustomerCopyPart(tyre.size);
+  const brand = cleanCustomerCopyPart(tyre.brand).replace(/^(?:UNKNOWN|STANDARD|N\/?A|-)+$/, '');
+  let pattern = cleanCustomerCopyPart(tyre.pattern);
+  pattern = removeCopyPart(pattern, size);
+  pattern = removeCopyPart(pattern, brand)
+    .replace(/\s+\b(?:TYRE|TIRE)\b$/i, '')
+    .replace(/^(?:UNKNOWN|STANDARD|N\/?A|-)$/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return { size, brand, pattern };
+};
+
 const getTyreClipboardText = (item: InventoryItem): string => {
   if (item.type !== ProductType.TYRE) return '';
   const tyre = item as TyreProduct;
-  return [tyre.size, tyre.brand, tyre.pattern, `@ R${Math.round(item.sellingPrice)}`]
-    .map((part) => String(part || '').trim())
+  const { size, brand, pattern } = getCleanTyreClipboardParts(tyre);
+  return [size, brand, pattern, `@ R${Math.round(item.sellingPrice)}`]
     .filter(Boolean)
     .join(' ');
 };
@@ -276,11 +303,38 @@ const isCustomerCopyItem = (item: InventoryItem): boolean => (
   (item.type === ProductType.TYRE || item.type === ProductType.WHEEL) && item.quantity > 0
 );
 
-export const formatBulkClipboardText = (items: InventoryItem[]): string => items
-  .filter(isCustomerCopyItem)
-  .map((item) => getItemClipboardText(item).split('\n').filter(Boolean).join(' | '))
-  .filter(Boolean)
-  .join('\n');
+const getCustomerCopyIdentity = (item: InventoryItem): string => {
+  if (item.type === ProductType.TYRE) {
+    const { size, brand, pattern } = getCleanTyreClipboardParts(item as TyreProduct);
+    return [size, brand, pattern].join('|');
+  }
+  return getWheelClipboardText(item)
+    .replace(/\n@ R\d+(?:\.\d+)?$/i, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toUpperCase();
+};
+
+const customerPriceRank = (item: InventoryItem): number => (
+  Number.isFinite(item.sellingPrice) && item.sellingPrice > 0 ? item.sellingPrice : Number.POSITIVE_INFINITY
+);
+
+export const formatBulkClipboardText = (items: InventoryItem[]): string => {
+  const uniqueItems = new Map<string, InventoryItem>();
+  items.filter(isCustomerCopyItem).forEach((item) => {
+    const identity = getCustomerCopyIdentity(item);
+    if (!identity) return;
+    const existing = uniqueItems.get(identity);
+    if (!existing || customerPriceRank(item) < customerPriceRank(existing)) {
+      uniqueItems.set(identity, item);
+    }
+  });
+
+  return Array.from(uniqueItems.values())
+    .map((item) => getItemClipboardText(item).split('\n').filter(Boolean).join(' | '))
+    .filter(Boolean)
+    .join('\n');
+};
 
 const copyTextToClipboard = async (value: string) => {
   if (navigator.clipboard?.writeText) {

@@ -82,6 +82,31 @@ describe('customer stock clipboard formatting', () => {
   it('does not include zero-stock products in a customer availability message', () => {
     expect(formatBulkClipboardText([{ ...supplierTyre, quantity: 0 }])).toBe('');
   });
+
+  it('removes repeated product text and keeps the lowest-priced duplicate', () => {
+    const duplicateTyres: TyreProduct[] = [
+      {
+        ...supplierTyre,
+        id: 'apex-alnac',
+        size: '195/50R15',
+        brand: 'Apollo',
+        pattern: '195/50R15 Apollo Alnac 4G Tyre',
+        sellingPrice: 1450,
+        quantity: 3
+      },
+      {
+        ...supplierTyre,
+        id: 'exclusive-alnac',
+        size: '195/50R15',
+        brand: 'APOLLO',
+        pattern: 'ALNAC 4G',
+        sellingPrice: 1375,
+        quantity: 2
+      }
+    ];
+
+    expect(formatBulkClipboardText(duplicateTyres)).toBe('195/50R15 APOLLO ALNAC 4G @ R1375');
+  });
 });
 
 describe('supplier wheel card formatting', () => {
