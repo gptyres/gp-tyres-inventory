@@ -5,6 +5,7 @@ import {
   CustomerInfo,
   InventoryItem,
   ProductType,
+  BatteryProduct,
   StaffName,
   TyreProduct,
   WheelProduct
@@ -63,6 +64,10 @@ const getInventoryTitle = (item: InventoryItem) => {
     const wheel = item as WheelProduct;
     return `${wheel.code} ${wheel.size}`.trim();
   }
+  if (item.type === ProductType.BATTERY) {
+    const battery = item as BatteryProduct;
+    return `${battery.batteryType} Dixon Battery`.trim();
+  }
   const coilover = item as CoiloverProduct;
   return `${coilover.brand} ${coilover.vehicleCompatibility}`.trim();
 };
@@ -76,6 +81,7 @@ const getInventoryMeta = (item: InventoryItem) => {
     const wheel = item as WheelProduct;
     return [wheel.pcd, wheel.offset ? `ET${wheel.offset}` : '', wheel.colour].filter(Boolean).join(' | ');
   }
+  if (item.type === ProductType.BATTERY) return (item as BatteryProduct).batteryDescription;
   const coilover = item as CoiloverProduct;
   return coilover.series;
 };

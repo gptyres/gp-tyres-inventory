@@ -32,7 +32,7 @@ const PhotoLibraryView = lazy(() => import('./components/photo-library/PhotoLibr
 const WorkshopTrackerView = lazy(() => import('./components/WorkshopTrackerView').then((module) => ({ default: module.WorkshopTrackerView })));
 const RadarRedView = lazy(() => import('./components/RadarRedView').then((module) => ({ default: module.RadarRedView })));
 const AiAgentAdminView = lazy(() => import('./components/AiAgentAdminView').then((module) => ({ default: module.AiAgentAdminView })));
-import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
+import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, BatteryProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { PricingPOSQuoteLine } from './pricing-processor/types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
 import { supabase, isSupabaseConfigured, InventoryItemRow, SalesLogInsert, SalesLogRow, SystemLogInsert, SystemLogRow, CRMCustomerRow } from './supabaseClient';
@@ -389,6 +389,10 @@ const App: React.FC = () => {
     SAFETY_GRIP: {
       label: 'SAFETY GRIP',
       note: 'Viewing External Supplier Data. Cost is the supplied nett price; selling price adds 15% VAT once and rounds to the nearest R25.'
+    },
+    DIXON_BATTERIES: {
+      label: 'DIXON BATTERIES',
+      note: 'Viewing the Dixon Batteries price catalogue. Nett and gross costs exclude VAT; gross includes scrap. Cost Including and Selling Price are shown exactly as supplied.'
     },
     REVOLUTION_TYRES: {
       label: 'REVOLUTION TYRES',
@@ -938,6 +942,7 @@ const App: React.FC = () => {
   const getInventoryCartTitle = (item: InventoryItem): string => {
     if (item.type === ProductType.TYRE) return `${(item as TyreProduct).size} ${(item as TyreProduct).brand}`.trim();
     if (item.type === ProductType.WHEEL) return `${(item as WheelProduct).code} ${(item as WheelProduct).size}`.trim();
+    if (item.type === ProductType.BATTERY) return `${(item as BatteryProduct).batteryType} Dixon Battery`.trim();
     return `${(item as CoiloverProduct).brand} ${(item as CoiloverProduct).vehicleCompatibility}`.trim();
   };
 
@@ -950,6 +955,7 @@ const App: React.FC = () => {
       const wheel = item as WheelProduct;
       return [wheel.pcd, wheel.offset ? `ET${wheel.offset}` : '', wheel.colour].filter(Boolean).join(' | ');
     }
+    if (item.type === ProductType.BATTERY) return (item as BatteryProduct).batteryDescription;
     return (item as CoiloverProduct).series;
   };
 
@@ -962,6 +968,7 @@ const App: React.FC = () => {
       const wheel = item as WheelProduct;
       return [wheel.pcd, wheel.offset ? `ET${wheel.offset}` : '', wheel.colour].filter(Boolean).join(' | ');
     }
+    if (item.type === ProductType.BATTERY) return (item as BatteryProduct).batteryDescription;
     return (item as CoiloverProduct).series;
   };
 

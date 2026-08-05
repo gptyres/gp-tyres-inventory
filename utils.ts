@@ -1,5 +1,5 @@
 
-import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
+import { BatteryProduct, InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
 import { parseAlineWheelDescription, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 
@@ -101,6 +101,19 @@ const getInventorySearchIndex = (item: InventoryItem): InventorySearchIndex => {
       variants.push(coilover.vehicleCompatibility.replace(/[^a-zA-Z0-9]/g, ''));
       variants.push(coilover.vehicleCompatibility.replace(/\s+/g, ''));
     }
+  } else if (item.type === ProductType.BATTERY) {
+    const battery = item as BatteryProduct;
+    searchableParts = [
+      battery.batteryType,
+      battery.batteryDescription,
+      battery.nettPrice,
+      battery.grossPrice,
+      battery.costIncluding,
+      battery.sellingPrice,
+      battery.supplierName,
+      'Battery'
+    ];
+    variants.push(battery.batteryType.replace(/[^a-zA-Z0-9]/g, ''));
   }
 
   const mainText = normalizeSearchTerm(searchableParts.join(' '));

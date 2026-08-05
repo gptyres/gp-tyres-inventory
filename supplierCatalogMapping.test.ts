@@ -27,12 +27,14 @@ describe('supplier catalogue registry mapping', () => {
     expect(isRegistryBackedSupplierCatalog('SAFETY_GRIP')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('BRIDGESTONE')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('ARC')).toBe(false);
+    expect(isRegistryBackedSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('APEX')).toBe(true);
     expect(isManualSupplierCatalog('SAILUN')).toBe(true);
     expect(isManualSupplierCatalog('SAFETY_GRIP')).toBe(true);
     expect(isManualSupplierCatalog('BRIDGESTONE')).toBe(true);
     expect(isLiveSupplierCatalog('SAILUN')).toBe(true);
     expect(isLiveSupplierCatalog('ARC')).toBe(false);
+    expect(isLiveSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.sheetName).toBe('SUPPLIER_SAILUN');
     expect(MANUAL_SUPPLIER_BY_CATALOG.BRIDGESTONE.sheetName).toBe('SUPPLIER_BRIDGESTONE');
   });

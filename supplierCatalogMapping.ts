@@ -2,7 +2,7 @@ import type { SupplierCatalog } from './types.js';
 
 export type RegistryBackedSupplierCatalog = Exclude<
   SupplierCatalog,
-  'ALL_SUPPLIERS' | 'SAILUN' | 'SAFETY_GRIP' | 'BRIDGESTONE' | 'ARC'
+  'ALL_SUPPLIERS' | 'SAILUN' | 'SAFETY_GRIP' | 'BRIDGESTONE' | 'DIXON_BATTERIES' | 'ARC'
 >;
 
 export type ManualSupplierCatalog = Extract<SupplierCatalog, 'SAILUN' | 'SAFETY_GRIP' | 'BRIDGESTONE'>;

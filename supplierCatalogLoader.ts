@@ -1,4 +1,4 @@
-import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
+import { BatteryProduct, InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { loadLiveSupplierCatalogItems } from './liveSupplierCatalog';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import {
@@ -30,6 +30,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'ATT',
   'BRIDGESTONE',
   'SAFETY_GRIP',
+  'DIXON_BATTERIES',
   'REVOLUTION_TYRES',
   'ALINE',
   'STAMFORD',
@@ -53,6 +54,7 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   ATT: 'ATT',
   BRIDGESTONE: 'BRIDGESTONE',
   SAFETY_GRIP: 'SAFETY GRIP',
+  DIXON_BATTERIES: 'DIXON BATTERIES',
   REVOLUTION_TYRES: 'REVOLUTION TYRES',
   ALINE: 'ALINE',
   STAMFORD: 'STAMFORD',
@@ -81,6 +83,7 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   ATT: 'att',
   BRIDGESTONE: 'bridgestone',
   SAFETY_GRIP: 'safetygrip',
+  DIXON_BATTERIES: 'dixon-batteries',
   REVOLUTION_TYRES: 'revolution-tyres',
   ALINE: 'aline',
   STAMFORD: 'stamford',
@@ -182,6 +185,24 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     case 'SAFETY_GRIP': {
       const { SAFETY_GRIP_RAW_DATA } = await import('./supplier_data/safetygripData');
       return parseSafetyGripData(SAFETY_GRIP_RAW_DATA);
+    }
+    case 'DIXON_BATTERIES': {
+      const { DIXON_BATTERY_ROWS } = await import('./supplier_data/dixonBatteryData');
+      return DIXON_BATTERY_ROWS.map(([batteryType, batteryDescription, nettPrice, grossPrice, costIncluding, sellingPrice], index): BatteryProduct => ({
+        id: `dixon-battery-${index + 1}-${batteryType.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        type: ProductType.BATTERY,
+        batteryType,
+        batteryDescription,
+        nettPrice,
+        grossPrice,
+        costIncluding,
+        quantity: 0,
+        costPrice: costIncluding,
+        sellingPrice,
+        lastUpdated: '2026-08-05',
+        supplierName: 'DIXON BATTERIES',
+        supplierStockCode: batteryType
+      }));
     }
     case 'REVOLUTION_TYRES':
       // Revolution Tyres is served from its authenticated live catalogue snapshot.

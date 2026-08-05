@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeBundledSupplierTyres } from './supplierCatalogLoader';
-import { ProductType, type TyreProduct } from './types';
+import { loadSupplierCatalogItems, normalizeBundledSupplierTyres } from './supplierCatalogLoader';
+import { ProductType, type BatteryProduct, type TyreProduct } from './types';
 
 const bundledTyre: TyreProduct = {
   id: 'bundled-1',
@@ -29,5 +29,23 @@ describe('site-wide supplier catalogue formatting', () => {
       tyreIndex: '',
       loadSpeedIndex: '18PR'
     });
+  });
+
+  it('loads the Dixon catalogue with only the requested battery price fields', async () => {
+    const items = await loadSupplierCatalogItems('DIXON_BATTERIES');
+    expect(items).toHaveLength(32);
+    expect(items.every((item) => item.type === ProductType.BATTERY)).toBe(true);
+
+    const battery = items[0] as BatteryProduct;
+    expect(battery).toMatchObject({
+      batteryType: '612',
+      batteryDescription: 'SMF CaCa 12V 46Ah, 355 CCA, LWH: 207x175x190',
+      nettPrice: 1398,
+      grossPrice: 1568,
+      costIncluding: 1607.70,
+      sellingPrice: 1807.70,
+      supplierName: 'DIXON BATTERIES'
+    });
+    expect(battery).not.toHaveProperty('scrapLoading');
   });
 });
