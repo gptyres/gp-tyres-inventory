@@ -69,6 +69,10 @@ import {
   getSupplierSizeSearchSummary,
   searchSupplierInventory
 } from './supplierInventorySearch';
+import {
+  extractFlotationTyreSizeQuery,
+  getNoExactFlotationStockMessage
+} from './flotationTyreSizeSearch';
 
 const POS_REFERENCE_COUNTERS: Record<InvoiceDocument['documentType'], { storageKey: string; startAt: number }> = {
   INVOICE: {
@@ -738,6 +742,11 @@ const App: React.FC = () => {
       ? getSupplierSizeSearchSummary(filteredItems, debouncedSearchQuery)
       : null
   ), [currentView, activeSupplierCatalog, filteredItems, debouncedSearchQuery]);
+
+  const flotationSizeSearch = useMemo(
+    () => extractFlotationTyreSizeQuery(debouncedSearchQuery),
+    [debouncedSearchQuery]
+  );
 
   const filteredOrders = useMemo(() => {
     return searchOrders(orders, debouncedSearchQuery);
@@ -1847,6 +1856,8 @@ const App: React.FC = () => {
                     isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
                     showSupplierName={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS'}
                     priceLabel={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALINE' ? 'Recommended Selling Price' : undefined}
+                    emptyStateTitle={flotationSizeSearch ? getNoExactFlotationStockMessage(flotationSizeSearch) : undefined}
+                    emptyStateDetail={flotationSizeSearch ? 'Diameter, width and rim must all match. Similar and metric substitute sizes are not shown.' : undefined}
                   />
                 )}
               </div>

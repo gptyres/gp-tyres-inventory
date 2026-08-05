@@ -11,6 +11,10 @@ import {
 } from '../types';
 import { STAFF_NAMES } from '../config';
 import { formatCurrency, searchInventory } from '../utils';
+import {
+  extractFlotationTyreSizeQuery,
+  getNoExactFlotationStockMessage
+} from '../flotationTyreSizeSearch';
 
 interface ServicePreset {
   title: string;
@@ -139,6 +143,13 @@ export const POSModal: React.FC<POSModalProps> = ({
     const cleanedQuery = query.trim();
     return cleanedQuery ? searchInventory(availableSupplierItems, cleanedQuery) : availableSupplierItems;
   }, [availableSupplierItems, query]);
+
+  const flotationSizeQuery = useMemo(() => extractFlotationTyreSizeQuery(query), [query]);
+  const hasNoExactFlotationMatch = Boolean(
+    flotationSizeQuery
+    && searchResults.length === 0
+    && supplierSearchResults.length === 0
+  );
 
   const totals = useMemo(() => {
     return cart.reduce(
@@ -417,7 +428,9 @@ export const POSModal: React.FC<POSModalProps> = ({
 
                 {hasSearchText(query) && searchResults.length === 0 && (
                   <div className="rounded-md border border-dashed border-gp-border bg-gp-black/40 p-4 text-sm text-gp-text-muted">
-                    No current GP stock matched this search. Check supplier stock below or add it as a custom quote line.
+                    {hasNoExactFlotationMatch && flotationSizeQuery
+                      ? getNoExactFlotationStockMessage(flotationSizeQuery)
+                      : 'No current GP stock matched this search. Check supplier stock below or add it as a custom quote line.'}
                   </div>
                 )}
               </div>
@@ -467,7 +480,11 @@ export const POSModal: React.FC<POSModalProps> = ({
                   </div>
                 ) : (
                   <div className="rounded-md border border-blue-900/50 bg-blue-950/10 p-4">
-                    <p className="text-sm font-bold text-gp-text-main">No supplier stock matched this search.</p>
+                    <p className="text-sm font-bold text-gp-text-main">
+                      {hasNoExactFlotationMatch && flotationSizeQuery
+                        ? getNoExactFlotationStockMessage(flotationSizeQuery)
+                        : 'No supplier stock matched this search.'}
+                    </p>
                     {query.trim().length > 0 ? (
                       <>
                         <p className="mt-1 text-xs text-gp-text-muted">Add the searched item as a custom quote line, then edit the price in the register.</p>
