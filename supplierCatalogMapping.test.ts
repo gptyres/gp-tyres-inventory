@@ -14,6 +14,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(REGISTRY_SUPPLIER_BY_CATALOG.EXCLUSIVE_TYRES).toBe('Exclusive Tyres');
     expect(REGISTRY_SUPPLIER_BY_CATALOG.TREADS_UNLIMITED).toBe('Threads Unlimited');
     expect(REGISTRY_SUPPLIER_BY_CATALOG.SUMITOMO_DUNLOP).toBe('Sumitomo/Dunlop');
+    expect(REGISTRY_SUPPLIER_BY_CATALOG.REVOLUTION_TYRES).toBe('Revolution Tyres');
   });
 
   it('maps both Tyre Life catalogues to one registry job', () => {
@@ -26,12 +27,14 @@ describe('supplier catalogue registry mapping', () => {
     expect(isRegistryBackedSupplierCatalog('SAFETY_GRIP')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('BRIDGESTONE')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('ARC')).toBe(false);
+    expect(isRegistryBackedSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('APEX')).toBe(true);
     expect(isManualSupplierCatalog('SAILUN')).toBe(true);
     expect(isManualSupplierCatalog('SAFETY_GRIP')).toBe(true);
     expect(isManualSupplierCatalog('BRIDGESTONE')).toBe(true);
     expect(isLiveSupplierCatalog('SAILUN')).toBe(true);
     expect(isLiveSupplierCatalog('ARC')).toBe(false);
+    expect(isLiveSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.sheetName).toBe('SUPPLIER_SAILUN');
     expect(MANUAL_SUPPLIER_BY_CATALOG.BRIDGESTONE.sheetName).toBe('SUPPLIER_BRIDGESTONE');
   });
@@ -40,6 +43,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(isSupplierImportCatalog('APEX')).toBe(true);
     expect(isSupplierImportCatalog('SAILUN')).toBe(true);
     expect(isSupplierImportCatalog('BRIDGESTONE')).toBe(true);
+    expect(isSupplierImportCatalog('REVOLUTION_TYRES')).toBe(true);
     expect(isSupplierImportCatalog('TYRE_LIFE_WHEELS')).toBe(true);
     expect(isSupplierImportCatalog('ALL_SUPPLIERS')).toBe(false);
     expect(isSupplierImportCatalog('ARC')).toBe(false);

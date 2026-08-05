@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { USER_CREDENTIALS } from '../config.js';
+import { getSessionReleaseId } from './deploymentVersion.js';
 
 export const STAFF_SESSION_COOKIE = 'gp_staff_session';
 export const GP_ORGANIZATION_ID = '8bbf5ea0-b71f-4c2a-a2c0-55ce7316e8c6';
@@ -8,6 +9,7 @@ const SESSION_MAX_AGE_SECONDS = 12 * 60 * 60;
 export interface StaffSessionPayload {
   terminalId: string;
   organizationId: string;
+  releaseId: string;
   issuedAt: number;
   expiresAt: number;
 }
@@ -73,6 +75,7 @@ export const createStaffSessionCookie = (terminalId: string) => {
   const payload: StaffSessionPayload = {
     terminalId: normalizedTerminal,
     organizationId: GP_ORGANIZATION_ID,
+    releaseId: getSessionReleaseId(),
     issuedAt,
     expiresAt: issuedAt + SESSION_MAX_AGE_SECONDS
   };
@@ -100,6 +103,7 @@ export const verifyStaffSession = (request: ApiRequestLike): StaffSessionPayload
     const now = Math.floor(Date.now() / 1000);
     if (
       payload.organizationId !== GP_ORGANIZATION_ID
+      || payload.releaseId !== getSessionReleaseId()
       || !staffCredentials()[payload.terminalId]
       || payload.expiresAt <= now
       || payload.issuedAt > now + 60

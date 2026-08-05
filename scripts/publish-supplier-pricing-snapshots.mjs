@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 
@@ -6,7 +6,9 @@ const SUPABASE_URL = 'https://moiybakshvuvppesbnpt.supabase.co';
 const serviceKey = process.env.SUPABASE_SECRET_KEY;
 const dryRun = process.argv.includes('--dry-run');
 const exportItemsJson = process.argv.includes('--export-items-json');
-if (!dryRun && !exportItemsJson && !serviceKey) throw new Error('SUPABASE_SECRET_KEY is not available in this environment.');
+const exportItemsFileIndex = process.argv.indexOf('--export-items-file');
+const exportItemsFile = exportItemsFileIndex >= 0 ? String(process.argv[exportItemsFileIndex + 1] || '').trim() : '';
+if (!dryRun && !exportItemsJson && !exportItemsFile && !serviceKey) throw new Error('SUPABASE_SECRET_KEY is not available in this environment.');
 
 const sources = [
   {
@@ -20,7 +22,7 @@ const sources = [
     catalog: 'APEX',
     supplier: 'Apex',
     dataFile: 'supplier_data/apexData.ts',
-    sourceFile: 'apex_portal_import_2026-07-15.csv'
+    sourceFile: 'apex_stockfinder_inventory_2026-08-05.csv'
   },
   {
     catalog: 'TREADS_UNLIMITED',
@@ -193,6 +195,10 @@ const buildAlineItems = (rows, source) => {
     return index;
   };
   const get = (row, name) => clean(row[column(name)]);
+  const getOptional = (row, name) => {
+    const index = headers.indexOf(name);
+    return index >= 0 ? clean(row[index]) : '';
+  };
 
   return rows.slice(1).map((row) => {
     const sku = get(row, 'Stock Code');
@@ -232,6 +238,7 @@ const buildAlineItems = (rows, source) => {
       size: wheel.size,
       stock_location: stockLocation,
       stock_units_availability: stockUnits > 0 ? 'In stock' : 'Out of stock',
+      supplier_lead_time: getOptional(row, 'Lead Time') || null,
       stock_units: stockUnits,
       cost_price: costPrice,
       selling_price: recommendedPrice,
@@ -255,6 +262,10 @@ const buildItems = async (source) => {
     return match && !/^total$/i.test(match[1]) ? [{ index, location: match[1].trim() }] : [];
   });
   const get = (row, name) => clean(row[column(name)]);
+  const getOptional = (row, name) => {
+    const index = headers.indexOf(name);
+    return index >= 0 ? clean(row[index]) : '';
+  };
 
   return rows.slice(1).map((row) => {
     const sku = get(row, 'Supplier SKU');
@@ -280,6 +291,7 @@ const buildItems = async (source) => {
       size: get(row, 'TYRE_SIZE'),
       stock_location: stockLocation,
       stock_units_availability: stockUnits > 0 ? 'In stock' : 'Out of stock',
+      supplier_lead_time: getOptional(row, 'Lead Time') || null,
       stock_units: stockUnits,
       cost_price: parseMoney(get(row, 'Cost Price')),
       selling_price: parseMoney(get(row, 'Selling Price')),
@@ -291,6 +303,11 @@ const buildItems = async (source) => {
 
 const prepared = await Promise.all(selectedSources.map(async (source) => ({ ...source, items: await buildItems(source) })));
 const totalRows = prepared.reduce((total, source) => total + source.items.length, 0);
+if (exportItemsFile) {
+  await writeFile(resolve(exportItemsFile), `${JSON.stringify(prepared.flatMap((source) => source.items), null, 2)}\n`, 'utf8');
+  console.log(JSON.stringify({ exportItemsFile: resolve(exportItemsFile), totalRows }, null, 2));
+  process.exit(0);
+}
 if (exportItemsJson) {
   const argumentValue = (name, fallback) => {
     const index = process.argv.indexOf(name);

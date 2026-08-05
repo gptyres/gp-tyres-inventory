@@ -2,7 +2,7 @@ import type { SupplierCatalog } from './types.js';
 
 export type RegistryBackedSupplierCatalog = Exclude<
   SupplierCatalog,
-  'ALL_SUPPLIERS' | 'SAILUN' | 'SAFETY_GRIP' | 'BRIDGESTONE' | 'ARC'
+  'ALL_SUPPLIERS' | 'SAILUN' | 'SAFETY_GRIP' | 'BRIDGESTONE' | 'DIXON_BATTERIES' | 'ARC'
 >;
 
 export type ManualSupplierCatalog = Extract<SupplierCatalog, 'SAILUN' | 'SAFETY_GRIP' | 'BRIDGESTONE'>;
@@ -13,6 +13,7 @@ export const REGISTRY_SUPPLIER_BY_CATALOG: Record<RegistryBackedSupplierCatalog,
   EXCLUSIVE_TYRES: 'Exclusive Tyres',
   TYREWAREHOUSE: 'Tyrewarehouse',
   ATT: 'ATT',
+  REVOLUTION_TYRES: 'Revolution Tyres',
   ALINE: 'Aline',
   STAMFORD: 'Stamford',
   APEX: 'Apex',
@@ -23,7 +24,8 @@ export const REGISTRY_SUPPLIER_BY_CATALOG: Record<RegistryBackedSupplierCatalog,
   TREADS_UNLIMITED: 'Threads Unlimited',
   TYRE_LIFE: 'Tyre Life',
   TYRE_LIFE_WHEELS: 'Tyre Life',
-  NDT: 'NDT'
+  NDT: 'NDT',
+  WHEEL_TECH: 'WHEEL TECH'
 };
 
 export const isRegistryBackedSupplierCatalog = (
@@ -53,6 +55,7 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
   EXCLUSIVE_TYRES: { supplier: 'Exclusive Tyres', sheetName: 'SUPPLIER_EXCLUSIVE_TYRES', productType: 'TYRE' },
   TYREWAREHOUSE: { supplier: 'Tyrewarehouse', sheetName: 'SUPPLIER_TYREWAREHOUSE', productType: 'TYRE' },
   ATT: { supplier: 'ATT', sheetName: 'SUPPLIER_ATT', productType: 'TYRE' },
+  REVOLUTION_TYRES: { supplier: 'Revolution Tyres', sheetName: 'SUPPLIER_REVOLUTION_TYRES', productType: 'TYRE' },
   ALINE: { supplier: 'Aline', sheetName: 'SUPPLIER_ALINE', productType: 'WHEEL' },
   STAMFORD: { supplier: 'Stamford', sheetName: 'SUPPLIER_STAMFORD', productType: 'TYRE' },
   APEX: { supplier: 'Apex', sheetName: 'SUPPLIER_APEX', productType: 'TYRE' },
@@ -63,7 +66,8 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
   TREADS_UNLIMITED: { supplier: 'Threads Unlimited', sheetName: 'SUPPLIER_TREADS_UNLIMITED', productType: 'TYRE' },
   TYRE_LIFE: { supplier: 'Tyre Life', sheetName: 'SUPPLIER_TYRE_LIFE', productType: 'TYRE' },
   TYRE_LIFE_WHEELS: { supplier: 'Tyre Life', sheetName: 'SUPPLIER_TYRE_LIFE_WHEELS', productType: 'WHEEL' },
-  NDT: { supplier: 'NDT', sheetName: 'SUPPLIER_NDT', productType: 'WHEEL' }
+  NDT: { supplier: 'NDT', sheetName: 'SUPPLIER_NDT', productType: 'WHEEL' },
+  WHEEL_TECH: { supplier: 'WHEEL TECH', sheetName: 'SUPPLIER_WHEEL_TECH', productType: 'WHEEL' }
 };
 
 export const isSupplierImportCatalog = (

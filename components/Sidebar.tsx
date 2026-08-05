@@ -305,6 +305,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   SAFETY GRIP
                 </button>
                 <button
+                  onClick={() => handleSupplierClick('DIXON_BATTERIES')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'DIXON_BATTERIES' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  DIXON BATTERIES
+                </button>
+                <button
+                  onClick={() => handleSupplierClick('REVOLUTION_TYRES')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'REVOLUTION_TYRES' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  REVOLUTION TYRES
+                </button>
+                <button
                   onClick={() => handleSupplierClick('ALINE')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALINE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >
@@ -375,6 +387,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'NDT' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >
                   NDT
+                </button>
+                <button
+                  onClick={() => handleSupplierClick('WHEEL_TECH')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'WHEEL_TECH' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  WHEEL TECH
                 </button>
               </div>
             )}

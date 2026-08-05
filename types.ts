@@ -2,7 +2,8 @@
 export enum ProductType {
   TYRE = 'TYRE',
   WHEEL = 'WHEEL',
-  COILOVER = 'COILOVER'
+  COILOVER = 'COILOVER',
+  BATTERY = 'BATTERY'
 }
 
 export enum ViewMode {
@@ -12,7 +13,7 @@ export enum ViewMode {
 }
 
 export type AppView = 'DASHBOARD' | 'TRAINING_PORTAL' | 'CUSTOMER_HUB' | 'PHOTO_LIBRARY' | 'WORKSHOP_TRACKER' | 'RADAR_RED' | 'AI_AGENT_ADMIN' | 'INVENTORY' | 'ORDERS' | 'BACKORDERS' | 'SYSTEM_LOGS' | 'SUPPLIER_PORTAL' | 'SHIPPING_PORTAL' | 'PAYMENT_PORTAL' | 'TOOLS_PORTAL' | 'SUPPLIER_INVENTORY' | 'WHEEL_CATALOG' | 'WHATSAPP_PORTAL' | 'QUOTE_MODULE' | 'COURIER_LOGISTICS_ASSISTANT';
-export type SupplierCatalog = 'ALL_SUPPLIERS' | 'SAILUN' | 'EXCLUSIVE_TYRES' | 'TYREWAREHOUSE' | 'ATT' | 'BRIDGESTONE' | 'SAFETY_GRIP' | 'ALINE' | 'STAMFORD' | 'TREAD_ZONE' | 'SUMITOMO_DUNLOP' | 'TYRE_LIFE_WHEELS' | 'TREADS_UNLIMITED' | 'TYRE_LIFE' | 'APEX' | 'TUBESTONE' | 'EXOTIC' | 'ARC' | 'NDT';
+export type SupplierCatalog = 'ALL_SUPPLIERS' | 'SAILUN' | 'EXCLUSIVE_TYRES' | 'TYREWAREHOUSE' | 'ATT' | 'BRIDGESTONE' | 'SAFETY_GRIP' | 'DIXON_BATTERIES' | 'REVOLUTION_TYRES' | 'ALINE' | 'STAMFORD' | 'TREAD_ZONE' | 'SUMITOMO_DUNLOP' | 'TYRE_LIFE_WHEELS' | 'TREADS_UNLIMITED' | 'TYRE_LIFE' | 'APEX' | 'TUBESTONE' | 'EXOTIC' | 'ARC' | 'NDT' | 'WHEEL_TECH';
 
 // Changed to string to support dynamic config updates without type conflicts
 export type StaffName = string;
@@ -27,8 +28,10 @@ export interface BaseProduct {
   supplierName?: string;
   supplierStockCode?: string;
   stockByLocation?: Record<string, number>;
+  supplierLeadTime?: string;
   imageDesignKey?: string;
   imageFinishKey?: string;
+  imageSourceKey?: string;
   sheetRowNumber?: number;
   sheetFingerprint?: string;
   sheetSyncedAt?: string;
@@ -67,7 +70,16 @@ export interface CoiloverProduct extends BaseProduct {
   vehicleCompatibility: string; // e.g., VW Golf 7
 }
 
-export type InventoryItem = TyreProduct | WheelProduct | CoiloverProduct;
+export interface BatteryProduct extends BaseProduct {
+  type: ProductType.BATTERY;
+  batteryType: string;
+  batteryDescription: string;
+  nettPrice: number;
+  grossPrice: number;
+  costIncluding: number;
+}
+
+export type InventoryItem = TyreProduct | WheelProduct | CoiloverProduct | BatteryProduct;
 
 export type CartLineType = 'INVENTORY' | 'SUPPLIER' | 'SERVICE' | 'CUSTOM';
 

@@ -32,7 +32,7 @@ const PhotoLibraryView = lazy(() => import('./components/photo-library/PhotoLibr
 const WorkshopTrackerView = lazy(() => import('./components/WorkshopTrackerView').then((module) => ({ default: module.WorkshopTrackerView })));
 const RadarRedView = lazy(() => import('./components/RadarRedView').then((module) => ({ default: module.RadarRedView })));
 const AiAgentAdminView = lazy(() => import('./components/AiAgentAdminView').then((module) => ({ default: module.AiAgentAdminView })));
-import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
+import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, BatteryProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { PricingPOSQuoteLine } from './pricing-processor/types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
 import { supabase, isSupabaseConfigured, InventoryItemRow, SalesLogInsert, SalesLogRow, SystemLogInsert, SystemLogRow, CRMCustomerRow } from './supabaseClient';
@@ -108,6 +108,7 @@ const filterSheetManagedInventory = (inventoryItems: InventoryItem[]) => {
 const App: React.FC = () => {
   // --- AUTH STATE ---
   const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [sessionReleaseId, setSessionReleaseId] = useState<string | null>(null);
 
   // --- DATA STATE (with Persistence) ---
   const [items, setItems] = useState<InventoryItem[]>([]);
@@ -205,6 +206,60 @@ const App: React.FC = () => {
     document.addEventListener('scroll', handleScroll, true);
     return () => document.removeEventListener('scroll', handleScroll, true);
   }, []);
+
+  useEffect(() => {
+    if (!currentUser || !sessionReleaseId) return;
+
+    let cancelled = false;
+    let signingOut = false;
+
+    const signOutForDeployment = async () => {
+      if (cancelled || signingOut) return;
+      signingOut = true;
+      await Promise.allSettled([
+        fetch('/api/staff-session', { method: 'DELETE', credentials: 'same-origin' }),
+        clearAdminSession()
+      ]);
+      if (cancelled) return;
+      setIsAdmin(false);
+      setCurrentUser(null);
+      setSessionReleaseId(null);
+      window.location.reload();
+    };
+
+    const verifyCurrentDeployment = async () => {
+      try {
+        const response = await fetch(`/api/staff-session?release_check=${Date.now()}`, {
+          method: 'GET',
+          credentials: 'same-origin',
+          cache: 'no-store',
+          headers: { Accept: 'application/json' }
+        });
+        if (!response.ok) return;
+        const result = await response.json() as { authenticated?: boolean; releaseId?: string };
+        if (result.authenticated === false || (result.releaseId && result.releaseId !== sessionReleaseId)) {
+          await signOutForDeployment();
+        }
+      } catch {
+        // A temporary connection problem must never sign a working user out.
+      }
+    };
+
+    const handleWindowFocus = () => { void verifyCurrentDeployment(); };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') void verifyCurrentDeployment();
+    };
+    const intervalId = window.setInterval(() => { void verifyCurrentDeployment(); }, 30_000);
+    window.addEventListener('focus', handleWindowFocus);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+      window.removeEventListener('focus', handleWindowFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [currentUser, sessionReleaseId]);
 
   useEffect(() => {
     const scrollContainer = activeScrollContainerRef.current || mainScrollContainerRef.current;
@@ -337,12 +392,21 @@ const App: React.FC = () => {
     },
     SAFETY_GRIP: {
       label: 'SAFETY GRIP',
-      note: 'Viewing External Supplier Data. Prices are calculated with 15% VAT added to the supplied price.'
+      note: 'Viewing External Supplier Data. Cost is the supplied nett price; selling price adds 15% VAT once and rounds to the nearest R25.'
+    },
+    DIXON_BATTERIES: {
+      label: 'DIXON BATTERIES',
+      note: 'Viewing the Dixon Batteries price catalogue. Nett and gross costs exclude VAT; gross includes scrap. Cost Including and Selling Price are shown exactly as supplied.'
+    },
+    REVOLUTION_TYRES: {
+      label: 'REVOLUTION TYRES',
+      note: 'Viewing authenticated Revolution Tyres supplier stock. Cost is the portal nett price; selling price adds 15% VAT once and rounds to the nearest R25.',
+      portalUrl: 'https://revolutiontyres.com/login'
     },
     ALINE: {
       label: 'ALINE',
       note: 'Viewing External Supplier Data. Recommended selling prices include VAT and are a guide only, not the final selling price. Branch wheel stock is shown by location.',
-      portalUrl: 'https://www.alinewheels.co.za/login-2/?arm_redirect=https%3A%2F%2Fwww.alinewheels.co.za%2Fedit_profile%2F'
+      portalUrl: 'https://alinewheels.cataloghive.com/'
     },
     STAMFORD: {
       label: 'STAMFORD',
@@ -397,6 +461,11 @@ const App: React.FC = () => {
       label: 'NDT',
       note: 'Viewing the verified NDT wheel catalogue. Catalogue prices are shown as supplied; VAT and live stock availability need confirmation with NDT.',
       portalUrl: 'https://smarttyres.co.za/'
+    },
+    WHEEL_TECH: {
+      label: 'WHEEL TECH',
+      note: 'Viewing the Wheel Tech Facebook Marketplace wheel catalogue. Prices are the listed set prices; confirm live availability with Wheel Tech before quoting.',
+      portalUrl: 'https://www.facebook.com/marketplace/profile/100034478502594/'
     }
   };
 
@@ -853,8 +922,9 @@ const App: React.FC = () => {
     setLoginLogs(prev => mergeLoginLogsUnique([newLog], prev));
   };
 
-  const handleLoginSuccess = (username: string) => {
+  const handleLoginSuccess = (username: string, releaseId: string | null) => {
     setCurrentUser(username);
+    setSessionReleaseId(releaseId);
   };
 
   const handleAdminToggle = () => {
@@ -881,6 +951,7 @@ const App: React.FC = () => {
   const getInventoryCartTitle = (item: InventoryItem): string => {
     if (item.type === ProductType.TYRE) return `${(item as TyreProduct).size} ${(item as TyreProduct).brand}`.trim();
     if (item.type === ProductType.WHEEL) return `${(item as WheelProduct).code} ${(item as WheelProduct).size}`.trim();
+    if (item.type === ProductType.BATTERY) return `${(item as BatteryProduct).batteryType} Dixon Battery`.trim();
     return `${(item as CoiloverProduct).brand} ${(item as CoiloverProduct).vehicleCompatibility}`.trim();
   };
 
@@ -893,6 +964,7 @@ const App: React.FC = () => {
       const wheel = item as WheelProduct;
       return [wheel.pcd, wheel.offset ? `ET${wheel.offset}` : '', wheel.colour].filter(Boolean).join(' | ');
     }
+    if (item.type === ProductType.BATTERY) return (item as BatteryProduct).batteryDescription;
     return (item as CoiloverProduct).series;
   };
 
@@ -905,6 +977,7 @@ const App: React.FC = () => {
       const wheel = item as WheelProduct;
       return [wheel.pcd, wheel.offset ? `ET${wheel.offset}` : '', wheel.colour].filter(Boolean).join(' | ');
     }
+    if (item.type === ProductType.BATTERY) return (item as BatteryProduct).batteryDescription;
     return (item as CoiloverProduct).series;
   };
 

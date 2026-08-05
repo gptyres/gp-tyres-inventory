@@ -1,4 +1,4 @@
-import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
+import { BatteryProduct, InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { loadLiveSupplierCatalogItems } from './liveSupplierCatalog';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import {
@@ -30,6 +30,8 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'ATT',
   'BRIDGESTONE',
   'SAFETY_GRIP',
+  'DIXON_BATTERIES',
+  'REVOLUTION_TYRES',
   'ALINE',
   'STAMFORD',
   'APEX',
@@ -41,7 +43,8 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'TREADS_UNLIMITED',
   'TYRE_LIFE',
   'TYRE_LIFE_WHEELS',
-  'NDT'
+  'NDT',
+  'WHEEL_TECH'
 ];
 
 const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
@@ -51,6 +54,8 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   ATT: 'ATT',
   BRIDGESTONE: 'BRIDGESTONE',
   SAFETY_GRIP: 'SAFETY GRIP',
+  DIXON_BATTERIES: 'DIXON BATTERIES',
+  REVOLUTION_TYRES: 'REVOLUTION TYRES',
   ALINE: 'ALINE',
   STAMFORD: 'STAMFORD',
   APEX: 'APEX',
@@ -62,7 +67,8 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   TREADS_UNLIMITED: 'TREADS UNLIMITED',
   TYRE_LIFE: 'TYRE LIFE',
   TYRE_LIFE_WHEELS: 'TYRE LIFE WHEELS',
-  NDT: 'NDT'
+  NDT: 'NDT',
+  WHEEL_TECH: 'WHEEL TECH'
 };
 
 export const SUPPLIER_CATALOG_OPTIONS = supplierCatalogOrder.map((catalog) => ({
@@ -77,6 +83,8 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   ATT: 'att',
   BRIDGESTONE: 'bridgestone',
   SAFETY_GRIP: 'safetygrip',
+  DIXON_BATTERIES: 'dixon-batteries',
+  REVOLUTION_TYRES: 'revolution-tyres',
   ALINE: 'aline',
   STAMFORD: 'stamford',
   APEX: 'apex',
@@ -88,13 +96,63 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   TREADS_UNLIMITED: 'treads',
   TYRE_LIFE: 'tyrelife',
   TYRE_LIFE_WHEELS: 'tyrelifewheels',
-  NDT: 'ndt'
+  NDT: 'ndt',
+  WHEEL_TECH: 'wheel-tech'
 };
 
 const supplierItemCache = new Map<ConcreteSupplierCatalog, Promise<InventoryItem[]>>();
 let allSupplierPOSItemsCache: Promise<InventoryItem[]> | null = null;
 
 const cloneInventoryItems = (items: InventoryItem[]) => items.map((item) => ({ ...item } as InventoryItem));
+
+const attStockMatchKey = (item: InventoryItem): string => {
+  if (item.type !== ProductType.TYRE) return '';
+  const tyre = item as TyreProduct;
+  return [tyre.size, tyre.brand, tyre.pattern]
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toUpperCase();
+};
+
+export const restoreAttStockFromBundledCatalog = (
+  liveItems: InventoryItem[],
+  bundledItems: InventoryItem[]
+): InventoryItem[] => {
+  const liveHasStock = liveItems.some((item) => item.quantity > 0);
+  if (liveHasStock) return liveItems;
+
+  const bundledByKey = new Map<string, InventoryItem[]>();
+  bundledItems.forEach((item) => {
+    const key = attStockMatchKey(item);
+    if (!key) return;
+    bundledByKey.set(key, [...(bundledByKey.get(key) || []), item]);
+  });
+
+  const liveCounts = liveItems.reduce<Map<string, number>>((counts, item) => {
+    const key = attStockMatchKey(item);
+    if (key) counts.set(key, (counts.get(key) || 0) + 1);
+    return counts;
+  }, new Map());
+  const matchedIndexes = new Map<string, number>();
+
+  return liveItems.map((item) => {
+    const key = attStockMatchKey(item);
+    const bundledMatches = bundledByKey.get(key) || [];
+    if (!key || bundledMatches.length === 0 || bundledMatches.length !== liveCounts.get(key)) return item;
+
+    const matchIndex = matchedIndexes.get(key) || 0;
+    matchedIndexes.set(key, matchIndex + 1);
+    const fallback = bundledMatches[matchIndex];
+    if (!fallback || fallback.quantity <= 0) return item;
+
+    return {
+      ...item,
+      quantity: fallback.quantity,
+      stockByLocation: fallback.stockByLocation || { 'Supplier network': fallback.quantity }
+    } as InventoryItem;
+  });
+};
 
 export const normalizeBundledSupplierTyres = (
   catalog: ConcreteSupplierCatalog,
@@ -177,6 +235,27 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
       const { SAFETY_GRIP_RAW_DATA } = await import('./supplier_data/safetygripData');
       return parseSafetyGripData(SAFETY_GRIP_RAW_DATA);
     }
+    case 'DIXON_BATTERIES': {
+      const { DIXON_BATTERY_ROWS } = await import('./supplier_data/dixonBatteryData');
+      return DIXON_BATTERY_ROWS.map(([batteryType, batteryDescription, nettPrice, grossPrice, costIncluding, sellingPrice], index): BatteryProduct => ({
+        id: `dixon-battery-${index + 1}-${batteryType.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        type: ProductType.BATTERY,
+        batteryType,
+        batteryDescription,
+        nettPrice,
+        grossPrice,
+        costIncluding,
+        quantity: 0,
+        costPrice: costIncluding,
+        sellingPrice,
+        lastUpdated: '2026-08-05',
+        supplierName: 'DIXON BATTERIES',
+        supplierStockCode: batteryType
+      }));
+    }
+    case 'REVOLUTION_TYRES':
+      // Revolution Tyres is served from its authenticated live catalogue snapshot.
+      return [];
     case 'ALINE': {
       const { ALINE_RAW_DATA } = await import('./supplier_data/alineData');
       return parseAlineData(ALINE_RAW_DATA);
@@ -224,13 +303,22 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     case 'NDT':
       // NDT is published from the verified catalogue snapshot in Supabase.
       return [];
+    case 'WHEEL_TECH':
+      // WHEEL TECH is published from the verified Facebook Marketplace snapshot in Supabase.
+      return [];
   }
 };
 
 const loadConcreteSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Promise<InventoryItem[]> => {
   try {
     const liveItems = await loadLiveSupplierCatalogItems(catalog);
-    if (liveItems) return liveItems;
+    if (liveItems) {
+      if (catalog === 'ATT' && !liveItems.some((item) => item.quantity > 0)) {
+        const bundledItems = normalizeBundledSupplierTyres(catalog, await loadBundledSupplierCatalog(catalog));
+        return restoreAttStockFromBundledCatalog(liveItems, bundledItems);
+      }
+      return liveItems;
+    }
   } catch (error) {
     console.warn('Live supplier catalogue unavailable; using bundled fallback.', error);
   }

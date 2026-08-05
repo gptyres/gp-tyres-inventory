@@ -16,13 +16,15 @@ import {
 
 const nearestVatInclusive25 = (costPrice: number) => Math.round((costPrice * 1.15 / 25) + 1e-9) * 25;
 
-describe('15 July supplier pricing refresh', () => {
+describe('supplier pricing refresh', () => {
   it('embeds the complete APEX snapshot with exact cost and rounded VAT-inclusive selling prices', () => {
     const items = parseApexData(APEX_RAW_DATA);
     const sample = items.find((item) => item.supplierStockCode === '307672');
 
-    expect(items).toHaveLength(1547);
-    expect(sample).toMatchObject({ costPrice: 5991, sellingPrice: 6900, quantity: 1 });
+    expect(items).toHaveLength(1704);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(15314);
+    expect(sample).toMatchObject({ costPrice: 5991, sellingPrice: 6900, quantity: 1, supplierLeadTime: '6 Hours' });
+    expect(items.every((item) => item.supplierLeadTime === '6 Hours')).toBe(true);
     expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
   });
 

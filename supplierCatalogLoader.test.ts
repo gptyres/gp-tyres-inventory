@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeBundledSupplierTyres } from './supplierCatalogLoader';
-import { ProductType, type TyreProduct } from './types';
+import {
+  loadSupplierCatalogItems,
+  normalizeBundledSupplierTyres,
+  restoreAttStockFromBundledCatalog
+} from './supplierCatalogLoader';
+import { ProductType, type BatteryProduct, type TyreProduct } from './types';
 
 const bundledTyre: TyreProduct = {
   id: 'bundled-1',
@@ -29,5 +33,64 @@ describe('site-wide supplier catalogue formatting', () => {
       tyreIndex: '',
       loadSpeedIndex: '18PR'
     });
+  });
+
+  it('loads the Dixon catalogue with only the requested battery price fields', async () => {
+    const items = await loadSupplierCatalogItems('DIXON_BATTERIES');
+    expect(items).toHaveLength(32);
+    expect(items.every((item) => item.type === ProductType.BATTERY)).toBe(true);
+
+    const battery = items[0] as BatteryProduct;
+    expect(battery).toMatchObject({
+      batteryType: '612',
+      batteryDescription: 'SMF CaCa 12V 46Ah, 355 CCA, LWH: 207x175x190',
+      nettPrice: 1398,
+      grossPrice: 1568,
+      costIncluding: 1607.70,
+      sellingPrice: 1807.70,
+      supplierName: 'DIXON BATTERIES'
+    });
+    expect(battery).not.toHaveProperty('scrapLoading');
+  });
+
+  it('restores ATT quantities when the entire live snapshot incorrectly reports zero stock', () => {
+    const liveItem: TyreProduct = {
+      ...bundledTyre,
+      id: 'live-att-1',
+      brand: '',
+      pattern: 'CEAT AAYUSHMAAN',
+      size: '18.4-30',
+      quantity: 0,
+      costPrice: 9159.60,
+      sellingPrice: 10525,
+      location: 'Supplier network | Out of stock'
+    };
+    const bundledItem: TyreProduct = {
+      ...liveItem,
+      id: 'att-1',
+      brand: 'CEAT',
+      pattern: 'AAYUSHMAAN',
+      quantity: 10,
+      costPrice: 10500,
+      sellingPrice: 10500,
+      location: 'Agricultural'
+    };
+
+    expect(restoreAttStockFromBundledCatalog([liveItem], [bundledItem])).toEqual([
+      expect.objectContaining({
+        id: 'live-att-1',
+        quantity: 10,
+        costPrice: 9159.60,
+        sellingPrice: 10525,
+        stockByLocation: { 'Supplier network': 10 }
+      })
+    ]);
+  });
+
+  it('does not replace ATT stock when the live snapshot already contains available units', () => {
+    const liveItem: TyreProduct = { ...bundledTyre, id: 'live-att-2', quantity: 3 };
+    const bundledItem: TyreProduct = { ...bundledTyre, id: 'att-2', quantity: 10 };
+
+    expect(restoreAttStockFromBundledCatalog([liveItem], [bundledItem])).toEqual([liveItem]);
   });
 });

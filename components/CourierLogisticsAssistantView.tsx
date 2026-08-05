@@ -18,6 +18,32 @@ interface SavedEstimate {
   createdAt: string;
 }
 
+interface LiveCourierRate {
+  [key: string]: unknown;
+}
+
+const splitAddress = (value: string) => value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).slice(0, 4);
+
+const readRateText = (rate: LiveCourierRate, keys: string[]) => {
+  for (const key of keys) {
+    const value = rate[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+    if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  }
+  return '';
+};
+
+const formatRateAmount = (rate: LiveCourierRate) => {
+  const raw = readRateText(rate, ['total', 'totalincl', 'totalinclvat', 'amount', 'rate', 'price', 'cost', 'charge']);
+  if (!raw) return 'Rate returned';
+  const amount = Number(raw);
+  return Number.isFinite(amount) ? `R ${amount.toFixed(2)}` : raw;
+};
+
+const rateDetails = (rate: LiveCourierRate) => Object.entries(rate)
+  .filter(([, value]) => typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
+  .slice(0, 8);
+
 const HISTORY_KEY = 'gp-courier-logistics-history-v1';
 
 const loadHistory = (): SavedEstimate[] => {
@@ -53,6 +79,16 @@ export const CourierLogisticsAssistantView: React.FC = () => {
   const [quantity, setQuantity] = useState(4);
   const [actualWeight, setActualWeight] = useState('');
   const [address, setAddress] = useState('');
+  const [recipientName, setRecipientName] = useState('');
+  const [recipientContact, setRecipientContact] = useState('');
+  const [recipientEmail, setRecipientEmail] = useState('');
+  const [deliveryPlace, setDeliveryPlace] = useState('');
+  const [deliveryTown, setDeliveryTown] = useState('');
+  const [deliveryPostcode, setDeliveryPostcode] = useState('');
+  const [quoteReference, setQuoteReference] = useState('');
+  const [liveRates, setLiveRates] = useState<LiveCourierRate[]>([]);
+  const [liveQuoteStatus, setLiveQuoteStatus] = useState('');
+  const [isRequestingLiveQuote, setIsRequestingLiveQuote] = useState(false);
   const [copyStatus, setCopyStatus] = useState('');
   const [history, setHistory] = useState<SavedEstimate[]>(loadHistory);
 
@@ -60,13 +96,14 @@ export const CourierLogisticsAssistantView: React.FC = () => {
   const tyre = useMemo(() => parseTyreSize(tyreSize), [tyreSize]);
   const requiresWheel = itemType !== 'TYRE_ONLY';
   const requiresTyre = itemType !== 'WHEEL_ONLY';
+  const measuredWeightPerParcel = actualWeight ? Number(actualWeight) / quantity : null;
   const estimate = useMemo(() => createCourierEstimate({
     itemType,
     quantity,
     wheelSize: wheel,
     tyreSize: tyre,
-    actualWeightKgOverride: actualWeight ? Number(actualWeight) : null
-  }), [actualWeight, itemType, quantity, tyre, wheel]);
+    actualWeightKgOverride: measuredWeightPerParcel
+  }), [itemType, measuredWeightPerParcel, quantity, tyre, wheel]);
   const portalText = useMemo(() => estimate ? formatCourierPortalText(estimate, quantity, address) : '', [address, estimate, quantity]);
 
   useEffect(() => {
@@ -107,6 +144,60 @@ export const CourierLogisticsAssistantView: React.FC = () => {
     setHistory(nextHistory);
     localStorage.setItem(HISTORY_KEY, JSON.stringify(nextHistory));
     setCopyStatus('Saved to recent estimates.');
+  };
+
+  const requestLiveQuote = async () => {
+    if (!estimate) return;
+    const addressLines = splitAddress(address);
+    if (!recipientName || !deliveryPlace || !deliveryTown || !deliveryPostcode || !addressLines[0]) {
+      setLiveQuoteStatus('Add the recipient, street address, courier area, town/city and postal code first.');
+      return;
+    }
+
+    setIsRequestingLiveQuote(true);
+    setLiveQuoteStatus('Requesting live courier rates…');
+    setLiveRates([]);
+    try {
+      const response = await fetch('/api/business-agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'COURIER_QUOTE',
+          reference: quoteReference,
+          destination: {
+            name: recipientName,
+            contact: recipientContact || recipientName,
+            email: recipientEmail,
+            address1: addressLines[0],
+            address2: addressLines[1] || '',
+            address3: addressLines[2] || '',
+            address4: addressLines[3] || '',
+            place: deliveryPlace,
+            town: deliveryTown,
+            postalCode: deliveryPostcode
+          },
+          parcel: {
+            description: estimate.description,
+            pieces: quantity,
+            lengthCm: estimate.dimensionsCm.length,
+            widthCm: estimate.dimensionsCm.width,
+            heightCm: estimate.dimensionsCm.height,
+            actualWeightKg: actualWeight ? Number(actualWeight) : estimate.totalActualWeightKg
+          }
+        })
+      });
+      const data = await response.json() as { error?: string; quoteNumber?: string | null; rates?: LiveCourierRate[] };
+      if (!response.ok) throw new Error(data.error || 'Courier quote could not be requested.');
+      const rates = Array.isArray(data.rates) ? data.rates : [];
+      setLiveRates(rates);
+      setLiveQuoteStatus(rates.length
+        ? `Live quote${data.quoteNumber ? ` ${data.quoteNumber}` : ''} received.`
+        : 'The courier accepted the quote request but returned no rate options.');
+    } catch (error) {
+      setLiveQuoteStatus(error instanceof Error ? error.message : 'Courier quote could not be requested.');
+    } finally {
+      setIsRequestingLiveQuote(false);
+    }
   };
 
   const invalidMessage = (requiresWheel && !wheel) || (requiresTyre && !tyre);
@@ -155,10 +246,23 @@ export const CourierLogisticsAssistantView: React.FC = () => {
             {requiresWheel && <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Wheel size</span><input className={inputClassName} value={wheelSize} onChange={(event) => setWheelSize(event.target.value)} placeholder="19 x 9.5J" />{wheelSize && <span className={`mt-1 block text-[11px] ${wheel ? 'text-green-400' : 'text-gp-red'}`}>{wheel ? `${wheel.diameterInches}-inch × ${wheel.widthInches}J wheel read` : 'Use a size such as 19 x 9.5J'}</span>}</label>}
             {requiresTyre && <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Tyre size</span><input className={inputClassName} value={tyreSize} onChange={(event) => setTyreSize(event.target.value)} placeholder="225/40R19 or 35/12.5R20" />{tyreSize && <span className={`mt-1 block text-[11px] ${tyre ? 'text-green-400' : 'text-gp-red'}`}>{tyre ? `${tyre.display} · ${tyre.overallDiameterCm.toFixed(1)} cm outside diameter` : 'Use a size such as 225/40R19'}</span>}</label>}
             <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Pieces / parcels</span><input type="number" min={1} inputMode="numeric" className={inputClassName} value={quantity} onChange={(event) => setQuantity(Math.max(1, Number(event.target.value) || 1))} /></label>
-            <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Measured weight per parcel <span className="normal-case font-medium">(optional kg)</span></span><input type="number" min={0.1} step={0.1} inputMode="decimal" className={inputClassName} value={actualWeight} onChange={(event) => setActualWeight(event.target.value)} placeholder="Use scale weight when available" /></label>
+            <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Measured mass <span className="normal-case font-medium">(optional total kg)</span></span><input type="number" min={0.1} step={0.1} inputMode="decimal" className={inputClassName} value={actualWeight} onChange={(event) => setActualWeight(event.target.value)} placeholder="Use the packed shipment mass when available" /></label>
           </div>
 
-          <label className="mt-4 block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Delivery address <span className="normal-case font-medium">(optional, included in copy text)</span></span><textarea className={`${inputClassName} min-h-24 resize-y`} value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Unit 42 Mega Park, Bellville South, Cape Town, 7530" /></label>
+          <label className="mt-4 block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Delivery address <span className="normal-case font-medium">(one line per address field)</span></span><textarea className={`${inputClassName} min-h-24 resize-y`} value={address} onChange={(event) => setAddress(event.target.value)} placeholder={'26 Gregor Street\nWitpoortjie\nRoodepoort\n1724'} /></label>
+
+          <div className="mt-4 border-t border-gp-border pt-4">
+            <div className="mb-3 flex items-center justify-between gap-3"><h3 className="text-xs font-black uppercase tracking-wider text-gp-text-main">Live Siyanqoba courier quote</h3><span className="text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Staff only</span></div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Recipient name</span><input className={inputClassName} value={recipientName} onChange={(event) => setRecipientName(event.target.value)} placeholder="Thabang Molala" /></label>
+              <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Contact name</span><input className={inputClassName} value={recipientContact} onChange={(event) => setRecipientContact(event.target.value)} placeholder="Defaults to recipient" /></label>
+              <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Email <span className="normal-case font-medium">(optional)</span></span><input type="email" className={inputClassName} value={recipientEmail} onChange={(event) => setRecipientEmail(event.target.value)} placeholder="customer@email.com" /></label>
+              <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Reference <span className="normal-case font-medium">(optional)</span></span><input className={inputClassName} value={quoteReference} onChange={(event) => setQuoteReference(event.target.value)} placeholder="Shopify order #1042" /></label>
+              <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Courier area</span><input className={inputClassName} value={deliveryPlace} onChange={(event) => setDeliveryPlace(event.target.value)} placeholder="Roodepoort" /></label>
+              <label className="block"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Town / city</span><input className={inputClassName} value={deliveryTown} onChange={(event) => setDeliveryTown(event.target.value)} placeholder="Roodepoort" /></label>
+              <label className="block sm:col-span-2"><span className="mb-1 block text-xs font-bold uppercase tracking-wider text-gp-text-muted">Postal code</span><input className={inputClassName} value={deliveryPostcode} onChange={(event) => setDeliveryPostcode(event.target.value)} inputMode="numeric" placeholder="1724" /></label>
+            </div>
+          </div>
         </section>
 
         <section className={`${panelClassName} min-w-0 overflow-hidden`} aria-labelledby="courier-output-heading">
@@ -175,7 +279,9 @@ export const CourierLogisticsAssistantView: React.FC = () => {
             <div className="mt-4 rounded-lg border border-gp-border bg-gp-black p-3 text-xs text-gp-text-muted"><div className="flex justify-between gap-3"><span>Volumetric weight</span><strong className="text-gp-text-main">{estimate.volumetricWeightKg} kg per parcel</strong></div><div className="mt-2 flex justify-between gap-3"><span>Total chargeable</span><strong className="text-gp-text-main">{estimate.totalChargeableWeightKg} kg across {quantity} pieces</strong></div></div>
             <p className="mt-3 text-xs leading-relaxed text-amber-200/90">{estimate.calculationNote}</p>
             <textarea aria-label="Courier portal details" readOnly value={portalText} className="mt-4 min-h-48 w-full resize-y rounded-lg border border-gp-border bg-gp-black p-3 font-mono text-xs leading-relaxed text-gp-text-main outline-none" />
-            <div className="mt-3 flex flex-wrap gap-2"><button type="button" onClick={handleCopy} className="rounded-lg bg-gp-red px-4 py-3 text-xs font-black uppercase tracking-wider text-white transition hover:bg-red-700 active:scale-95">Copy for courier portal</button><button type="button" onClick={saveEstimate} className="rounded-lg border border-gp-border bg-gp-input px-4 py-3 text-xs font-black uppercase tracking-wider text-gp-text-main transition hover:bg-gp-border active:scale-95">Save estimate</button>{copyStatus && <span className="self-center text-xs font-bold text-green-400">{copyStatus}</span>}</div>
+            <div className="mt-3 flex flex-wrap gap-2"><button type="button" onClick={requestLiveQuote} disabled={isRequestingLiveQuote} className="rounded-lg bg-green-700 px-4 py-3 text-xs font-black uppercase tracking-wider text-white transition hover:bg-green-600 disabled:cursor-wait disabled:opacity-60">{isRequestingLiveQuote ? 'Getting live rate…' : 'Get live courier rate'}</button><button type="button" onClick={handleCopy} className="rounded-lg bg-gp-red px-4 py-3 text-xs font-black uppercase tracking-wider text-white transition hover:bg-red-700 active:scale-95">Copy for courier portal</button><button type="button" onClick={saveEstimate} className="rounded-lg border border-gp-border bg-gp-input px-4 py-3 text-xs font-black uppercase tracking-wider text-gp-text-main transition hover:bg-gp-border active:scale-95">Save estimate</button>{copyStatus && <span className="self-center text-xs font-bold text-green-400">{copyStatus}</span>}</div>
+            {liveQuoteStatus && <p className={`mt-3 text-xs font-bold ${liveRates.length ? 'text-green-400' : liveQuoteStatus.startsWith('Requesting') ? 'text-amber-200' : 'text-gp-red'}`}>{liveQuoteStatus}</p>}
+            {liveRates.length > 0 && <div className="mt-3 grid gap-2 sm:grid-cols-2">{liveRates.map((rate, index) => <div key={`${readRateText(rate, ['service', 'servicedesc', 'name']) || 'rate'}-${index}`} className="rounded-lg border border-green-700/40 bg-green-950/20 p-3"><div className="text-sm font-black text-gp-text-main">{readRateText(rate, ['servicedesc', 'service_description', 'service', 'name']) || `Service option ${index + 1}`}</div><div className="mt-1 text-lg font-black text-green-400">{formatRateAmount(rate)}</div><dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-gp-text-muted">{rateDetails(rate).map(([key, value]) => <React.Fragment key={key}><dt className="truncate uppercase">{key}</dt><dd className="truncate text-right text-gp-text-main">{String(value)}</dd></React.Fragment>)}</dl></div>)}</div>}
           </div> : <div className="flex min-h-80 flex-col items-center justify-center p-6 text-center"><svg className="mb-3 h-10 w-10 text-gp-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2a4 4 0 014-4h4m0 0l-3-3m3 3l-3 3M5 19a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v2" /></svg><p className="text-sm font-bold text-gp-text-main">Add a valid {requiresTyre ? 'tyre' : 'wheel'} size to calculate the parcel.</p><p className="mt-1 text-xs text-gp-text-muted">The assistant accepts 225/40R19, 35/12.5R20 and 19 x 9.5J formats.</p></div>}
         </section>
       </div>

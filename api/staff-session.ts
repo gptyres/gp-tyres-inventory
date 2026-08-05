@@ -5,6 +5,7 @@ import {
   verifyStaffSession
 } from '../server/staffSession.js';
 import { readApiBody } from '../server/readApiBody.js';
+import { getSessionReleaseId } from '../server/deploymentVersion.js';
 
 export default async function handler(request: any, response: any) {
   response.setHeader('Cache-Control', 'no-store');
@@ -13,7 +14,8 @@ export default async function handler(request: any, response: any) {
     const session = verifyStaffSession(request);
     return response.status(200).json({
       authenticated: Boolean(session),
-      terminalId: session?.terminalId || null
+      terminalId: session?.terminalId || null,
+      releaseId: getSessionReleaseId()
     });
   }
 
@@ -36,7 +38,7 @@ export default async function handler(request: any, response: any) {
     }
 
     response.setHeader('Set-Cookie', createStaffSessionCookie(terminalId));
-    return response.status(200).json({ ok: true, terminalId });
+    return response.status(200).json({ ok: true, terminalId, releaseId: getSessionReleaseId() });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Staff session could not be created.';
     return response.status(503).json({ error: message });

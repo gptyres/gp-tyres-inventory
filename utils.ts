@@ -1,5 +1,5 @@
 
-import { InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
+import { BatteryProduct, InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
 import { parseAlineWheelDescription, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import {
@@ -106,6 +106,19 @@ const getInventorySearchIndex = (item: InventoryItem): InventorySearchIndex => {
       variants.push(coilover.vehicleCompatibility.replace(/[^a-zA-Z0-9]/g, ''));
       variants.push(coilover.vehicleCompatibility.replace(/\s+/g, ''));
     }
+  } else if (item.type === ProductType.BATTERY) {
+    const battery = item as BatteryProduct;
+    searchableParts = [
+      battery.batteryType,
+      battery.batteryDescription,
+      battery.nettPrice,
+      battery.grossPrice,
+      battery.costIncluding,
+      battery.sellingPrice,
+      battery.supplierName,
+      'Battery'
+    ];
+    variants.push(battery.batteryType.replace(/[^a-zA-Z0-9]/g, ''));
   }
 
   const mainText = normalizeSearchTerm(searchableParts.join(' '));
@@ -1029,7 +1042,7 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
     const { brand, pattern } = splitBrandPattern(brandPattern, 'SAFETY GRIP');
     const quantity = parseStockUnits(cols[2]);
     const priceExVat = parseCurrencyString(cols[3]);
-    const priceIncVat = Number((priceExVat * 1.15).toFixed(2));
+    const priceIncVat = Math.round(((priceExVat * 1.15) / 25) + 1e-9) * 25;
 
     const itemId = `safetygrip-${idCounter++}`;
     items.push({
@@ -1231,7 +1244,7 @@ const parseStructuredSupplierRefreshData = (
     const size = parsedTyre.size || (skuSizeMatch ? `${skuSizeMatch[1]}/${skuSizeMatch[2]}R${skuSizeMatch[3]}` : '');
     const brand = parsedTyre.brand;
     const pattern = parsedTyre.pattern;
-    if (!sku || !size || !brand || !pattern) return [];
+    if (!sku || !size || !brand) return [];
 
     const tyreRating = parsedTyre.rating;
     const tyreIndex = parsedTyre.index;
@@ -1256,6 +1269,7 @@ const parseStructuredSupplierRefreshData = (
       tyreSpecs,
       location: locationColumns.map(({ location }) => `${location}: ${stockByLocation[location] || 0}`).join(' | ') || supplierName,
       stockByLocation,
+      supplierLeadTime: get('Lead Time') || undefined,
       quantity,
       costPrice: parseCurrencyString(get('Cost Price')),
       sellingPrice: parseCurrencyString(get('Selling Price')),

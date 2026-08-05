@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { InventoryItem, ProductType, TyreProduct, WheelProduct, CoiloverProduct, ViewMode } from '../types';
+import { BatteryProduct, InventoryItem, ProductType, TyreProduct, WheelProduct, CoiloverProduct, ViewMode } from '../types';
 import { formatCurrency, getStatusColor } from '../utils';
 import {
   buildStaffSupplierWheelImageUploadPayload,
@@ -60,6 +60,7 @@ const getSortValue = (item: InventoryItem, key: SortKey): string | number => {
     if (item.type === ProductType.TYRE) return (item as TyreProduct).brand;
     if (item.type === ProductType.WHEEL) return (item as WheelProduct).code; 
     if (item.type === ProductType.COILOVER) return (item as CoiloverProduct).brand;
+    if (item.type === ProductType.BATTERY) return (item as BatteryProduct).batteryDescription;
   }
   
   if (key === 'location') {
@@ -72,6 +73,7 @@ const getSortValue = (item: InventoryItem, key: SortKey): string | number => {
      if (item.type === ProductType.TYRE) return (item as TyreProduct).size;
      if (item.type === ProductType.WHEEL) return (item as WheelProduct).size;
      if (item.type === ProductType.COILOVER) return (item as CoiloverProduct).vehicleCompatibility;
+     if (item.type === ProductType.BATTERY) return (item as BatteryProduct).batteryType;
   }
   
   return '';
@@ -232,6 +234,12 @@ const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
           {structuredEntries.length > 0 ? 'No branch stock' : fallbackLocation}
         </span>
       )}
+      {item.supplierLeadTime ? (
+        <div className="mt-2 flex min-h-8 items-center justify-between gap-3 rounded border border-sky-500/30 bg-sky-500/10 px-2.5 py-1.5">
+          <span className="text-[9px] font-bold uppercase tracking-wider text-sky-300">Supplier lead time</span>
+          <span className="shrink-0 font-mono text-[11px] font-black text-sky-200">{item.supplierLeadTime}</span>
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -296,6 +304,108 @@ const CopyItemButton = ({ item, onCopyItem, className = '' }: { item: InventoryI
       </svg>
       Copy
     </button>
+  );
+};
+
+const formatBatteryCurrency = (amount: number) => new Intl.NumberFormat('en-ZA', {
+  style: 'currency',
+  currency: 'ZAR',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+}).format(amount);
+
+const BatteryPrice = ({ label, value, emphasis = false }: { label: string; value: number; emphasis?: boolean }) => (
+  <div className={`min-w-0 rounded-lg border p-3 ${emphasis ? 'border-gp-red/50 bg-gp-red/10' : 'border-gp-border bg-gp-black/55'}`}>
+    <span className={`block text-[9px] font-black uppercase tracking-wider ${emphasis ? 'text-gp-red' : 'text-gp-text-muted'}`}>{label}</span>
+    <span className="mt-1 block whitespace-nowrap font-mono text-sm font-black text-gp-text-main sm:text-base">
+      {formatBatteryCurrency(value)}
+    </span>
+  </div>
+);
+
+const BatteryCatalogueView: React.FC<{
+  items: BatteryProduct[];
+  viewMode: ViewMode;
+  showSupplierName?: boolean;
+}> = ({ items, viewMode, showSupplierName }) => {
+  if (viewMode === ViewMode.TABLE) {
+    return (
+      <div className="mb-6 overflow-x-auto rounded-lg border border-gp-border bg-gp-black shadow-xl">
+        <table className="w-full min-w-[980px] border-collapse text-left text-sm">
+          <thead>
+            <tr className="bg-gp-dark text-[10px] font-black uppercase tracking-wider text-gp-text-muted">
+              {showSupplierName && <th className="border-b border-r border-gp-border p-3">Supplier</th>}
+              <th className="border-b border-r border-gp-border p-3">Battery Type</th>
+              <th className="border-b border-r border-gp-border p-3">Battery Description</th>
+              <th className="border-b border-r border-gp-border p-3 text-right">Nett Price<br /><span className="font-medium">Cost Excl. — Without Scrap</span></th>
+              <th className="border-b border-r border-gp-border p-3 text-right">Gross Price<br /><span className="font-medium">Cost Excl. — With Scrap</span></th>
+              <th className="border-b border-r border-gp-border p-3 text-right">Cost Including</th>
+              <th className="border-b border-gp-border p-3 text-right text-gp-red">Selling Price</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gp-border">
+            {items.map((battery, index) => (
+              <tr key={battery.id} className={`${index % 2 === 0 ? 'bg-gp-black' : 'bg-gp-input'} hover:bg-gp-panel`}>
+                {showSupplierName && <td className="border-r border-gp-border p-3"><SupplierBadge item={battery} /></td>}
+                <td className="border-r border-gp-border p-3 font-display text-base font-black text-gp-text-main">{battery.batteryType}</td>
+                <td className="border-r border-gp-border p-3 text-xs font-semibold text-gp-silver">{battery.batteryDescription}</td>
+                <td className="border-r border-gp-border p-3 text-right font-mono font-bold text-gp-text-main">{formatBatteryCurrency(battery.nettPrice)}</td>
+                <td className="border-r border-gp-border p-3 text-right font-mono font-bold text-gp-text-main">{formatBatteryCurrency(battery.grossPrice)}</td>
+                <td className="border-r border-gp-border p-3 text-right font-mono font-bold text-green-500">{formatBatteryCurrency(battery.costIncluding)}</td>
+                <td className="p-3 text-right font-mono font-black text-gp-red">{formatBatteryCurrency(battery.sellingPrice)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  if (viewMode === ViewMode.LIST) {
+    return (
+      <div className="mb-6 flex flex-col gap-3">
+        {items.map((battery) => (
+          <article key={battery.id} className="rounded-lg border border-gp-border bg-gp-panel p-4 shadow-md">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+              <div className="min-w-0 xl:max-w-[34%]">
+                {showSupplierName && <SupplierBadge item={battery} className="mb-2" />}
+                <p className="font-display text-xl font-black text-gp-text-main">{battery.batteryType}</p>
+                <p className="mt-1 text-xs font-semibold text-gp-silver">{battery.batteryDescription}</p>
+              </div>
+              <div className="grid min-w-0 flex-1 grid-cols-2 gap-2 md:grid-cols-4">
+                <BatteryPrice label="Nett · Excl. Without Scrap" value={battery.nettPrice} />
+                <BatteryPrice label="Gross · Excl. With Scrap" value={battery.grossPrice} />
+                <BatteryPrice label="Cost Including" value={battery.costIncluding} />
+                <BatteryPrice label="Selling Price" value={battery.sellingPrice} emphasis />
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 gap-4 pb-6 md:grid-cols-2 xl:grid-cols-3">
+      {items.map((battery) => (
+        <article key={battery.id} className="overflow-hidden rounded-lg border border-gp-border bg-gp-panel shadow-md transition hover:border-gp-red/40">
+          <header className="border-b border-gp-border bg-gp-overlay p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="rounded border border-gp-border bg-gp-black px-2 py-1 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">Battery Type</span>
+              {showSupplierName && <SupplierBadge item={battery} />}
+            </div>
+            <h3 className="mt-3 font-display text-2xl font-black text-gp-text-main">{battery.batteryType}</h3>
+            <p className="mt-2 min-h-10 text-xs font-semibold leading-relaxed text-gp-silver">{battery.batteryDescription}</p>
+          </header>
+          <div className="grid grid-cols-2 gap-2 p-3">
+            <BatteryPrice label="Nett · Excl. Without Scrap" value={battery.nettPrice} />
+            <BatteryPrice label="Gross · Excl. With Scrap" value={battery.grossPrice} />
+            <BatteryPrice label="Cost Including" value={battery.costIncluding} />
+            <BatteryPrice label="Selling Price" value={battery.sellingPrice} emphasis />
+          </div>
+        </article>
+      ))}
+    </div>
   );
 };
 
@@ -1453,7 +1563,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const viewFilteredItems = useMemo(() => {
     if (hideLowStock) {
         // Hide items with quantity 0 or 1
-        return props.items.filter(item => item.quantity > 1);
+        return props.items.filter(item => item.type === ProductType.BATTERY || item.quantity > 1);
     }
     return props.items;
   }, [props.items, hideLowStock]);
@@ -1488,6 +1598,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         if (item.type === ProductType.TYRE) groupKey = (item as TyreProduct).brand || 'Unknown';
         else if (item.type === ProductType.WHEEL) groupKey = (item as WheelProduct).code || 'Unknown'; // Use Code as Brand equivalent
         else if (item.type === ProductType.COILOVER) groupKey = (item as CoiloverProduct).brand || 'Unknown';
+        else if (item.type === ProductType.BATTERY) groupKey = 'Dixon Batteries';
       } else if (groupBy === 'type') {
         groupKey = item.type;
       }
@@ -1528,6 +1639,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
           lookupItem.supplierStockCode ?? '',
           lookupItem.imageDesignKey ?? '',
           lookupItem.imageFinishKey ?? '',
+          lookupItem.imageSourceKey ?? '',
           lookupItem.size ?? '',
           lookupItem.pcd ?? ''
         ].join(':');
@@ -1574,6 +1686,17 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     }, {});
   }, [groupBy, groupedItems, visibleItems]);
   const hasMoreItems = visibleCount < sortedItems.length;
+  const isBatteryCatalog = props.items.every((item) => item.type === ProductType.BATTERY);
+
+  useEffect(() => {
+    if (!isBatteryCatalog) return;
+    if (sortConfig.key === 'quantity' || sortConfig.key === 'location') {
+      setSortConfig((current) => ({ ...current, key: 'size' }));
+    }
+    if (groupBy !== 'none') setGroupBy('none');
+    if (showImages) setShowImages(false);
+    if (hideLowStock) setHideLowStock(false);
+  }, [groupBy, hideLowStock, isBatteryCatalog, showImages, sortConfig.key]);
 
   if (props.items.length === 0) {
     return (
@@ -1593,7 +1716,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
   // Helper to render the correct view component
   const renderView = (items: InventoryItem[]) => {
-    const visualImages = { ...generatedImages, ...supplierImages };
+    const sourceImages = Object.fromEntries(
+      items.flatMap((item) => item.imageUrl ? [[item.id, item.imageUrl]] : [])
+    );
+    const visualImages = { ...sourceImages, ...generatedImages, ...supplierImages };
     const viewProps = { 
         ...props, 
         items, 
@@ -1613,12 +1739,35 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         aspectRatio
     };
 
-    switch (props.viewMode) {
-      case ViewMode.TABLE: return <SpreadsheetView {...viewProps} />;
-      case ViewMode.GRID: return <GridView {...viewProps} />;
-      case ViewMode.LIST: return <ListView {...viewProps} />;
-      default: return <GridView {...viewProps} />;
+    const batteryItems = items.filter((item): item is BatteryProduct => item.type === ProductType.BATTERY);
+    const standardItems = items.filter((item) => item.type !== ProductType.BATTERY);
+    const renderStandardItems = () => {
+      const standardProps = { ...viewProps, items: standardItems };
+      switch (props.viewMode) {
+        case ViewMode.TABLE: return <SpreadsheetView {...standardProps} />;
+        case ViewMode.GRID: return <GridView {...standardProps} />;
+        case ViewMode.LIST: return <ListView {...standardProps} />;
+        default: return <GridView {...standardProps} />;
+      }
+    };
+
+    if (batteryItems.length && standardItems.length) {
+      return (
+        <div className="flex flex-col gap-5">
+          {renderStandardItems()}
+          <section>
+            <div className="mb-3 flex items-center gap-2 border-b border-gp-border pb-2">
+              <span className="h-2 w-2 rounded-full bg-amber-400" />
+              <h3 className="font-display text-lg font-black uppercase tracking-wide text-gp-text-main">Dixon Batteries</h3>
+              <span className="rounded-full bg-gp-red px-2 py-0.5 text-[10px] font-black text-white">{batteryItems.length}</span>
+            </div>
+            <BatteryCatalogueView items={batteryItems} viewMode={props.viewMode} showSupplierName={props.showSupplierName} />
+          </section>
+        </div>
+      );
     }
+    if (batteryItems.length) return <BatteryCatalogueView items={batteryItems} viewMode={props.viewMode} showSupplierName={props.showSupplierName} />;
+    return renderStandardItems();
   };
 
   return (
@@ -1643,9 +1792,9 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       />
       
       {/* View Configuration Toolbar */}
-      <div className="bg-gp-panel border border-gp-border rounded-lg p-3 flex flex-col lg:flex-row gap-4 lg:items-center justify-between shadow-sm sticky top-0 z-20">
+      <div className="sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-3 rounded-lg border border-gp-border bg-gp-panel p-3 shadow-sm lg:grid-cols-[minmax(0,1fr)_auto]">
         
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
             {/* Sorting */}
             <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase text-gp-text-muted tracking-wider">Sort:</span>
@@ -1654,11 +1803,11 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
                     onChange={(e) => setSortConfig(prev => ({ ...prev, key: e.target.value as SortKey }))}
                     className="bg-gp-input border border-gp-border text-xs rounded p-1.5 text-gp-text-main focus:outline-none focus:border-gp-red font-medium"
                 >
-                    <option value="size">Size / Name</option>
-                    <option value="brand">Brand</option>
-                    <option value="quantity">Quantity</option>
+                    <option value="size">{isBatteryCatalog ? 'Battery Type' : 'Size / Name'}</option>
+                    <option value="brand">{isBatteryCatalog ? 'Description' : 'Brand'}</option>
+                    {!isBatteryCatalog && <option value="quantity">Quantity</option>}
                     <option value="price">Price</option>
-                    <option value="location">Location</option>
+                    {!isBatteryCatalog && <option value="location">Location</option>}
                 </select>
                 <button 
                     onClick={() => setSortConfig(prev => ({ ...prev, direction: prev.direction === 'asc' ? 'desc' : 'asc' }))}
@@ -1669,7 +1818,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
             </div>
 
             {/* Grouping */}
-            <div className="flex items-center gap-2 border-l border-gp-border pl-4">
+            {!isBatteryCatalog && <div className="flex items-center gap-2 sm:border-l sm:border-gp-border sm:pl-4">
                 <span className="text-[10px] font-bold uppercase text-gp-text-muted tracking-wider">Group:</span>
                 <select 
                     value={groupBy}
@@ -1681,7 +1830,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
                     <option value="brand">Brand</option>
                     <option value="type">Type</option>
                 </select>
-            </div>
+            </div>}
 
             {/* Bulk Selection (Admin Only) */}
             {props.isAdmin && !props.isReadOnly && (
@@ -1696,7 +1845,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
             )}
         </div>
 
-        <div className="flex bg-gp-input border border-gp-border rounded-lg p-1 gap-1 shadow-inner lg:mx-4">
+        <div className="flex w-fit justify-self-start gap-1 rounded-lg border border-gp-border bg-gp-input p-1 shadow-inner lg:justify-self-end">
             <button
                 onClick={() => props.onViewModeChange(ViewMode.TABLE)}
                 className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${props.viewMode === ViewMode.TABLE ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}
@@ -1718,10 +1867,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         </div>
 
         {/* Filters & Toggles */}
-        <div className="flex items-center gap-3 lg:border-l border-gp-border lg:pl-4 overflow-x-auto">
+        {!isBatteryCatalog && <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 border-t border-gp-border pt-3 lg:col-span-2">
              
              {/* Show Images Toggle */}
-             <label className="flex items-center gap-1.5 cursor-pointer mr-2 border-r border-gp-border pr-4">
+             <label className="flex items-center gap-1.5 cursor-pointer border-r border-gp-border pr-3 sm:mr-1">
                 <input 
                     type="checkbox" 
                     checked={showImages} 
@@ -1736,7 +1885,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
              {/* Aspect Ratio Selector - Only visible if images enabled */}
              {showImages && (
-                <div className="flex items-center gap-1 mr-4 border-r border-gp-border pr-4">
+                <div className="flex items-center gap-1 border-r border-gp-border pr-3 sm:mr-1">
                     <span className="text-[10px] font-bold uppercase text-gp-text-muted">Ratio:</span>
                     <select
                         value={aspectRatio}
@@ -1752,7 +1901,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
              )}
 
              {/* Hide Low Stock Toggle */}
-             <label className="flex items-center gap-1.5 cursor-pointer mr-4 border-r border-gp-border pr-4">
+             <label className="flex items-center gap-1.5 cursor-pointer border-r border-gp-border pr-3 sm:mr-1">
                 <input 
                     type="checkbox" 
                     checked={hideLowStock} 
@@ -1800,7 +1949,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
                 />
                 <span className="text-xs text-gp-text-main font-medium select-none">Cost</span>
              </label>
-        </div>
+        </div>}
 
       </div>
 

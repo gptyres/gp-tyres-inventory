@@ -10,6 +10,7 @@ const supplierTyre: TyreProduct = {
   costPrice: 4000,
   lastUpdated: '2026-07-14',
   supplierName: 'Apex',
+  supplierLeadTime: '6 Hours',
   brand: 'COMPASAL',
   pattern: 'CPS60',
   size: '10.00R20',

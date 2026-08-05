@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { USER_CREDENTIALS } from '../config';
 
 interface LoginScreenProps {
-  onLogin: (username: string) => void;
+  onLogin: (username: string, releaseId: string | null) => void;
   onAttempt: (username: string, success: boolean) => void;
 }
 
@@ -39,6 +39,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onAttempt }) 
     if (correctPassword && correctPassword === password) {
       setIsSubmitting(true);
       setError('');
+      let releaseId: string | null = null;
       try {
         const response = await fetch('/api/staff-session', {
           method: 'POST',
@@ -46,11 +47,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onAttempt }) 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ terminalId: formattedUser, password })
         });
+        const payload = await response.json().catch(() => ({})) as { error?: string; releaseId?: string };
 
         if (!response.ok && import.meta.env.PROD) {
-          const payload = await response.json().catch(() => ({}));
           throw new Error(payload.error || 'Secure staff session could not be started.');
         }
+        releaseId = typeof payload.releaseId === 'string' ? payload.releaseId : null;
       } catch (sessionError) {
         if (import.meta.env.PROD) {
           setError(sessionError instanceof Error ? sessionError.message : 'Secure staff session could not be started.');
@@ -71,7 +73,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onAttempt }) 
 
       console.log(`[AUTH] Login Successful: ${formattedUser} at ${new Date().toISOString()}`);
       onAttempt(formattedUser, true);
-      onLogin(formattedUser);
+      onLogin(formattedUser, releaseId);
       setIsSubmitting(false);
     } else {
       const errorMsg = 'Invalid Terminal ID or Access Code';

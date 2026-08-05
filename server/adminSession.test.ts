@@ -16,11 +16,13 @@ describe('server admin session', () => {
       .update(TEST_PASSWORD)
       .digest('hex');
     process.env.GP_ADMIN_SESSION_SECRET = TEST_SECRET;
+    process.env.VERCEL_DEPLOYMENT_ID = 'dpl_test_release_a';
   });
 
   afterEach(() => {
     delete process.env.GP_ADMIN_PASSWORD_SHA256;
     delete process.env.GP_ADMIN_SESSION_SECRET;
+    delete process.env.VERCEL_DEPLOYMENT_ID;
   });
 
   it('compares the submitted password with the server-side hash', () => {
@@ -41,5 +43,12 @@ describe('server admin session', () => {
     const cookiePair = setCookie.split(';')[0] + 'tampered';
     expect(verifyAdminSession({ headers: { cookie: cookiePair } })).toBeNull();
     expect(cookiePair).toContain(ADMIN_SESSION_COOKIE);
+  });
+
+  it('rejects a session issued by an earlier deployment', () => {
+    const setCookie = createAdminSessionCookie('Rafiek');
+    const cookiePair = setCookie.split(';')[0];
+    process.env.VERCEL_DEPLOYMENT_ID = 'dpl_test_release_b';
+    expect(verifyAdminSession({ headers: { cookie: cookiePair } })).toBeNull();
   });
 });
