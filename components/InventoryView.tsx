@@ -1169,43 +1169,49 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             </div>
           )}
 
-          {isCustomerCopyItem(item) && (
-            <div className="absolute top-2 right-2 z-10">
-                <input
+          {/* Header */}
+          <div className="bg-gp-overlay p-3 pt-4 border-b border-gp-border flex justify-between items-start">
+            <div className="flex min-w-0 items-start gap-3 overflow-hidden pt-4">
+              {isCustomerCopyItem(item) && (
+                <label
+                  className={`flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border transition-colors ${selectedIds.has(item.id) ? 'border-gp-red bg-gp-red text-white shadow-[0_0_10px_rgba(255,0,0,0.25)]' : 'border-gp-border bg-gp-black text-transparent hover:border-gp-red/70'}`}
+                  title="Select item; hold Shift to select a range"
+                >
+                  <input
                     type="checkbox"
                     checked={selectedIds.has(item.id)}
                     onChange={(event) => onToggleSelect(item.id, (event.nativeEvent as MouseEvent).shiftKey)}
-                    className="w-5 h-5 rounded border-gp-border bg-gp-black text-gp-red focus:ring-gp-red cursor-pointer shadow-sm"
-                    title="Select item; hold Shift to select a range"
+                    className="sr-only"
                     aria-label={`Select ${getItemDisplayName(item)}`}
-                />
-            </div>
-          )}
-
-          {/* Header */}
-          <div className="bg-gp-overlay p-3 pt-4 border-b border-gp-border flex justify-between items-start">
-            <div className="pt-4 overflow-hidden">
-              <div className="flex max-w-full flex-wrap items-center gap-2">
-                <span className="text-[9px] bg-gp-black text-gp-text-muted px-2 py-0.5 rounded font-bold uppercase tracking-wide border border-gp-border">
-                  {item.type}
-                </span>
-                {showSupplierName && <SupplierBadge item={item} />}
+                  />
+                  <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="m3.25 8.25 3 3 6.5-6.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </label>
+              )}
+              <div className="min-w-0 overflow-hidden">
+                <div className="flex max-w-full flex-wrap items-center gap-2">
+                  <span className="text-[9px] bg-gp-black text-gp-text-muted px-2 py-0.5 rounded font-bold uppercase tracking-wide border border-gp-border">
+                    {item.type}
+                  </span>
+                  {showSupplierName && <SupplierBadge item={item} />}
+                </div>
+                {item.type === ProductType.WHEEL && getWheelBrand(item as WheelProduct) && (
+                  <p className="mt-2 text-[10px] font-black uppercase text-gp-red tracking-widest">
+                    {getWheelBrand(item as WheelProduct)}
+                  </p>
+                )}
+                <h3 className="text-xl font-black text-gp-text-main mt-2 leading-none font-display tracking-wide truncate max-w-full">
+                  {getItemDisplayName(item)}
+                </h3>
+                {visibleColumns.specs && (
+                  <p className="text-xs text-gp-silver mt-1 uppercase font-semibold truncate max-w-full">
+                      {item.type === ProductType.WHEEL
+                        ? getWheelFinish(item as WheelProduct) || 'Finish not supplied'
+                        : getItemSecondaryLine(item)}
+                  </p>
+                )}
               </div>
-              {item.type === ProductType.WHEEL && getWheelBrand(item as WheelProduct) && (
-                <p className="mt-2 text-[10px] font-black uppercase text-gp-red tracking-widest">
-                  {getWheelBrand(item as WheelProduct)}
-                </p>
-              )}
-              <h3 className="text-xl font-black text-gp-text-main mt-2 leading-none font-display tracking-wide truncate max-w-full">
-                {getItemDisplayName(item)}
-              </h3>
-              {visibleColumns.specs && (
-                <p className="text-xs text-gp-silver mt-1 uppercase font-semibold truncate max-w-full">
-                    {item.type === ProductType.WHEEL
-                      ? getWheelFinish(item as WheelProduct) || 'Finish not supplied'
-                      : getItemSecondaryLine(item)}
-                </p>
-              )}
             </div>
             
             <div className="flex flex-col items-end shrink-0 pl-2">
