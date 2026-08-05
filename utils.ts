@@ -572,7 +572,15 @@ const normalizeExclusiveTyrePattern = (brand: string, pattern: string) => {
     .replace(/\s+/g, ' ')
     .trim();
 
-  return cleaned || pattern.replace(/\bIMP\b/gi, ' ').replace(/\s+/g, ' ').trim() || 'Standard';
+  const cleanCatalogText = (value: string) => value
+    .replace(/\bIMP\b/gi, ' ')
+    .replace(/\bTYRES?\b/gi, ' ')
+    .replace(new RegExp(`\\b${brandKey}\\b`, 'gi'), ' ')
+    .replace(/\b([A-Z][A-Z0-9+./-]*)(?:\s+\1\b)+/gi, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return cleanCatalogText(cleaned) || cleanCatalogText(pattern) || 'Standard';
 };
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

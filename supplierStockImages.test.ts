@@ -257,7 +257,8 @@ describe('EXCLUSIVE TYRES supplier catalogue parsing', () => {
       '185/65R15,FIREMAX IMP 88H FM601,R600,20 units',
       '265/65R17,RADAR IMP RADAR 123 120S E RENEG.AT.SPORT,R1850,4 units',
       '165/50R15,TRACMAX - TYRES IMP 72V TRACMAX X privilo TX5,R550,20 units',
-      '245/45R18,RADAR - TYRES IMP 100Y RADAR XL DMAX SPORT,R1500,20 units'
+      '245/45R18,RADAR - TYRES IMP 100Y RADAR XL DMAX SPORT,R1500,20 units',
+      '195/65R15,RADAR - TYRE IMP RADAR RADAR RPX800 TYRE,R900,3 units'
     ].join('\n'));
 
     expect(items.map((item) => item.pattern)).toEqual([
@@ -266,7 +267,8 @@ describe('EXCLUSIVE TYRES supplier catalogue parsing', () => {
       'FM601',
       'Renegade AT Sport',
       'X Privilo TX5',
-      'DIMAX SPORT'
+      'DIMAX SPORT',
+      'RPX800'
     ]);
     expect(items.map((item) => item.imageDesignKey)).toEqual([
       'X PRIVILO TX3',
@@ -274,8 +276,13 @@ describe('EXCLUSIVE TYRES supplier catalogue parsing', () => {
       'FM601',
       'RENEGADE AT SPORT',
       'X PRIVILO TX5',
-      'DIMAX SPORT'
+      'DIMAX SPORT',
+      'RPX800'
     ]);
+    items.forEach((item) => {
+      expect(item.pattern).not.toMatch(/\b(?:IMP|TYRES?)\b/i);
+      expect(item.pattern).not.toMatch(new RegExp(`\\b${item.brand}\\b`, 'i'));
+    });
   });
 });
 
