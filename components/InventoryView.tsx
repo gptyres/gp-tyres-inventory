@@ -33,6 +33,8 @@ interface InventoryViewProps {
   showSupplierName?: boolean;
   currentUser?: string | null;
   priceLabel?: string;
+  emptyStateTitle?: string;
+  emptyStateDetail?: string;
 }
 
 // --- CONFIG TYPES ---
@@ -1702,8 +1704,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         <svg className="w-16 h-16 mb-4 text-gp-text-muted opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <p className="text-lg font-display uppercase tracking-widest text-gp-text-muted">No Inventory Found</p>
-        <p className="text-sm text-gp-text-muted mt-1 opacity-70">Adjust filters or search criteria</p>
+        <p className="px-4 text-center text-lg font-display uppercase tracking-widest text-gp-text-muted">
+          {props.emptyStateTitle || 'No Inventory Found'}
+        </p>
+        <p className="mt-1 px-4 text-center text-sm text-gp-text-muted opacity-70">
+          {props.emptyStateDetail || 'Adjust filters or search criteria'}
+        </p>
       </div>
     );
   }

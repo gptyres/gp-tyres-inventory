@@ -1,10 +1,18 @@
 import { InventoryItem, ProductType, TyreProduct } from './types';
 import { searchInventory } from './utils';
+import {
+  extractFlotationTyreSizeQuery,
+  flotationTyreSizesEqual,
+  parseFlotationTyreSize,
+  type FlotationTyreSizeComponents
+} from './flotationTyreSizeSearch';
 
 export interface SupplierSizeQuery {
   displaySize: string;
   numericKey: string;
   remainingQuery: string;
+  kind: 'metric' | 'flotation';
+  flotation?: FlotationTyreSizeComponents;
 }
 
 const numericSizeKey = (value: string) => value.replace(/[^0-9]/g, '');
@@ -14,13 +22,23 @@ export const extractSupplierTyreSizeQuery = (query: string): SupplierSizeQuery |
   const buildResult = (match: RegExpMatchArray, displaySize: string): SupplierSizeQuery => ({
     displaySize,
     numericKey: numericSizeKey(displaySize),
-    remainingQuery: `${query.slice(0, match.index ?? 0)} ${query.slice((match.index ?? 0) + match[0].length)}`.trim()
+    remainingQuery: `${query.slice(0, match.index ?? 0)} ${query.slice((match.index ?? 0) + match[0].length)}`.trim(),
+    kind: 'metric'
   });
 
-  const flotation = normalized.match(/\b(\d{2,3})\s*[X*]\s*(\d{1,2}(?:\.\d{1,2})?)\s*R\s*(\d{2}(?:\.\d)?)(?:LT)?\b/);
+  const flotation = extractFlotationTyreSizeQuery(query);
   if (flotation) {
-    const displaySize = `${flotation[1]}X${flotation[2]}R${flotation[3]}`;
-    return buildResult(flotation, displaySize);
+    return {
+      displaySize: flotation.displaySize,
+      numericKey: flotation.compactKeys[0],
+      remainingQuery: flotation.remainingQuery,
+      kind: 'flotation',
+      flotation: {
+        diameter: flotation.diameter,
+        widthHundredths: flotation.widthHundredths,
+        rim: flotation.rim
+      }
+    };
   }
 
   const passenger = normalized.match(/\b(\d{3})\s*[\/\-\s]+\s*(\d{2,3})\s*(?:ZR|R|[\/\-\s]+)\s*(\d{2}(?:\.\d)?)(?:LT|C)?\b/);
@@ -46,6 +64,16 @@ export const extractSupplierTyreSizeQuery = (query: string): SupplierSizeQuery |
 
 const supplierName = (item: InventoryItem) => String(item.supplierName || '').trim();
 
+const matchesSizeQuery = (item: InventoryItem, sizeQuery: SupplierSizeQuery): boolean => {
+  if (item.type !== ProductType.TYRE) return false;
+  if (sizeQuery.kind !== 'flotation' || !sizeQuery.flotation) {
+    return numericSizeKey((item as TyreProduct).size) === sizeQuery.numericKey;
+  }
+
+  const itemSize = parseFlotationTyreSize((item as TyreProduct).size);
+  return Boolean(itemSize && flotationTyreSizesEqual(sizeQuery.flotation, itemSize));
+};
+
 const compareSupplierResults = (preferredIds: Set<string>) => (left: InventoryItem, right: InventoryItem) => {
   const preferredDifference = Number(preferredIds.has(right.id)) - Number(preferredIds.has(left.id));
   if (preferredDifference) return preferredDifference;
@@ -65,11 +93,10 @@ export const searchSupplierInventory = (items: InventoryItem[], query: string): 
   const sizeQuery = extractSupplierTyreSizeQuery(query);
   if (!sizeQuery) return searchInventory(items, query);
 
-  const matchingSizeItems = items.filter((item) => (
-    item.type === ProductType.TYRE
-    && numericSizeKey((item as TyreProduct).size) === sizeQuery.numericKey
-  ));
-  if (!matchingSizeItems.length) return searchInventory(items, query);
+  const matchingSizeItems = items.filter((item) => matchesSizeQuery(item, sizeQuery));
+  if (!matchingSizeItems.length) {
+    return sizeQuery.kind === 'flotation' ? [] : searchInventory(items, query);
+  }
 
   const preferredIds = new Set(
     (sizeQuery.remainingQuery ? searchInventory(matchingSizeItems, sizeQuery.remainingQuery) : matchingSizeItems)

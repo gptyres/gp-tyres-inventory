@@ -2,6 +2,11 @@
 import { BatteryProduct, InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
 import { parseAlineWheelDescription, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
+import {
+  extractFlotationTyreSizeQuery,
+  flotationTyreSizesEqual,
+  parseFlotationTyreSize
+} from './flotationTyreSizeSearch';
 
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-ZA', {
@@ -135,7 +140,7 @@ const getInventorySearchIndex = (item: InventoryItem): InventorySearchIndex => {
  * - Technical spec variations (e.g. "5x100" vs "5/100" vs "5100")
  * - Specific fields: Pattern, PCD, Colour, Vehicle Compatibility
  */
-export const searchInventory = (items: InventoryItem[], query: string): InventoryItem[] => {
+const searchInventoryStandard = (items: InventoryItem[], query: string): InventoryItem[] => {
   if (!query) return items;
 
   const normalizedQuery = normalizeSearchTerm(query);
@@ -160,6 +165,23 @@ export const searchInventory = (items: InventoryItem[], query: string): Inventor
 
     return false;
   });
+};
+
+export const searchInventory = (items: InventoryItem[], query: string): InventoryItem[] => {
+  if (!query) return items;
+
+  const flotationQuery = extractFlotationTyreSizeQuery(query);
+  if (!flotationQuery) return searchInventoryStandard(items, query);
+
+  const exactSizeMatches = items.filter((item) => {
+    if (item.type !== ProductType.TYRE) return false;
+    const itemSize = parseFlotationTyreSize((item as TyreProduct).size);
+    return Boolean(itemSize && flotationTyreSizesEqual(flotationQuery, itemSize));
+  });
+
+  return flotationQuery.remainingQuery
+    ? searchInventoryStandard(exactSizeMatches, flotationQuery.remainingQuery)
+    : exactSizeMatches;
 };
 
 export const searchOrders = (orders: Order[], query: string): Order[] => {
