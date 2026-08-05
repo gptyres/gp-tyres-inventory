@@ -425,6 +425,24 @@ describe('ARC supplier catalogue parsing', () => {
 });
 
 describe('APEX supplier catalogue parsing', () => {
+  it('prefers the complete LT size embedded in refreshed product names', () => {
+    const items = parseApexData([
+      'Supplier SKU,TYRE_SIZE,TYRE_BRAND,TYRE_PATTERN,TYRE_RATING,TYRE_INDEX,TYRE_SPECS,Category,Product Name,Lead Time,Cost Price,Selling Price,CPT Stock Units,Total Stock Units',
+      '779303,60R18,BF GOODRICH,,,114/110S,,Tyres,LT265/60R18 114/110S TL ALL-TERRAIN T/A KO3 LRD GO,6 Hours,R4074,R4675,20 units,20 units',
+      '779304,60R17,BF GOODRICH,,,112/109S,,Tyres,LT265/60R17 112/109S TL ALL-TERRAIN T/A KO3 LRC GO,6 Hours,R3950,R4550,3 units,3 units'
+    ].join('\n'));
+
+    expect(items.map((item) => item.size)).toEqual([
+      'LT265/60R18',
+      'LT265/60R17'
+    ]);
+    expect(items[0]).toMatchObject({
+      brand: 'BF GOODRICH',
+      pattern: 'ALL-TERRAIN T/A KO3 LRD GO',
+      sellingPrice: 4675
+    });
+  });
+
   it('removes load, speed and supplier clutter from tyre visual keys', () => {
     const items = parseApexData([
       'Size,Brand & Pattern,Lead Time,Selling Price,Stock Units',

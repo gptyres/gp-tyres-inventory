@@ -26,8 +26,8 @@ const cleanOptional = (value: unknown) => {
 };
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-// Covers passenger, 4x4, light-truck, and commercial sizes, including 10.00R20.
-const TYRE_SIZE_PATTERN = /\b(?:\d{2,3}\/\d{2,3}(?:ZR|RF|R)\d{2}(?:\.\d)?(?:CP|C|LT)?|\d{2,3}R\d{2}(?:\.\d)?(?:CP|C|LT)?|\d{2,3}X\d{1,2}(?:\.\d+)?(?:R|-)\d{2}(?:\.\d)?(?:LT)?|\d{1,3}(?:\.\d{1,2})?\/\d{2,3}-\d{2}(?:\.\d)?|\d{1,3}(?:\.\d{1,2})?(?:R|-)\d{2}(?:\.\d)?|\d{3}-\d{2}(?:\.\d)?)\b/i;
+// Covers passenger, 4x4, light-truck, and commercial sizes, including LT265/60R18 and 10.00R20.
+const TYRE_SIZE_PATTERN = /\b(?:(?:LT)?\d{2,3}\/\d{2,3}(?:ZR|RF|R)\d{2}(?:\.\d)?(?:CP|C|LT)?|\d{2,3}R\d{2}(?:\.\d)?(?:CP|C|LT)?|\d{2,3}X\d{1,2}(?:\.\d+)?(?:R|-)\d{2}(?:\.\d)?(?:LT)?|\d{1,3}(?:\.\d{1,2})?\/\d{2,3}-\d{2}(?:\.\d)?|\d{1,3}(?:\.\d{1,2})?(?:R|-)\d{2}(?:\.\d)?|\d{3}-\d{2}(?:\.\d)?)\b/i;
 const TYRE_RATING_PATTERN = /\b\d{1,2}\s*(?:PR|PLY)\b/gi;
 const TYRE_INDEX_PATTERN = /\b\d{2,3}(?:\s*\/\s*\d{2,3})?\s*(?:A[1-8]|[A-Z])\b/gi;
 const TYRE_SPEC_PATTERN = /(?:^|\s)(M\+S|M\/S|R\/B|A\/T|M\/T|H\/T|R\/T|TLR|TL|TT|RFT|RUN\s*FLAT|RUNFLAT|XL|RF|OWL|RWL|BSW|WSW)(?=\s|$)/gi;
@@ -36,6 +36,15 @@ const normalizeSize = (value: string) => clean(value)
   .replace(/\s+/g, '')
   .replace(/\u00d7/g, 'X')
   .toUpperCase();
+
+const preferCompleteSize = (explicitSize: string, embeddedSize: string) => {
+  if (!explicitSize) return embeddedSize;
+  if (!embeddedSize) return explicitSize;
+
+  // Some supplier feeds truncate the size column to values such as 60R18,
+  // while the product description still contains the complete LT265/60R18 size.
+  return embeddedSize.length > explicitSize.length ? embeddedSize : explicitSize;
+};
 
 export const extractSupplierTyreSize = (value: string) => {
   const normalized = clean(value)
@@ -112,9 +121,9 @@ export const parseSupplierTyreFields = (input: SupplierTyreFieldInput): Supplier
   const description = clean(input.description);
   const explicitBrand = cleanOptional(input.explicitBrand);
   let working = description;
-  let size = normalizeSize(cleanOptional(input.explicitSize)) || extractSupplierTyreSize(working);
+  const explicitSize = normalizeSize(cleanOptional(input.explicitSize));
   const embeddedSize = extractSupplierTyreSize(working);
-  if (!size && embeddedSize) size = embeddedSize;
+  let size = preferCompleteSize(explicitSize, embeddedSize);
   working = cleanRemainder(removeFirstText(working, embeddedSize || size));
   working = working.replace(/^(?:(?:unknown|standard|n\/?a|none|null)\s*)+/i, '').trim();
 
