@@ -102,7 +102,19 @@ describe('Tyre Life catalogue refresh', () => {
 
     expect(items).toHaveLength(199);
     expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(3123);
-    expect(sample).toMatchObject({ sellingPrice: 4850, costPrice: 4850, quantity: 8 });
+    expect(sample).toMatchObject({
+      brand: 'Dirty Life',
+      code: 'A8306 MAYHEM RIDGELINE',
+      finish: 'Satin Black',
+      size: '20x9',
+      pcd: '139.7',
+      offset: '18',
+      centerBore: '106',
+      sellingPrice: 4850,
+      costPrice: 4850,
+      quantity: 8,
+      stockByLocation: { JHB: 8, CPT: 0, DBN: 0 }
+    });
     expect(TYRE_LIFE_WHEELS_RAW_DATA).not.toContain('â€');
   });
 

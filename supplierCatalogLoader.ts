@@ -154,6 +154,44 @@ export const restoreAttStockFromBundledCatalog = (
   });
 };
 
+const supplierSkuKey = (item: InventoryItem): string => (
+  String(item.supplierStockCode || '').trim().toUpperCase()
+);
+
+export const restoreSupplierWheelSpecsFromBundledCatalog = (
+  liveItems: InventoryItem[],
+  bundledItems: InventoryItem[]
+): InventoryItem[] => {
+  const bundledWheelsBySku = new Map<string, WheelProduct>();
+  bundledItems.forEach((item) => {
+    if (item.type !== ProductType.WHEEL) return;
+    const key = supplierSkuKey(item);
+    if (key && !bundledWheelsBySku.has(key)) bundledWheelsBySku.set(key, item as WheelProduct);
+  });
+
+  return liveItems.map((item) => {
+    if (item.type !== ProductType.WHEEL) return item;
+    const wheel = item as WheelProduct;
+    const bundledWheel = bundledWheelsBySku.get(supplierSkuKey(wheel));
+    if (!bundledWheel) return wheel;
+
+    return {
+      ...wheel,
+      code: wheel.code?.trim() || bundledWheel.code,
+      brand: wheel.brand?.trim() || bundledWheel.brand,
+      finish: wheel.finish?.trim() || bundledWheel.finish,
+      size: wheel.size?.trim() || bundledWheel.size,
+      pcd: wheel.pcd?.trim() || bundledWheel.pcd,
+      offset: wheel.offset?.trim() || bundledWheel.offset,
+      centerBore: wheel.centerBore?.trim() || bundledWheel.centerBore,
+      colour: wheel.colour?.trim() || bundledWheel.colour,
+      setQuantity: wheel.setQuantity || bundledWheel.setQuantity,
+      imageDesignKey: wheel.imageDesignKey?.trim() || bundledWheel.imageDesignKey,
+      imageFinishKey: wheel.imageFinishKey?.trim() || bundledWheel.imageFinishKey
+    };
+  });
+};
+
 export const normalizeBundledSupplierTyres = (
   catalog: ConcreteSupplierCatalog,
   items: InventoryItem[]
@@ -316,6 +354,10 @@ const loadConcreteSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pr
       if (catalog === 'ATT' && !liveItems.some((item) => item.quantity > 0)) {
         const bundledItems = normalizeBundledSupplierTyres(catalog, await loadBundledSupplierCatalog(catalog));
         return restoreAttStockFromBundledCatalog(liveItems, bundledItems);
+      }
+      if (catalog === 'TYRE_LIFE_WHEELS') {
+        const bundledItems = await loadBundledSupplierCatalog(catalog);
+        return restoreSupplierWheelSpecsFromBundledCatalog(liveItems, bundledItems);
       }
       return liveItems;
     }

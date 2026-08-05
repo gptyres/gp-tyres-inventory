@@ -2,9 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
   loadSupplierCatalogItems,
   normalizeBundledSupplierTyres,
-  restoreAttStockFromBundledCatalog
+  restoreAttStockFromBundledCatalog,
+  restoreSupplierWheelSpecsFromBundledCatalog
 } from './supplierCatalogLoader';
-import { ProductType, type BatteryProduct, type TyreProduct } from './types';
+import { ProductType, type BatteryProduct, type TyreProduct, type WheelProduct } from './types';
 
 const bundledTyre: TyreProduct = {
   id: 'bundled-1',
@@ -92,5 +93,59 @@ describe('site-wide supplier catalogue formatting', () => {
     const bundledItem: TyreProduct = { ...bundledTyre, id: 'att-2', quantity: 10 };
 
     expect(restoreAttStockFromBundledCatalog([liveItem], [bundledItem])).toEqual([liveItem]);
+  });
+
+  it('restores missing Dirty Life wheel specs without replacing live stock or pricing', () => {
+    const liveWheel: WheelProduct = {
+      id: 'live-tyre-life-wheels-a9303',
+      type: ProductType.WHEEL,
+      supplierName: 'TYRE LIFE WHEELS',
+      supplierStockCode: 'SAA9303-7983MB12K',
+      code: 'A9303 DT1',
+      brand: 'Dirty Life',
+      finish: '',
+      size: '',
+      pcd: '',
+      offset: '',
+      centerBore: '',
+      colour: '',
+      setQuantity: 1,
+      location: 'JHB: 20 | CPT: 1 | DBN: 0',
+      stockByLocation: { JHB: 20, CPT: 1, DBN: 0 },
+      quantity: 21,
+      costPrice: 5200,
+      sellingPrice: 6000,
+      lastUpdated: '2026-08-05'
+    };
+    const bundledWheel: WheelProduct = {
+      ...liveWheel,
+      id: 'tyrelifewheels-1',
+      finish: 'Matte Black W/Simulated Ring',
+      size: '17X9',
+      pcd: '139.7',
+      offset: '-12',
+      centerBore: '110.1',
+      colour: 'Dirty Life | Matte Black W/Simulated Ring | Wheels | SAA9303-7983MB12K',
+      imageDesignKey: 'A9303 DT1',
+      imageFinishKey: 'MATTE BLACK W SIMULATED RING',
+      quantity: 0,
+      costPrice: 1,
+      sellingPrice: 1
+    };
+
+    expect(restoreSupplierWheelSpecsFromBundledCatalog([liveWheel], [bundledWheel])).toEqual([
+      expect.objectContaining({
+        id: liveWheel.id,
+        finish: 'Matte Black W/Simulated Ring',
+        size: '17X9',
+        pcd: '139.7',
+        offset: '-12',
+        centerBore: '110.1',
+        quantity: 21,
+        costPrice: 5200,
+        sellingPrice: 6000,
+        stockByLocation: { JHB: 20, CPT: 1, DBN: 0 }
+      })
+    ]);
   });
 });
