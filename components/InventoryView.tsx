@@ -18,6 +18,8 @@ import {
   parseStockLocationSummary,
   sortStockLocationEntries
 } from '../stockLocation';
+import { type SupplierMarkupAdjustment } from '../supplierMarkup';
+import { SupplierMarkupAdjuster } from './SupplierMarkupAdjuster';
 
 interface InventoryViewProps {
   items: InventoryItem[];
@@ -35,6 +37,8 @@ interface InventoryViewProps {
   priceLabel?: string;
   emptyStateTitle?: string;
   emptyStateDetail?: string;
+  markupAdjustment?: SupplierMarkupAdjustment;
+  onMarkupAdjustmentChange?: (adjustment: SupplierMarkupAdjustment) => void;
 }
 
 // --- CONFIG TYPES ---
@@ -1697,6 +1701,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     if (showImages) setShowImages(false);
     if (hideLowStock) setHideLowStock(false);
   }, [groupBy, hideLowStock, isBatteryCatalog, showImages, sortConfig.key]);
+  const hasMarkupAdjuster = Boolean(
+    props.isReadOnly
+    && !isBatteryCatalog
+    && props.markupAdjustment
+    && props.onMarkupAdjustmentChange
+  );
 
   if (props.items.length === 0) {
     return (
@@ -1792,7 +1802,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       />
       
       {/* View Configuration Toolbar */}
-      <div className="sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-3 rounded-lg border border-gp-border bg-gp-panel p-3 shadow-sm lg:grid-cols-[minmax(0,1fr)_auto]">
+      <div className={`sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-3 rounded-lg border border-gp-border bg-gp-panel p-3 shadow-sm ${hasMarkupAdjuster ? 'xl:grid-cols-[auto_minmax(330px,1fr)_auto] xl:items-center' : 'lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center'}`}>
         
         <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2">
             {/* Sorting */}
@@ -1843,9 +1853,17 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
                     </button>
                 </div>
             )}
+
         </div>
 
-        <div className="flex w-fit justify-self-start gap-1 rounded-lg border border-gp-border bg-gp-input p-1 shadow-inner lg:justify-self-end">
+        {hasMarkupAdjuster && props.markupAdjustment && props.onMarkupAdjustmentChange && (
+          <SupplierMarkupAdjuster
+            adjustment={props.markupAdjustment}
+            onChange={props.onMarkupAdjustmentChange}
+          />
+        )}
+
+        <div className="flex w-fit justify-self-start gap-1 rounded-lg border border-gp-border bg-gp-input p-1 shadow-inner xl:justify-self-end">
             <button
                 onClick={() => props.onViewModeChange(ViewMode.TABLE)}
                 className={`p-2 rounded text-xs uppercase font-bold flex items-center gap-2 transition-all ${props.viewMode === ViewMode.TABLE ? 'bg-gp-panel text-gp-text-main shadow-sm' : 'text-gp-text-muted hover:text-gp-text-main'}`}
@@ -1867,7 +1885,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         </div>
 
         {/* Filters & Toggles */}
-        {!isBatteryCatalog && <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 border-t border-gp-border pt-3 lg:col-span-2">
+        {!isBatteryCatalog && <div className={`flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 border-t border-gp-border pt-3 ${hasMarkupAdjuster ? 'xl:col-span-3' : 'lg:col-span-2'}`}>
              
              {/* Show Images Toggle */}
              <label className="flex items-center gap-1.5 cursor-pointer border-r border-gp-border pr-3 sm:mr-1">

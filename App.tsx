@@ -73,6 +73,12 @@ import {
   extractFlotationTyreSizeQuery,
   getNoExactFlotationStockMessage
 } from './flotationTyreSizeSearch';
+import {
+  applySupplierMarkup,
+  BASE_SUPPLIER_MARKUP,
+  getSupplierMarkupPriceLabel,
+  type SupplierMarkupAdjustment
+} from './supplierMarkup';
 
 const POS_REFERENCE_COUNTERS: Record<InvoiceDocument['documentType'], { storageKey: string; startAt: number }> = {
   INVOICE: {
@@ -161,6 +167,7 @@ const App: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
+  const [supplierMarkupByCatalog, setSupplierMarkupByCatalog] = useState<Partial<Record<SupplierCatalog, SupplierMarkupAdjustment>>>({});
   const [isScrollToTopVisible, setIsScrollToTopVisible] = useState(false);
   const mainScrollContainerRef = useRef<HTMLElement | null>(null);
   const activeScrollContainerRef = useRef<HTMLElement | null>(null);
@@ -811,6 +818,20 @@ const App: React.FC = () => {
       ? getSupplierSizeSearchSummary(filteredItems, debouncedSearchQuery)
       : null
   ), [currentView, activeSupplierCatalog, filteredItems, debouncedSearchQuery]);
+
+  const activeSupplierMarkup = supplierMarkupByCatalog[activeSupplierCatalog] || BASE_SUPPLIER_MARKUP;
+  const displayedInventoryItems = useMemo(() => (
+    currentView === 'SUPPLIER_INVENTORY'
+      ? applySupplierMarkup(filteredItems, activeSupplierMarkup, activeSupplierCatalog)
+      : filteredItems
+  ), [currentView, filteredItems, activeSupplierMarkup, activeSupplierCatalog]);
+
+  const handleSupplierMarkupChange = useCallback((adjustment: SupplierMarkupAdjustment) => {
+    setSupplierMarkupByCatalog((current) => ({
+      ...current,
+      [activeSupplierCatalog]: adjustment
+    }));
+  }, [activeSupplierCatalog]);
 
   const flotationSizeSearch = useMemo(
     () => extractFlotationTyreSizeQuery(debouncedSearchQuery),
@@ -1917,7 +1938,7 @@ const App: React.FC = () => {
                   </div>
                 ) : (
                   <InventoryView
-                    items={filteredItems}
+                    items={displayedInventoryItems}
                     viewMode={viewMode}
                     onViewModeChange={setViewMode}
                     isAdmin={isAdmin}
@@ -1928,7 +1949,14 @@ const App: React.FC = () => {
                     onBulkDelete={handleBulkDelete}
                     isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
                     showSupplierName={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS'}
-                    priceLabel={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALINE' ? 'Recommended Selling Price' : undefined}
+                    priceLabel={currentView === 'SUPPLIER_INVENTORY'
+                      ? getSupplierMarkupPriceLabel(
+                          activeSupplierMarkup,
+                          activeSupplierCatalog === 'ALINE' ? 'Recommended Selling Price' : 'Selling Price'
+                        )
+                      : undefined}
+                    markupAdjustment={currentView === 'SUPPLIER_INVENTORY' ? activeSupplierMarkup : undefined}
+                    onMarkupAdjustmentChange={currentView === 'SUPPLIER_INVENTORY' ? handleSupplierMarkupChange : undefined}
                     emptyStateTitle={flotationSizeSearch ? getNoExactFlotationStockMessage(flotationSizeSearch) : undefined}
                     emptyStateDetail={flotationSizeSearch ? 'Diameter, width and rim must all match. Similar and metric substitute sizes are not shown.' : undefined}
                   />
