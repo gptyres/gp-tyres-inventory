@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupportedStaffImageMimeType } from './InventoryView';
+import { formatBulkClipboardText, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupportedStaffImageMimeType } from './InventoryView';
 import { ProductType, type TyreProduct, type WheelProduct } from '../types';
 
 const supplierTyre: TyreProduct = {
@@ -58,6 +58,29 @@ describe('supplier tyre visual drag and drop', () => {
 
   it('rejects non-image drops', () => {
     expect(getSupportedStaffImageMimeType({ name: 'supplier-pricing.pdf', type: 'application/pdf' })).toBe('');
+  });
+});
+
+describe('customer stock clipboard formatting', () => {
+  it('copies available tyres under each other in the current item order', () => {
+    const secondTyre: TyreProduct = {
+      ...supplierTyre,
+      id: 'live-apex-grabber',
+      size: '31X10.50R15',
+      brand: 'BF GOODRICH',
+      pattern: 'LT MUD TERRAIN T/A KM3 LRC GO',
+      sellingPrice: 5999,
+      quantity: 4
+    };
+
+    expect(formatBulkClipboardText([supplierTyre, secondTyre])).toBe([
+      '10.00R20 COMPASAL CPS60 @ R4500',
+      '31X10.50R15 BF GOODRICH LT MUD TERRAIN T/A KM3 LRC GO @ R5999'
+    ].join('\n'));
+  });
+
+  it('does not include zero-stock products in a customer availability message', () => {
+    expect(formatBulkClipboardText([{ ...supplierTyre, quantity: 0 }])).toBe('');
   });
 });
 

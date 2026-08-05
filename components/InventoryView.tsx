@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { BatteryProduct, InventoryItem, ProductType, TyreProduct, WheelProduct, CoiloverProduct, ViewMode } from '../types';
 import { formatCurrency, getStatusColor } from '../utils';
 import {
@@ -271,6 +271,16 @@ const getWheelClipboardText = (item: InventoryItem): string => {
 const getItemClipboardText = (item: InventoryItem): string => (
   item.type === ProductType.WHEEL ? getWheelClipboardText(item) : getTyreClipboardText(item)
 );
+
+const isCustomerCopyItem = (item: InventoryItem): boolean => (
+  (item.type === ProductType.TYRE || item.type === ProductType.WHEEL) && item.quantity > 0
+);
+
+export const formatBulkClipboardText = (items: InventoryItem[]): string => items
+  .filter(isCustomerCopyItem)
+  .map((item) => getItemClipboardText(item).split('\n').filter(Boolean).join(' | '))
+  .filter(Boolean)
+  .join('\n');
 
 const copyTextToClipboard = async (value: string) => {
   if (navigator.clipboard?.writeText) {
@@ -946,7 +956,7 @@ interface ViewComponentProps extends InventoryViewProps {
   sortConfig: { key: SortKey; direction: SortDirection };
   onHeaderClick: (key: SortKey) => void;
   selectedIds: Set<string>;
-  onToggleSelect: (id: string) => void;
+  onToggleSelect: (id: string, shiftKey?: boolean) => void;
   showImages: boolean;
   aspectRatio: AspectRatio;
   generatedImages: Record<string, string>;
@@ -982,7 +992,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
       <table className="w-full text-left border-collapse text-sm">
         <thead>
           <tr className="bg-gp-dark text-gp-text-muted uppercase text-[10px] tracking-wider font-bold">
-            {isAdmin && !isReadOnly && <th className="p-3 border-r border-b border-gp-border w-10 text-center">✓</th>}
+            <th className="p-3 border-r border-b border-gp-border w-10 text-center" title="Select products to copy">✓</th>
             {!isReadOnly && <th className="p-3 border-r border-b border-gp-border w-32 text-center">Actions</th>}
             <th className="p-3 border-r border-b border-gp-border w-20 text-center">Copy</th>
             {showImages && <th className="p-3 border-r border-b border-gp-border w-24 text-center">Visual</th>}
@@ -1000,16 +1010,18 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
         <tbody className="divide-y divide-gp-border">
           {items.map((item, idx) => (
             <tr key={item.id} className={`${idx % 2 === 0 ? 'bg-gp-black' : 'bg-gp-input'} hover:bg-gp-panel transition-colors group ${selectedIds.has(item.id) ? 'bg-gp-red/10' : ''}`}>
-              {isAdmin && !isReadOnly && (
-                <td className="p-2 border-r border-gp-border text-center">
-                  <input 
-                    type="checkbox" 
+              <td className="p-2 border-r border-gp-border text-center">
+                {isCustomerCopyItem(item) && (
+                  <input
+                    type="checkbox"
                     checked={selectedIds.has(item.id)}
-                    onChange={() => onToggleSelect(item.id)}
+                    onChange={(event) => onToggleSelect(item.id, (event.nativeEvent as MouseEvent).shiftKey)}
                     className="rounded border-gp-border bg-gp-input text-gp-red focus:ring-gp-red cursor-pointer"
+                    title="Select item; hold Shift to select a range"
+                    aria-label={`Select ${getItemDisplayName(item)}`}
                   />
-                </td>
-              )}
+                )}
+              </td>
               {!isReadOnly && (
                 <td className="p-2 border-r border-gp-border text-center">
                   <div className="flex justify-center gap-1 items-center">
@@ -1157,13 +1169,15 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             </div>
           )}
 
-          {isAdmin && !isReadOnly && (
+          {isCustomerCopyItem(item) && (
             <div className="absolute top-2 right-2 z-10">
-                <input 
-                    type="checkbox" 
+                <input
+                    type="checkbox"
                     checked={selectedIds.has(item.id)}
-                    onChange={() => onToggleSelect(item.id)}
+                    onChange={(event) => onToggleSelect(item.id, (event.nativeEvent as MouseEvent).shiftKey)}
                     className="w-5 h-5 rounded border-gp-border bg-gp-black text-gp-red focus:ring-gp-red cursor-pointer shadow-sm"
+                    title="Select item; hold Shift to select a range"
+                    aria-label={`Select ${getItemDisplayName(item)}`}
                 />
             </div>
           )}
@@ -1292,12 +1306,14 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
           className={`py-4 px-3 flex flex-col sm:flex-row justify-between items-center active:bg-gp-overlay rounded transition-colors ${selectedIds.has(item.id) ? 'bg-gp-red/10' : ''}`}
         >
            <div className="flex items-center gap-3 w-full sm:w-auto">
-               {isAdmin && !isReadOnly && (
+               {isCustomerCopyItem(item) && (
                     <input 
                         type="checkbox" 
                         checked={selectedIds.has(item.id)}
-                        onChange={() => onToggleSelect(item.id)}
+                        onChange={(event) => onToggleSelect(item.id, (event.nativeEvent as MouseEvent).shiftKey)}
                         className="rounded border-gp-border bg-gp-input text-gp-red focus:ring-gp-red cursor-pointer"
+                        title="Select item; hold Shift to select a range"
+                        aria-label={`Select ${getItemDisplayName(item)}`}
                     />
                )}
                
@@ -1390,6 +1406,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [hideLowStock, setHideLowStock] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const lastSelectedIdRef = useRef<string | null>(null);
   const [visibleColumns, setVisibleColumns] = useState<VisibleColumns>({
     specs: true,
     location: true,
@@ -1542,23 +1559,6 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     }));
   };
 
-  const handleToggleSelect = (id: string) => {
-    setSelectedIds(prev => {
-        const next = new Set(prev);
-        if (next.has(id)) next.delete(id);
-        else next.add(id);
-        return next;
-    });
-  };
-
-  const handleSelectAll = (items: InventoryItem[]) => {
-    if (selectedIds.size === items.length) {
-        setSelectedIds(new Set());
-    } else {
-        setSelectedIds(new Set(items.map(i => i.id)));
-    }
-  };
-
   const handleBulkAction = () => {
     if (selectedIds.size > 0) {
         props.onBulkDelete(Array.from(selectedIds));
@@ -1576,6 +1576,23 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     } catch (error) {
       console.error('Clipboard copy failed', error);
       setClipboardNotice('Could not copy to clipboard.');
+    }
+  };
+
+  const handleCopyItems = async (items: InventoryItem[], label: string) => {
+    const clipboardText = formatBulkClipboardText(items);
+    const itemCount = clipboardText ? clipboardText.split('\n').length : 0;
+    if (!clipboardText) {
+      setClipboardNotice('No available tyre or wheel items to copy.');
+      return;
+    }
+
+    try {
+      await copyTextToClipboard(clipboardText);
+      setClipboardNotice(`${label}: ${itemCount} available item${itemCount === 1 ? '' : 's'} copied.`);
+    } catch (error) {
+      console.error('Bulk clipboard copy failed', error);
+      setClipboardNotice('Could not copy items to clipboard.');
     }
   };
 
@@ -1614,6 +1631,44 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     return sortableItems;
   }, [viewFilteredItems, sortConfig]);
 
+  const customerCopyItems = useMemo(
+    () => sortedItems.filter(isCustomerCopyItem),
+    [sortedItems]
+  );
+  const selectedCopyItems = useMemo(
+    () => customerCopyItems.filter((item) => selectedIds.has(item.id)),
+    [customerCopyItems, selectedIds]
+  );
+
+  const handleToggleSelect = (id: string, shiftKey = false) => {
+    const currentIndex = customerCopyItems.findIndex((item) => item.id === id);
+    const previousIndex = lastSelectedIdRef.current
+      ? customerCopyItems.findIndex((item) => item.id === lastSelectedIdRef.current)
+      : -1;
+
+    setSelectedIds((previous) => {
+      const next = new Set(previous);
+      if (shiftKey && currentIndex >= 0 && previousIndex >= 0) {
+        const start = Math.min(currentIndex, previousIndex);
+        const end = Math.max(currentIndex, previousIndex);
+        customerCopyItems.slice(start, end + 1).forEach((item) => next.add(item.id));
+      } else if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+    lastSelectedIdRef.current = id;
+  };
+
+  const handleSelectAll = () => {
+    const allSelected = customerCopyItems.length > 0
+      && customerCopyItems.every((item) => selectedIds.has(item.id));
+    setSelectedIds(allSelected ? new Set() : new Set(customerCopyItems.map((item) => item.id)));
+    lastSelectedIdRef.current = null;
+  };
+
   // 3. Group Items
   const groupedItems: Record<string, InventoryItem[]> = useMemo(() => {
     if (groupBy === 'none') return { 'All Items': sortedItems };
@@ -1647,6 +1702,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   // Clear selection if items change significantly (e.g. filter change)
   useEffect(() => {
     setSelectedIds(new Set());
+    lastSelectedIdRef.current = null;
     setVisibleCount(RENDER_CHUNK_SIZE);
   }, [props.items]);
 
@@ -1877,18 +1933,6 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
                 </select>
             </div>}
 
-            {/* Bulk Selection (Admin Only) */}
-            {props.isAdmin && !props.isReadOnly && (
-                <div className="flex h-9 items-center border-l border-gp-border pl-3">
-                    <button 
-                        onClick={() => handleSelectAll(sortedItems)}
-                        className="text-[10px] font-bold uppercase text-gp-text-muted hover:text-gp-text-main"
-                    >
-                        {selectedIds.size === sortedItems.length ? 'Deselect All' : 'Select All'}
-                    </button>
-                </div>
-            )}
-
         </div>
 
         {hasMarkupAdjuster && props.markupAdjustment && props.onMarkupAdjustmentChange && (
@@ -1956,29 +2000,66 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
              <ToolbarToggle checked={visibleColumns.specs} onChange={(checked) => setVisibleColumns({...visibleColumns, specs: checked})} label="Specs" />
              <ToolbarToggle checked={visibleColumns.price} onChange={(checked) => setVisibleColumns({...visibleColumns, price: checked})} label="Price" />
              <ToolbarToggle checked={visibleColumns.cost} onChange={(checked) => setVisibleColumns({...visibleColumns, cost: checked})} label="Cost" />
+             {customerCopyItems.length > 0 && (
+               <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-2 sm:border-l sm:border-gp-border sm:pl-3">
+                 <button
+                   type="button"
+                   onClick={handleSelectAll}
+                   className="h-8 rounded-md border border-gp-red/60 bg-gp-red/10 px-3 text-[9px] font-black uppercase tracking-wider text-gp-red transition-colors hover:bg-gp-red hover:text-white"
+                 >
+                   {selectedCopyItems.length === customerCopyItems.length ? 'Clear All' : 'Select All'}
+                 </button>
+                 <button
+                   type="button"
+                   onClick={() => handleCopyItems(selectedCopyItems, 'Copied selected')}
+                   disabled={selectedCopyItems.length === 0}
+                   className="h-8 rounded-md bg-gp-red px-3 text-[9px] font-black uppercase tracking-wider text-white shadow-[0_0_12px_rgba(255,0,0,0.18)] transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-35"
+                 >
+                   Copy Selected ({selectedCopyItems.length})
+                 </button>
+                 <button
+                   type="button"
+                   onClick={() => handleCopyItems(customerCopyItems, 'Copied all')}
+                   className="h-8 rounded-md bg-gp-red px-3 text-[9px] font-black uppercase tracking-wider text-white shadow-[0_0_12px_rgba(255,0,0,0.18)] transition-colors hover:bg-red-700"
+                 >
+                   Copy All ({customerCopyItems.length})
+                 </button>
+               </div>
+             )}
         </div>}
 
       </div>
 
       {/* Bulk Action Bar - Shows when items are selected */}
-      {selectedIds.size > 0 && props.isAdmin && !props.isReadOnly && (
+      {selectedCopyItems.length > 0 && (
         <div className="bg-gp-red text-white p-3 rounded-lg flex items-center justify-between shadow-lg animate-fade-in-up">
             <span className="font-bold text-sm uppercase tracking-wide px-2">
-                {selectedIds.size} Items Selected
+                {selectedCopyItems.length} Item{selectedCopyItems.length === 1 ? '' : 's'} Selected
             </span>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap justify-end gap-2">
                 <button 
-                    onClick={() => setSelectedIds(new Set())}
+                    onClick={() => {
+                      setSelectedIds(new Set());
+                      lastSelectedIdRef.current = null;
+                    }}
                     className="px-4 py-1.5 rounded border border-white/30 hover:bg-white/10 text-xs font-bold uppercase transition-colors"
                 >
-                    Cancel
+                    Clear
                 </button>
-                <button 
-                    onClick={handleBulkAction}
+                <button
+                    onClick={() => handleCopyItems(selectedCopyItems, 'Copied selected')}
                     className="px-4 py-1.5 rounded bg-white text-gp-red font-bold text-xs uppercase hover:bg-gray-100 transition-colors shadow-sm"
                 >
-                    Delete Selected
+                    Copy Selected
                 </button>
+                {props.isAdmin && !props.isReadOnly && (
+                  <button
+                      onClick={handleBulkAction}
+                      className="px-4 py-1.5 rounded border border-white/40 text-white font-bold text-xs uppercase hover:bg-white/10 transition-colors"
+                  >
+                      Delete Selected
+                  </button>
+                )}
             </div>
         </div>
       )}
