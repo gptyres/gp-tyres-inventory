@@ -28,6 +28,12 @@ describe('supplier markup pricing', () => {
     expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 20 }, 'APEX')).toBe(1380);
   });
 
+  it('uses cost plus 15% VAT as the base for percentage and Rand markup', () => {
+    expect(getSupplierCostIncludingVat(tyre(), 'REVOLUTION_TYRES')).toBeCloseTo(1150);
+    expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 10 }, 'REVOLUTION_TYRES')).toBe(1265);
+    expect(calculateSupplierSellingPrice(tyre(), { mode: 'FIXED', value: 300 }, 'REVOLUTION_TYRES')).toBe(1450);
+  });
+
   it('does not add VAT twice when supplier cost already includes VAT', () => {
     expect(getSupplierCostIncludingVat(tyre(), 'ALINE')).toBe(1000);
     expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 15 }, 'ALINE')).toBe(1150);
@@ -44,6 +50,11 @@ describe('supplier markup pricing', () => {
       { mode: 'FIXED', value: 250 },
       'ALL_SUPPLIERS'
     )).toBe(1250);
+    expect(calculateSupplierSellingPrice(
+      tyre({ supplierName: 'Revolution Tyres' }),
+      { mode: 'FIXED', value: 250 },
+      'ALL_SUPPLIERS'
+    )).toBe(1400);
   });
 
   it('preserves source selling prices in base mode without cloning the list', () => {
