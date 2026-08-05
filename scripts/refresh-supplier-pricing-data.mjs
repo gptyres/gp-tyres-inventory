@@ -4,16 +4,19 @@ import { resolve } from 'node:path';
 const args = process.argv.slice(2);
 const exoticOnly = args[0] === '--exotic';
 const tubestoneOnly = args[0] === '--tubestone';
-const [apexSource, treadsSource, tubestoneSource] = exoticOnly || tubestoneOnly ? [] : args;
+const apexOnly = args[0] === '--apex';
+const [apexSource, treadsSource, tubestoneSource] = exoticOnly || tubestoneOnly || apexOnly ? [] : args;
 const exoticSource = exoticOnly ? args[1] : '';
 const singleTubestoneSource = tubestoneOnly ? args[1] : '';
+const singleApexSource = apexOnly ? args[1] : '';
 
 if (
-  (!exoticOnly && !tubestoneOnly && (!apexSource || !treadsSource || !tubestoneSource))
+  (!exoticOnly && !tubestoneOnly && !apexOnly && (!apexSource || !treadsSource || !tubestoneSource))
   || (exoticOnly && !exoticSource)
   || (tubestoneOnly && !singleTubestoneSource)
+  || (apexOnly && !singleApexSource)
 ) {
-  throw new Error('Usage: node scripts/refresh-supplier-pricing-data.mjs <apex.csv> <treads-unlimited.csv> <tubestone.csv> OR --exotic <exotic.csv> OR --tubestone <tubestone.csv>');
+  throw new Error('Usage: node scripts/refresh-supplier-pricing-data.mjs <apex.csv> <treads-unlimited.csv> <tubestone.csv> OR --apex <apex.csv> OR --exotic <exotic.csv> OR --tubestone <tubestone.csv>');
 }
 
 const parseCsv = (text) => {
@@ -93,6 +96,8 @@ const refreshSupplier = async ({ input, output, exportName, supplier, locations,
     'Supplier SKU', 'TYRE_SIZE', 'TYRE_BRAND', 'TYRE_PATTERN', 'TYRE_RATING', 'TYRE_INDEX',
     'OTHER_SPECS', 'Category', 'Product Name', 'Stock Location', 'Stock Units', 'Cost Price', 'Selling Price'
   ].map((name) => [name, indexOf(name)]));
+  const leadTimeIndex = headers.indexOf('Lead Time');
+  const hasLeadTime = leadTimeIndex >= 0;
 
   const products = new Map();
   let correctedSellingRows = 0;
@@ -121,26 +126,32 @@ const refreshSupplier = async ({ input, output, exportName, supplier, locations,
       clean(row[columns['Product Name']])
     ];
     const productKey = [sku, ...identity.slice(1)].join('\u001f').toLowerCase();
+    const leadTime = hasLeadTime ? clean(row[leadTimeIndex]) : '';
     const existing = products.get(productKey) ?? {
       identity,
+      leadTime,
       cost,
       selling,
       stock: Object.fromEntries(locations.map((name) => [name, 0]))
     };
-    if (JSON.stringify(existing.identity) !== JSON.stringify(identity) || existing.cost !== cost || existing.selling !== selling) {
+    if (JSON.stringify(existing.identity) !== JSON.stringify(identity) || existing.leadTime !== leadTime || existing.cost !== cost || existing.selling !== selling) {
       throw new Error(`${supplier} ${sku}: inconsistent product or price data across location rows.`);
     }
     existing.stock[location] += parseStock(row[columns['Stock Units']]);
     products.set(productKey, existing);
   }
 
-  const outputRows = [[...OUTPUT_HEADERS, ...locations.map((location) => `${location} Stock Units`), 'Total Stock Units']];
-  products.forEach(({ identity, cost, selling, stock }) => {
+  const outputHeaders = hasLeadTime
+    ? [...OUTPUT_HEADERS.slice(0, 9), 'Lead Time', ...OUTPUT_HEADERS.slice(9)]
+    : OUTPUT_HEADERS;
+  const outputRows = [[...outputHeaders, ...locations.map((location) => `${location} Stock Units`), 'Total Stock Units']];
+  products.forEach(({ identity, leadTime, cost, selling, stock }) => {
     const total = Object.values(stock).reduce((sum, quantity) => sum + quantity, 0);
     outputRows.push([
       ...identity.slice(0, 7),
       identity[7] || 'Tyres',
       identity[8],
+      ...(hasLeadTime ? [leadTime] : []),
       formatMoney(cost),
       formatMoney(selling),
       ...locations.map((location) => `${stock[location]} units`),
@@ -155,7 +166,7 @@ const refreshSupplier = async ({ input, output, exportName, supplier, locations,
 
 const standardRefreshes = [
   {
-    input: apexSource,
+    input: apexOnly ? singleApexSource : apexSource,
     output: 'supplier_data/apexData.ts',
     exportName: 'APEX_RAW_DATA',
     supplier: 'Apex',
@@ -192,7 +203,9 @@ const selectedRefreshes = exoticOnly
   ? exoticRefreshes
   : tubestoneOnly
     ? standardRefreshes.filter(({ supplier }) => supplier === 'Tubestone')
-    : standardRefreshes;
+    : apexOnly
+      ? standardRefreshes.filter(({ supplier }) => supplier === 'Apex')
+      : standardRefreshes;
 
 const results = await Promise.all(selectedRefreshes.map(refreshSupplier));
 

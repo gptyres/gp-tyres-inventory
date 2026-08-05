@@ -28,6 +28,7 @@ export interface BaseProduct {
   supplierName?: string;
   supplierStockCode?: string;
   stockByLocation?: Record<string, number>;
+  supplierLeadTime?: string;
   imageDesignKey?: string;
   imageFinishKey?: string;
   imageSourceKey?: string;

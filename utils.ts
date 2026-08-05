@@ -1222,7 +1222,7 @@ const parseStructuredSupplierRefreshData = (
     const size = parsedTyre.size || (skuSizeMatch ? `${skuSizeMatch[1]}/${skuSizeMatch[2]}R${skuSizeMatch[3]}` : '');
     const brand = parsedTyre.brand;
     const pattern = parsedTyre.pattern;
-    if (!sku || !size || !brand || !pattern) return [];
+    if (!sku || !size || !brand) return [];
 
     const tyreRating = parsedTyre.rating;
     const tyreIndex = parsedTyre.index;
@@ -1247,6 +1247,7 @@ const parseStructuredSupplierRefreshData = (
       tyreSpecs,
       location: locationColumns.map(({ location }) => `${location}: ${stockByLocation[location] || 0}`).join(' | ') || supplierName,
       stockByLocation,
+      supplierLeadTime: get('Lead Time') || undefined,
       quantity,
       costPrice: parseCurrencyString(get('Cost Price')),
       sellingPrice: parseCurrencyString(get('Selling Price')),

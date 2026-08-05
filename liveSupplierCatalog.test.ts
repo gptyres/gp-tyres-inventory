@@ -21,6 +21,7 @@ const baseRow: LiveSupplierCatalogRow = {
   size: '205/55R16',
   stock_location: 'Cape Town',
   stock_units_availability: 'In stock',
+  supplier_lead_time: '6 Hours',
   stock_units: 8,
   cost_price: '1100.00',
   selling_price: '1450.00',
@@ -131,6 +132,7 @@ describe('live supplier catalogue conversion', () => {
     expect(item.quantity).toBe(8);
     expect(item.costPrice).toBe(1100);
     expect(item.sellingPrice).toBe(1450);
+    expect(item.supplierLeadTime).toBe('6 Hours');
     expect(item.location).toBe('Cape Town | In stock');
   });
 

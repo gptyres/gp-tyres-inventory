@@ -232,6 +232,12 @@ const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
           {structuredEntries.length > 0 ? 'No branch stock' : fallbackLocation}
         </span>
       )}
+      {item.supplierLeadTime ? (
+        <div className="mt-2 flex min-h-8 items-center justify-between gap-3 rounded border border-sky-500/30 bg-sky-500/10 px-2.5 py-1.5">
+          <span className="text-[9px] font-bold uppercase tracking-wider text-sky-300">Supplier lead time</span>
+          <span className="shrink-0 font-mono text-[11px] font-black text-sky-200">{item.supplierLeadTime}</span>
+        </div>
+      ) : null}
     </div>
   );
 };
