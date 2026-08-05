@@ -76,7 +76,6 @@ import {
 import {
   applySupplierMarkup,
   BASE_SUPPLIER_MARKUP,
-  getSupplierMarkupPriceLabel,
   type SupplierMarkupAdjustment
 } from './supplierMarkup';
 
@@ -1950,10 +1949,7 @@ const App: React.FC = () => {
                     isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
                     showSupplierName={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS'}
                     priceLabel={currentView === 'SUPPLIER_INVENTORY'
-                      ? getSupplierMarkupPriceLabel(
-                          activeSupplierMarkup,
-                          activeSupplierCatalog === 'ALINE' ? 'Recommended Selling Price' : 'Selling Price'
-                        )
+                      ? (activeSupplierCatalog === 'ALINE' ? 'Recommended Selling Price' : 'Selling Price')
                       : undefined}
                     markupAdjustment={currentView === 'SUPPLIER_INVENTORY' ? activeSupplierMarkup : undefined}
                     onMarkupAdjustmentChange={currentView === 'SUPPLIER_INVENTORY' ? handleSupplierMarkupChange : undefined}
