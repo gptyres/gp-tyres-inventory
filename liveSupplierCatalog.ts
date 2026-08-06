@@ -153,7 +153,8 @@ export const liveSupplierRowToInventoryItem = (
       setQuantity: 1,
       location: buildLocation(row),
       imageDesignKey: imageKeys.designKey,
-      imageFinishKey: imageKeys.finishKey
+      imageFinishKey: imageKeys.finishKey,
+      imageSourceKey: row.source_key
     };
     return wheel;
   }

@@ -397,6 +397,11 @@ const App: React.FC = () => {
       label: 'NDT',
       note: 'Viewing the verified NDT wheel catalogue. Catalogue prices are shown as supplied; VAT and live stock availability need confirmation with NDT.',
       portalUrl: 'https://smarttyres.co.za/'
+    },
+    WHEEL_TECH: {
+      label: 'WHEEL TECH',
+      note: 'Viewing the Wheel Tech Facebook Marketplace wheel catalogue. Prices are the listed set prices; confirm live availability with Wheel Tech before quoting.',
+      portalUrl: 'https://www.facebook.com/marketplace/profile/100034478502594/'
     }
   };
 
