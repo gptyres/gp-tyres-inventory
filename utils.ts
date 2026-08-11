@@ -774,10 +774,10 @@ export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
         || readColumn(cols, 'DBN Stock Units')
       )
     );
-    // The supplied normal price is already VAT-inclusive. Bulk-deal prices are intentionally absent.
-    const normalPriceIncVat = parseCurrencyString(
-      readColumn(cols, 'Selling Price') || readColumn(cols, 'Cost Price')
-    );
+    const normalPriceExVat = parseCurrencyString(readColumn(cols, 'Cost Price'));
+    // Royal Tyres selling prices add VAT exactly once. Bulk-deal prices are intentionally absent.
+    const sellingPriceIncVat = parseCurrencyString(readColumn(cols, 'Selling Price'))
+      || (normalPriceExVat > 0 ? Math.round(normalPriceExVat * 115) / 100 : 0);
 
     return [{
       id: `royal-tyres-${sku.toLowerCase()}`,
@@ -793,8 +793,8 @@ export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
       location: 'DBN',
       quantity,
       stockByLocation: { DBN: quantity },
-      costPrice: normalPriceIncVat,
-      sellingPrice: normalPriceIncVat,
+      costPrice: normalPriceExVat,
+      sellingPrice: sellingPriceIncVat,
       lastUpdated: '2026-08-05'
     }];
   });

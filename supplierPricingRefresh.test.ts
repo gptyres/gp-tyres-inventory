@@ -21,7 +21,7 @@ import {
 const nearestVatInclusive25 = (costPrice: number) => Math.round((costPrice * 1.15 / 25) + 1e-9) * 25;
 
 describe('supplier pricing refresh', () => {
-  it('embeds the complete Royal Tyres PCR and TBR catalogues using only normal VAT-inclusive prices', () => {
+  it('embeds the complete Royal Tyres PCR and TBR catalogues with VAT added to normal prices', () => {
     const items = parseRoyalTyresData(ROYAL_TYRES_RAW_DATA);
     const pcrSample = items.find((item) => item.supplierStockCode === 'RT-PCR-EA548652F1');
     const tbrSample = items.find((item) => item.supplierStockCode === 'RT-TBR-C2A30F4C0F');
@@ -35,7 +35,7 @@ describe('supplier pricing refresh', () => {
       tyreIndex: '75T',
       tyreSpecs: 'PCR / H/T',
       costPrice: 410,
-      sellingPrice: 410,
+      sellingPrice: 471.5,
       quantity: 76,
       stockByLocation: { DBN: 76 }
     });
@@ -47,11 +47,13 @@ describe('supplier pricing refresh', () => {
       tyreIndex: '118/114L',
       tyreSpecs: 'TBR / MP / TTF',
       costPrice: 1740,
-      sellingPrice: 1740,
+      sellingPrice: 2001,
       quantity: 58,
       stockByLocation: { DBN: 58 }
     });
-    expect(items.every((item) => item.costPrice === item.sellingPrice)).toBe(true);
+    expect(items.filter((item) => item.costPrice > 0).every((item) => (
+      item.sellingPrice === Math.round(item.costPrice * 115) / 100
+    ))).toBe(true);
     expect(items.filter((item) => item.sellingPrice === 0)).toHaveLength(2);
     expect(ROYAL_TYRES_RAW_DATA).not.toMatch(/bulk/i);
   });

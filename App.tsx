@@ -402,7 +402,7 @@ const App: React.FC = () => {
     },
     ROYAL_TYRES: {
       label: 'ROYAL TYRES',
-      note: 'Viewing Royal Tyres PCR and TBR supplier stock. Prices use the normal VAT-inclusive price; bulk-deal pricing is excluded.'
+      note: 'Viewing Royal Tyres PCR and TBR supplier stock. Cost uses the normal price; selling price adds 15% VAT once. Bulk-deal pricing is excluded.'
     },
     DIXON_BATTERIES: {
       label: 'DIXON BATTERIES',
