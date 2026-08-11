@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatBulkClipboardText, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupportedStaffImageMimeType } from './InventoryView';
+import { formatBulkClipboardText, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupportedStaffImageMimeType, isSpecialItem } from './InventoryView';
 import { ProductType, type TyreProduct, type WheelProduct } from '../types';
 
 const supplierTyre: TyreProduct = {
@@ -28,6 +28,7 @@ describe('supplier tyre card formatting', () => {
 
   it('uses rating, index, and remaining specs for the secondary line', () => {
     expect(getItemSecondaryLine(supplierTyre)).toBe('18PR / 149/146K / TL');
+    expect(isSpecialItem({ ...supplierTyre, tyreSpecs: 'TL / SPECIAL' })).toBe(true);
   });
 
   it('provides a consistent supplier label for all-supplier search results', () => {

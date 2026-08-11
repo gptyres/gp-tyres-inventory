@@ -46,7 +46,9 @@ const sources = [
     catalog: 'TUBESTONE',
     supplier: 'Tubestone',
     dataFile: 'supplier_data/tubestoneData.ts',
-    sourceFile: 'tubestone_portal_import_2026-07-16.csv'
+    sourceFile: 'tubestone_portal_import_2026-07-16.csv',
+    pricingOverridesFile: 'supplier_data/tubestoneSpecialsData.ts',
+    pricingOverrideSourceFile: 'GP TYRES 4X4 SPECIALS JULY 2026 - Sheet1 (1).pdf'
   },
   {
     catalog: 'EXOTIC',
@@ -92,10 +94,15 @@ const readEmbeddedCsv = async (file) => {
   const assignment = moduleText.indexOf('=');
   const terminator = moduleText.lastIndexOf(';');
   if (assignment < 0 || terminator < assignment) throw new Error(`Could not read embedded CSV from ${file}.`);
-  return JSON.parse(moduleText.slice(assignment + 1, terminator).trim());
+  const embedded = moduleText.slice(assignment + 1, terminator).trim();
+  if (embedded.startsWith('`') && embedded.endsWith('`') && !embedded.includes('${')) {
+    return embedded.slice(1, -1);
+  }
+  return JSON.parse(embedded);
 };
 
 const clean = (value) => String(value ?? '').trim();
+const latestSourceFile = (source) => source.pricingOverrideSourceFile || source.sourceFile;
 const catalogArgumentIndex = process.argv.indexOf('--catalog');
 const requestedCatalog = catalogArgumentIndex >= 0 ? clean(process.argv[catalogArgumentIndex + 1]).toUpperCase() : '';
 const selectedSources = requestedCatalog
@@ -212,7 +219,7 @@ const buildAlineItems = (rows, source) => {
     return index >= 0 ? clean(row[index]) : '';
   };
 
-  return rows.slice(1).map((row) => {
+  const items = rows.slice(1).map((row) => {
     const sku = get(row, 'Stock Code');
     const description = get(row, 'Description');
     const brand = get(row, 'Brand') || 'A-Line';
@@ -258,6 +265,7 @@ const buildAlineItems = (rows, source) => {
       source_file: basename(source.sourceFile)
     };
   }).filter((item) => item.supplier_sku);
+  return items;
 };
 
 const buildItems = async (source) => {
@@ -279,7 +287,7 @@ const buildItems = async (source) => {
     return index >= 0 ? clean(row[index]) : '';
   };
 
-  return rows.slice(1).map((row) => {
+  const items = rows.slice(1).map((row) => {
     const sku = get(row, 'Supplier SKU');
     const stockByLocation = Object.fromEntries(locationColumns.map(({ index, location }) => [location, parseStock(row[index])]));
     const stockUnits = Object.values(stockByLocation).reduce((total, quantity) => total + quantity, 0);
@@ -309,6 +317,32 @@ const buildItems = async (source) => {
       selling_price: parseMoney(get(row, 'Selling Price')),
       source_stock_detail: stockLocation,
       source_file: basename(source.sourceFile)
+    };
+  });
+
+  if (!source.pricingOverridesFile) return items;
+  const overrideRows = parseCsv(await readEmbeddedCsv(source.pricingOverridesFile));
+  const overrideHeaders = overrideRows[0].map(clean);
+  const overrideColumn = (name) => {
+    const index = overrideHeaders.indexOf(name);
+    if (index < 0) throw new Error(`${source.catalog} pricing overrides: missing ${name}.`);
+    return index;
+  };
+  const overrides = new Map(overrideRows.slice(1).map((row) => [clean(row[overrideColumn('Supplier SKU')]), {
+    costPrice: parseMoney(row[overrideColumn('Cost Price')]),
+    sellingPrice: parseMoney(row[overrideColumn('Selling Price')])
+  }]));
+
+  return items.map((item) => {
+    const override = overrides.get(item.supplier_sku);
+    if (!override) return item;
+    const specs = [...new Set([...(item.tyre_specs || '').split('/'), 'SPECIAL'].map(clean).filter(Boolean))].join(' / ');
+    return {
+      ...item,
+      cost_price: override.costPrice,
+      selling_price: override.sellingPrice,
+      tyre_specs: specs,
+      source_file: basename(source.pricingOverrideSourceFile || source.sourceFile)
     };
   });
 };
@@ -363,7 +397,7 @@ try {
     status: 'running',
     requested_by_staff: 'Codex supplier pricing refresh',
     requested_by_terminal: 'CODEX',
-    artifact_name: isSingleSupplier ? singleSupplier.sourceFile : 'supplier_refresh_summary_2026-07-15.csv',
+    artifact_name: isSingleSupplier ? latestSourceFile(singleSupplier) : 'supplier_refresh_summary_2026-07-15.csv',
     suppliers_total: prepared.length,
     progress_stage: 'publishing',
     progress_current: 0,
@@ -384,7 +418,7 @@ try {
       registry_supplier: source.supplier,
       status: 'staging',
       row_count: source.items.length,
-      source_files: [source.sourceFile]
+      source_files: [source.sourceFile, source.pricingOverrideSourceFile].filter(Boolean)
     }).select('id').single();
     if (snapshotError) throw snapshotError;
     snapshotIds.push(snapshot.id);
@@ -412,7 +446,7 @@ try {
 
   const completedAt = new Date().toISOString();
   const resultSummary = {
-    source: isSingleSupplier ? singleSupplier.sourceFile : 'supplier_refresh_summary_2026-07-15.csv',
+    source: isSingleSupplier ? latestSourceFile(singleSupplier) : 'supplier_refresh_summary_2026-07-15.csv',
     suppliers: prepared.map((source) => ({ supplier: source.supplier, catalog: source.catalog, rowsPublished: source.items.length, status: 'ok' }))
   };
   const { error: completionError } = await supabase.from('supplier_sync_jobs').update({

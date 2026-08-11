@@ -99,6 +99,10 @@ export const getItemSupplierName = (item: InventoryItem): string => (
   String(item.supplierName || '').trim().toUpperCase()
 );
 
+export const isSpecialItem = (item: InventoryItem): boolean => (
+  item.type === ProductType.TYRE && /\bSPECIAL\b/i.test((item as TyreProduct).tyreSpecs || '')
+);
+
 const uniqueDisplayParts = (parts: Array<string | undefined>) => {
   const seen = new Set<string>();
   return parts.map((part) => String(part || '').trim()).filter((part) => {
@@ -1232,6 +1236,11 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                   <span className="text-[9px] bg-gp-black text-gp-text-muted px-2 py-0.5 rounded font-bold uppercase tracking-wide border border-gp-border">
                     {item.type}
                   </span>
+                  {isSpecialItem(item) && (
+                    <span className="rounded border border-gp-red bg-gp-red/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-gp-red">
+                      Special
+                    </span>
+                  )}
                   {showSupplierName && <SupplierBadge item={item} />}
                 </div>
                 <div className="flex shrink-0 flex-col items-end">

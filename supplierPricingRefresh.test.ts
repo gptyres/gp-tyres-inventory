@@ -4,6 +4,7 @@ import { TYRE_LIFE_WHEELS_RAW_DATA } from './supplier_data/tyreLifeWheelsData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
 import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
+import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsData';
 import { EXOTIC_RAW_DATA } from './supplier_data/exoticData';
 import { SAILUN_RAW_DATA } from './supplier_data/sailunData';
 import { ROYAL_TYRES_RAW_DATA } from './supplier_data/royalTyresData';
@@ -106,6 +107,9 @@ describe('supplier pricing refresh', () => {
   it('consolidates Tubestone branch stock into one correctly priced listing per SKU', () => {
     const items = parseTubestoneData(TUBESTONE_RAW_DATA);
     const sample = items.find((item) => item.supplierStockCode === '6016.301');
+    const special = items.find((item) => item.supplierStockCode === 'DI0113115');
+    const correctedCodeMatch = items.find((item) => item.supplierStockCode === 'MHT3512520');
+    const missingPriceLine = items.find((item) => item.supplierStockCode === 'DI0113129');
 
     expect(items).toHaveLength(1163);
     expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(22149);
@@ -115,6 +119,12 @@ describe('supplier pricing refresh', () => {
       quantity: 56,
       stockByLocation: { BFN: 48, CPT: 6, DBN: 0, JHB: 2, NWH: 0 }
     });
+    expect(special).toMatchObject({ costPrice: 1571, sellingPrice: 1800 });
+    expect(special?.tyreSpecs).toContain('SPECIAL');
+    expect(correctedCodeMatch).toMatchObject({ costPrice: 3250, sellingPrice: 3750 });
+    expect(items.filter((item) => item.type === 'TYRE' && /\bSPECIAL\b/.test(item.tyreSpecs || ''))).toHaveLength(44);
+    expect(missingPriceLine?.tyreSpecs || '').not.toContain('SPECIAL');
+    expect(TUBESTONE_SPECIALS_RAW_DATA.split('\n')).toHaveLength(45);
     expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
   });
 

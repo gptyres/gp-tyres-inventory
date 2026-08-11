@@ -2,6 +2,7 @@
 import { BatteryProduct, InventoryItem, ProductType, TyreProduct, CoiloverProduct, WheelProduct, Order, Backorder } from './types';
 import { parseAlineWheelDescription, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
+import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsData';
 import {
   extractFlotationTyreSizeQuery,
   flotationTyreSizesEqual,
@@ -1471,7 +1472,29 @@ export const parseArcData = (rawCsv: string): InventoryItem[] => {
 // --- TUBESTONE PARSER ---
 export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
   const refreshedItems = parseStructuredSupplierRefreshData(rawCsv, 'tubestone', 'TUBESTONE');
-  if (refreshedItems) return refreshedItems;
+  if (refreshedItems) {
+    const specialLines = TUBESTONE_SPECIALS_RAW_DATA.split('\n').filter((line) => line.trim());
+    const specialHeaders = parseCSVLine(specialLines[0]).map((header) => header.trim());
+    const specialColumn = (name: string) => specialHeaders.indexOf(name);
+    const specialPricing = new Map(specialLines.slice(1).map((line) => {
+      const cols = parseCSVLine(line);
+      return [cols[specialColumn('Supplier SKU')]?.trim(), {
+        costPrice: parseCurrencyString(cols[specialColumn('Cost Price')]),
+        sellingPrice: parseCurrencyString(cols[specialColumn('Selling Price')])
+      }] as const;
+    }));
+
+    return refreshedItems.map((item) => {
+      const special = specialPricing.get(item.supplierStockCode || '');
+      if (!special || item.type !== ProductType.TYRE) return item;
+      const tyreSpecs = [item.tyreSpecs, 'SPECIAL']
+        .flatMap((value) => String(value || '').split('/'))
+        .map((value) => value.trim())
+        .filter((value, index, values) => value && values.findIndex((candidate) => candidate.toLowerCase() === value.toLowerCase()) === index)
+        .join(' / ');
+      return { ...item, ...special, tyreSpecs };
+    });
+  }
   const items: InventoryItem[] = [];
   const lines = rawCsv.split('\n');
   const today = new Date().toISOString().split('T')[0];
