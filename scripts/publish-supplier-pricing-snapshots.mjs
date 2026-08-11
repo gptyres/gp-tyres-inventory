@@ -21,7 +21,12 @@ const sources = [
     catalog: 'ROYAL_TYRES',
     supplier: 'ROYAL TYRES',
     dataFile: 'supplier_data/royalTyresData.ts',
-    sourceFile: 'Royal Tyres PCR + TBR August 2026 PDFs'
+    sourceFile: 'Royal Tyres PCR + TBR August 2026 PDFs',
+    locationSupplementFile: 'supplier_data/royalTyresCapeTownData.ts',
+    locationSupplementSourceFiles: [
+      'WhatsApp Image 2026-08-11 at 09.29.49.jpeg',
+      'WhatsApp Image 2026-08-11 at 09.30.28.jpeg'
+    ]
   },
   {
     catalog: 'ALINE',
@@ -102,7 +107,9 @@ const readEmbeddedCsv = async (file) => {
 };
 
 const clean = (value) => String(value ?? '').trim();
-const latestSourceFile = (source) => source.pricingOverrideSourceFile || source.sourceFile;
+const latestSourceFile = (source) => source.pricingOverrideSourceFile
+  || source.locationSupplementSourceFiles?.at(-1)
+  || source.sourceFile;
 const catalogArgumentIndex = process.argv.indexOf('--catalog');
 const requestedCatalog = catalogArgumentIndex >= 0 ? clean(process.argv[catalogArgumentIndex + 1]).toUpperCase() : '';
 const selectedSources = requestedCatalog
@@ -320,31 +327,163 @@ const buildItems = async (source) => {
     };
   });
 
-  if (!source.pricingOverridesFile) return items;
-  const overrideRows = parseCsv(await readEmbeddedCsv(source.pricingOverridesFile));
-  const overrideHeaders = overrideRows[0].map(clean);
-  const overrideColumn = (name) => {
-    const index = overrideHeaders.indexOf(name);
-    if (index < 0) throw new Error(`${source.catalog} pricing overrides: missing ${name}.`);
+  let mergedItems = items;
+  if (source.pricingOverridesFile) {
+    const overrideRows = parseCsv(await readEmbeddedCsv(source.pricingOverridesFile));
+    const overrideHeaders = overrideRows[0].map(clean);
+    const overrideColumn = (name) => {
+      const index = overrideHeaders.indexOf(name);
+      if (index < 0) throw new Error(`${source.catalog} pricing overrides: missing ${name}.`);
+      return index;
+    };
+    const overrides = new Map(overrideRows.slice(1).map((row) => [clean(row[overrideColumn('Supplier SKU')]), {
+      costPrice: parseMoney(row[overrideColumn('Cost Price')]),
+      sellingPrice: parseMoney(row[overrideColumn('Selling Price')])
+    }]));
+    mergedItems = mergedItems.map((item) => {
+      const override = overrides.get(item.supplier_sku);
+      if (!override) return item;
+      const specs = [...new Set([...(item.tyre_specs || '').split('/'), 'SPECIAL'].map(clean).filter(Boolean))].join(' / ');
+      return {
+        ...item,
+        cost_price: override.costPrice,
+        selling_price: override.sellingPrice,
+        tyre_specs: specs,
+        source_file: basename(source.pricingOverrideSourceFile || source.sourceFile)
+      };
+    });
+  }
+
+  if (!source.locationSupplementFile) return mergedItems;
+  const supplementRows = parseCsv(await readEmbeddedCsv(source.locationSupplementFile));
+  const supplementHeaders = supplementRows[0].map(clean);
+  const supplementColumn = (name) => {
+    const index = supplementHeaders.indexOf(name);
+    if (index < 0) throw new Error(`${source.catalog} location supplement: missing ${name}.`);
     return index;
   };
-  const overrides = new Map(overrideRows.slice(1).map((row) => [clean(row[overrideColumn('Supplier SKU')]), {
-    costPrice: parseMoney(row[overrideColumn('Cost Price')]),
-    sellingPrice: parseMoney(row[overrideColumn('Selling Price')])
-  }]));
+  const itemIndexBySku = new Map(mergedItems.map((item, index) => [item.supplier_sku, index]));
+  const supplementSku = (category, description) => {
+    let hash = 2166136261;
+    const identity = `${category}|${description}`.toUpperCase();
+    for (let index = 0; index < identity.length; index += 1) {
+      hash ^= identity.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return `RT-CT-${category}-${(hash >>> 0).toString(16).toUpperCase().padStart(8, '0')}`;
+  };
 
-  return items.map((item) => {
-    const override = overrides.get(item.supplier_sku);
-    if (!override) return item;
-    const specs = [...new Set([...(item.tyre_specs || '').split('/'), 'SPECIAL'].map(clean).filter(Boolean))].join(' / ');
-    return {
-      ...item,
-      cost_price: override.costPrice,
-      selling_price: override.sellingPrice,
-      tyre_specs: specs,
-      source_file: basename(source.pricingOverrideSourceFile || source.sourceFile)
-    };
-  });
+  for (const row of supplementRows.slice(1)) {
+    const getSupplement = (name) => clean(row[supplementColumn(name)]);
+    const category = getSupplement('Category').toUpperCase();
+    const matchSku = getSupplement('Match Supplier SKU');
+    const description = getSupplement('Description');
+    const cptStock = Math.max(0, parseStock(getSupplement('CPT Stock Units')));
+    const costPrice = parseMoney(getSupplement('Cost Price'));
+    if (!category || !description || costPrice <= 0) continue;
+    const sourceFile = basename(source.locationSupplementSourceFiles?.[category === 'PCR' ? 0 : 1] || latestSourceFile(source));
+    const existingIndex = matchSku ? itemIndexBySku.get(matchSku) : undefined;
+    if (existingIndex !== undefined) {
+      const existing = mergedItems[existingIndex];
+      const stockByLocation = { ...(existing.stock_by_location || {}), CPT: cptStock };
+      const stockUnits = Object.values(stockByLocation).reduce((total, quantity) => total + quantity, 0);
+      const stockLocation = Object.entries(stockByLocation).map(([location, quantity]) => `${location}: ${quantity}`).join(' | ');
+      mergedItems[existingIndex] = {
+        ...existing,
+        stock_by_location: stockByLocation,
+        stock_location: stockLocation,
+        source_stock_detail: stockLocation,
+        stock_units: stockUnits,
+        stock_units_availability: stockUnits > 0 ? 'In stock' : 'Out of stock',
+        cost_price: costPrice,
+        selling_price: Math.round(costPrice * 115) / 100,
+        source_file: sourceFile
+      };
+      continue;
+    }
+
+    const sku = supplementSku(category, description);
+    const rawIdentity = [source.catalog, sku, description, costPrice].join('-').toLowerCase();
+    const sourceKey = `${rawIdentity.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 168)}-${stableIdentityHash(rawIdentity)}`;
+    if (category === 'WHEEL') {
+      const size = description.match(/\b\d{2}\.\d{2}X\d{1,2}\.\d{2}\b/i)?.[0]?.toUpperCase() || '';
+      const wheelSpecs = description.match(/\(([^)]+)\)/)?.[1]?.split('/').map(clean) || [];
+      const brand = /\bALCOA\b/i.test(description) ? 'ALCOA' : 'STEEL';
+      const finish = /DURA\s+BRIGHT/i.test(description) ? 'DURA BRIGHT' : (/\bSILVER\b/i.test(description) ? 'SILVER' : '');
+      mergedItems.push({
+        catalog_key: source.catalog,
+        source_key: sourceKey,
+        product_type: 'WHEEL',
+        supplier: source.supplier,
+        supplier_sku: sku,
+        brand,
+        product_name: description,
+        tyre_pattern: description.match(/\bGTC\d+\b/i)?.[0]?.toUpperCase() || `${brand} RIM`,
+        tyre_specs: finish || null,
+        wheel_pcd: wheelSpecs.length >= 2 ? `${wheelSpecs[0]}/${wheelSpecs[1]}` : null,
+        wheel_offset: wheelSpecs[3] || null,
+        wheel_center_bore: wheelSpecs[2] === '1164' ? '116.4' : (wheelSpecs[2] || null),
+        stock_by_location: { CPT: cptStock },
+        category: 'Wheels',
+        size,
+        stock_location: `CPT: ${cptStock}`,
+        stock_units_availability: cptStock > 0 ? 'In stock' : 'Out of stock',
+        supplier_lead_time: null,
+        stock_units: cptStock,
+        cost_price: costPrice,
+        selling_price: Math.round(costPrice * 115) / 100,
+        source_stock_detail: `CPT: ${cptStock}`,
+        source_file: sourceFile
+      });
+      continue;
+    }
+
+    const normalizedDescription = description
+      .replace(/^PIRELLI\s+PROMETEON\s+/i, 'PIRELLI ')
+      .replace(/^MAC\s+ROYAL\s+/i, 'MAC ');
+    const categoryMarker = normalizedDescription.match(/\((H\/T|A\/T|MP|ST|DR|OD|T\/ST)\)/i)?.[1]?.toUpperCase() || '';
+    const size = normalizedDescription.match(/\b(?:\d{2,3}\/\d{2,3}R\d{2}(?:\.\d)?C?|\d{1,2}(?:\.\d+)?(?:R|-)\d{2}(?:\.\d)?)\b/i)?.[0]?.toUpperCase() || '';
+    const brand = normalizedDescription.split(/\s+/)[0]?.toUpperCase() || source.supplier;
+    const rating = normalizedDescription.match(/\b\d{1,2}PR\b/i)?.[0]?.toUpperCase() || '';
+    const tyreIndex = normalizedDescription.match(/\b\d{2,3}(?:\s*\/\s*\d{2,3})?\s*[A-Z]\b/i)?.[0]?.replace(/\s+/g, '').toUpperCase() || '';
+    const construction = normalizedDescription.match(/\b(?:TLR|TLL|TTF|TL|TT)\b/i)?.[0]?.toUpperCase() || '';
+    const pattern = normalizedDescription
+      .replace(new RegExp(`^${brand}\\s+`, 'i'), ' ')
+      .replace(size, ' ')
+      .replace(/\((?:H\/T|A\/T|MP|ST|DR|OD|T\/ST)\)/gi, ' ')
+      .replace(/\b\d{1,2}PR\b/gi, ' ')
+      .replace(/\b\d{2,3}(?:\s*\/\s*\d{2,3})?\s*[A-Z]\b/gi, ' ')
+      .replace(/\b(?:TLR|TLL|TTF|TL|TT)\b/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const tyreSpecs = [category, categoryMarker, construction].filter(Boolean).join(' / ');
+    mergedItems.push({
+      catalog_key: source.catalog,
+      source_key: sourceKey,
+      product_type: 'TYRE',
+      supplier: source.supplier,
+      supplier_sku: sku,
+      brand,
+      product_name: description,
+      tyre_pattern: pattern || null,
+      tyre_rating: rating || null,
+      tyre_index: tyreIndex || null,
+      tyre_specs: tyreSpecs || null,
+      stock_by_location: { CPT: cptStock },
+      category,
+      size,
+      stock_location: `CPT: ${cptStock}`,
+      stock_units_availability: cptStock > 0 ? 'In stock' : 'Out of stock',
+      supplier_lead_time: null,
+      stock_units: cptStock,
+      cost_price: costPrice,
+      selling_price: Math.round(costPrice * 115) / 100,
+      source_stock_detail: `CPT: ${cptStock}`,
+      source_file: sourceFile
+    });
+  }
+
+  return mergedItems;
 };
 
 const prepared = await Promise.all(selectedSources.map(async (source) => ({ ...source, items: await buildItems(source) })));
@@ -418,7 +557,11 @@ try {
       registry_supplier: source.supplier,
       status: 'staging',
       row_count: source.items.length,
-      source_files: [source.sourceFile, source.pricingOverrideSourceFile].filter(Boolean)
+      source_files: [
+        source.sourceFile,
+        source.pricingOverrideSourceFile,
+        ...(source.locationSupplementSourceFiles || [])
+      ].filter(Boolean)
     }).select('id').single();
     if (snapshotError) throw snapshotError;
     snapshotIds.push(snapshot.id);

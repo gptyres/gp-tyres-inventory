@@ -3,6 +3,7 @@ import { BatteryProduct, InventoryItem, ProductType, TyreProduct, CoiloverProduc
 import { parseAlineWheelDescription, parseSupplierTyreImageKeys, parseSupplierWheelImageKeys } from './supplierStockImages';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsData';
+import { ROYAL_TYRES_CAPE_TOWN_RAW_DATA } from './supplier_data/royalTyresCapeTownData';
 import {
   extractFlotationTyreSizeQuery,
   flotationTyreSizesEqual,
@@ -757,7 +758,7 @@ export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
     return index === undefined ? '' : cols[index]?.trim() || '';
   };
 
-  return lines.slice(1).flatMap((line): InventoryItem[] => {
+  const baseItems = lines.slice(1).flatMap((line): InventoryItem[] => {
     const cols = parseCSVLine(line.trim());
     const sku = readColumn(cols, 'Supplier SKU');
     const size = readColumn(cols, 'TYRE_SIZE');
@@ -799,6 +800,114 @@ export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
       lastUpdated: '2026-08-05'
     }];
   });
+
+  const supplementLines = ROYAL_TYRES_CAPE_TOWN_RAW_DATA.split('\n').filter((line) => line.trim());
+  const supplementHeaders = parseCSVLine(supplementLines[0]).map((header) => header.trim().toLowerCase());
+  const supplementColumn = (name: string) => supplementHeaders.indexOf(name.toLowerCase());
+  const updatedItems = [...baseItems];
+  const itemIndexBySku = new Map(updatedItems.map((item, index) => [item.supplierStockCode || '', index]));
+  const latestDate = '2026-08-11';
+  const vatInclusive = (costPrice: number) => Math.round(costPrice * 115) / 100;
+  const stableSupplementSku = (category: string, description: string) => {
+    let hash = 2166136261;
+    const identity = `${category}|${description}`.toUpperCase();
+    for (let index = 0; index < identity.length; index += 1) {
+      hash ^= identity.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return `RT-CT-${category}-${(hash >>> 0).toString(16).toUpperCase().padStart(8, '0')}`;
+  };
+
+  supplementLines.slice(1).forEach((line) => {
+    const cols = parseCSVLine(line);
+    const get = (name: string) => {
+      const index = supplementColumn(name);
+      return index >= 0 ? cols[index]?.trim() || '' : '';
+    };
+    const category = get('Category').toUpperCase();
+    const matchSku = get('Match Supplier SKU');
+    const description = get('Description');
+    const cptStock = Math.max(0, parseStockUnits(get('CPT Stock Units')));
+    const costPrice = parseCurrencyString(get('Cost Price'));
+    if (!category || !description || costPrice <= 0) return;
+
+    const existingIndex = matchSku ? itemIndexBySku.get(matchSku) : undefined;
+    if (existingIndex !== undefined) {
+      const existing = updatedItems[existingIndex];
+      const stockByLocation = { ...(existing.stockByLocation || {}), CPT: cptStock };
+      const quantity = Object.values(stockByLocation).reduce((total, stock) => total + stock, 0);
+      updatedItems[existingIndex] = {
+        ...existing,
+        stockByLocation,
+        quantity,
+        location: Object.entries(stockByLocation).map(([location, stock]) => `${location}: ${stock}`).join(' | '),
+        costPrice,
+        sellingPrice: vatInclusive(costPrice),
+        lastUpdated: latestDate
+      };
+      return;
+    }
+
+    const supplierStockCode = stableSupplementSku(category, description);
+    if (category === 'WHEEL') {
+      const size = description.match(/\b\d{2}\.\d{2}X\d{1,2}\.\d{2}\b/i)?.[0]?.toUpperCase() || '';
+      const wheelSpecs = description.match(/\(([^)]+)\)/)?.[1]?.split('/').map((part) => part.trim()) || [];
+      const brand = /\bALCOA\b/i.test(description) ? 'ALCOA' : 'STEEL';
+      const finish = /DURA\s+BRIGHT/i.test(description) ? 'DURA BRIGHT' : (/\bSILVER\b/i.test(description) ? 'SILVER' : '');
+      const imageKeys = parseSupplierWheelImageKeys(brand, description, finish, supplierStockCode);
+      updatedItems.push({
+        id: `royal-tyres-${supplierStockCode.toLowerCase()}`,
+        type: ProductType.WHEEL,
+        supplierName: 'ROYAL TYRES',
+        supplierStockCode,
+        imageDesignKey: imageKeys.designKey,
+        imageFinishKey: imageKeys.finishKey,
+        code: description.match(/\bGTC\d+\b/i)?.[0]?.toUpperCase() || supplierStockCode,
+        brand,
+        finish,
+        size,
+        pcd: wheelSpecs.length >= 2 ? `${wheelSpecs[0]}/${wheelSpecs[1]}` : '',
+        centerBore: wheelSpecs[2] === '1164' ? '116.4' : (wheelSpecs[2] || ''),
+        offset: wheelSpecs[3] || '',
+        colour: [brand, finish, description].filter(Boolean).join(' | '),
+        setQuantity: 1,
+        location: `CPT: ${cptStock}`,
+        stockByLocation: { CPT: cptStock },
+        quantity: cptStock,
+        costPrice,
+        sellingPrice: vatInclusive(costPrice),
+        lastUpdated: latestDate
+      } satisfies WheelProduct);
+      return;
+    }
+
+    const normalizedDescription = description
+      .replace(/^PIRELLI\s+PROMETEON\s+/i, 'PIRELLI ')
+      .replace(/^MAC\s+ROYAL\s+/i, 'MAC ')
+      .replace(/\((H\/T|A\/T|MP|ST|DR|OD|T\/ST)\)/gi, ' $1 ');
+    const parsed = parseSupplierTyreFields({ description: normalizedDescription, inferBrandFromDescription: true });
+    const tyreSpecs = [category, parsed.specs].filter(Boolean).join(' / ');
+    updatedItems.push({
+      id: `royal-tyres-${supplierStockCode.toLowerCase()}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('ROYAL TYRES', parsed.brand, parsed.pattern, supplierStockCode),
+      brand: parsed.brand.toUpperCase(),
+      pattern: parsed.pattern.toUpperCase(),
+      size: parsed.size.toUpperCase(),
+      loadSpeedIndex: buildTyreIndexDisplay(parsed.rating, parsed.index),
+      tyreRating: parsed.rating,
+      tyreIndex: parsed.index,
+      tyreSpecs,
+      location: `CPT: ${cptStock}`,
+      stockByLocation: { CPT: cptStock },
+      quantity: cptStock,
+      costPrice,
+      sellingPrice: vatInclusive(costPrice),
+      lastUpdated: latestDate
+    } satisfies TyreProduct);
+  });
+
+  return updatedItems;
 };
 
 // --- EXCLUSIVE TYRES PARSER ---

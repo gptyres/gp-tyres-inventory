@@ -8,6 +8,7 @@ import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsDa
 import { EXOTIC_RAW_DATA } from './supplier_data/exoticData';
 import { SAILUN_RAW_DATA } from './supplier_data/sailunData';
 import { ROYAL_TYRES_RAW_DATA } from './supplier_data/royalTyresData';
+import { ROYAL_TYRES_CAPE_TOWN_RAW_DATA } from './supplier_data/royalTyresCapeTownData';
 import {
   parseApexData,
   parseExoticData,
@@ -26,19 +27,23 @@ describe('supplier pricing refresh', () => {
     const items = parseRoyalTyresData(ROYAL_TYRES_RAW_DATA);
     const pcrSample = items.find((item) => item.supplierStockCode === 'RT-PCR-EA548652F1');
     const tbrSample = items.find((item) => item.supplierStockCode === 'RT-TBR-C2A30F4C0F');
+    const cptTbrSample = items.find((item) => item.supplierStockCode === 'RT-TBR-BC2EB611B0');
+    const newCptTyre = items.find((item) => item.type === 'TYRE' && item.pattern === 'AC808' && item.size === '175/70R14');
+    const newCptWheel = items.find((item) => item.type === 'WHEEL' && item.size === '17.50X6.75');
+    const newCptOtr = items.find((item) => item.type === 'TYRE' && item.brand === 'AEOLUS' && item.size === '14.00-24');
 
-    expect(items).toHaveLength(233);
-    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(28145);
+    expect(items).toHaveLength(247);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(30421);
     expect(pcrSample).toMatchObject({
       brand: 'ANCHEE',
       pattern: 'AC808',
       size: '155/70R13',
       tyreIndex: '75T',
       tyreSpecs: 'PCR / H/T',
-      costPrice: 410,
-      sellingPrice: 471.5,
-      quantity: 76,
-      stockByLocation: { DBN: 76 }
+      costPrice: 399,
+      sellingPrice: 458.85,
+      quantity: 96,
+      stockByLocation: { DBN: 76, CPT: 20 }
     });
     expect(tbrSample).toMatchObject({
       brand: 'TAITONG',
@@ -52,11 +57,24 @@ describe('supplier pricing refresh', () => {
       quantity: 58,
       stockByLocation: { DBN: 58 }
     });
+    expect(cptTbrSample).toMatchObject({
+      costPrice: 4495,
+      sellingPrice: 5169.25,
+      quantity: 22,
+      stockByLocation: { DBN: 16, CPT: 6 }
+    });
+    expect(newCptTyre).toMatchObject({ costPrice: 445, sellingPrice: 511.75, quantity: 10, stockByLocation: { CPT: 10 } });
+    expect(newCptWheel).toMatchObject({ pcd: '6/222', offset: '135', centerBore: '116.4', costPrice: 910, sellingPrice: 1046.5, quantity: 10 });
+    expect(newCptOtr).toMatchObject({ pattern: 'IND4 AIND41', tyreRating: '28PR', tyreSpecs: 'OTR / TL', quantity: 8, costPrice: 15980, sellingPrice: 18377 });
+    expect(items.filter((item) => item.stockByLocation && Object.hasOwn(item.stockByLocation, 'CPT'))).toHaveLength(87);
+    expect(items.reduce((total, item) => total + (item.stockByLocation?.CPT || 0), 0)).toBe(2276);
+    expect(items.filter((item) => item.type === 'WHEEL')).toHaveLength(3);
     expect(items.filter((item) => item.costPrice > 0).every((item) => (
       item.sellingPrice === Math.round(item.costPrice * 115) / 100
     ))).toBe(true);
-    expect(items.filter((item) => item.sellingPrice === 0)).toHaveLength(2);
+    expect(items.filter((item) => item.sellingPrice === 0)).toHaveLength(1);
     expect(ROYAL_TYRES_RAW_DATA).not.toMatch(/bulk/i);
+    expect(ROYAL_TYRES_CAPE_TOWN_RAW_DATA.split('\n')).toHaveLength(88);
   });
 
   it('embeds the complete Sailun P2 catalogue with 100 units and rounded VAT-inclusive pricing', () => {
