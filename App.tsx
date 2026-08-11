@@ -400,6 +400,10 @@ const App: React.FC = () => {
       label: 'SAFETY GRIP',
       note: 'Viewing External Supplier Data. Cost is the supplied nett price; selling price adds 15% VAT once and rounds to the nearest R25.'
     },
+    ROYAL_TYRES: {
+      label: 'ROYAL TYRES',
+      note: 'Viewing Royal Tyres PCR and TBR supplier stock. Prices use the normal VAT-inclusive price; bulk-deal pricing is excluded.'
+    },
     DIXON_BATTERIES: {
       label: 'DIXON BATTERIES',
       note: 'Viewing the Dixon Batteries price catalogue. Nett and gross costs exclude VAT; gross includes scrap. Cost Including and Selling Price are shown exactly as supplied.'

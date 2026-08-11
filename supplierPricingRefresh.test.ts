@@ -6,9 +6,11 @@ import { TREADS_RAW_DATA } from './supplier_data/treadsUnlimitedData';
 import { TUBESTONE_RAW_DATA } from './supplier_data/tubestoneData';
 import { EXOTIC_RAW_DATA } from './supplier_data/exoticData';
 import { SAILUN_RAW_DATA } from './supplier_data/sailunData';
+import { ROYAL_TYRES_RAW_DATA } from './supplier_data/royalTyresData';
 import {
   parseApexData,
   parseExoticData,
+  parseRoyalTyresData,
   parseSailunData,
   parseTreadsUnlimitedData,
   parseTubestoneData,
@@ -19,6 +21,41 @@ import {
 const nearestVatInclusive25 = (costPrice: number) => Math.round((costPrice * 1.15 / 25) + 1e-9) * 25;
 
 describe('supplier pricing refresh', () => {
+  it('embeds the complete Royal Tyres PCR and TBR catalogues using only normal VAT-inclusive prices', () => {
+    const items = parseRoyalTyresData(ROYAL_TYRES_RAW_DATA);
+    const pcrSample = items.find((item) => item.supplierStockCode === 'RT-PCR-EA548652F1');
+    const tbrSample = items.find((item) => item.supplierStockCode === 'RT-TBR-C2A30F4C0F');
+
+    expect(items).toHaveLength(233);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(28145);
+    expect(pcrSample).toMatchObject({
+      brand: 'ANCHEE',
+      pattern: 'AC808',
+      size: '155/70R13',
+      tyreIndex: '75T',
+      tyreSpecs: 'PCR / H/T',
+      costPrice: 410,
+      sellingPrice: 410,
+      quantity: 76,
+      stockByLocation: { DBN: 76 }
+    });
+    expect(tbrSample).toMatchObject({
+      brand: 'TAITONG',
+      pattern: 'HS268',
+      size: '7.00R16',
+      tyreRating: '14PR',
+      tyreIndex: '118/114L',
+      tyreSpecs: 'TBR / MP / TTF',
+      costPrice: 1740,
+      sellingPrice: 1740,
+      quantity: 58,
+      stockByLocation: { DBN: 58 }
+    });
+    expect(items.every((item) => item.costPrice === item.sellingPrice)).toBe(true);
+    expect(items.filter((item) => item.sellingPrice === 0)).toHaveLength(2);
+    expect(ROYAL_TYRES_RAW_DATA).not.toMatch(/bulk/i);
+  });
+
   it('embeds the complete Sailun P2 catalogue with 100 units and rounded VAT-inclusive pricing', () => {
     const items = parseSailunData(SAILUN_RAW_DATA);
     const sample = items.find((item) => item.supplierStockCode === '3220002264');

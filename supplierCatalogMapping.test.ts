@@ -25,18 +25,22 @@ describe('supplier catalogue registry mapping', () => {
   it('keeps manual catalogues outside the portal registry but enables live snapshots', () => {
     expect(isRegistryBackedSupplierCatalog('SAILUN')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('SAFETY_GRIP')).toBe(false);
+    expect(isRegistryBackedSupplierCatalog('ROYAL_TYRES')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('BRIDGESTONE')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('ARC')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('APEX')).toBe(true);
     expect(isManualSupplierCatalog('SAILUN')).toBe(true);
     expect(isManualSupplierCatalog('SAFETY_GRIP')).toBe(true);
+    expect(isManualSupplierCatalog('ROYAL_TYRES')).toBe(true);
     expect(isManualSupplierCatalog('BRIDGESTONE')).toBe(true);
     expect(isLiveSupplierCatalog('SAILUN')).toBe(true);
     expect(isLiveSupplierCatalog('ARC')).toBe(false);
     expect(isLiveSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.sheetName).toBe('SUPPLIER_SAILUN');
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.supplier).toBe('SAILUN');
+    expect(MANUAL_SUPPLIER_BY_CATALOG.ROYAL_TYRES.sheetName).toBe('SUPPLIER_ROYAL_TYRES');
+    expect(MANUAL_SUPPLIER_BY_CATALOG.ROYAL_TYRES.supplier).toBe('ROYAL TYRES');
     expect(MANUAL_SUPPLIER_BY_CATALOG.BRIDGESTONE.sheetName).toBe('SUPPLIER_BRIDGESTONE');
   });
 
@@ -44,6 +48,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(isSupplierImportCatalog('APEX')).toBe(true);
     expect(isSupplierImportCatalog('SAILUN')).toBe(true);
     expect(isSupplierImportCatalog('BRIDGESTONE')).toBe(true);
+    expect(isSupplierImportCatalog('ROYAL_TYRES')).toBe(true);
     expect(isSupplierImportCatalog('REVOLUTION_TYRES')).toBe(true);
     expect(isSupplierImportCatalog('TYRE_LIFE_WHEELS')).toBe(true);
     expect(isSupplierImportCatalog('ALL_SUPPLIERS')).toBe(false);

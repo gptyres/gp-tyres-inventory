@@ -9,6 +9,7 @@ import {
   parseBridgestoneData,
   parseExclusiveTyresData,
   parseExoticData,
+  parseRoyalTyresData,
   parseSafetyGripData,
   parseSailunData,
   parseStamfordData,
@@ -30,6 +31,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'ATT',
   'BRIDGESTONE',
   'SAFETY_GRIP',
+  'ROYAL_TYRES',
   'DIXON_BATTERIES',
   'REVOLUTION_TYRES',
   'ALINE',
@@ -54,6 +56,7 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   ATT: 'ATT',
   BRIDGESTONE: 'BRIDGESTONE',
   SAFETY_GRIP: 'SAFETY GRIP',
+  ROYAL_TYRES: 'ROYAL TYRES',
   DIXON_BATTERIES: 'DIXON BATTERIES',
   REVOLUTION_TYRES: 'REVOLUTION TYRES',
   ALINE: 'ALINE',
@@ -83,6 +86,7 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   ATT: 'att',
   BRIDGESTONE: 'bridgestone',
   SAFETY_GRIP: 'safetygrip',
+  ROYAL_TYRES: 'royal-tyres',
   DIXON_BATTERIES: 'dixon-batteries',
   REVOLUTION_TYRES: 'revolution-tyres',
   ALINE: 'aline',
@@ -272,6 +276,10 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     case 'SAFETY_GRIP': {
       const { SAFETY_GRIP_RAW_DATA } = await import('./supplier_data/safetygripData');
       return parseSafetyGripData(SAFETY_GRIP_RAW_DATA);
+    }
+    case 'ROYAL_TYRES': {
+      const { ROYAL_TYRES_RAW_DATA } = await import('./supplier_data/royalTyresData');
+      return parseRoyalTyresData(ROYAL_TYRES_RAW_DATA);
     }
     case 'DIXON_BATTERIES': {
       const { DIXON_BATTERY_ROWS } = await import('./supplier_data/dixonBatteryData');

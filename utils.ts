@@ -744,6 +744,62 @@ export const parseSailunData = (rawText: string): InventoryItem[] => {
   });
 };
 
+// --- ROYAL TYRES PCR + TBR PARSER ---
+export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
+  const lines = rawText.split('\n').filter((line) => line.trim());
+  if (lines.length < 2) return [];
+
+  const headers = parseCSVLine(lines[0]).map((header) => header.trim().toLowerCase());
+  const headerIndex = new Map(headers.map((header, index) => [header, index]));
+  const readColumn = (cols: string[], name: string) => {
+    const index = headerIndex.get(name.toLowerCase());
+    return index === undefined ? '' : cols[index]?.trim() || '';
+  };
+
+  return lines.slice(1).flatMap((line): InventoryItem[] => {
+    const cols = parseCSVLine(line.trim());
+    const sku = readColumn(cols, 'Supplier SKU');
+    const size = readColumn(cols, 'TYRE_SIZE');
+    const brand = readColumn(cols, 'TYRE_BRAND').toUpperCase();
+    const pattern = readColumn(cols, 'TYRE_PATTERN').toUpperCase();
+    const tyreRating = readColumn(cols, 'TYRE_RATING').toUpperCase();
+    const tyreIndex = readColumn(cols, 'TYRE_INDEX').toUpperCase();
+    const tyreSpecs = readColumn(cols, 'TYRE_SPECS').toUpperCase();
+    if (!sku || !size || !brand || !pattern) return [];
+
+    const quantity = Math.max(
+      0,
+      parseStockUnits(
+        readColumn(cols, 'Total Stock Units')
+        || readColumn(cols, 'DBN Stock Units')
+      )
+    );
+    // The supplied normal price is already VAT-inclusive. Bulk-deal prices are intentionally absent.
+    const normalPriceIncVat = parseCurrencyString(
+      readColumn(cols, 'Selling Price') || readColumn(cols, 'Cost Price')
+    );
+
+    return [{
+      id: `royal-tyres-${sku.toLowerCase()}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('ROYAL TYRES', brand, pattern, sku),
+      brand,
+      pattern,
+      size,
+      loadSpeedIndex: tyreIndex,
+      tyreRating,
+      tyreIndex,
+      tyreSpecs,
+      location: 'DBN',
+      quantity,
+      stockByLocation: { DBN: quantity },
+      costPrice: normalPriceIncVat,
+      sellingPrice: normalPriceIncVat,
+      lastUpdated: '2026-08-05'
+    }];
+  });
+};
+
 // --- EXCLUSIVE TYRES PARSER ---
 export const parseExclusiveTyresData = (rawCsv: string): InventoryItem[] => {
   const items: InventoryItem[] = [];

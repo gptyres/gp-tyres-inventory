@@ -18,6 +18,12 @@ const sources = [
     sourceFile: 'PCR PRICING FILE AUGUST 2026.pdf'
   },
   {
+    catalog: 'ROYAL_TYRES',
+    supplier: 'ROYAL TYRES',
+    dataFile: 'supplier_data/royalTyresData.ts',
+    sourceFile: 'Royal Tyres PCR + TBR August 2026 PDFs'
+  },
+  {
     catalog: 'ALINE',
     supplier: 'Aline',
     dataFile: 'supplier_data/alineData.ts',
