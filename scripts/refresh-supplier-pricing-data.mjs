@@ -68,7 +68,7 @@ const parseStock = (value) => {
   return Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
 };
 const formatMoney = (value) => Number.isInteger(value) ? `R${value}` : `R${value.toFixed(2)}`;
-const roundToNearest25 = (value) => Math.round((value / 25) + 1e-9) * 25;
+const roundToNearestRand = (value) => Math.round(value + 1e-9);
 
 const OUTPUT_HEADERS = [
   'Supplier SKU',
@@ -110,7 +110,7 @@ const refreshSupplier = async ({ input, output, exportName, supplier, locations,
     const cost = parseMoney(row[columns['Cost Price']]);
     const suppliedSelling = parseMoney(row[columns['Selling Price']]);
     if (!Number.isFinite(cost) || !Number.isFinite(suppliedSelling)) throw new Error(`${supplier} ${sku}: invalid pricing.`);
-    const expectedSelling = roundToNearest25(cost * 1.15);
+    const expectedSelling = roundToNearestRand(cost * 1.15);
     const selling = expectedSelling;
     if (suppliedSelling !== expectedSelling) correctedSellingRows += 1;
 

@@ -3,6 +3,7 @@ import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct 
 import { isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import { parseAlineWheelDescription, parseSupplierWheelImageKeys } from './supplierStockImages';
+import { calculateLiveSupplierSellingPrice } from './supplierPricing';
 import {
   normalizeStockByLocation,
   normalizeStockLocationName,
@@ -118,11 +119,18 @@ export const groupLiveSupplierCatalogRows = (
 export const liveSupplierRowToInventoryItem = (
   row: LiveSupplierCatalogRow
 ): InventoryItem => {
+  const suppliedSellingPrice = Math.max(0, Number(row.selling_price) || 0);
+  const supplierCostPrice = Math.max(0, Number(row.cost_price) || 0);
+  const costPrice = supplierCostPrice || suppliedSellingPrice;
   const common = {
     id: 'live-' + row.catalog_key.toLowerCase() + '-' + row.source_key,
     quantity: Math.max(0, Math.trunc(Number(row.stock_units) || 0)),
-    sellingPrice: Math.max(0, Number(row.selling_price) || 0),
-    costPrice: Math.max(0, Number(row.cost_price) || Number(row.selling_price) || 0),
+    sellingPrice: calculateLiveSupplierSellingPrice(
+      row.catalog_key as SupplierCatalog,
+      supplierCostPrice,
+      suppliedSellingPrice
+    ),
+    costPrice,
     lastUpdated: row.imported_at.slice(0, 10),
     supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS' : row.supplier,
     supplierStockCode: row.supplier_sku || undefined,

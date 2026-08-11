@@ -12,7 +12,7 @@ export const calculateDeterministicPrice = (input: PriceCalculationInput) => {
   const costPrice = Number.isFinite(input.costPrice) && input.costPrice >= 0 ? money(input.costPrice) : 0;
   const vatRate = Math.min(Math.max(Number(input.vatRate ?? 15), 0), 100);
   const markupRate = Math.min(Math.max(Number(input.markupRate ?? 0), 0), 500);
-  const roundTo = Math.min(Math.max(Math.floor(Number(input.roundTo ?? 25)) || 25, 1), 1000);
+  const roundTo = Math.min(Math.max(Math.floor(Number(input.roundTo ?? 1)) || 1, 1), 1000);
   const vatExclusiveBase = input.costIncludesVat ? costPrice / (1 + vatRate / 100) : costPrice;
   const markedUpExclusive = vatExclusiveBase * (1 + markupRate / 100);
   const vatAmount = markedUpExclusive * vatRate / 100;

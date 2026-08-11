@@ -1,6 +1,7 @@
 import { BatteryProduct, InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { loadLiveSupplierCatalogItems } from './liveSupplierCatalog';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
+import { roundSupplierSellingPrice } from './supplierPricing';
 import {
   parseAlineData,
   parseApexData,
@@ -293,7 +294,7 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
         costIncluding,
         quantity: 0,
         costPrice: costIncluding,
-        sellingPrice,
+        sellingPrice: roundSupplierSellingPrice(sellingPrice),
         lastUpdated: '2026-08-05',
         supplierName: 'DIXON BATTERIES',
         supplierStockCode: batteryType

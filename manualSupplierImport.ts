@@ -4,6 +4,7 @@ import {
 } from './supplierCatalogMapping';
 import { parseAlineWheelDescription } from './supplierStockImages';
 import { extractSupplierTyreSize, parseSupplierTyreFields } from './supplierTyreParsing';
+import { calculateVatInclusiveSellingPrice, roundSupplierSellingPrice } from './supplierPricing';
 
 export interface ManualSupplierRow {
   sourceKey: string;
@@ -101,8 +102,6 @@ const toVatExclusivePrice = (value: number, alreadyIncludesVat: boolean) => (
   Number((Math.max(0, value) / (alreadyIncludesVat ? 1.15 : 1)).toFixed(2))
 );
 
-const roundToNearest25 = (value: number) => Math.round((Math.max(0, value) / 25) + 1e-9) * 25;
-
 const stableIdentityHash = (value: string) => {
   let hash = 2166136261;
   for (let index = 0; index < value.length; index += 1) {
@@ -195,7 +194,9 @@ export const normalizeManualSupplierGrid = (
   const includesVat = (value: string) => /incvat|inclvat|includingvat|vatinclusive|pricevat/.test(value);
   const supplierPricesIncludeVat = catalog === 'ALINE'
     || catalog === 'TYRE_LIFE'
-    || catalog === 'TYRE_LIFE_WHEELS';
+    || catalog === 'TYRE_LIFE_WHEELS'
+    || catalog === 'NDT'
+    || catalog === 'WHEEL_TECH';
   const genericPriceIncludesVat = supplierPricesIncludeVat || includesVat(genericPriceHeader);
   const costPriceIncludesVat = supplierPricesIncludeVat || includesVat(costPriceHeader);
   const sellingPriceIncludesVat = supplierPricesIncludeVat || includesVat(sellingPriceHeader);
@@ -309,15 +310,13 @@ export const normalizeManualSupplierGrid = (
       : hasGenericPrice
         ? [genericPrice, genericPriceIncludesVat]
         : [suppliedCost, costPriceIncludesVat];
-    const isTyreWarehouse = catalog === 'TYREWAREHOUSE';
-    const normalizedCost = isTyreWarehouse
-      ? toVatExclusivePrice(...costSource)
-      : toVatInclusivePrice(...costSource);
-    const normalizedSelling = isTyreWarehouse
-      ? hasSellingPrice
-        ? Number(Math.max(0, suppliedSelling).toFixed(2))
-        : roundToNearest25(normalizedCost * 1.15)
-      : toVatInclusivePrice(...sellingSource);
+    const usesVatInclusiveCustomerPrice = catalog === 'ALINE' || catalog === 'NDT' || catalog === 'WHEEL_TECH';
+    const normalizedCost = usesVatInclusiveCustomerPrice
+      ? toVatInclusivePrice(...costSource)
+      : toVatExclusivePrice(...costSource);
+    const normalizedSelling = usesVatInclusiveCustomerPrice
+      ? roundSupplierSellingPrice(toVatInclusivePrice(...sellingSource))
+      : calculateVatInclusiveSellingPrice(normalizedCost);
     const sourceKey = sourceKeyFor(catalog, sku, size, productName, stockLocation);
     if (seen.has(sourceKey)) {
       rejectedRows += 1;
@@ -359,7 +358,7 @@ export const normalizeManualSupplierGrid = (
   ];
   const warnings = rejectedRows > 0 ? [`${rejectedRows} row${rejectedRows === 1 ? '' : 's'} could not be safely imported.`] : [];
   if (catalog === 'TYREWAREHOUSE' && header.columns.sellingPrice === undefined) {
-    warnings.push('TyreWarehouse selling prices will be calculated from discounted cost plus 15% VAT and rounded to the nearest R25.');
+    warnings.push('TyreWarehouse selling prices will be calculated from discounted cost plus 15% VAT and rounded to the nearest R1.');
   } else if (
     (header.columns.costPrice !== undefined && !costPriceIncludesVat)
     || (header.columns.sellingPrice !== undefined && !sellingPriceIncludesVat)

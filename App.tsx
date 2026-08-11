@@ -374,7 +374,7 @@ const App: React.FC = () => {
     },
     SAILUN: {
       label: 'SAILUN',
-      note: 'Viewing External Supplier Data. Prices use the P2 cost with 15% VAT added and are rounded to the nearest R25.'
+      note: 'Viewing External Supplier Data. Prices use the P2 cost with 15% VAT added and are rounded to the nearest R1.'
     },
     EXCLUSIVE_TYRES: {
       label: 'EXCLUSIVE TYRES',
@@ -393,12 +393,12 @@ const App: React.FC = () => {
     },
     BRIDGESTONE: {
       label: 'BRIDGESTONE',
-      note: 'Viewing Bridgestone and Firestone supplier stock. Prices include VAT and are rounded to the nearest R25.',
+      note: 'Viewing Bridgestone and Firestone supplier stock. Prices include VAT and are rounded to the nearest R1.',
       portalUrl: 'https://www.bsafonline.co.za/'
     },
     SAFETY_GRIP: {
       label: 'SAFETY GRIP',
-      note: 'Viewing External Supplier Data. Cost is the supplied nett price; selling price adds 15% VAT once and rounds to the nearest R25.'
+      note: 'Viewing External Supplier Data. Cost is the supplied nett price; selling price adds 15% VAT once and rounds to the nearest R1.'
     },
     ROYAL_TYRES: {
       label: 'ROYAL TYRES',
@@ -410,7 +410,7 @@ const App: React.FC = () => {
     },
     REVOLUTION_TYRES: {
       label: 'REVOLUTION TYRES',
-      note: 'Viewing authenticated Revolution Tyres supplier stock. Cost is the portal nett price; selling price adds 15% VAT once and rounds to the nearest R25.',
+      note: 'Viewing authenticated Revolution Tyres supplier stock. Cost is the portal nett price; selling price adds 15% VAT once and rounds to the nearest R1.',
       portalUrl: 'https://revolutiontyres.com/login'
     },
     ALINE: {

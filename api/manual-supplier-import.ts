@@ -7,6 +7,7 @@ import {
   type SupplierImportCatalog
 } from '../supplierCatalogMapping.js';
 import type { SupplierCatalog } from '../types.js';
+import { calculateLiveSupplierSellingPrice } from '../supplierPricing.js';
 
 export const config = { maxDuration: 60 };
 
@@ -66,7 +67,7 @@ const safeStockByLocation = (value: unknown): Record<string, number> => {
   }, {});
 };
 
-const validateRows = (value: unknown): ImportRow[] => {
+const validateRows = (value: unknown, catalog: SupplierImportCatalog): ImportRow[] => {
   if (!Array.isArray(value) || value.length === 0) throw new Error('No supplier stock rows were supplied.');
   if (value.length > MAX_ROWS) throw new Error(`A maximum of ${MAX_ROWS.toLocaleString('en-ZA')} rows can be imported at once.`);
 
@@ -99,7 +100,7 @@ const validateRows = (value: unknown): ImportRow[] => {
       throw new Error(`Row ${index + 1} has an invalid selling price.`);
     }
     if (!Number.isFinite(costPrice) || costPrice < 0 || costPrice > 10_000_000) {
-      throw new Error(`Row ${index + 1} has an invalid VAT-inclusive cost price.`);
+      throw new Error(`Row ${index + 1} has an invalid supplier cost price.`);
     }
     seen.add(sourceKey);
 
@@ -122,7 +123,7 @@ const validateRows = (value: unknown): ImportRow[] => {
       stockAvailability: safeText(row.stockAvailability, 120) || (stockUnits > 0 ? 'In stock' : 'Out of stock'),
       stockUnits: Math.trunc(stockUnits),
       costPrice: Number(costPrice.toFixed(2)),
-      sellingPrice: Number(sellingPrice.toFixed(2)),
+      sellingPrice: calculateLiveSupplierSellingPrice(catalog, costPrice, sellingPrice),
       sourceStockDetail: safeText(row.sourceStockDetail, 300)
     };
   });
@@ -214,7 +215,7 @@ export default async function handler(request: any, response: any) {
     const body = await readApiBody(request);
     const catalog = normalizeCatalog(body.catalog);
     if (!catalog) return response.status(400).json({ error: 'Choose a supported supplier catalogue before importing.' });
-    const rows = validateRows(body.rows);
+    const rows = validateRows(body.rows, catalog);
     const sourceFile = safeFileName(body.sourceFile);
     const terminal = safeText(body.terminal, 80) || 'UNKNOWN';
     const supplierMeta = SUPPLIER_IMPORT_BY_CATALOG[catalog];

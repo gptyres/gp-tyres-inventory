@@ -4,13 +4,13 @@ import { ProductType, type TyreProduct } from './types';
 import { parseBridgestoneData, searchInventory } from './utils';
 
 describe('Bridgestone supplier catalogue', () => {
-  it('loads every supplied SKU with VAT-inclusive R25 pricing', () => {
+  it('loads every supplied SKU with VAT-inclusive prices rounded to the nearest rand', () => {
     const items = parseBridgestoneData(BRIDGESTONE_RAW_DATA) as TyreProduct[];
     const sample = items.find((item) => item.supplierStockCode === '021640');
 
     expect(items).toHaveLength(200);
     expect(items.every((item) => item.type === ProductType.TYRE)).toBe(true);
-    expect(items.every((item) => item.costPrice > 0 && item.sellingPrice % 25 === 0)).toBe(true);
+    expect(items.every((item) => item.costPrice > 0 && item.sellingPrice === Math.round((item.costPrice * 1.15) + 1e-9))).toBe(true);
     expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(279);
     expect(items.filter((item) => item.brand === 'FIRESTONE')).toHaveLength(22);
     expect(sample).toMatchObject({
@@ -20,7 +20,7 @@ describe('Bridgestone supplier catalogue', () => {
       size: '215/60R17',
       quantity: 0,
       costPrice: 1725.58,
-      sellingPrice: 1975
+      sellingPrice: 1984
     });
   });
 
@@ -43,7 +43,7 @@ describe('Bridgestone supplier catalogue', () => {
       quantity: 3,
       stockByLocation: { Local: 3 },
       costPrice: 7881,
-      sellingPrice: 9075
+      sellingPrice: 9063
     });
     expect(firestoneTbr).toMatchObject({
       brand: 'FIRESTONE',
@@ -53,7 +53,7 @@ describe('Bridgestone supplier catalogue', () => {
       tyreIndex: '148/145L',
       quantity: 4,
       costPrice: 6603,
-      sellingPrice: 7600
+      sellingPrice: 7593
     });
   });
 });

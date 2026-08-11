@@ -20,7 +20,7 @@ import {
   parseTyreLifeWheelsData
 } from './utils';
 
-const nearestVatInclusive25 = (costPrice: number) => Math.round((costPrice * 1.15 / 25) + 1e-9) * 25;
+const nearestVatInclusiveRand = (costPrice: number) => Math.round((costPrice * 1.15) + 1e-9);
 
 describe('supplier pricing refresh', () => {
   it('embeds the complete Royal Tyres PCR and TBR catalogues with VAT added to normal prices', () => {
@@ -41,7 +41,7 @@ describe('supplier pricing refresh', () => {
       tyreIndex: '75T',
       tyreSpecs: 'PCR / H/T',
       costPrice: 399,
-      sellingPrice: 458.85,
+      sellingPrice: 459,
       quantity: 96,
       stockByLocation: { DBN: 76, CPT: 20 }
     });
@@ -59,18 +59,18 @@ describe('supplier pricing refresh', () => {
     });
     expect(cptTbrSample).toMatchObject({
       costPrice: 4495,
-      sellingPrice: 5169.25,
+      sellingPrice: 5169,
       quantity: 22,
       stockByLocation: { DBN: 16, CPT: 6 }
     });
-    expect(newCptTyre).toMatchObject({ costPrice: 445, sellingPrice: 511.75, quantity: 10, stockByLocation: { CPT: 10 } });
-    expect(newCptWheel).toMatchObject({ pcd: '6/222', offset: '135', centerBore: '116.4', costPrice: 910, sellingPrice: 1046.5, quantity: 10 });
+    expect(newCptTyre).toMatchObject({ costPrice: 445, sellingPrice: 512, quantity: 10, stockByLocation: { CPT: 10 } });
+    expect(newCptWheel).toMatchObject({ pcd: '6/222', offset: '135', centerBore: '116.4', costPrice: 910, sellingPrice: 1047, quantity: 10 });
     expect(newCptOtr).toMatchObject({ pattern: 'IND4 AIND41', tyreRating: '28PR', tyreSpecs: 'OTR / TL', quantity: 8, costPrice: 15980, sellingPrice: 18377 });
     expect(items.filter((item) => item.stockByLocation && Object.hasOwn(item.stockByLocation, 'CPT'))).toHaveLength(87);
     expect(items.reduce((total, item) => total + (item.stockByLocation?.CPT || 0), 0)).toBe(2276);
     expect(items.filter((item) => item.type === 'WHEEL')).toHaveLength(3);
     expect(items.filter((item) => item.costPrice > 0).every((item) => (
-      item.sellingPrice === Math.round(item.costPrice * 115) / 100
+      item.sellingPrice === nearestVatInclusiveRand(item.costPrice)
     ))).toBe(true);
     expect(items.filter((item) => item.sellingPrice === 0)).toHaveLength(1);
     expect(ROYAL_TYRES_RAW_DATA).not.toMatch(/bulk/i);
@@ -88,12 +88,12 @@ describe('supplier pricing refresh', () => {
       pattern: 'ATREZZO SH406',
       size: '155/65R13',
       costPrice: 469,
-      sellingPrice: 550,
+      sellingPrice: 539,
       quantity: 100,
       stockByLocation: { Supplier: 100 }
     });
     expect(items.every((item) => item.quantity === 100)).toBe(true);
-    expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
+    expect(items.every((item) => item.sellingPrice === nearestVatInclusiveRand(item.costPrice))).toBe(true);
   });
 
   it('embeds the complete APEX snapshot with exact cost and rounded VAT-inclusive selling prices', () => {
@@ -102,9 +102,9 @@ describe('supplier pricing refresh', () => {
 
     expect(items).toHaveLength(1704);
     expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(15314);
-    expect(sample).toMatchObject({ costPrice: 5991, sellingPrice: 6900, quantity: 1, supplierLeadTime: '6 Hours' });
+    expect(sample).toMatchObject({ costPrice: 5991, sellingPrice: 6890, quantity: 1, supplierLeadTime: '6 Hours' });
     expect(items.every((item) => item.supplierLeadTime === '6 Hours')).toBe(true);
-    expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
+    expect(items.every((item) => item.sellingPrice === nearestVatInclusiveRand(item.costPrice))).toBe(true);
   });
 
   it('consolidates Treads Unlimited branch stock into one correctly priced listing per SKU', () => {
@@ -114,11 +114,11 @@ describe('supplier pricing refresh', () => {
     expect(items).toHaveLength(2092);
     expect(sample).toMatchObject({
       costPrice: 3415,
-      sellingPrice: 3925,
+      sellingPrice: 3927,
       quantity: 8,
       stockByLocation: { Regional: 1, National: 7 }
     });
-    expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
+    expect(items.every((item) => item.sellingPrice === nearestVatInclusiveRand(item.costPrice))).toBe(true);
     expect(TREADS_RAW_DATA).not.toContain('Ã');
   });
 
@@ -133,17 +133,17 @@ describe('supplier pricing refresh', () => {
     expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(22149);
     expect(sample).toMatchObject({
       costPrice: 2520,
-      sellingPrice: 2900,
+      sellingPrice: 2898,
       quantity: 56,
       stockByLocation: { BFN: 48, CPT: 6, DBN: 0, JHB: 2, NWH: 0 }
     });
-    expect(special).toMatchObject({ costPrice: 1571, sellingPrice: 1800 });
+    expect(special).toMatchObject({ costPrice: 1571, sellingPrice: 1807 });
     expect(special?.tyreSpecs).toContain('SPECIAL');
-    expect(correctedCodeMatch).toMatchObject({ costPrice: 3250, sellingPrice: 3750 });
+    expect(correctedCodeMatch).toMatchObject({ costPrice: 3250, sellingPrice: 3738 });
     expect(items.filter((item) => item.type === 'TYRE' && /\bSPECIAL\b/.test(item.tyreSpecs || ''))).toHaveLength(44);
     expect(missingPriceLine?.tyreSpecs || '').not.toContain('SPECIAL');
     expect(TUBESTONE_SPECIALS_RAW_DATA.split('\n')).toHaveLength(45);
-    expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
+    expect(items.every((item) => item.sellingPrice === nearestVatInclusiveRand(item.costPrice))).toBe(true);
   });
 
   it('consolidates Exotic tyre stock while excluding its separate alloy-wheel catalogue', () => {
@@ -153,11 +153,11 @@ describe('supplier pricing refresh', () => {
     expect(items).toHaveLength(1259);
     expect(sample).toMatchObject({
       costPrice: 865.22,
-      sellingPrice: 1000,
+      sellingPrice: 995,
       quantity: 2,
       stockByLocation: { CPT: 0, JHB: 2 }
     });
-    expect(items.every((item) => item.sellingPrice === nearestVatInclusive25(item.costPrice))).toBe(true);
+    expect(items.every((item) => item.sellingPrice === nearestVatInclusiveRand(item.costPrice))).toBe(true);
     expect(EXOTIC_RAW_DATA).not.toContain('Alloy Wheels');
   });
 });

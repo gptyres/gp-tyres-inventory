@@ -131,9 +131,27 @@ describe('live supplier catalogue conversion', () => {
     expect(item.pattern).toBe('Primacy 4');
     expect(item.quantity).toBe(8);
     expect(item.costPrice).toBe(1100);
-    expect(item.sellingPrice).toBe(1450);
+    expect(item.sellingPrice).toBe(1265);
     expect(item.supplierLeadTime).toBe('6 Hours');
     expect(item.location).toBe('Cape Town | In stock');
+  });
+
+  it('does not add VAT twice to VAT-inclusive catalogues or rows without an ex-VAT cost', () => {
+    const alineItem = liveSupplierRowToInventoryItem({
+      ...baseRow,
+      catalog_key: 'ALINE',
+      cost_price: '5590.00',
+      selling_price: '6990.49'
+    });
+    const missingCostItem = liveSupplierRowToInventoryItem({
+      ...baseRow,
+      cost_price: '0.00',
+      selling_price: '1450.49'
+    });
+
+    expect(alineItem.sellingPrice).toBe(6990);
+    expect(missingCostItem.sellingPrice).toBe(1450);
+    expect(missingCostItem.costPrice).toBe(1450.49);
   });
 
   it('keeps wheel rows separate from tyre rows', () => {

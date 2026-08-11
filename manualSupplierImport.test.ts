@@ -14,8 +14,8 @@ describe('manual supplier document import', () => {
       brand: 'ANNAITE',
       size: '155/65R13',
       stockUnits: 39,
-      costPrice: 394.45,
-      sellingPrice: 394.45
+      costPrice: 343,
+      sellingPrice: 394
     });
   });
 
@@ -30,8 +30,8 @@ describe('manual supplier document import', () => {
       brand: 'Sailun',
       productName: 'Sailun ATREZZO SH406',
       stockUnits: 27,
-      costPrice: 577.3,
-      sellingPrice: 577.3,
+      costPrice: 502,
+      sellingPrice: 577,
       stockLocation: 'Cape Town'
     });
   });
@@ -56,8 +56,8 @@ describe('manual supplier document import', () => {
 
     expect(result.rows[0]).toMatchObject({
       supplierSku: 'AP-101',
-      costPrice: 1150,
-      sellingPrice: 1450,
+      costPrice: 1000,
+      sellingPrice: 1150,
       stockLocation: 'Cape Town'
     });
   });
@@ -75,7 +75,7 @@ describe('manual supplier document import', () => {
       tyrePattern: 'TURANZA 6',
       size: '255/35R19',
       stockUnits: 4,
-      costPrice: 3100,
+      costPrice: 2695.65,
       sellingPrice: 3100,
       stockLocation: 'National'
     });
@@ -98,8 +98,8 @@ describe('manual supplier document import', () => {
       tyreSpecs: 'TL',
       size: '7.00R12',
       stockUnits: 3,
-      costPrice: 6957.5,
-      sellingPrice: 6957.5,
+      costPrice: 6050,
+      sellingPrice: 6958,
       stockLocation: 'Apex'
     });
     expect(result.detectedColumns).toEqual(expect.arrayContaining(['description', 'quantity', 'sellingPrice']));
@@ -185,17 +185,17 @@ describe('manual supplier document import', () => {
       supplierSku: 'TW-PORTAL-1',
       stockLocation: 'JHB',
       costPrice: 3912.43,
-      sellingPrice: 4500
+      sellingPrice: 4499
     });
   });
 
-  it('calculates a missing TyreWarehouse selling price with VAT once and rounds to the nearest R25', () => {
+  it('calculates a missing TyreWarehouse selling price with VAT once and rounds to the nearest rand', () => {
     const result = normalizeManualSupplierGrid('TYREWAREHOUSE', [
       ['SKU', 'Description', 'Stock', 'Discounted Price Ex VAT', 'Location'],
       ['TW-COST-ONLY', '195/65R15 TEST TREAD', 4, 1100, 'Cape Town']
     ]);
 
-    expect(result.rows[0]).toMatchObject({ costPrice: 1100, sellingPrice: 1275 });
+    expect(result.rows[0]).toMatchObject({ costPrice: 1100, sellingPrice: 1265 });
   });
 
   it('detects semicolon-delimited supplier CSV files', () => {
@@ -282,7 +282,7 @@ describe('manual supplier document import', () => {
       size: '20X9',
       stockUnits: 8,
       stockLocation: 'JHB: 2 | CPT: 3 | DBN: 3',
-      costPrice: 4850,
+      costPrice: 4217.39,
       sellingPrice: 4850
     });
   });
@@ -319,7 +319,7 @@ describe('manual supplier document import', () => {
       stockByLocation: { JHB: 11, CPT: 0, DBN: 2 },
       stockLocation: 'JHB: 11 | CPT: 0 | DBN: 2',
       stockUnits: 13,
-      costPrice: 5750,
+      costPrice: 5000,
       sellingPrice: 5750
     });
   });

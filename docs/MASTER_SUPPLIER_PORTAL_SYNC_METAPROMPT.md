@@ -278,11 +278,11 @@ Use the current-run normalized supplier export as the publishing input. Preserve
 - Source Stock Detail;
 - Source File.
 
-Every sync-published row must keep the exact supplier cost before VAT, calculate the VAT-inclusive audit cost from that amount, and calculate the selling price as exact cost x 1.15 rounded to the nearest R25. If a legacy supplier export exposes only a clearly VAT-inclusive cost, remove VAT once to recover the exact ex-VAT cost before calculating the selling price. Never add VAT to an already VAT-inclusive cost or final supplier selling price.
+Every sync-published row must keep the exact supplier cost before VAT, calculate the VAT-inclusive audit cost from that amount, and calculate the selling price as exact cost x 1.15 rounded to the nearest R1. If a legacy supplier export exposes only a clearly VAT-inclusive cost, remove VAT once to recover the exact ex-VAT cost before calculating the selling price. Never add VAT to an already VAT-inclusive cost or final supplier selling price.
 
 The central normalizer owns the final sync pricing rule and records whether each supplier script exports an ex-VAT or VAT-inclusive amount. Parse prices and stock units safely for the frontend's typed InventoryItem model while preserving the original display/source values for audit.
 
-For Tyrewarehouse specifically, use the logged-in portal's displayed `product_price` as the discounted ex-VAT dealer cost. Do not use `up_min`, which is a separate minimum-price value and can be materially lower than the price shown on the portal. Calculate the selling price as `product_price x 1.15`, rounded to the nearest R25.
+For Tyrewarehouse specifically, use the logged-in portal's displayed `product_price` as the discounted ex-VAT dealer cost. Do not use `up_min`, which is a separate minimum-price value and can be materially lower than the price shown on the portal. Calculate the selling price as `product_price x 1.15`, rounded to the nearest R1.
 
 Upload in bounded batches with deterministic keys and idempotency. Validate at least:
 
@@ -401,7 +401,7 @@ The task is complete only when all of the following are true:
 - Near-real-time fetching, validating, and publishing stock progress plus final status are visible in the portal.
 - Sales mode can see progress and the last successful sync date/time without receiving sync permissions.
 - Every live supplier catalogue can be replaced in admin mode from PDF/CSV/XLS/XLSX through its dedicated Google Sheet tab and an atomic live snapshot.
-- Every newly sync-published listing keeps the exact supplier cost and has a selling price with VAT applied once and rounded to the nearest R25.
+- Every newly sync-published listing keeps the exact supplier cost and has a selling price with VAT applied once and rounded to the nearest R1.
 - Successful current-run outputs publish through validated snapshots.
 - Failed suppliers retain their previous active snapshots.
 - The supplier catalogue refreshes without a frontend rebuild.

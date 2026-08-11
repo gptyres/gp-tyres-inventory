@@ -48,7 +48,7 @@ describe('site-wide supplier catalogue formatting', () => {
       nettPrice: 1398,
       grossPrice: 1568,
       costIncluding: 1607.70,
-      sellingPrice: 1807.70,
+      sellingPrice: 1808,
       supplierName: 'DIXON BATTERIES'
     });
     expect(battery).not.toHaveProperty('scrapLoading');

@@ -2,18 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { calculateDeterministicMargin, calculateDeterministicPrice } from './gpBusinessMath';
 
 describe('GP Business Agent deterministic financial rules', () => {
-  it('adds 15% VAT once to an exclusive cost and rounds to the nearest R25', () => {
+  it('adds 15% VAT once to an exclusive cost and rounds to the nearest rand', () => {
     expect(calculateDeterministicPrice({ costPrice: 100, costIncludesVat: false })).toMatchObject({
       vatAmount: 15,
       sellingPriceBeforeRounding: 115,
-      sellingPrice: 125
+      sellingPrice: 115
     });
   });
 
   it('does not add VAT a second time when the supplied cost is VAT inclusive', () => {
     expect(calculateDeterministicPrice({ costPrice: 115, costIncludesVat: true })).toMatchObject({
       sellingPriceBeforeRounding: 115,
-      sellingPrice: 125
+      sellingPrice: 115
     });
   });
 

@@ -118,6 +118,8 @@ const selectedSources = requestedCatalog
 if (!selectedSources.length) throw new Error(`Unsupported supplier catalog: ${requestedCatalog || '(blank)'}.`);
 const parseMoney = (value) => Number.parseFloat(clean(value).replace(/[^0-9.-]/g, '')) || 0;
 const parseStock = (value) => Number.parseInt(clean(value).replace(/[^0-9-]/g, ''), 10) || 0;
+const vatInclusiveSellingPrice = (costPrice) => Math.round((Math.max(0, Number(costPrice) || 0) * 1.15) + 1e-9);
+const roundedSellingPrice = (sellingPrice) => Math.round(Math.max(0, Number(sellingPrice) || 0) + 1e-9);
 const stableIdentityHash = (value) => {
   let hash = 2166136261;
   for (let index = 0; index < value.length; index += 1) {
@@ -267,7 +269,7 @@ const buildAlineItems = (rows, source) => {
       supplier_lead_time: getOptional(row, 'Lead Time') || null,
       stock_units: stockUnits,
       cost_price: costPrice,
-      selling_price: recommendedPrice,
+      selling_price: roundedSellingPrice(recommendedPrice),
       source_stock_detail: stockLocation,
       source_file: basename(source.sourceFile)
     };
@@ -301,6 +303,7 @@ const buildItems = async (source) => {
     const stockLocation = Object.entries(stockByLocation).map(([location, quantity]) => `${location}: ${quantity}`).join(' | ');
     const rawIdentity = [source.catalog, sku, get(row, 'TYRE_SIZE'), get(row, 'Product Name'), get(row, 'Cost Price')].join('-').toLowerCase();
     const sourceKey = `${rawIdentity.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 168)}-${stableIdentityHash(rawIdentity)}`;
+    const costPrice = parseMoney(get(row, 'Cost Price'));
     return {
       catalog_key: source.catalog,
       source_key: sourceKey,
@@ -320,8 +323,8 @@ const buildItems = async (source) => {
       stock_units_availability: stockUnits > 0 ? 'In stock' : 'Out of stock',
       supplier_lead_time: getOptional(row, 'Lead Time') || null,
       stock_units: stockUnits,
-      cost_price: parseMoney(get(row, 'Cost Price')),
-      selling_price: parseMoney(get(row, 'Selling Price')),
+      cost_price: costPrice,
+      selling_price: vatInclusiveSellingPrice(costPrice),
       source_stock_detail: stockLocation,
       source_file: basename(source.sourceFile)
     };
@@ -338,7 +341,7 @@ const buildItems = async (source) => {
     };
     const overrides = new Map(overrideRows.slice(1).map((row) => [clean(row[overrideColumn('Supplier SKU')]), {
       costPrice: parseMoney(row[overrideColumn('Cost Price')]),
-      sellingPrice: parseMoney(row[overrideColumn('Selling Price')])
+      sellingPrice: vatInclusiveSellingPrice(parseMoney(row[overrideColumn('Cost Price')]))
     }]));
     mergedItems = mergedItems.map((item) => {
       const override = overrides.get(item.supplier_sku);
@@ -396,7 +399,7 @@ const buildItems = async (source) => {
         stock_units: stockUnits,
         stock_units_availability: stockUnits > 0 ? 'In stock' : 'Out of stock',
         cost_price: costPrice,
-        selling_price: Math.round(costPrice * 115) / 100,
+        selling_price: vatInclusiveSellingPrice(costPrice),
         source_file: sourceFile
       };
       continue;
@@ -431,7 +434,7 @@ const buildItems = async (source) => {
         supplier_lead_time: null,
         stock_units: cptStock,
         cost_price: costPrice,
-        selling_price: Math.round(costPrice * 115) / 100,
+        selling_price: vatInclusiveSellingPrice(costPrice),
         source_stock_detail: `CPT: ${cptStock}`,
         source_file: sourceFile
       });
@@ -477,7 +480,7 @@ const buildItems = async (source) => {
       supplier_lead_time: null,
       stock_units: cptStock,
       cost_price: costPrice,
-      selling_price: Math.round(costPrice * 115) / 100,
+      selling_price: vatInclusiveSellingPrice(costPrice),
       source_stock_detail: `CPT: ${cptStock}`,
       source_file: sourceFile
     });

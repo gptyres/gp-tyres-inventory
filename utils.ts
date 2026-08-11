@@ -4,6 +4,7 @@ import { parseAlineWheelDescription, parseSupplierTyreImageKeys, parseSupplierWh
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsData';
 import { ROYAL_TYRES_CAPE_TOWN_RAW_DATA } from './supplier_data/royalTyresCapeTownData';
+import { calculateVatInclusiveSellingPrice, roundSupplierSellingPrice } from './supplierPricing';
 import {
   extractFlotationTyreSizeQuery,
   flotationTyreSizesEqual,
@@ -721,9 +722,7 @@ export const parseSailunData = (rawText: string): InventoryItem[] => {
       )
     );
     const p2PriceExVat = parseCurrencyString(readColumn(cols, 'Cost Price'));
-    const sellingPrice = p2PriceExVat > 0
-      ? Math.round(((p2PriceExVat * 1.15) / 25) + 1e-9) * 25
-      : 0;
+    const sellingPrice = calculateVatInclusiveSellingPrice(p2PriceExVat);
 
     return [{
       id: `sailun-${sku}`,
@@ -778,8 +777,7 @@ export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
     );
     const normalPriceExVat = parseCurrencyString(readColumn(cols, 'Cost Price'));
     // Royal Tyres selling prices add VAT exactly once. Bulk-deal prices are intentionally absent.
-    const sellingPriceIncVat = parseCurrencyString(readColumn(cols, 'Selling Price'))
-      || (normalPriceExVat > 0 ? Math.round(normalPriceExVat * 115) / 100 : 0);
+    const sellingPriceIncVat = calculateVatInclusiveSellingPrice(normalPriceExVat);
 
     return [{
       id: `royal-tyres-${sku.toLowerCase()}`,
@@ -807,7 +805,7 @@ export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
   const updatedItems = [...baseItems];
   const itemIndexBySku = new Map(updatedItems.map((item, index) => [item.supplierStockCode || '', index]));
   const latestDate = '2026-08-11';
-  const vatInclusive = (costPrice: number) => Math.round(costPrice * 115) / 100;
+  const vatInclusive = calculateVatInclusiveSellingPrice;
   const stableSupplementSku = (category: string, description: string) => {
     let hash = 2166136261;
     const identity = `${category}|${description}`.toUpperCase();
@@ -959,7 +957,7 @@ export const parseExclusiveTyresData = (rawCsv: string): InventoryItem[] => {
       location: 'EXCLUSIVE TYRES',
       quantity,
       costPrice: priceIncVat,
-      sellingPrice: priceIncVat,
+      sellingPrice: roundSupplierSellingPrice(priceIncVat),
       lastUpdated: today
     };
 
@@ -1009,7 +1007,7 @@ const parseSimpleSupplierCsv = (
       location: category,
       quantity,
       costPrice: priceIncVat,
-      sellingPrice: priceIncVat,
+      sellingPrice: roundSupplierSellingPrice(priceIncVat),
       lastUpdated: today
     });
   });
@@ -1074,8 +1072,7 @@ export const parseTyreWarehouseData = (rawCsv: string): InventoryItem[] => {
       .map((branch) => `${branch}: ${entry.branchStock[branch]}`)
       .join(' | ');
 
-    const sellingPriceIncVat = entry.price * 1.15;
-    const roundedSellingPrice = Math.round((sellingPriceIncVat / 25) + 1e-9) * 25;
+    const roundedSellingPrice = calculateVatInclusiveSellingPrice(entry.price);
 
     return {
       id: `tyrewarehouse-${index + 1}`,
@@ -1141,9 +1138,7 @@ export const parseBridgestoneData = (rawCsv: string): InventoryItem[] => {
     const stockLocation = readColumn(cols, 'Stock Location');
     const quantity = Math.max(0, parseStockUnits(readColumn(cols, 'Stock Units')));
     const costPriceExVat = parseCurrencyString(readColumn(cols, 'Discounted Price Ex VAT'));
-    const sellingPrice = costPriceExVat > 0
-      ? Math.round(((costPriceExVat * 1.15) / 25) + 1e-9) * 25
-      : 0;
+    const sellingPrice = calculateVatInclusiveSellingPrice(costPriceExVat);
     const tyreSpecs = [normalizedSegment, parsed.specs]
       .filter(Boolean)
       .filter((value, index, values) => values.indexOf(value) === index)
@@ -1195,7 +1190,7 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
     const { brand, pattern } = splitBrandPattern(brandPattern, 'SAFETY GRIP');
     const quantity = parseStockUnits(cols[2]);
     const priceExVat = parseCurrencyString(cols[3]);
-    const priceIncVat = Math.round(((priceExVat * 1.15) / 25) + 1e-9) * 25;
+    const priceIncVat = calculateVatInclusiveSellingPrice(priceExVat);
 
     const itemId = `safetygrip-${idCounter++}`;
     items.push({
@@ -1285,7 +1280,7 @@ export const parseStamfordData = (
       quantity: entry.totalQuantity,
       stockByLocation: entry.branchStock,
       costPrice: price,
-      sellingPrice: price,
+      sellingPrice: roundSupplierSellingPrice(price),
       lastUpdated: today
     };
   });
@@ -1345,7 +1340,7 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
       stockByLocation: { JHB: qtyJhb, CPT: qtyCpt, DBN: qtyDbn },
       quantity: qtyJhb + qtyCpt + qtyDbn,
       costPrice: priceIncVat,
-      sellingPrice: recommendedRetail || priceIncVat,
+      sellingPrice: roundSupplierSellingPrice(recommendedRetail || priceIncVat),
       lastUpdated: today
     });
   });
@@ -1408,6 +1403,7 @@ const parseStructuredSupplierRefreshData = (
     const locationTotal = Object.values(stockByLocation).reduce((total, quantity) => total + quantity, 0);
     const declaredTotal = parseStockUnits(get('Total Stock Units'));
     const quantity = Math.max(locationTotal, declaredTotal);
+    const costPrice = parseCurrencyString(get('Cost Price'));
 
     return [{
       id: `${idPrefix}-${index + 1}`,
@@ -1424,8 +1420,8 @@ const parseStructuredSupplierRefreshData = (
       stockByLocation,
       supplierLeadTime: get('Lead Time') || undefined,
       quantity,
-      costPrice: parseCurrencyString(get('Cost Price')),
-      sellingPrice: parseCurrencyString(get('Selling Price')),
+      costPrice,
+      sellingPrice: calculateVatInclusiveSellingPrice(costPrice),
       lastUpdated: today
     } satisfies TyreProduct];
   });
@@ -1534,7 +1530,7 @@ export const parseExoticData = (rawCsv: string): InventoryItem[] => {
       quantity: entry.totalQuantity,
       stockByLocation: entry.branchStock,
       costPrice: entry.sellingPrice,
-      sellingPrice: entry.sellingPrice,
+      sellingPrice: roundSupplierSellingPrice(entry.sellingPrice),
       lastUpdated: today
     };
   });
@@ -1567,7 +1563,7 @@ export const parseArcData = (rawCsv: string): InventoryItem[] => {
       series,
       vehicleCompatibility,
       quantity: 1,
-      sellingPrice: price,
+      sellingPrice: roundSupplierSellingPrice(price),
       costPrice: price,
       supplierName: 'ARC',
       supplierStockCode: normalizeString(`${brand}-${series}-${vehicleCompatibility}`).toUpperCase(),
@@ -1587,9 +1583,10 @@ export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
     const specialColumn = (name: string) => specialHeaders.indexOf(name);
     const specialPricing = new Map(specialLines.slice(1).map((line) => {
       const cols = parseCSVLine(line);
+      const costPrice = parseCurrencyString(cols[specialColumn('Cost Price')]);
       return [cols[specialColumn('Supplier SKU')]?.trim(), {
-        costPrice: parseCurrencyString(cols[specialColumn('Cost Price')]),
-        sellingPrice: parseCurrencyString(cols[specialColumn('Selling Price')])
+        costPrice,
+        sellingPrice: calculateVatInclusiveSellingPrice(costPrice)
       }] as const;
     }));
 
@@ -1650,7 +1647,7 @@ export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
       stockByLocation: { BFN: bfnQty, CPT: cptQty, DBN: dbnQty, JHB: jhbQty, NWH: nwhQty },
       quantity: totalQty,
       costPrice: sellingPrice,
-      sellingPrice,
+      sellingPrice: roundSupplierSellingPrice(sellingPrice),
       lastUpdated: today
     });
   });
@@ -1702,7 +1699,7 @@ export const parseTreadsUnlimitedData = (rawCsv: string): InventoryItem[] => {
       quantity: nationalQty,
       stockByLocation: { Regional: regionalQty, National: nationalQty },
       costPrice: priceIncVat,
-      sellingPrice: priceIncVat,
+      sellingPrice: roundSupplierSellingPrice(priceIncVat),
       lastUpdated: today
     });
   });
@@ -1765,8 +1762,7 @@ export const parseTreadZoneData = (rawCsv: string): InventoryItem[] => {
       .filter((branch) => branch in entry.branchStock)
       .map((branch) => `${branch}: ${entry.branchStock[branch]}`)
       .join(' | ');
-    const sellingPriceIncVat = entry.price * 1.15;
-    const roundedSellingPrice = Math.round(sellingPriceIncVat / 50) * 50;
+    const roundedSellingPrice = calculateVatInclusiveSellingPrice(entry.price);
 
     return {
       id: `treadzone-${index + 1}`,
@@ -1851,8 +1847,7 @@ export const parseSumitomoDunlopData = (rawCsv: string): InventoryItem[] => {
     const location = [...knownBranches, ...otherBranches]
       .map((branch) => `${branch}: ${entry.branchStock[branch]}`)
       .join(' | ');
-    const sellingPriceIncVat = entry.price * 1.15;
-    const roundedSellingPrice = Math.round(sellingPriceIncVat / 50) * 50;
+    const roundedSellingPrice = calculateVatInclusiveSellingPrice(entry.price);
 
     return {
       id: `sumitomo-dunlop-${index + 1}`,
@@ -1912,7 +1907,7 @@ export const parseTyreLifeData = (rawCsv: string): InventoryItem[] => {
       stockByLocation: { JHB: jhbQty, CPT: cptQty, DBN: dbnQty },
       quantity: totalQty,
       costPrice: priceIncVat,
-      sellingPrice: priceIncVat,
+      sellingPrice: roundSupplierSellingPrice(priceIncVat),
       lastUpdated: today
     });
   });
@@ -1974,7 +1969,7 @@ export const parseTyreLifeWheelsData = (rawCsv: string): InventoryItem[] => {
       stockByLocation: { JHB: jhbQty, CPT: cptQty, DBN: dbnQty },
       quantity,
       costPrice: sellingPrice,
-      sellingPrice,
+      sellingPrice: roundSupplierSellingPrice(sellingPrice),
       lastUpdated: today
     });
   });

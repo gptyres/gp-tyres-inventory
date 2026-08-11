@@ -218,7 +218,7 @@ describe('STAMFORD supplier catalogue parsing', () => {
 });
 
 describe('TYREWAREHOUSE supplier catalogue parsing', () => {
-  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest R25', () => {
+  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest rand', () => {
     const [item] = parseTyreWarehouseData([
       'SKU,Size,Brand,Pattern,Category,Stock Location,Stock Units Availability,Stock Units,Cost Price',
       '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,JHB,Out of stock,0 units,R1100',
@@ -235,7 +235,7 @@ describe('TYREWAREHOUSE supplier catalogue parsing', () => {
       pattern: 'ContiCrossContact AT',
       size: '265/60R18',
       quantity: 4,
-      sellingPrice: 1275,
+      sellingPrice: 1265,
       costPrice: 1100,
       imageDesignKey: 'CONTICROSSCONTACT AT',
       imageFinishKey: 'CONTINENTAL'
@@ -287,7 +287,7 @@ describe('EXCLUSIVE TYRES supplier catalogue parsing', () => {
 });
 
 describe('TREAD ZONE supplier catalogue parsing', () => {
-  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest R50', () => {
+  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest rand', () => {
     const [item] = parseTreadZoneData([
       'SKU,Category,Brand,Pattern,Tyre Size,Stock Location,Stock Units Availability,Stock Units,Price',
       '1.01.016.121,Agricultural > Bias,Farm Master,F2,6.00-16,Treadzone Cape Town,Available,30 units,R773.50',
@@ -304,7 +304,7 @@ describe('TREAD ZONE supplier catalogue parsing', () => {
       pattern: 'F2',
       size: '6.00-16',
       quantity: 177,
-      sellingPrice: 900,
+      sellingPrice: 890,
       costPrice: 773.5,
       imageDesignKey: 'F2',
       imageFinishKey: 'FARM MASTER'
@@ -323,7 +323,7 @@ describe('TREAD ZONE supplier catalogue parsing', () => {
 });
 
 describe('SUMITOMO/DUNLOP supplier catalogue parsing', () => {
-  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest R50', () => {
+  it('groups branch rows into one tyre item per SKU and rounds the VAT-inclusive selling price to the nearest rand', () => {
     const [item] = parseSumitomoDunlopData([
       'SKU,Category,Brand,Pattern,Tyre Size,Stock Location,Stock Units Availability,Stock Units,Price',
       'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Cape Town,Available,18 units,R1870.62',
@@ -342,7 +342,7 @@ describe('SUMITOMO/DUNLOP supplier catalogue parsing', () => {
       pattern: 'EC300+',
       size: '185/60R16',
       quantity: 120,
-      sellingPrice: 2150,
+      sellingPrice: 2151,
       costPrice: 1870.62,
       imageDesignKey: 'EC300',
       imageFinishKey: 'DUNLOP'
@@ -439,7 +439,7 @@ describe('APEX supplier catalogue parsing', () => {
     expect(items[0]).toMatchObject({
       brand: 'BF GOODRICH',
       pattern: 'ALL-TERRAIN T/A KO3 LRD GO',
-      sellingPrice: 4675
+      sellingPrice: 4685
     });
   });
 

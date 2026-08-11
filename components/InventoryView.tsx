@@ -1470,7 +1470,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
 
 export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   // State for config
-  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: SortDirection }>({ key: 'size', direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: SortDirection }>({ key: 'price', direction: 'asc' });
   const [groupBy, setGroupBy] = useState<GroupMode>('none');
   const [hideLowStock, setHideLowStock] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});

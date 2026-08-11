@@ -354,7 +354,7 @@ const calculatePrice = async (context: AgentContext, args: any): Promise<ToolExe
     costIncludesVat: Boolean(args.costIncludesVat),
     vatRate: Number(args.vatRate ?? 15),
     markupRate: Number(args.markupRate ?? 0),
-    roundTo: Number(args.roundTo ?? 25)
+    roundTo: Number(args.roundTo ?? 1)
   });
   return {
     data: {
