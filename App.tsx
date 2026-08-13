@@ -39,6 +39,7 @@ import { supabase, isSupabaseConfigured, InventoryItemRow, SalesLogInsert, Sales
 import { flushPendingSupabaseWrites, insertSystemLogEntries } from './supabaseSync';
 import {
   deleteGlobalInventoryItem,
+  dedupeSheetSyncedInventoryItems,
   fetchGlobalInventory,
   mapInventoryRowToItem,
   mergeInventoryItems,
@@ -107,7 +108,9 @@ const hasSheetSyncedTyres = (inventoryItems: InventoryItem[]) => (
 
 const filterSheetManagedInventory = (inventoryItems: InventoryItem[]) => {
   if (!hasSheetSyncedTyres(inventoryItems)) return inventoryItems;
-  return inventoryItems.filter(item => item.type !== ProductType.TYRE || Boolean(item.sheetSyncedAt));
+  return dedupeSheetSyncedInventoryItems(
+    inventoryItems.filter(item => item.type !== ProductType.TYRE || Boolean(item.sheetSyncedAt))
+  );
 };
 
 const App: React.FC = () => {

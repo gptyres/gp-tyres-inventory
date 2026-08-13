@@ -37,6 +37,63 @@ export const mergeInventoryItems = (existingItems: InventoryItem[], incomingItem
   return Array.from(byId.values());
 };
 
+const normalizeInventoryIdentityPart = (value: unknown) => String(value ?? '')
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, '');
+
+const getSheetInventoryIdentity = (item: InventoryItem) => {
+  if (item.type !== ProductType.TYRE || !item.sheetSyncedAt) return '';
+
+  if (item.sheetFingerprint?.trim()) return item.sheetFingerprint.trim().toLowerCase();
+
+  const tyre = item as TyreProduct;
+  return [
+    normalizeInventoryIdentityPart(tyre.location || 'unknown'),
+    normalizeInventoryIdentityPart(`${tyre.brand || ''}${tyre.pattern === 'Standard' ? '' : tyre.pattern || ''}`),
+    normalizeInventoryIdentityPart(tyre.size || 'unknown')
+  ].join('|');
+};
+
+const getSheetSyncTime = (item: InventoryItem) => {
+  const parsed = Date.parse(item.sheetSyncedAt || '');
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const isNewerSheetRecord = (candidate: InventoryItem, current: InventoryItem) => {
+  const timeDifference = getSheetSyncTime(candidate) - getSheetSyncTime(current);
+  if (timeDifference !== 0) return timeDifference > 0;
+
+  const candidateRow = Number(candidate.sheetRowNumber) || 0;
+  const currentRow = Number(current.sheetRowNumber) || 0;
+  if (candidateRow !== currentRow) return candidateRow > currentRow;
+
+  return candidate.id.localeCompare(current.id) > 0;
+};
+
+/**
+ * Sheet rows can acquire new portal IDs when rows move. Keep only the newest
+ * record for an exact location/product/size identity so stale stock is never
+ * rendered or counted alongside the current sheet row.
+ */
+export const dedupeSheetSyncedInventoryItems = (items: InventoryItem[]) => {
+  const latestByIdentity = new Map<string, InventoryItem>();
+
+  items.forEach((item) => {
+    const identity = getSheetInventoryIdentity(item);
+    if (!identity) return;
+
+    const current = latestByIdentity.get(identity);
+    if (!current || isNewerSheetRecord(item, current)) {
+      latestByIdentity.set(identity, item);
+    }
+  });
+
+  return items.filter((item) => {
+    const identity = getSheetInventoryIdentity(item);
+    return !identity || latestByIdentity.get(identity)?.id === item.id;
+  });
+};
+
 const INVENTORY_PAGE_SIZE = 1000;
 
 const getNumericId = (id: string) => {
