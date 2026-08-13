@@ -1,0 +1,203 @@
+import { describe, expect, it } from 'vitest';
+import {
+  buildInventoryReportRows,
+  createInventoryReport,
+  getInventoryReportColumns,
+  getInventoryReportFileName,
+  mapInventoryItemToReportRow,
+  sanitizeInventoryReportFileSegment,
+  type InventoryReportContext
+} from './inventoryReport';
+import {
+  BatteryProduct,
+  CoiloverProduct,
+  ProductType,
+  TyreProduct,
+  WheelProduct
+} from './types';
+
+const tyre: TyreProduct = {
+  id: 'apex-alnac',
+  type: ProductType.TYRE,
+  quantity: 12,
+  sellingPrice: 1475,
+  costPrice: 1000,
+  lastUpdated: '2026-08-13',
+  supplierName: 'APEX',
+  supplierLeadTime: '6 Hours',
+  stockByLocation: { CPT: 7, JHB: 5, DBN: 0 },
+  brand: 'APOLLO',
+  pattern: '195/50R15 APOLLO ALNAC 4G TYRE',
+  size: '195/50R15',
+  loadSpeedIndex: '82V',
+  tyreRating: '',
+  tyreIndex: '82V',
+  tyreSpecs: 'TL',
+  location: 'CPT: 7 | JHB: 5 | DBN: 0'
+};
+
+const wheel: WheelProduct = {
+  id: 'aline-dazzle',
+  type: ProductType.WHEEL,
+  quantity: 4,
+  sellingPrice: 3750,
+  costPrice: 3000,
+  lastUpdated: '2026-08-13',
+  supplierName: 'ALINE',
+  code: 'DAZZLE',
+  brand: 'ALINE',
+  finish: 'GLOSS BLACK',
+  size: '15X6.5',
+  pcd: '4/100',
+  offset: '35',
+  centerBore: '67.1',
+  colour: 'ALINE | GLOSS BLACK',
+  setQuantity: 1,
+  location: 'CPT: 4'
+};
+
+const coilover: CoiloverProduct = {
+  id: 'arc-golf-7',
+  type: ProductType.COILOVER,
+  quantity: 2,
+  sellingPrice: 7500,
+  costPrice: 6000,
+  lastUpdated: '2026-08-13',
+  supplierName: 'ARC',
+  brand: 'ARC',
+  series: 'YELLOW',
+  vehicleCompatibility: 'VW GOLF 7'
+};
+
+const battery: BatteryProduct = {
+  id: 'dixon-646',
+  type: ProductType.BATTERY,
+  quantity: 3,
+  sellingPrice: 1850,
+  costPrice: 1400,
+  lastUpdated: '2026-08-13',
+  supplierName: 'DIXON BATTERIES',
+  batteryType: '646',
+  batteryDescription: '12V HEAVY DUTY',
+  nettPrice: 1300,
+  grossPrice: 1850,
+  costIncluding: 1400
+};
+
+const reportContext = (overrides: Partial<InventoryReportContext> = {}): InventoryReportContext => ({
+  catalogueLabel: 'APEX Catalog',
+  searchQuery: '195/50R15 Apollo',
+  generatedAt: '2026-08-13T12:00:00.000Z',
+  resultCount: 1,
+  showSupplierName: false,
+  visibility: {
+    visual: false,
+    type: true,
+    mainSpec: true,
+    brandModel: true,
+    specs: true,
+    location: true,
+    quantity: true,
+    cost: false,
+    sellingPrice: true
+  },
+  ...overrides
+});
+
+describe('inventory report row mapping', () => {
+  it('cleans duplicated tyre size and brand while preserving the final displayed price', () => {
+    const row = mapInventoryItemToReportRow(tyre, { imageUrls: { [tyre.id]: 'https://example.com/alnac.jpg' } });
+    expect(row.mainSpec).toBe('195/50R15');
+    expect(row.brandModel).toBe('APOLLO / ALNAC 4G');
+    expect(row.details).toContain('82V');
+    expect(row.location).toBe('JHB: 5 | CPT: 7');
+    expect(row.sellingPrice).toBe(1475);
+    expect(row.imageUrl).toBe('https://example.com/alnac.jpg');
+  });
+
+  it('maps wheel specifications, coilover fitment, and battery type', () => {
+    const wheelRow = mapInventoryItemToReportRow(wheel);
+    expect(wheelRow.brandModel).toBe('ALINE / DAZZLE');
+    expect(wheelRow.details).toContain('PCD 4/100');
+    expect(wheelRow.details).toContain('ET 35');
+    expect(wheelRow.details).toContain('CB 67.1');
+
+    const coiloverRow = mapInventoryItemToReportRow(coilover);
+    expect(coiloverRow.mainSpec).toBe('VW GOLF 7');
+    expect(coiloverRow.brandModel).toBe('ARC / YELLOW');
+
+    const batteryRow = mapInventoryItemToReportRow(battery);
+    expect(batteryRow.mainSpec).toBe('646');
+    expect(batteryRow.brandModel).toBe('12V HEAVY DUTY');
+  });
+
+  it('includes supplier identity in Details for all-supplier reports', () => {
+    expect(mapInventoryItemToReportRow(tyre, { showSupplierName: true }).details).toContain('Supplier: APEX');
+  });
+
+  it('maps every supplied filtered row without applying a render chunk limit', () => {
+    const filteredRows = Array.from({ length: 145 }, (_, index) => ({ ...tyre, id: `tyre-${index}` }));
+    expect(buildInventoryReportRows(filteredRows)).toHaveLength(145);
+  });
+
+  it('adds deterministic group labels without changing row order', () => {
+    const rows = buildInventoryReportRows([wheel, tyre], { groupBy: 'type' });
+    expect(rows.map((row) => [row.id, row.groupLabel])).toEqual([
+      ['aline-dazzle', 'WHEEL'],
+      ['apex-alnac', 'TYRE']
+    ]);
+  });
+});
+
+describe('inventory report visibility and filenames', () => {
+  it('only exposes Cost when the authorized UI context enables it', () => {
+    expect(getInventoryReportColumns(reportContext()).map((column) => column.key)).not.toContain('costPrice');
+    expect(getInventoryReportColumns(reportContext({
+      visibility: { ...reportContext().visibility, cost: true }
+    })).map((column) => column.key)).toContain('costPrice');
+  });
+
+  it('removes the Details column when no exported row has meaningful details', () => {
+    const rowWithoutDetails = { ...mapInventoryItemToReportRow(battery), details: '-' };
+    expect(getInventoryReportColumns(reportContext(), [rowWithoutDetails]).map((column) => column.key)).not.toContain('details');
+
+    const rowWithDetails = { ...rowWithoutDetails, details: 'Supplier: DIXON BATTERIES' };
+    expect(getInventoryReportColumns(reportContext(), [rowWithDetails]).map((column) => column.key)).toContain('details');
+  });
+
+  it('uses the active catalogue and search in a filesystem-safe filename', () => {
+    expect(sanitizeInventoryReportFileSegment('Tyre Life / Wheels')).toBe('tyre-life-wheels');
+    expect(getInventoryReportFileName(reportContext())).toBe('gp-tyres-inventory-apex-catalog-195-50r15-apollo-2026-08-13.pdf');
+  });
+});
+
+describe('inventory report pagination', () => {
+  it('creates repeated table headers across multiple landscape A4 pages without dropping rows', async () => {
+    const rows = buildInventoryReportRows(Array.from({ length: 90 }, (_, index) => ({
+      ...tyre,
+      id: `page-row-${index}`,
+      pattern: `ALNAC 4G PRODUCT VARIANT ${index}`
+    })));
+    const result = await createInventoryReport({
+      rows,
+      context: reportContext({ resultCount: rows.length, searchQuery: '' }),
+      logoUrl: ''
+    });
+    expect(result.rowCount).toBe(90);
+    expect(result.pageCount).toBeGreaterThan(1);
+    expect(result.headerCount).toBe(result.pageCount);
+  });
+
+  it('uses a placeholder when a requested visual is unavailable', async () => {
+    const context = reportContext({
+      visibility: { ...reportContext().visibility, visual: true }
+    });
+    const result = await createInventoryReport({
+      rows: [{ ...mapInventoryItemToReportRow(tyre), imageUrl: '' }],
+      context,
+      logoUrl: ''
+    });
+    expect(result.rowCount).toBe(1);
+    expect(result.pageCount).toBe(1);
+  });
+});

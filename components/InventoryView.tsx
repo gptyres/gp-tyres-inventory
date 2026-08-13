@@ -19,6 +19,8 @@ import {
   sortStockLocationEntries
 } from '../stockLocation';
 import { type SupplierMarkupAdjustment } from '../supplierMarkup';
+import { type InventoryReportGroupMode } from '../inventoryReport';
+import { InventoryReportModal } from './InventoryReportModal';
 import { SupplierMarkupAdjuster } from './SupplierMarkupAdjuster';
 
 interface InventoryViewProps {
@@ -37,6 +39,8 @@ interface InventoryViewProps {
   priceLabel?: string;
   emptyStateTitle?: string;
   emptyStateDetail?: string;
+  reportCatalogueLabel?: string;
+  reportSearchQuery?: string;
   markupAdjustment?: SupplierMarkupAdjustment;
   onMarkupAdjustmentChange?: (adjustment: SupplierMarkupAdjustment) => void;
 }
@@ -1497,6 +1501,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [clipboardNotice, setClipboardNotice] = useState('');
   const [uploadNotice, setUploadNotice] = useState('');
   const [visibleCount, setVisibleCount] = useState(RENDER_CHUNK_SIZE);
+  const [isInventoryReportOpen, setIsInventoryReportOpen] = useState(false);
 
   // Find and persist an exact supplier tyre visual through the server-side AI workflow.
   const handleGenerateImage = async (item: InventoryItem) => {
@@ -1768,6 +1773,33 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     return groups;
   }, [sortedItems, groupBy]);
 
+  const reportItems = useMemo(
+    () => groupBy === 'none' ? sortedItems : Object.values(groupedItems).flat(),
+    [groupBy, groupedItems, sortedItems]
+  );
+
+  const resolveReportImageUrls = async (): Promise<Record<string, string>> => {
+    const sourceImages = Object.fromEntries(reportItems.flatMap((item) => {
+      const imageUrl = (item as InventoryItem & { imageUrl?: string }).imageUrl;
+      return imageUrl ? [[item.id, imageUrl]] : [];
+    }));
+    const lookupItems = reportItems.filter((item) => inventoryItemToSupplierImageLookup(item));
+    if (!lookupItems.length) return { ...sourceImages, ...generatedImages, ...supplierImages };
+
+    try {
+      const rows = await fetchSupplierStockImages();
+      return {
+        ...sourceImages,
+        ...buildSupplierImageMap(lookupItems, rows),
+        ...generatedImages,
+        ...supplierImages
+      };
+    } catch (error) {
+      console.error('Inventory report image lookup failed', error);
+      return { ...sourceImages, ...generatedImages, ...supplierImages };
+    }
+  };
+
   // Clear selection if items change significantly (e.g. filter change)
   useEffect(() => {
     setSelectedIds(new Set());
@@ -1880,7 +1912,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   // Helper to render the correct view component
   const renderView = (items: InventoryItem[]) => {
     const sourceImages = Object.fromEntries(
-      items.flatMap((item) => item.imageUrl ? [[item.id, item.imageUrl]] : [])
+      items.flatMap((item) => {
+        const imageUrl = (item as InventoryItem & { imageUrl?: string }).imageUrl;
+        return imageUrl ? [[item.id, imageUrl]] : [];
+      })
     );
     const visualImages = { ...sourceImages, ...generatedImages, ...supplierImages };
     const viewProps = { 
@@ -1953,6 +1988,36 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         onClose={closeSupplierTyreImageUploader}
         onUploaded={handleSupplierTyreImageUploaded}
       />
+
+      {isInventoryReportOpen && (
+        <InventoryReportModal
+          items={reportItems}
+          context={{
+            catalogueLabel: props.reportCatalogueLabel || (props.isReadOnly ? 'Supplier catalogue' : 'Available stock'),
+            searchQuery: props.reportSearchQuery || '',
+            showSupplierName: Boolean(props.showSupplierName),
+            visibility: {
+              visual: showImages,
+              type: true,
+              mainSpec: true,
+              brandModel: true,
+              specs: visibleColumns.specs,
+              location: visibleColumns.location,
+              quantity: true,
+              cost: props.isAdmin && visibleColumns.cost,
+              sellingPrice: visibleColumns.price
+            },
+            priceLabel: props.priceLabel
+          }}
+          canShowCost={props.isAdmin}
+          rowOptions={{
+            groupBy: groupBy as InventoryReportGroupMode,
+            showSupplierName: Boolean(props.showSupplierName)
+          }}
+          resolveImageUrls={resolveReportImageUrls}
+          onClose={() => setIsInventoryReportOpen(false)}
+        />
+      )}
       
       {/* View Configuration Toolbar */}
       <div data-testid="inventory-toolbar" className={`sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-x-4 gap-y-3 rounded-md border border-gp-border bg-gp-panel px-3 py-2.5 shadow-xl ${hasMarkupAdjuster ? 'xl:grid-cols-[minmax(250px,auto)_minmax(420px,1fr)_auto] xl:items-end' : 'lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end'}`}>
@@ -2039,7 +2104,9 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         </div>
 
         {/* Filters & Toggles */}
-        {!isBatteryCatalog && <div className={`flex min-w-0 flex-wrap items-center gap-2 border-t border-gp-border pt-2.5 ${hasMarkupAdjuster ? 'xl:col-span-3' : 'lg:col-span-2'}`}>
+        <div className={`flex min-w-0 flex-wrap items-center gap-2 border-t border-gp-border pt-2.5 ${hasMarkupAdjuster ? 'xl:col-span-3' : 'lg:col-span-2'}`}>
+          {!isBatteryCatalog && (
+            <>
              <span className="mr-1 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">Display</span>
 
              {/* Show Images Toggle */}
@@ -2069,8 +2136,24 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
              <ToolbarToggle checked={visibleColumns.specs} onChange={(checked) => setVisibleColumns({...visibleColumns, specs: checked})} label="Specs" />
              <ToolbarToggle checked={visibleColumns.price} onChange={(checked) => setVisibleColumns({...visibleColumns, price: checked})} label="Price" />
              <ToolbarToggle checked={visibleColumns.cost} onChange={(checked) => setVisibleColumns({...visibleColumns, cost: checked})} label="Cost" />
+            </>
+          )}
+             <div className="ml-auto flex min-w-0 basis-full flex-wrap items-center justify-end gap-2 sm:basis-auto sm:border-l sm:border-gp-border sm:pl-3">
+               <button
+                 type="button"
+                 onClick={() => setIsInventoryReportOpen(true)}
+                 disabled={reportItems.length === 0}
+                 className="inline-flex h-8 min-w-28 flex-1 items-center justify-center gap-2 rounded-md bg-gp-red px-3 text-[9px] font-black uppercase tracking-wider text-white shadow-[0_0_12px_rgba(255,0,0,0.18)] transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-35 sm:flex-none"
+                 title="Create a landscape A4 stock sheet"
+               >
+                 <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-none stroke-current stroke-2">
+                   <path d="M6 3h9l3 3v15H6z" />
+                   <path d="M15 3v4h4M9 12h6M9 16h6" />
+                 </svg>
+                 Print
+               </button>
              {customerCopyItems.length > 0 && (
-               <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-2 sm:border-l sm:border-gp-border sm:pl-3">
+               <>
                  <button
                    type="button"
                    onClick={handleSelectAll}
@@ -2093,9 +2176,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
                  >
                    Copy All ({customerCopyItems.length})
                  </button>
-               </div>
+               </>
              )}
-        </div>}
+             </div>
+        </div>
 
       </div>
 

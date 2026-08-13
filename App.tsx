@@ -1959,6 +1959,10 @@ const App: React.FC = () => {
                     priceLabel={currentView === 'SUPPLIER_INVENTORY'
                       ? (activeSupplierCatalog === 'ALINE' ? 'Recommended Selling Price' : 'Selling Price')
                       : undefined}
+                    reportCatalogueLabel={currentView === 'SUPPLIER_INVENTORY'
+                      ? `${supplierCatalogLabel} Catalog`
+                      : activeFilter === 'ALL' ? 'Available Stock' : `${activeFilter} Available Stock`}
+                    reportSearchQuery={debouncedSearchQuery}
                     markupAdjustment={currentView === 'SUPPLIER_INVENTORY' ? activeSupplierMarkup : undefined}
                     onMarkupAdjustmentChange={currentView === 'SUPPLIER_INVENTORY' ? handleSupplierMarkupChange : undefined}
                     emptyStateTitle={flotationSizeSearch ? getNoExactFlotationStockMessage(flotationSizeSearch) : undefined}
