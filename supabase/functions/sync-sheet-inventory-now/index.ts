@@ -78,6 +78,14 @@ Deno.serve(async (request) => {
   if (request.method !== 'POST') return jsonResponse({ ok: false, error: 'Only POST is supported.' }, 405);
 
   try {
+    let dryRun = false;
+    try {
+      const payload = await request.json() as { dryRun?: boolean };
+      dryRun = Boolean(payload?.dryRun);
+    } catch {
+      // The existing portal sends no body; that remains a normal full sync.
+    }
+
     const supabaseUrl = getRequiredEnv('SUPABASE_URL');
     const supabase = createClient(
       supabaseUrl,
@@ -110,6 +118,7 @@ Deno.serve(async (request) => {
         spreadsheetId: SPREADSHEET_ID,
         sheetName: SHEET_NAME,
         mode: 'full',
+        dryRun,
         rows
       })
     });

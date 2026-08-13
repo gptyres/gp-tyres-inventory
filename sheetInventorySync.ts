@@ -190,6 +190,19 @@ export const resolveSheetInventoryPortalIds = (
       return;
     }
 
+    const sameSheetRow = existingItems.find((item) => (
+      item.type === ProductType.TYRE
+      && Boolean(item.sheetSyncedAt)
+      && item.sheetRowNumber === parsedRow.rowNumber
+      && !usedIds.has(item.id)
+    ));
+
+    if (sameSheetRow) {
+      usedIds.add(sameSheetRow.id);
+      matches.set(parsedRow.rowNumber, sameSheetRow.id);
+      return;
+    }
+
     const exactMatch = existingItems.find((item) => (
       !usedIds.has(item.id)
       && inventoryItemFingerprint(item) === parsedRow.fingerprint
@@ -202,6 +215,53 @@ export const resolveSheetInventoryPortalIds = (
   });
 
   return matches;
+};
+
+export const canonicalizeSheetInventoryRows = (
+  parsedRows: ParsedSheetInventoryRow[],
+  existingItems: InventoryItem[]
+) => {
+  const existingIds = new Set(existingItems.map((item) => item.id));
+  const canonicalByFingerprint = new Map<string, ParsedSheetInventoryRow>();
+  const duplicates: ParsedSheetInventoryRow[] = [];
+
+  parsedRows.forEach((row) => {
+    const current = canonicalByFingerprint.get(row.fingerprint);
+    if (!current) {
+      canonicalByFingerprint.set(row.fingerprint, row);
+      return;
+    }
+
+    const rowHasExistingId = Boolean(row.portalId && existingIds.has(row.portalId));
+    const currentHasExistingId = Boolean(current.portalId && existingIds.has(current.portalId));
+
+    if (rowHasExistingId && !currentHasExistingId) {
+      canonicalByFingerprint.set(row.fingerprint, row);
+      duplicates.push(current);
+      return;
+    }
+
+    duplicates.push(row);
+  });
+
+  return {
+    canonical: Array.from(canonicalByFingerprint.values()),
+    duplicates
+  };
+};
+
+export const getStaleSheetInventoryIds = (
+  existingItems: InventoryItem[],
+  activePortalIds: Iterable<string>
+) => {
+  const activeIds = new Set(activePortalIds);
+  return existingItems
+    .filter((item) => (
+      item.type === ProductType.TYRE
+      && Boolean(item.sheetSyncedAt)
+      && !activeIds.has(item.id)
+    ))
+    .map((item) => item.id);
 };
 
 export const buildInventoryRowForSheetItem = (item: InventoryItem) => ({

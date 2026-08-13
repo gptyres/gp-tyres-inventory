@@ -61,7 +61,7 @@ function syncInventoryNow() {
   }
 
   const result = syncInventoryRows_(sheet, GP_SYNC_CONFIG.firstDataRow, lastRow - 1, 'full');
-  SpreadsheetApp.getUi().alert(`GP Portal sync complete.\nUpdated: ${result.rowsUpserted}\nSkipped: ${result.rowsSkipped}`);
+  SpreadsheetApp.getUi().alert(`GP Portal sync complete.\nUpdated: ${result.rowsUpserted}\nRetired stale: ${result.rowsRetired || 0}\nSkipped: ${result.rowsSkipped}`);
 }
 
 function showLastInventorySync() {
@@ -135,7 +135,7 @@ function syncInventoryRows_(sheet, startRow, rowCount, mode) {
   applySyncResults_(sheet, result.rowResults || []);
   PropertiesService.getDocumentProperties().setProperty(
     'LAST_GP_PORTAL_SYNC',
-    `${new Date().toLocaleString('en-ZA')} - Updated ${result.rowsUpserted}, skipped ${result.rowsSkipped}`
+    `${new Date().toLocaleString('en-ZA')} - Updated ${result.rowsUpserted}, retired ${result.rowsRetired || 0}, skipped ${result.rowsSkipped}`
   );
 
   return result;

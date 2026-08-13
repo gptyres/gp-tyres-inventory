@@ -10,6 +10,7 @@ const SPREADSHEET_ID = '1QJp8o-KzSNIn2xUCS_0o8gNqYzbBP7jYQ_rqtxYw0VY';
 const SHEET_NAME = 'INVENTORY';
 const SECRET_NAME = 'SHEET_INVENTORY_SYNC_TOKEN';
 const MAX_ROWS_PER_REQUEST = 1500;
+const INVENTORY_PAGE_SIZE = 1000;
 
 type InventoryType = 'TYRE' | 'WHEEL' | 'COILOVER';
 
@@ -246,6 +247,10 @@ const allocateNewPortalId = (parsed: ParsedSheetRow, usedIds: Set<string>, nextN
   return candidate;
 };
 
+const isSheetManagedRow = (row: InventoryRow) => (
+  row.type === 'TYRE' && Boolean(normalizeCellText(row.item?.sheetSyncedAt))
+);
+
 const resolvePortalId = (
   parsed: ParsedSheetRow,
   existingRows: InventoryRow[],
@@ -260,6 +265,13 @@ const resolvePortalId = (
     return parsed.portalId;
   }
 
+  const sameSheetRow = existingRows.find((row) => (
+    isSheetManagedRow(row)
+    && Number(row.item?.sheetRowNumber) === parsed.rowNumber
+    && !usedIds.has(row.id)
+  ));
+  if (sameSheetRow) return sameSheetRow.id;
+
   const exact = existingRows.find((row) => (
     row.type === 'TYRE'
     && !usedIds.has(row.id)
@@ -268,6 +280,67 @@ const resolvePortalId = (
   if (exact) return exact.id;
 
   return allocateNewPortalId(parsed, usedIds, nextNumericId);
+};
+
+const canonicalizeParsedRows = (
+  parsedRows: ParsedSheetRow[],
+  existingRows: InventoryRow[]
+) => {
+  const existingIds = new Set(existingRows.map((row) => row.id));
+  const canonicalByFingerprint = new Map<string, ParsedSheetRow>();
+  const duplicates: ParsedSheetRow[] = [];
+
+  parsedRows.forEach((parsed) => {
+    const current = canonicalByFingerprint.get(parsed.fingerprint);
+    if (!current) {
+      canonicalByFingerprint.set(parsed.fingerprint, parsed);
+      return;
+    }
+
+    const parsedHasExistingId = Boolean(parsed.portalId && existingIds.has(parsed.portalId));
+    const currentHasExistingId = Boolean(current.portalId && existingIds.has(current.portalId));
+    if (parsedHasExistingId && !currentHasExistingId) {
+      canonicalByFingerprint.set(parsed.fingerprint, parsed);
+      duplicates.push(current);
+      return;
+    }
+
+    duplicates.push(parsed);
+  });
+
+  return {
+    canonical: Array.from(canonicalByFingerprint.values()),
+    duplicates
+  };
+};
+
+const chunkValues = <T,>(values: T[], size: number) => {
+  const chunks: T[][] = [];
+  for (let index = 0; index < values.length; index += size) {
+    chunks.push(values.slice(index, index + size));
+  }
+  return chunks;
+};
+
+const fetchAllTyreInventoryRows = async (supabase: ReturnType<typeof createClient>) => {
+  const inventoryRows: InventoryRow[] = [];
+
+  for (let from = 0; ; from += INVENTORY_PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from('inventory_items')
+      .select('id,type,item,quantity,selling_price,cost_price,last_updated')
+      .eq('type', 'TYRE')
+      .order('id', { ascending: true })
+      .range(from, from + INVENTORY_PAGE_SIZE - 1);
+
+    if (error) throw error;
+
+    const page = (data || []) as InventoryRow[];
+    inventoryRows.push(...page);
+    if (page.length < INVENTORY_PAGE_SIZE) break;
+  }
+
+  return inventoryRows;
 };
 
 Deno.serve(async (request) => {
@@ -346,20 +419,26 @@ Deno.serve(async (request) => {
       else rowResults.push(parsed);
     });
 
-    const { data: existingRows, error: existingError } = await supabase
-      .from('inventory_items')
-      .select('id,type,item,quantity,selling_price,cost_price,last_updated')
-      .eq('type', 'TYRE');
+    if (mode === 'full' && parsedRows.length === 0) {
+      throw new Error('Full sync parsed no inventory rows; stale-row reconciliation was cancelled.');
+    }
 
-    if (existingError) throw existingError;
-
-    const inventoryRows = (existingRows || []) as InventoryRow[];
+    const inventoryRows = await fetchAllTyreInventoryRows(supabase);
+    const canonicalized = canonicalizeParsedRows(parsedRows, inventoryRows);
+    canonicalized.duplicates.forEach((duplicate) => {
+      const canonical = canonicalized.canonical.find((row) => row.fingerprint === duplicate.fingerprint);
+      rowResults.push({
+        rowNumber: duplicate.rowNumber,
+        status: 'skipped',
+        message: `Duplicate inventory identity; canonical sheet row is ${canonical?.rowNumber ?? 'unknown'}.`
+      });
+    });
     const usedIds = new Set<string>();
     const nextNumericId = {
       value: inventoryRows.reduce((max, row) => Math.max(max, getNumericTyreId(row.id)), 0)
     };
 
-    const upsertRows = parsedRows.map((parsed) => {
+    const upsertRows = canonicalized.canonical.map((parsed) => {
       const portalId = resolvePortalId(parsed, inventoryRows, usedIds, nextNumericId);
       usedIds.add(portalId);
       const item = { ...parsed.item, id: portalId };
@@ -390,14 +469,34 @@ Deno.serve(async (request) => {
       if (upsertError) throw upsertError;
     }
 
+    const activePortalIds = new Set(upsertRows.map((row) => row.id));
+    const staleSheetIds = mode === 'full'
+      ? inventoryRows
+        .filter((row) => isSheetManagedRow(row) && !activePortalIds.has(row.id))
+        .map((row) => row.id)
+      : [];
+
+    if (!dryRun && staleSheetIds.length) {
+      for (const idChunk of chunkValues(staleSheetIds, 200)) {
+        const { error: deleteError } = await supabase
+          .from('inventory_items')
+          .delete()
+          .eq('type', 'TYRE')
+          .in('id', idChunk);
+
+        if (deleteError) throw deleteError;
+      }
+    }
+
     const rowsSkipped = rowResults.filter((row) => row.status === 'skipped').length;
     const rowsUpserted = dryRun ? 0 : upsertRows.length;
+    const rowsRetired = dryRun ? 0 : staleSheetIds.length;
 
     await supabase
       .from('sheet_inventory_sync_runs')
       .update({
         status: 'completed',
-        rows_parsed: parsedRows.length,
+        rows_parsed: canonicalized.canonical.length,
         rows_upserted: rowsUpserted,
         rows_skipped: rowsSkipped,
         rows_failed: 0,
@@ -411,8 +510,10 @@ Deno.serve(async (request) => {
       runId,
       dryRun,
       rowsReceived: rows.length,
-      rowsParsed: parsedRows.length,
+      rowsParsed: canonicalized.canonical.length,
       rowsUpserted,
+      rowsRetired,
+      rowsWouldRetire: staleSheetIds.length,
       rowsSkipped,
       rowResults
     });

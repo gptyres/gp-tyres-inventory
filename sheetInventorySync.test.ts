@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  canonicalizeSheetInventoryRows,
+  getStaleSheetInventoryIds,
   parseSheetCurrency,
   parseSheetInventoryRow,
   parseSheetInventoryRows,
@@ -103,5 +105,77 @@ describe('sheet inventory sync parser', () => {
     const matches = resolveSheetInventoryPortalIds(parsedResult.parsed, existingItems);
     expect(matches.get(10)).toBe('t-10');
     expect(matches.get(11)).toBe('t-7');
+  });
+
+  it('reuses the portal id for the same Google Sheet row when its product changes', () => {
+    const parsedResult = parseSheetInventoryRows([
+      { rowNumber: 10, values: ['HOME', '', 'DUNLOP AT3G', '265/65R17', 4, 1800, 2600] }
+    ]);
+    const existingItems: TyreProduct[] = [{
+      id: 't-10',
+      type: ProductType.TYRE,
+      location: 'HOME',
+      brand: 'TRACMAX',
+      pattern: 'TX5',
+      size: '155/80R13',
+      quantity: 10,
+      costPrice: 450,
+      sellingPrice: 799,
+      loadSpeedIndex: '',
+      lastUpdated: '2026-07-04',
+      sheetRowNumber: 10,
+      sheetSyncedAt: '2026-08-12T10:00:00.000Z'
+    }];
+
+    const matches = resolveSheetInventoryPortalIds(parsedResult.parsed, existingItems);
+    expect(matches.get(10)).toBe('t-10');
+  });
+
+  it('collapses duplicate sheet identities and prefers a row with a valid portal id', () => {
+    const parsedResult = parseSheetInventoryRows([
+      { rowNumber: 10, values: ['HOME', '', 'TRACMAX TX5', '155/80R13', 10, 450, 799] },
+      { rowNumber: 12, values: ['HOME', '', 'TRACMAX TX5', '155/80R13', 12, 450, 799], portalId: 't-12' }
+    ]);
+    const existingItems: TyreProduct[] = [{
+      id: 't-12',
+      type: ProductType.TYRE,
+      location: 'HOME',
+      brand: 'TRACMAX',
+      pattern: 'TX5',
+      size: '155/80R13',
+      quantity: 10,
+      costPrice: 450,
+      sellingPrice: 799,
+      loadSpeedIndex: '',
+      lastUpdated: '2026-07-04',
+      sheetRowNumber: 12,
+      sheetSyncedAt: '2026-08-12T10:00:00.000Z'
+    }];
+
+    const result = canonicalizeSheetInventoryRows(parsedResult.parsed, existingItems);
+    expect(result.canonical).toHaveLength(1);
+    expect(result.canonical[0].rowNumber).toBe(12);
+    expect(result.duplicates.map((row) => row.rowNumber)).toEqual([10]);
+  });
+
+  it('retires only stale sheet-managed tyres during a full reconciliation', () => {
+    const existingItems: TyreProduct[] = [
+      {
+        id: 'active', type: ProductType.TYRE, location: 'HOME', brand: 'A', pattern: 'ONE', size: '1',
+        quantity: 1, costPrice: 1, sellingPrice: 1, loadSpeedIndex: '', lastUpdated: '2026-08-12',
+        sheetSyncedAt: '2026-08-12T10:00:00.000Z'
+      },
+      {
+        id: 'stale', type: ProductType.TYRE, location: 'HOME', brand: 'B', pattern: 'TWO', size: '2',
+        quantity: 1, costPrice: 1, sellingPrice: 1, loadSpeedIndex: '', lastUpdated: '2026-08-12',
+        sheetSyncedAt: '2026-08-11T10:00:00.000Z'
+      },
+      {
+        id: 'manual', type: ProductType.TYRE, location: 'HOME', brand: 'C', pattern: 'THREE', size: '3',
+        quantity: 1, costPrice: 1, sellingPrice: 1, loadSpeedIndex: '', lastUpdated: '2026-08-12'
+      }
+    ];
+
+    expect(getStaleSheetInventoryIds(existingItems, ['active'])).toEqual(['stale']);
   });
 });
