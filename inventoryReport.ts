@@ -316,8 +316,6 @@ export const getInventoryReportColumns = (
   const columns: ReportColumn[] = [];
   if (context.visibility.visual) columns.push({ key: 'visual', label: 'Visual', weight: 0.8, align: 'center' });
   if (context.visibility.type) columns.push({ key: 'type', label: 'Type', weight: 0.65 });
-  if (context.visibility.mainSpec) columns.push({ key: 'mainSpec', label: 'Main Spec', weight: 1.15 });
-  if (context.visibility.brandModel) columns.push({ key: 'brandModel', label: 'Brand / Model', weight: 2.05 });
   const hasMeaningfulSupplier = context.showSupplierName && rows.some((row) => {
     const supplier = cleanPart(row.supplier);
     return Boolean(supplier && supplier !== '-');
@@ -325,6 +323,8 @@ export const getInventoryReportColumns = (
   if (context.visibility.supplier && hasMeaningfulSupplier) {
     columns.push({ key: 'supplier', label: 'Supplier', weight: 1.05 });
   }
+  if (context.visibility.mainSpec) columns.push({ key: 'mainSpec', label: 'Main Spec', weight: 1.15 });
+  if (context.visibility.brandModel) columns.push({ key: 'brandModel', label: 'Brand / Model', weight: 2.05 });
   const hasMeaningfulDetails = rows.length === 0 || rows.some((row) => {
     const details = cleanPart(row.details);
     return Boolean(details && details !== '-');

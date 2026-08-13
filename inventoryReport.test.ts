@@ -183,6 +183,9 @@ describe('inventory report visibility and filenames', () => {
       visibility: { ...reportContext().visibility, supplier: true }
     });
     expect(getInventoryReportColumns(supplierContext, rows).map((column) => column.key)).toContain('supplier');
+    expect(getInventoryReportColumns(supplierContext, rows).map((column) => column.key)).toEqual([
+      'type', 'supplier', 'mainSpec', 'brandModel', 'details', 'location', 'quantity', 'sellingPrice'
+    ]);
     expect(getInventoryReportColumns(reportContext(), rows).map((column) => column.key)).not.toContain('supplier');
   });
 
