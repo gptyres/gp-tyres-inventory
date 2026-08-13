@@ -2001,6 +2001,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
               type: true,
               mainSpec: true,
               brandModel: true,
+              supplier: Boolean(props.showSupplierName),
               specs: visibleColumns.specs,
               location: visibleColumns.location,
               quantity: true,

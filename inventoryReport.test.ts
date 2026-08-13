@@ -4,6 +4,7 @@ import {
   createInventoryReport,
   getInventoryReportColumns,
   getInventoryReportFileName,
+  isInventoryReportUnavailable,
   mapInventoryItemToReportRow,
   sanitizeInventoryReportFileSegment,
   type InventoryReportContext
@@ -95,6 +96,7 @@ const reportContext = (overrides: Partial<InventoryReportContext> = {}): Invento
     type: true,
     mainSpec: true,
     brandModel: true,
+    supplier: false,
     specs: true,
     location: true,
     quantity: true,
@@ -131,13 +133,22 @@ describe('inventory report row mapping', () => {
     expect(batteryRow.brandModel).toBe('12V HEAVY DUTY');
   });
 
-  it('includes supplier identity in Details for all-supplier reports', () => {
-    expect(mapInventoryItemToReportRow(tyre, { showSupplierName: true }).details).toContain('Supplier: APEX');
+  it('keeps supplier identity in a dedicated Supplier field for all-supplier reports', () => {
+    const row = mapInventoryItemToReportRow(tyre, { showSupplierName: true });
+    expect(row.supplier).toBe('APEX');
+    expect(row.details).not.toContain('APEX');
   });
 
   it('maps every supplied filtered row without applying a render chunk limit', () => {
     const filteredRows = Array.from({ length: 145 }, (_, index) => ({ ...tyre, id: `tyre-${index}` }));
     expect(buildInventoryReportRows(filteredRows)).toHaveLength(145);
+  });
+
+  it('keeps zero-stock rows in the report and marks them unavailable for the PDF renderer', () => {
+    const outOfStockRow = mapInventoryItemToReportRow({ ...tyre, quantity: 0 });
+    expect(outOfStockRow.quantity).toBe(0);
+    expect(isInventoryReportUnavailable(outOfStockRow)).toBe(true);
+    expect(isInventoryReportUnavailable(mapInventoryItemToReportRow(tyre))).toBe(false);
   });
 
   it('adds deterministic group labels without changing row order', () => {
@@ -161,8 +172,27 @@ describe('inventory report visibility and filenames', () => {
     const rowWithoutDetails = { ...mapInventoryItemToReportRow(battery), details: '-' };
     expect(getInventoryReportColumns(reportContext(), [rowWithoutDetails]).map((column) => column.key)).not.toContain('details');
 
-    const rowWithDetails = { ...rowWithoutDetails, details: 'Supplier: DIXON BATTERIES' };
+    const rowWithDetails = { ...rowWithoutDetails, details: 'Heavy duty terminals' };
     expect(getInventoryReportColumns(reportContext(), [rowWithDetails]).map((column) => column.key)).toContain('details');
+  });
+
+  it('adds the clean Supplier column only for all-supplier report context', () => {
+    const rows = [mapInventoryItemToReportRow(tyre)];
+    const supplierContext = reportContext({
+      showSupplierName: true,
+      visibility: { ...reportContext().visibility, supplier: true }
+    });
+    expect(getInventoryReportColumns(supplierContext, rows).map((column) => column.key)).toContain('supplier');
+    expect(getInventoryReportColumns(reportContext(), rows).map((column) => column.key)).not.toContain('supplier');
+  });
+
+  it('keeps Details compact using the shortest meaningful detail in the result set', () => {
+    const rows = [
+      { ...mapInventoryItemToReportRow(tyre), details: '82V' },
+      { ...mapInventoryItemToReportRow(wheel), details: 'GLOSS BLACK | PCD 4/100 | ET 35 | CB 67.1' }
+    ];
+    const detailsColumn = getInventoryReportColumns(reportContext(), rows).find((column) => column.key === 'details');
+    expect(detailsColumn?.weight).toBe(0.65);
   });
 
   it('uses the active catalogue and search in a filesystem-safe filename', () => {

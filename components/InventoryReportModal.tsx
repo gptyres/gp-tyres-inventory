@@ -37,6 +37,7 @@ export const InventoryReportModal: React.FC<InventoryReportModalProps> = ({
     { key: 'type', label: 'Type' },
     { key: 'mainSpec', label: 'Main Spec' },
     { key: 'brandModel', label: 'Brand / Model' },
+    ...(context.showSupplierName ? [{ key: 'supplier' as const, label: 'Supplier' }] : []),
     { key: 'specs', label: 'Details' },
     { key: 'location', label: 'Location' },
     { key: 'quantity', label: 'Qty' },

@@ -16,6 +16,7 @@ export interface InventoryReportVisibility {
   type: boolean;
   mainSpec: boolean;
   brandModel: boolean;
+  supplier: boolean;
   specs: boolean;
   location: boolean;
   quantity: boolean;
@@ -40,6 +41,7 @@ export interface InventoryReportRow {
   type: string;
   mainSpec: string;
   brandModel: string;
+  supplier: string;
   details: string;
   location: string;
   quantity: number;
@@ -60,7 +62,7 @@ interface CreateInventoryReportOptions {
   onProgress?: (completed: number, total: number) => void;
 }
 
-type ReportColumnKey = 'visual' | 'type' | 'mainSpec' | 'brandModel' | 'details' | 'location' | 'quantity' | 'costPrice' | 'sellingPrice';
+type ReportColumnKey = 'visual' | 'type' | 'mainSpec' | 'brandModel' | 'supplier' | 'details' | 'location' | 'quantity' | 'costPrice' | 'sellingPrice';
 
 interface ReportColumn {
   key: ReportColumnKey;
@@ -144,9 +146,7 @@ const getGroupLabel = (item: InventoryItem, groupBy: InventoryReportGroupMode): 
   return 'DIXON BATTERIES';
 };
 
-const supplierDetail = (item: InventoryItem, showSupplierName: boolean): string => (
-  showSupplierName && cleanPart(item.supplierName) ? `Supplier: ${cleanPart(item.supplierName)}` : ''
-);
+const supplierName = (item: InventoryItem): string => cleanPart(item.supplierName);
 
 export const mapInventoryItemToReportRow = (
   item: InventoryItem,
@@ -158,9 +158,9 @@ export const mapInventoryItemToReportRow = (
     imageUrl: options.imageUrls?.[item.id],
     quantity: Math.max(0, Math.round(Number(item.quantity) || 0)),
     costPrice: Number(item.costPrice) || 0,
-    sellingPrice: Number(item.sellingPrice) || 0
+    sellingPrice: Number(item.sellingPrice) || 0,
+    supplier: supplierName(item) || '-'
   };
-  const supplier = supplierDetail(item, Boolean(options.showSupplierName));
 
   if (item.type === ProductType.TYRE) {
     const tyre = item as TyreProduct;
@@ -175,8 +175,7 @@ export const mapInventoryItemToReportRow = (
         tyre.tyreIndex,
         tyre.loadSpeedIndex,
         tyre.tyreSpecs,
-        item.supplierLeadTime ? `Lead time: ${item.supplierLeadTime}` : '',
-        supplier
+        item.supplierLeadTime ? `Lead time: ${item.supplierLeadTime}` : ''
       ]).join(' | ') || '-',
       location: getInventoryReportLocation(item)
     };
@@ -193,8 +192,7 @@ export const mapInventoryItemToReportRow = (
         wheelFinish(wheel),
         wheel.pcd ? `PCD ${cleanPart(wheel.pcd)}` : '',
         formatOffset(wheel.offset),
-        wheel.centerBore ? `CB ${cleanPart(wheel.centerBore)}` : '',
-        supplier
+        wheel.centerBore ? `CB ${cleanPart(wheel.centerBore)}` : ''
       ]).join(' | ') || '-',
       location: getInventoryReportLocation(item)
     };
@@ -207,7 +205,7 @@ export const mapInventoryItemToReportRow = (
       type: 'Coilover',
       mainSpec: cleanPart(coilover.vehicleCompatibility) || '-',
       brandModel: uniqueParts([coilover.brand, coilover.series]).join(' / ') || '-',
-      details: uniqueParts([supplier]).join(' | ') || '-',
+      details: '-',
       location: 'General stock'
     };
   }
@@ -218,7 +216,7 @@ export const mapInventoryItemToReportRow = (
     type: 'Battery',
     mainSpec: cleanPart(battery.batteryType) || '-',
     brandModel: cleanPart(battery.batteryDescription) || '-',
-    details: uniqueParts([supplier]).join(' | ') || '-',
+    details: '-',
     location: 'General stock'
   };
 };
@@ -247,6 +245,8 @@ export const getInventoryReportFileName = (context: Pick<InventoryReportContext,
 export const formatInventoryReportCurrency = (amount: number): string => (
   `R ${Math.round(Number(amount) || 0).toLocaleString('en-ZA')}`.replace(/\u00a0/g, ' ')
 );
+
+export const isInventoryReportUnavailable = (row: Pick<InventoryReportRow, 'quantity'>): boolean => row.quantity <= 0;
 
 const getImageFormat = (mimeType: string, source: string): string => {
   const normalized = mimeType.toLowerCase();
@@ -316,12 +316,27 @@ export const getInventoryReportColumns = (
   if (context.visibility.type) columns.push({ key: 'type', label: 'Type', weight: 0.65 });
   if (context.visibility.mainSpec) columns.push({ key: 'mainSpec', label: 'Main Spec', weight: 1.15 });
   if (context.visibility.brandModel) columns.push({ key: 'brandModel', label: 'Brand / Model', weight: 2.05 });
+  const hasMeaningfulSupplier = context.showSupplierName && rows.some((row) => {
+    const supplier = cleanPart(row.supplier);
+    return Boolean(supplier && supplier !== '-');
+  });
+  if (context.visibility.supplier && hasMeaningfulSupplier) {
+    columns.push({ key: 'supplier', label: 'Supplier', weight: 1.05 });
+  }
   const hasMeaningfulDetails = rows.length === 0 || rows.some((row) => {
     const details = cleanPart(row.details);
     return Boolean(details && details !== '-');
   });
   if (context.visibility.specs && hasMeaningfulDetails) {
-    columns.push({ key: 'details', label: 'Details', weight: 2.25 });
+    const shortestDetailLength = rows
+      .map((row) => cleanPart(row.details))
+      .filter((detail) => detail && detail !== '-')
+      .reduce((shortest, detail) => Math.min(shortest, detail.length), Number.POSITIVE_INFINITY);
+    // Keep Details proportional to the smallest real value, while retaining enough room for longer values to wrap cleanly.
+    const detailsWeight = Number.isFinite(shortestDetailLength)
+      ? Math.min(1.55, Math.max(0.65, shortestDetailLength / 11))
+      : 1;
+    columns.push({ key: 'details', label: 'Details', weight: detailsWeight });
   }
   if (context.visibility.location) columns.push({ key: 'location', label: 'Location', weight: 1.65 });
   if (context.visibility.quantity) columns.push({ key: 'quantity', label: 'Qty', weight: 0.5, align: 'right' });
@@ -464,7 +479,13 @@ export const createInventoryReport = async ({ rows, context, logoUrl, onProgress
     if (y + rowHeight > pageHeight - footerHeight) nextPage(activeGroup || undefined);
 
     let x = margin;
-    doc.setFillColor(rowIndex % 2 === 0 ? 247 : 239, rowIndex % 2 === 0 ? 247 : 239, rowIndex % 2 === 0 ? 247 : 239);
+    if (isInventoryReportUnavailable(row)) {
+      // Keep zero-stock stock visible, but make the entire printed row immediately recognisable as unavailable.
+      doc.setFillColor(254, 232, 232);
+    } else {
+      const shade = rowIndex % 2 === 0 ? 247 : 239;
+      doc.setFillColor(shade, shade, shade);
+    }
     doc.rect(margin, y, tableWidth, rowHeight, 'F');
     doc.setDrawColor(218, 218, 218);
     doc.setLineWidth(0.4);
