@@ -34,6 +34,13 @@ describe('supplier markup pricing', () => {
     expect(calculateSupplierSellingPrice(tyre(), { mode: 'FIXED', value: 300 }, 'REVOLUTION_TYRES')).toBe(1450);
   });
 
+  it('includes VAT in the MAXXIS and Royal Tyres markup base', () => {
+    expect(getSupplierCostIncludingVat(tyre(), 'MAXXIS')).toBeCloseTo(1150);
+    expect(calculateSupplierSellingPrice(tyre(), { mode: 'FIXED', value: 300 }, 'MAXXIS')).toBe(1450);
+    expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 20 }, 'MAXXIS')).toBe(1380);
+    expect(calculateSupplierSellingPrice(tyre(), { mode: 'FIXED', value: 300 }, 'ROYAL_TYRES')).toBe(1450);
+  });
+
   it('does not add VAT twice when supplier cost already includes VAT', () => {
     expect(getSupplierCostIncludingVat(tyre(), 'ALINE')).toBe(1000);
     expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 15 }, 'ALINE')).toBe(1150);
@@ -52,6 +59,16 @@ describe('supplier markup pricing', () => {
     )).toBe(1250);
     expect(calculateSupplierSellingPrice(
       tyre({ supplierName: 'Revolution Tyres' }),
+      { mode: 'FIXED', value: 250 },
+      'ALL_SUPPLIERS'
+    )).toBe(1400);
+    expect(calculateSupplierSellingPrice(
+      tyre({ supplierName: 'MAXXIS' }),
+      { mode: 'FIXED', value: 250 },
+      'ALL_SUPPLIERS'
+    )).toBe(1400);
+    expect(calculateSupplierSellingPrice(
+      tyre({ supplierName: 'Royal Tyres' }),
       { mode: 'FIXED', value: 250 },
       'ALL_SUPPLIERS'
     )).toBe(1400);
