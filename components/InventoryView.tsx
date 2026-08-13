@@ -20,6 +20,7 @@ import {
 } from '../stockLocation';
 import { type SupplierMarkupAdjustment } from '../supplierMarkup';
 import { type InventoryReportGroupMode } from '../inventoryReport';
+import { TERMINAL_STAFF_NAMES } from '../trainingProgress';
 import { InventoryReportModal } from './InventoryReportModal';
 import { SupplierMarkupAdjuster } from './SupplierMarkupAdjuster';
 
@@ -41,6 +42,7 @@ interface InventoryViewProps {
   emptyStateDetail?: string;
   reportCatalogueLabel?: string;
   reportSearchQuery?: string;
+  currentUser?: string | null;
   markupAdjustment?: SupplierMarkupAdjustment;
   onMarkupAdjustmentChange?: (adjustment: SupplierMarkupAdjustment) => void;
 }
@@ -1995,6 +1997,8 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
           context={{
             catalogueLabel: props.reportCatalogueLabel || (props.isReadOnly ? 'Supplier catalogue' : 'Available stock'),
             searchQuery: props.reportSearchQuery || '',
+            generatedBy: TERMINAL_STAFF_NAMES[props.currentUser || ''] || props.currentUser || 'Unknown',
+            terminalId: props.currentUser || 'Unknown',
             showSupplierName: Boolean(props.showSupplierName),
             visibility: {
               visual: showImages,

@@ -29,6 +29,8 @@ export interface InventoryReportContext {
   searchQuery: string;
   generatedAt: string;
   resultCount: number;
+  generatedBy?: string;
+  terminalId?: string;
   showSupplierName: boolean;
   visibility: InventoryReportVisibility;
   priceLabel?: string;
@@ -403,8 +405,10 @@ export const createInventoryReport = async ({ rows, context, logoUrl, onProgress
       dateStyle: 'medium',
       timeStyle: 'short'
     }).format(new Date(context.generatedAt));
+    const generatedBy = cleanPart(context.generatedBy) || 'Unassigned';
+    const terminalId = cleanPart(context.terminalId) || 'Unknown';
     doc.setFillColor(248, 248, 248);
-    doc.rect(0, 68, pageWidth, 35, 'F');
+    doc.rect(0, 68, pageWidth, 47, 'F');
     doc.setTextColor(50, 50, 50);
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
@@ -415,7 +419,15 @@ export const createInventoryReport = async ({ rows, context, logoUrl, onProgress
     doc.text('GENERATED', margin, 95);
     doc.setFont('helvetica', 'normal');
     doc.text(generated, margin + 52, 95);
-    y = 111;
+    doc.setFont('helvetica', 'bold');
+    doc.text('AGENT', margin, 108);
+    doc.setFont('helvetica', 'normal');
+    doc.text(generatedBy, margin + 36, 108);
+    doc.setFont('helvetica', 'bold');
+    doc.text('TERMINAL', 210, 108);
+    doc.setFont('helvetica', 'normal');
+    doc.text(terminalId, 260, 108);
+    y = 123;
   };
 
   const drawTableHeader = () => {

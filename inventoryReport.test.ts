@@ -230,4 +230,17 @@ describe('inventory report pagination', () => {
     expect(result.rowCount).toBe(1);
     expect(result.pageCount).toBe(1);
   });
+
+  it('prints the agent and terminal that generated the sheet', async () => {
+    const result = await createInventoryReport({
+      rows: [mapInventoryItemToReportRow(tyre)],
+      context: reportContext({ generatedBy: 'Rafiek', terminalId: 'GP2' }),
+      logoUrl: ''
+    });
+    const pdf = result.doc.output();
+    expect(pdf).toContain('AGENT');
+    expect(pdf).toContain('Rafiek');
+    expect(pdf).toContain('TERMINAL');
+    expect(pdf).toContain('GP2');
+  });
 });
