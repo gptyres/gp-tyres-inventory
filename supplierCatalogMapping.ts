@@ -2,10 +2,10 @@ import type { SupplierCatalog } from './types.js';
 
 export type RegistryBackedSupplierCatalog = Exclude<
   SupplierCatalog,
-  'ALL_SUPPLIERS' | 'SAILUN' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'BRIDGESTONE' | 'DIXON_BATTERIES' | 'ARC'
+  'ALL_SUPPLIERS' | 'SAILUN' | 'MAXXIS' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'BRIDGESTONE' | 'DIXON_BATTERIES' | 'ARC'
 >;
 
-export type ManualSupplierCatalog = Extract<SupplierCatalog, 'SAILUN' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'BRIDGESTONE'>;
+export type ManualSupplierCatalog = Extract<SupplierCatalog, 'SAILUN' | 'MAXXIS' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'BRIDGESTONE'>;
 export type LiveSupplierCatalog = RegistryBackedSupplierCatalog | ManualSupplierCatalog;
 export type SupplierImportCatalog = LiveSupplierCatalog;
 
@@ -40,6 +40,7 @@ export const MANUAL_SUPPLIER_BY_CATALOG: Record<ManualSupplierCatalog, {
   sheetName: string;
 }> = {
   SAILUN: { supplier: 'SAILUN', sheetName: 'SUPPLIER_SAILUN' },
+  MAXXIS: { supplier: 'MAXXIS', sheetName: 'SUPPLIER_MAXXIS' },
   SAFETY_GRIP: { supplier: 'Safety Grip', sheetName: 'SUPPLIER_SAFETY_GRIP' },
   ROYAL_TYRES: { supplier: 'ROYAL TYRES', sheetName: 'SUPPLIER_ROYAL_TYRES' },
   BRIDGESTONE: { supplier: 'Bridgestone', sheetName: 'SUPPLIER_BRIDGESTONE' }
@@ -51,6 +52,7 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
   productType: 'TYRE' | 'WHEEL';
 }> = {
   SAILUN: { supplier: 'SAILUN', sheetName: 'SUPPLIER_SAILUN', productType: 'TYRE' },
+  MAXXIS: { supplier: 'MAXXIS', sheetName: 'SUPPLIER_MAXXIS', productType: 'TYRE' },
   SAFETY_GRIP: { supplier: 'Safety Grip', sheetName: 'SUPPLIER_SAFETY_GRIP', productType: 'TYRE' },
   ROYAL_TYRES: { supplier: 'ROYAL TYRES', sheetName: 'SUPPLIER_ROYAL_TYRES', productType: 'TYRE' },
   BRIDGESTONE: { supplier: 'Bridgestone', sheetName: 'SUPPLIER_BRIDGESTONE', productType: 'TYRE' },

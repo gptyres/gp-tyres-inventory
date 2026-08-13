@@ -275,6 +275,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   SAILUN
                 </button>
                 <button
+                  onClick={() => handleSupplierClick('MAXXIS')}
+                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'MAXXIS' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                >
+                  MAXXIS
+                </button>
+                <button
                   onClick={() => handleSupplierClick('EXCLUSIVE_TYRES')}
                   className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'EXCLUSIVE_TYRES' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
                 >

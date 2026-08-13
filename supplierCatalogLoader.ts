@@ -10,6 +10,7 @@ import {
   parseBridgestoneData,
   parseExclusiveTyresData,
   parseExoticData,
+  parseMaxxisData,
   parseRoyalTyresData,
   parseSafetyGripData,
   parseSailunData,
@@ -27,6 +28,7 @@ export type ConcreteSupplierCatalog = Exclude<SupplierCatalog, 'ALL_SUPPLIERS'>;
 
 const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'SAILUN',
+  'MAXXIS',
   'EXCLUSIVE_TYRES',
   'TYREWAREHOUSE',
   'ATT',
@@ -52,6 +54,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
 
 const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   SAILUN: 'SAILUN',
+  MAXXIS: 'MAXXIS',
   EXCLUSIVE_TYRES: 'EXCLUSIVE TYRES',
   TYREWAREHOUSE: 'TYREWAREHOUSE',
   ATT: 'ATT',
@@ -82,6 +85,7 @@ export const SUPPLIER_CATALOG_OPTIONS = supplierCatalogOrder.map((catalog) => ({
 
 const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   SAILUN: 'sailun',
+  MAXXIS: 'maxxis',
   EXCLUSIVE_TYRES: 'exclusive',
   TYREWAREHOUSE: 'tyrewarehouse',
   ATT: 'att',
@@ -206,7 +210,11 @@ export const normalizeBundledSupplierTyres = (
   const parsed = parseSupplierTyreFields({
     description: [tyre.brand, tyre.pattern, tyre.loadSpeedIndex].filter(Boolean).join(' '),
     explicitSize: tyre.size,
-    explicitBrand: tyre.brand
+    explicitBrand: tyre.brand,
+    explicitPattern: tyre.pattern,
+    explicitRating: tyre.tyreRating,
+    explicitIndex: tyre.tyreIndex || tyre.loadSpeedIndex,
+    explicitSpecs: tyre.tyreSpecs
   });
   return {
     ...tyre,
@@ -257,6 +265,10 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     case 'SAILUN': {
       const { SAILUN_RAW_DATA } = await import('./supplier_data/sailunData');
       return parseSailunData(SAILUN_RAW_DATA);
+    }
+    case 'MAXXIS': {
+      const { MAXXIS_RAW_DATA } = await import('./supplier_data/maxxisData');
+      return parseMaxxisData(MAXXIS_RAW_DATA);
     }
     case 'EXCLUSIVE_TYRES': {
       const { EXCLUSIVE_TYRES_RAW_DATA } = await import('./supplier_data/exclusiveTyresData');

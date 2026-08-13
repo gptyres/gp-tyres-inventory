@@ -376,6 +376,10 @@ const App: React.FC = () => {
       label: 'SAILUN',
       note: 'Viewing External Supplier Data. Prices use the P2 cost with 15% VAT added and are rounded to the nearest R1.'
     },
+    MAXXIS: {
+      label: 'MAXXIS',
+      note: 'Viewing MAXXIS 4x4/SUV, ATV and motorcycle dealer pricing. Cost uses the normal nett price; selling adds 15% VAT once and rounds to the nearest R1. Specials are excluded and stock quantities were not supplied.'
+    },
     EXCLUSIVE_TYRES: {
       label: 'EXCLUSIVE TYRES',
       note: 'Viewing External Supplier Data. Prices use the Cost + VAT values from Exclusive Tyres.',

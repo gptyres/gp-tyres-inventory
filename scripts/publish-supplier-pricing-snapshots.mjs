@@ -18,6 +18,12 @@ const sources = [
     sourceFile: 'PCR PRICING FILE AUGUST 2026.pdf'
   },
   {
+    catalog: 'MAXXIS',
+    supplier: 'MAXXIS',
+    dataFile: 'supplier_data/maxxisData.ts',
+    sourceFile: 'MAXXIS DEALER PRICELIST_AUG2026.xlsx'
+  },
+  {
     catalog: 'ROYAL_TYRES',
     supplier: 'ROYAL TYRES',
     dataFile: 'supplier_data/royalTyresData.ts',

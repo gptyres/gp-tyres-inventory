@@ -745,6 +745,51 @@ export const parseSailunData = (rawText: string): InventoryItem[] => {
   });
 };
 
+// --- MAXXIS 4x4/SUV + ATV + MOTORCYCLE PARSER ---
+export const parseMaxxisData = (rawText: string): InventoryItem[] => {
+  const lines = rawText.split('\n').filter((line) => line.trim());
+  if (lines.length < 2) return [];
+
+  const headers = parseCSVLine(lines[0]).map((header) => header.trim().toLowerCase());
+  const headerIndex = new Map(headers.map((header, index) => [header, index]));
+  const readColumn = (cols: string[], name: string) => {
+    const index = headerIndex.get(name.toLowerCase());
+    return index === undefined ? '' : cols[index]?.trim() || '';
+  };
+
+  return lines.slice(1).flatMap((line): InventoryItem[] => {
+    const cols = parseCSVLine(line);
+    const sku = readColumn(cols, 'Supplier SKU');
+    const size = readColumn(cols, 'TYRE_SIZE').toUpperCase().replace(/\s+/g, '');
+    const brand = readColumn(cols, 'TYRE_BRAND').toUpperCase();
+    const pattern = readColumn(cols, 'TYRE_PATTERN').toUpperCase();
+    const tyreRating = readColumn(cols, 'TYRE_RATING').toUpperCase();
+    const tyreIndex = readColumn(cols, 'TYRE_INDEX').toUpperCase();
+    const tyreSpecs = readColumn(cols, 'TYRE_SPECS').toUpperCase();
+    const costPrice = parseCurrencyString(readColumn(cols, 'Cost Price'));
+    if (!sku || !size || !brand || !pattern || costPrice <= 0) return [];
+
+    return [{
+      id: `maxxis-${sku.toLowerCase()}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('MAXXIS', brand, pattern, sku),
+      brand,
+      pattern,
+      size,
+      loadSpeedIndex: tyreIndex,
+      tyreRating,
+      tyreIndex,
+      tyreSpecs,
+      location: 'MAXXIS price list',
+      quantity: 0,
+      costPrice,
+      sellingPrice: calculateVatInclusiveSellingPrice(costPrice),
+      supplierLeadTime: readColumn(cols, 'Lead Time') || 'Stock not supplied',
+      lastUpdated: '2026-08-13'
+    }];
+  });
+};
+
 // --- ROYAL TYRES PCR + TBR PARSER ---
 export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
   const lines = rawText.split('\n').filter((line) => line.trim());
