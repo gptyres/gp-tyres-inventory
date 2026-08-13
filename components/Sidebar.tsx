@@ -21,6 +21,35 @@ interface SidebarProps {
   onSupplierCatalogChange: (catalog: SupplierCatalog) => void;
 }
 
+export const SIDEBAR_SUPPLIER_CATALOGS: Array<{
+  catalog: Exclude<SupplierCatalog, 'ALL_SUPPLIERS'>;
+  label: string;
+}> = [
+  { catalog: 'ALINE', label: 'ALINE' },
+  { catalog: 'APEX', label: 'APEX' },
+  { catalog: 'ARC', label: 'ARC' },
+  { catalog: 'ATT', label: 'ATT' },
+  { catalog: 'BRIDGESTONE', label: 'BRIDGESTONE' },
+  { catalog: 'DIXON_BATTERIES', label: 'DIXON BATTERIES' },
+  { catalog: 'EXCLUSIVE_TYRES', label: 'EXCLUSIVE TYRES' },
+  { catalog: 'EXOTIC', label: 'EXOTIC' },
+  { catalog: 'MAXXIS', label: 'MAXXIS' },
+  { catalog: 'NDT', label: 'NDT' },
+  { catalog: 'REVOLUTION_TYRES', label: 'REVOLUTION TYRES' },
+  { catalog: 'ROYAL_TYRES', label: 'ROYAL TYRES' },
+  { catalog: 'SAFETY_GRIP', label: 'SAFETY GRIP' },
+  { catalog: 'SAILUN', label: 'SAILUN' },
+  { catalog: 'STAMFORD', label: 'STAMFORD' },
+  { catalog: 'SUMITOMO_DUNLOP', label: 'SUMITOMO/DUNLOP' },
+  { catalog: 'TREAD_ZONE', label: 'TREAD ZONE' },
+  { catalog: 'TREADS_UNLIMITED', label: 'TREADS UNLIMITED' },
+  { catalog: 'TUBESTONE', label: 'TUBESTONE' },
+  { catalog: 'TYRE_LIFE', label: 'TYRE LIFE' },
+  { catalog: 'TYRE_LIFE_WHEELS', label: 'TYRE LIFE WHEELS' },
+  { catalog: 'TYREWAREHOUSE', label: 'TYREWAREHOUSE' },
+  { catalog: 'WHEEL_TECH', label: 'WHEEL TECH' }
+];
+
 export const Sidebar: React.FC<SidebarProps> = ({ 
   currentView, 
   activeFilter, 
@@ -268,144 +297,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   All Supplier Stock
                 </button>
-                <button 
-                  onClick={() => handleSupplierClick('SAILUN')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'SAILUN' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  SAILUN
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('MAXXIS')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'MAXXIS' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  MAXXIS
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('EXCLUSIVE_TYRES')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'EXCLUSIVE_TYRES' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  EXCLUSIVE TYRES
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('TYREWAREHOUSE')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'TYREWAREHOUSE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  TYREWAREHOUSE
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('ATT')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ATT' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  ATT
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('BRIDGESTONE')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'BRIDGESTONE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  BRIDGESTONE
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('SAFETY_GRIP')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'SAFETY_GRIP' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  SAFETY GRIP
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('ROYAL_TYRES')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ROYAL_TYRES' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  ROYAL TYRES
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('DIXON_BATTERIES')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'DIXON_BATTERIES' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  DIXON BATTERIES
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('REVOLUTION_TYRES')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'REVOLUTION_TYRES' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  REVOLUTION TYRES
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('ALINE')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALINE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  ALINE
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('STAMFORD')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'STAMFORD' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  STAMFORD
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('APEX')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'APEX' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  APEX
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('TUBESTONE')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'TUBESTONE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  TUBESTONE
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('EXOTIC')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'EXOTIC' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  EXOTIC
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('ARC')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ARC' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  ARC
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('TREAD_ZONE')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'TREAD_ZONE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  TREAD ZONE
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('SUMITOMO_DUNLOP')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'SUMITOMO_DUNLOP' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  SUMITOMO/DUNLOP
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('TREADS_UNLIMITED')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'TREADS_UNLIMITED' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  TREADS UNLIMITED
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('TYRE_LIFE')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'TYRE_LIFE' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  TYRE LIFE
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('TYRE_LIFE_WHEELS')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'TYRE_LIFE_WHEELS' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  TYRE LIFE WHEELS
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('NDT')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'NDT' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  NDT
-                </button>
-                <button
-                  onClick={() => handleSupplierClick('WHEEL_TECH')}
-                  className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'WHEEL_TECH' ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
-                >
-                  WHEEL TECH
-                </button>
+                {SIDEBAR_SUPPLIER_CATALOGS.map(({ catalog, label }) => (
+                  <button
+                    key={catalog}
+                    onClick={() => handleSupplierClick(catalog)}
+                    className={`block w-full text-left px-4 py-2 text-xs font-medium rounded transition-colors ${currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === catalog ? 'text-gp-red bg-gp-red/10 border-l-2 border-gp-red' : 'text-gp-text-muted hover:text-gp-text-main'}`}
+                  >
+                    {label}
+                  </button>
+                ))}
               </div>
             )}
           </div>
