@@ -388,6 +388,11 @@ const App: React.FC = () => {
       note: 'Viewing External Supplier Data. Prices use the Cost + VAT values from Exclusive Tyres.',
       portalUrl: 'https://etonline.co.za/#/'
     },
+    EXCLUSIVE_TYRES_NEW: {
+      label: 'EXCLUSIVE TYRES NEW',
+      note: 'Viewing the authenticated Exclusive Tyres passenger, truck and bike catalogue. Cost uses My Cost excluding VAT; selling price adds 15% VAT once and rounds to the nearest R1.',
+      portalUrl: 'https://www.exclusivetyres.co.za/'
+    },
     TYREWAREHOUSE: {
       label: 'TYREWAREHOUSE',
       note: 'Viewing External Supplier Data. Prices use the discounted selling price from the latest TyreWarehouse file.',

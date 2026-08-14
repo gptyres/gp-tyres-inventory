@@ -11,6 +11,7 @@ export type SupplierImportCatalog = LiveSupplierCatalog;
 
 export const REGISTRY_SUPPLIER_BY_CATALOG: Record<RegistryBackedSupplierCatalog, string> = {
   EXCLUSIVE_TYRES: 'Exclusive Tyres',
+  EXCLUSIVE_TYRES_NEW: 'EXCLUSIVE TYRES NEW',
   TYREWAREHOUSE: 'Tyrewarehouse',
   ATT: 'ATT',
   REVOLUTION_TYRES: 'Revolution Tyres',
@@ -57,6 +58,7 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
   ROYAL_TYRES: { supplier: 'ROYAL TYRES', sheetName: 'SUPPLIER_ROYAL_TYRES', productType: 'TYRE' },
   BRIDGESTONE: { supplier: 'Bridgestone', sheetName: 'SUPPLIER_BRIDGESTONE', productType: 'TYRE' },
   EXCLUSIVE_TYRES: { supplier: 'Exclusive Tyres', sheetName: 'SUPPLIER_EXCLUSIVE_TYRES', productType: 'TYRE' },
+  EXCLUSIVE_TYRES_NEW: { supplier: 'EXCLUSIVE TYRES NEW', sheetName: 'SUPPLIER_EXCLUSIVE_TYRES_NEW', productType: 'TYRE' },
   TYREWAREHOUSE: { supplier: 'Tyrewarehouse', sheetName: 'SUPPLIER_TYREWAREHOUSE', productType: 'TYRE' },
   ATT: { supplier: 'ATT', sheetName: 'SUPPLIER_ATT', productType: 'TYRE' },
   REVOLUTION_TYRES: { supplier: 'Revolution Tyres', sheetName: 'SUPPLIER_REVOLUTION_TYRES', productType: 'TYRE' },

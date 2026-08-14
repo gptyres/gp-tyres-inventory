@@ -30,6 +30,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'SAILUN',
   'MAXXIS',
   'EXCLUSIVE_TYRES',
+  'EXCLUSIVE_TYRES_NEW',
   'TYREWAREHOUSE',
   'ATT',
   'BRIDGESTONE',
@@ -56,6 +57,7 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   SAILUN: 'SAILUN',
   MAXXIS: 'MAXXIS',
   EXCLUSIVE_TYRES: 'EXCLUSIVE TYRES',
+  EXCLUSIVE_TYRES_NEW: 'EXCLUSIVE TYRES NEW',
   TYREWAREHOUSE: 'TYREWAREHOUSE',
   ATT: 'ATT',
   BRIDGESTONE: 'BRIDGESTONE',
@@ -87,6 +89,7 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   SAILUN: 'sailun',
   MAXXIS: 'maxxis',
   EXCLUSIVE_TYRES: 'exclusive',
+  EXCLUSIVE_TYRES_NEW: 'exclusive-tyres-new',
   TYREWAREHOUSE: 'tyrewarehouse',
   ATT: 'att',
   BRIDGESTONE: 'bridgestone',
@@ -274,6 +277,9 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
       const { EXCLUSIVE_TYRES_RAW_DATA } = await import('./supplier_data/exclusiveTyresData');
       return parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA);
     }
+    case 'EXCLUSIVE_TYRES_NEW':
+      // The new authenticated Exclusive Tyres catalogue is served from its live Supabase snapshot.
+      return [];
     case 'TYREWAREHOUSE': {
       const { TYRE_WAREHOUSE_RAW_DATA } = await import('./supplier_data/tyreWarehouseData');
       return parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA);

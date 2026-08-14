@@ -32,6 +32,7 @@ export const SIDEBAR_SUPPLIER_CATALOGS: Array<{
   { catalog: 'BRIDGESTONE', label: 'BRIDGESTONE' },
   { catalog: 'DIXON_BATTERIES', label: 'DIXON BATTERIES' },
   { catalog: 'EXCLUSIVE_TYRES', label: 'EXCLUSIVE TYRES' },
+  { catalog: 'EXCLUSIVE_TYRES_NEW', label: 'EXCLUSIVE TYRES NEW' },
   { catalog: 'EXOTIC', label: 'EXOTIC' },
   { catalog: 'MAXXIS', label: 'MAXXIS' },
   { catalog: 'NDT', label: 'NDT' },
