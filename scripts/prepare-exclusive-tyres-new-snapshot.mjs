@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
+import { cleanExclusiveTyresNewPattern } from './exclusive-tyres-new-normalization.mjs';
 
 const argument = (name) => {
   const index = process.argv.indexOf(name);
@@ -69,15 +70,15 @@ const duplicateCounts = new Map();
 const items = [];
 
 for (const row of sourceRows) {
-  const size = clean(row.TYRE_SIZE || row.Size);
-  const brand = clean(row.TYRE_BRAND || row.Brand);
-  const pattern = clean(row.TYRE_PATTERN || row['Product Name']);
+  const size = clean(row['TYRE SIZE'] || row.TYRE_SIZE || row.Size);
+  const brand = clean(row.BRAND || row.TYRE_BRAND || row.Brand);
+  const pattern = cleanExclusiveTyresNewPattern(row.PATTERN || row.TYRE_PATTERN || row['Product Name'], brand);
   const rating = clean(row.TYRE_RATING);
   const index = clean(row.TYRE_INDEX);
   const specifications = clean(row.OTHER_SPECS);
-  const name = clean(row.MAIN_LINE || `${size} ${brand} ${pattern}`);
-  const cost = numberFrom(row['Cost Price Ex VAT'] || row['Cost Price']);
-  const stock = Math.max(0, Math.round(numberFrom(row['Stock Units'])));
+  const name = clean(`${size} ${brand} ${pattern}`);
+  const cost = numberFrom(row['COST EXCLUDING VAT'] || row['Cost Price Ex VAT'] || row['Cost Price']);
+  const stock = Math.max(0, Math.round(numberFrom(row['STOCK ON HAND'] || row['Stock Units'])));
   if (!name || !size || !cost) continue;
 
   const identity = [size, brand, pattern, rating, index, specifications].map(token).join('|');
@@ -104,8 +105,8 @@ for (const row of sourceRows) {
     stock_units: stock,
     cost_price: cost,
     selling_price: Math.round(cost * 1.15),
-    supplier_lead_time: '24 Hours +',
-    source_file: 'EXCLUSIVE_TYRES_NEW_catalogue_2026-08-14.xlsx'
+    supplier_lead_time: clean(row.SLA || row['Lead time']),
+    source_file: 'EXCLUSIVE_TYRES_NEW_clean_import_2026-08-14.xlsx'
   };
   if (clean(row['Product URL'])) item.product_url = clean(row['Product URL']);
   items.push(item);

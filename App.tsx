@@ -384,13 +384,13 @@ const App: React.FC = () => {
       note: 'Viewing MAXXIS 4x4/SUV, ATV and motorcycle dealer pricing. Cost uses the normal nett price; selling adds 15% VAT once and rounds to the nearest R1. Specials are excluded and stock quantities were not supplied.'
     },
     EXCLUSIVE_TYRES: {
-      label: 'EXCLUSIVE TYRES',
-      note: 'Viewing External Supplier Data. Prices use the Cost + VAT values from Exclusive Tyres.',
+      label: 'EXCLUSIVE TYRES — LEGACY CATALOGUE',
+      note: 'OLD PORTAL / LEGACY DATA. This catalogue remains separate from the current Exclusive Tyres website feed.',
       portalUrl: 'https://etonline.co.za/#/'
     },
     EXCLUSIVE_TYRES_NEW: {
-      label: 'EXCLUSIVE TYRES NEW',
-      note: 'Viewing the authenticated Exclusive Tyres passenger, truck and bike catalogue. Cost uses My Cost excluding VAT; selling price adds 15% VAT once and rounds to the nearest R1.',
+      label: 'EXCLUSIVE TYRES NEW — CURRENT CATALOGUE',
+      note: 'NEW PORTAL / CURRENT DATA. Listings use only tyre size, brand, cleaned pattern, stock on hand, SLA and cost excluding VAT. List price and GP are excluded; selling adds 15% VAT once and rounds to the nearest R1.',
       portalUrl: 'https://www.exclusivetyres.co.za/'
     },
     TYREWAREHOUSE: {
