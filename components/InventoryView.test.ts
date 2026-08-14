@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatBulkClipboardText, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupportedStaffImageMimeType, isSpecialItem } from './InventoryView';
+import { formatBulkClipboardText, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupportedStaffImageMimeType, getWarehouseStockSummary, isSpecialItem } from './InventoryView';
 import { ProductType, type TyreProduct, type WheelProduct } from '../types';
 
 const supplierTyre: TyreProduct = {
@@ -132,6 +132,18 @@ describe('customer stock clipboard formatting', () => {
     const clipboardText = formatBulkClipboardText([mixedCaseWheel]);
     expect(clipboardText).toBe(clipboardText.toUpperCase());
     expect(clipboardText).toContain('DAZZLE GLOSS BLACK');
+  });
+
+  it('totals all verified warehouses without dropping non-Cape-Town stock', () => {
+    expect(getWarehouseStockSummary([
+      { ...supplierTyre, id: 'one', quantity: 9, stockByLocation: { CPT: 2, JHB: 5, DUR: 2 } },
+      { ...supplierTyre, id: 'two', quantity: 5, stockByLocation: { CPT: 1, PLZ: 4 } }
+    ])).toEqual([
+      ['JHB', 5],
+      ['CPT', 3],
+      ['DUR', 2],
+      ['PLZ', 4]
+    ]);
   });
 });
 

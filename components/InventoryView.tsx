@@ -247,16 +247,40 @@ const getItemLocation = (item: InventoryItem): string => (
       : ''
 );
 
+export const getWarehouseStockSummary = (items: InventoryItem[]): Array<[string, number]> => {
+  const totals = items.reduce<Record<string, number>>((summary, item) => {
+    getStockEntries(item).forEach(([location, quantity]) => {
+      if (quantity > 0) summary[location] = (summary[location] || 0) + quantity;
+    });
+    return summary;
+  }, {});
+
+  return sortStockLocationEntries(totals);
+};
+
+const formatItemStockSummary = (item: InventoryItem): string => {
+  const availableEntries = getStockEntries(item).filter(([, quantity]) => quantity > 0);
+  if (availableEntries.length === 0) return getItemLocation(item);
+  const total = availableEntries.reduce((sum, [, quantity]) => sum + quantity, 0);
+  return `${availableEntries.map(([location, quantity]) => `${location} ${quantity}`).join(' • ')} • TOTAL ${total}`;
+};
+
 const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
   const structuredEntries = getStockEntries(item);
   const availableEntries = structuredEntries.filter(([, quantity]) => quantity > 0);
   const fallbackLocation = getItemLocation(item);
+  const totalStock = availableEntries.reduce((total, [, quantity]) => total + quantity, 0);
 
   return (
     <div className="col-span-full mt-2 border-t border-gp-border/70 pt-3">
-      <span className="block text-[9px] leading-none text-gp-text-muted uppercase font-bold tracking-wider">
-        Available locations
-      </span>
+      <div className="flex min-w-0 items-center justify-between gap-3">
+        <span className="block text-[9px] leading-none text-gp-text-muted uppercase font-bold tracking-wider">
+          Available locations
+        </span>
+        <span className="shrink-0 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">
+          Total stock <span className="ml-1 font-mono text-xs tabular-nums text-green-500">{totalStock}</span>
+        </span>
+      </div>
       {availableEntries.length > 0 ? (
         <div className="mt-2 grid grid-cols-[repeat(auto-fit,minmax(4rem,1fr))] gap-2">
           {availableEntries.map(([location, quantity]) => (
@@ -1173,8 +1197,9 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
 
               {visibleColumns.location && (
                 <td className="p-3 border-r border-gp-border text-gp-text-muted text-xs">
-                  {item.type === ProductType.TYRE ? (item as TyreProduct).location : 
-                   item.type === ProductType.WHEEL ? (item as WheelProduct).location : '-'}
+                  {item.type === ProductType.TYRE || item.type === ProductType.WHEEL
+                    ? formatItemStockSummary(item)
+                    : '-'}
                 </td>
               )}
 
@@ -1275,9 +1300,9 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
           </div>
 
           {/* Specs Area */}
-          {visibleColumns.specs && (
+          {(visibleColumns.specs || visibleColumns.location) && (
             <div className={`p-3 grid gap-2 flex-grow content-start bg-gradient-to-b from-gp-panel to-gp-overlay ${item.type === ProductType.WHEEL ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-3'}`}>
-                {item.type === ProductType.TYRE && (
+                {visibleColumns.specs && item.type === ProductType.TYRE && (
                     <>
                     <SpecBadge
                       label="Index"
@@ -1286,7 +1311,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     <SpecBadge label="Cat" value="PCR" />
                     </>
                 )}
-                {item.type === ProductType.WHEEL && (
+                {visibleColumns.specs && item.type === ProductType.WHEEL && (
                     <>
                     <SpecBadge label="Size" value={(item as WheelProduct).size || ''} />
                     <SpecBadge label="PCD" value={formatWheelPcd((item as WheelProduct).pcd)} />
@@ -1294,7 +1319,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     <SpecBadge label="CB" value={(item as WheelProduct).centerBore || ''} />
                     </>
                 )}
-                {item.type === ProductType.COILOVER && (
+                {visibleColumns.specs && item.type === ProductType.COILOVER && (
                     <>
                     <SpecBadge label="Series" value={(item as CoiloverProduct).series} />
                     <div className="col-span-2"><SpecBadge label="Fitment" value={(item as CoiloverProduct).vehicleCompatibility} /></div>
@@ -1423,7 +1448,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                   {visibleColumns.location && (item.type === ProductType.TYRE || item.type === ProductType.WHEEL) && (
                     <div className="flex items-center gap-2 mt-1">
                       <span className="px-1.5 py-0.5 rounded bg-gp-overlay text-[10px] text-gp-text-muted border border-gp-border font-mono">
-                        {item.type === ProductType.TYRE ? (item as TyreProduct).location : (item as WheelProduct).location}
+                        {formatItemStockSummary(item)}
                       </span>
                     </div>
                   )}
@@ -1706,6 +1731,11 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     });
     return sortableItems;
   }, [viewFilteredItems, sortConfig]);
+
+  const warehouseTotals = useMemo(
+    () => getWarehouseStockSummary(sortedItems),
+    [sortedItems]
+  );
 
   const customerCopyItems = useMemo(
     () => sortedItems.filter(isCustomerCopyItem),
@@ -2187,6 +2217,26 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         </div>
 
       </div>
+
+      {!isBatteryCatalog && visibleColumns.location && warehouseTotals.length > 0 && (
+        <section className="rounded-lg border border-gp-border bg-gp-panel p-3 shadow-md" aria-label="Warehouse stock totals">
+          <div className="mb-2 flex min-w-0 flex-wrap items-end justify-between gap-2">
+            <div>
+              <h2 className="text-[10px] font-black uppercase tracking-[0.16em] text-gp-text-main">Warehouse stock totals</h2>
+              <p className="mt-1 text-[9px] font-semibold uppercase tracking-wider text-gp-text-muted">All matching products currently shown</p>
+            </div>
+            <span className="font-mono text-[10px] font-bold text-gp-text-muted">{warehouseTotals.length} location{warehouseTotals.length === 1 ? '' : 's'}</span>
+          </div>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(6.5rem,1fr))] gap-2">
+            {warehouseTotals.map(([location, quantity]) => (
+              <div key={location} className="flex min-h-11 min-w-0 items-center justify-between gap-3 rounded border border-gp-border bg-gp-black/70 px-3 py-2">
+                <span className="truncate text-[10px] font-black uppercase tracking-wider text-gp-text-muted" title={location}>{location}</span>
+                <span className="shrink-0 font-mono text-sm font-black tabular-nums text-green-500">{quantity}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Bulk Action Bar - Shows when items are selected */}
       {selectedCopyItems.length > 0 && (
