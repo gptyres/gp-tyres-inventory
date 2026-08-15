@@ -139,7 +139,7 @@ export const seedGlobalInventoryIfEmpty = async (items: InventoryItem[]) => {
 };
 
 const callInventoryMutation = async (body: Record<string, unknown>) => {
-  const response = await fetch('/api/inventory-mutation', {
+  const response = await fetch('/api/staff-session?resource=inventory', {
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },

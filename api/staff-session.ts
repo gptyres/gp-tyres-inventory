@@ -6,9 +6,21 @@ import {
 } from '../server/staffSession.js';
 import { readApiBody } from '../server/readApiBody.js';
 import { getSessionReleaseId } from '../server/deploymentVersion.js';
+import {
+  handleInventoryHistory,
+  handleInventoryMutation,
+  handleStockMovement
+} from '../server/inventoryApi.js';
+
+const one = (value: unknown) => Array.isArray(value) ? value[0] : value;
 
 export default async function handler(request: any, response: any) {
   response.setHeader('Cache-Control', 'no-store');
+
+  const resource = String(one(request.query?.resource) || '').toLowerCase();
+  if (resource === 'inventory') return handleInventoryMutation(request, response);
+  if (resource === 'inventory-history') return handleInventoryHistory(request, response);
+  if (resource === 'stock-movement') return handleStockMovement(request, response);
 
   if (request.method === 'GET') {
     const session = verifyStaffSession(request);
