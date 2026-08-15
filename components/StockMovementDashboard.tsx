@@ -4,6 +4,7 @@ import { createStockMovementReport } from '../stockMovementReport';
 import type { StockMovementSummary } from '../types';
 import { formatCurrency } from '../utils';
 import { TERMINAL_STAFF_NAMES } from '../trainingProgress';
+import { canViewStockMovementFinancials } from '../stockMovementAccess';
 import gpLogo from '../assets/gp-tyres-logo-transparent.png';
 
 interface StockMovementDashboardProps {
@@ -19,14 +20,14 @@ const shortDate = (value: string) => new Intl.DateTimeFormat('en-ZA', {
   timeZone: 'Africa/Johannesburg', day: '2-digit', month: 'short'
 }).format(new Date(`${value}T12:00:00+02:00`));
 
-export const buildStockMovementMetrics = (summary: StockMovementSummary | null, isAdmin: boolean) => {
+export const buildStockMovementMetrics = (summary: StockMovementSummary | null, showFinancials: boolean) => {
   const operational = [
     { label: 'Units sold today', value: summary?.soldUnitsToday ?? 0, tone: 'text-gp-red' },
     { label: 'Products sold', value: summary?.uniqueProductsToday ?? 0, tone: 'text-white' },
     { label: 'Restocked today', value: summary?.restockedUnitsToday ?? 0, tone: 'text-blue-300' },
     { label: 'Edits today', value: summary?.editCountToday ?? 0, tone: 'text-slate-200' }
   ];
-  if (!isAdmin) return operational;
+  if (!showFinancials) return operational;
   return [
     ...operational.slice(0, 2),
     { label: 'Cost value', value: formatCurrency(summary?.costValueToday ?? 0), tone: 'text-amber-300' },
@@ -42,6 +43,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
   const [loading, setLoading] = useState(true);
   const [reporting, setReporting] = useState(false);
   const [error, setError] = useState('');
+  const showFinancials = canViewStockMovementFinancials(currentUser, isAdmin);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,7 +67,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
       cancelled = true;
       window.clearInterval(interval);
     };
-  }, [days]);
+  }, [days, showFinancials]);
 
   const maxUnits = useMemo(() => Math.max(1, ...(summary?.daily.map((day) => Math.max(day.soldUnits, day.restockedUnits)) || [1])), [summary]);
   const maxProductUnits = useMemo(() => Math.max(1, ...(summary?.topItems.map((item) => item.units) || [1])), [summary]);
@@ -91,7 +93,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
     }
   };
 
-  const metrics = buildStockMovementMetrics(summary, isAdmin);
+  const metrics = buildStockMovementMetrics(summary, showFinancials);
 
   return (
     <section aria-labelledby="stock-movement-heading">
@@ -102,7 +104,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
         </div>
         <div className="flex flex-wrap items-end gap-2">
           <div className="flex h-10 rounded-md border border-gp-border bg-gp-panel p-1">
-            {[1, 5, 15, 30].map((option) => <button key={option} type="button" onClick={() => setDays(option)} className={`min-w-12 rounded px-2 text-[10px] font-black uppercase ${days === option ? 'bg-gp-red text-white' : 'text-gp-text-muted hover:text-white'}`}>{option === 1 ? 'Today' : `${option}D`}</button>)}
+            {[1, 5, 15, 30].map((option) => <button key={option} type="button" onClick={() => setDays(option)} className={`min-w-12 rounded px-2 text-[10px] font-black uppercase ${days === option ? 'bg-gp-red text-white' : 'text-gp-text-muted hover:text-white'}`}>{option === 1 ? '1 Day' : `${option}D`}</button>)}
           </div>
           <input type="date" value={reportDate} max={getTodayKey()} onChange={(event) => setReportDate(event.target.value)} className="h-10 rounded-md border border-gp-border bg-gp-input px-3 text-xs font-bold text-white focus:border-gp-red focus:outline-none" aria-label="Daily stock report date" />
           <button type="button" onClick={() => void downloadReport()} disabled={reporting} className="inline-flex h-10 items-center gap-2 rounded-md bg-gp-red px-4 text-xs font-black uppercase tracking-wider text-white transition hover:bg-red-700 disabled:opacity-50">
@@ -113,7 +115,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
       </div>
 
       {error ? <div className="mb-3 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-300">{error}</div> : null}
-      <div className={`grid grid-cols-2 gap-3 ${isAdmin ? 'lg:grid-cols-3 xl:grid-cols-6' : 'lg:grid-cols-4'}`}>
+      <div className={`grid grid-cols-2 gap-3 ${showFinancials ? 'lg:grid-cols-3 xl:grid-cols-6' : 'lg:grid-cols-4'}`}>
         {metrics.map((metric) => (
           <div key={metric.label} className="min-w-0 rounded-lg border border-gp-border bg-gp-panel p-3.5">
             <p className="text-[9px] font-black uppercase tracking-wider text-gp-text-muted">{metric.label}</p>

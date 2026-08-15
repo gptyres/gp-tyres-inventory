@@ -1,6 +1,8 @@
 import { readApiBody } from './readApiBody.js';
 import { verifyStaffSession } from './staffSession.js';
+import { verifyAdminSession } from './adminSession.js';
 import { createSupabaseAdmin } from './supabaseAdmin.js';
+import { canViewStockMovementFinancials, maskStockMovementFinancials } from '../stockMovementAccess.js';
 import {
   fetchDailySalesReport,
   fetchInventoryHistory,
@@ -169,8 +171,16 @@ export const handleStockMovement = async (request: any, response: any) => {
       const date = String(one(request.query?.date) || getJohannesburgDateKey());
       return response.status(200).json({ ok: true, date, rows: await fetchDailySalesReport(date) });
     }
-    const days = Math.min(30, Math.max(1, Number(one(request.query?.days)) || 15));
-    return response.status(200).json({ ok: true, summary: await fetchStockMovementSummary(days) });
+    const days = Math.min(30, Math.max(1, Number(one(request.query?.days)) || 1));
+    const summary = await fetchStockMovementSummary(days);
+    const showFinancials = canViewStockMovementFinancials(
+      session.terminalId,
+      Boolean(verifyAdminSession(request))
+    );
+    return response.status(200).json({
+      ok: true,
+      summary: maskStockMovementFinancials(summary, showFinancials)
+    });
   } catch (error) {
     return response.status(500).json({ error: error instanceof Error ? error.message : 'Stock movement could not be loaded.' });
   }

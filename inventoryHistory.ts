@@ -39,7 +39,7 @@ export const fetchProductHistory = async (
   };
 };
 
-export const fetchStockMovementSummary = async (days = 15): Promise<StockMovementSummary> => {
+export const fetchStockMovementSummary = async (days = 1): Promise<StockMovementSummary> => {
   const data = await readJson(await fetch(`/api/staff-session?resource=stock-movement&days=${days}`, { credentials: 'same-origin' }));
   return data.summary;
 };
