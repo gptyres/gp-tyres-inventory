@@ -245,6 +245,13 @@ export interface StockMovementSummary {
   days: number;
   from: string;
   to: string;
+  soldUnits: number;
+  refundUnits: number;
+  uniqueProducts: number;
+  costValue: number;
+  retailValue: number;
+  restockedUnits: number;
+  editCount: number;
   soldUnitsToday: number;
   refundUnitsToday: number;
   uniqueProductsToday: number;

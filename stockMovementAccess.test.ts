@@ -7,6 +7,13 @@ const summary: StockMovementSummary = {
   days: 1,
   from: '2026-08-15T00:00:00.000+02:00',
   to: '2026-08-15T23:59:59.999+02:00',
+  soldUnits: 6,
+  refundUnits: 0,
+  uniqueProducts: 3,
+  costValue: 4500,
+  retailValue: 7200,
+  restockedUnits: 2,
+  editCount: 1,
   soldUnitsToday: 6,
   refundUnitsToday: 0,
   uniqueProductsToday: 3,
@@ -14,7 +21,11 @@ const summary: StockMovementSummary = {
   retailValueToday: 7200,
   restockedUnitsToday: 2,
   editCountToday: 1,
-  daily: [],
+  daily: [{
+    date: '2026-08-15', soldUnits: 6, refundUnits: 0, reservedUnits: 0,
+    restockedUnits: 2, editCount: 1, costValue: 4500, retailValue: 7200,
+    reconstructedEvents: 0
+  }],
   topItems: [],
   topTyres: [],
   movements: []
@@ -38,6 +49,9 @@ describe('stock movement financial access', () => {
     const masked = maskStockMovementFinancials(summary, false);
     expect(masked.costValueToday).toBe(0);
     expect(masked.retailValueToday).toBe(0);
+    expect(masked.costValue).toBe(0);
+    expect(masked.retailValue).toBe(0);
+    expect(masked.daily[0]).toMatchObject({ costValue: 0, retailValue: 0, soldUnits: 6 });
     expect(masked.soldUnitsToday).toBe(6);
     expect(masked.topItems).toEqual([]);
     expect(summary.costValueToday).toBe(4500);

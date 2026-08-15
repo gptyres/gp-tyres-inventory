@@ -259,12 +259,21 @@ export const summarizeStockMovements = (
   const todaySales = events.filter((event) => (
     event.eventType === 'SALE' && getJohannesburgDateKey(new Date(event.occurredAt)) === todayKey
   ));
+  const periodDays = Array.from(dailyMap.values());
+  const periodSales = events.filter((event) => event.eventType === 'SALE');
 
   return {
     timezone: STOCK_HISTORY_TIMEZONE,
     days: range.days,
     from: range.from,
     to: range.to,
+    soldUnits: periodDays.reduce((total, day) => total + day.soldUnits, 0),
+    refundUnits: periodDays.reduce((total, day) => total + day.refundUnits, 0),
+    uniqueProducts: new Set(periodSales.map((event) => event.productId)).size,
+    costValue: periodDays.reduce((total, day) => total + day.costValue, 0),
+    retailValue: periodDays.reduce((total, day) => total + day.retailValue, 0),
+    restockedUnits: periodDays.reduce((total, day) => total + day.restockedUnits, 0),
+    editCount: periodDays.reduce((total, day) => total + day.editCount, 0),
     soldUnitsToday: today.soldUnits,
     refundUnitsToday: today.refundUnits,
     uniqueProductsToday: new Set(todaySales.map((event) => event.productId)).size,
@@ -272,7 +281,7 @@ export const summarizeStockMovements = (
     retailValueToday: today.retailValue,
     restockedUnitsToday: today.restockedUnits,
     editCountToday: today.editCount,
-    daily: Array.from(dailyMap.values()),
+    daily: periodDays,
     topItems: Array.from(topItems.entries())
       .map(([productId, item]) => ({ productId, ...item }))
       .sort((left, right) => right.units - left.units || left.description.localeCompare(right.description))

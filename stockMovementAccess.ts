@@ -18,7 +18,14 @@ export const maskStockMovementFinancials = (
   if (canViewFinancials) return summary;
   return {
     ...summary,
+    costValue: 0,
+    retailValue: 0,
     costValueToday: 0,
-    retailValueToday: 0
+    retailValueToday: 0,
+    daily: summary.daily.map((day) => ({
+      ...day,
+      costValue: 0,
+      retailValue: 0
+    }))
   };
 };

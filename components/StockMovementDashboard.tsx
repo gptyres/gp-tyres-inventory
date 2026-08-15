@@ -57,6 +57,7 @@ export interface StockMovementMetric {
   label: string;
   value: string | number;
   tone: string;
+  caption: string;
   financial?: boolean;
 }
 
@@ -65,18 +66,23 @@ export const getStockMovementMetricDisplayValue = (
   financialValuesVisible: boolean
 ) => metric.financial && !financialValuesVisible ? 'Hidden' : metric.value;
 
-export const buildStockMovementMetrics = (summary: StockMovementSummary | null, showFinancials: boolean): StockMovementMetric[] => {
+export const buildStockMovementMetrics = (
+  summary: StockMovementSummary | null,
+  showFinancials: boolean,
+  selectedDays = summary?.days || 1
+): StockMovementMetric[] => {
+  const caption = selectedDays === 1 ? 'Today' : `${selectedDays}-day total`;
   const operational = [
-    { label: 'Units sold today', value: summary?.soldUnitsToday ?? 0, tone: 'text-gp-red' },
-    { label: 'Products sold', value: summary?.uniqueProductsToday ?? 0, tone: 'text-white' },
-    { label: 'Restocked today', value: summary?.restockedUnitsToday ?? 0, tone: 'text-blue-300' },
-    { label: 'Edits today', value: summary?.editCountToday ?? 0, tone: 'text-slate-200' }
+    { label: 'Units sold', value: summary?.soldUnits ?? 0, tone: 'text-gp-red', caption },
+    { label: 'Products sold', value: summary?.uniqueProducts ?? 0, tone: 'text-white', caption },
+    { label: 'Restocked', value: summary?.restockedUnits ?? 0, tone: 'text-blue-300', caption },
+    { label: 'Edits', value: summary?.editCount ?? 0, tone: 'text-slate-200', caption }
   ];
   if (!showFinancials) return operational;
   return [
     ...operational.slice(0, 2),
-    { label: 'Cost value', value: formatCurrency(summary?.costValueToday ?? 0), tone: 'text-amber-300', financial: true },
-    { label: 'Retail value', value: formatCurrency(summary?.retailValueToday ?? 0), tone: 'text-emerald-300', financial: true },
+    { label: 'Cost value', value: formatCurrency(summary?.costValue ?? 0), tone: 'text-amber-300', caption, financial: true },
+    { label: 'Retail value', value: formatCurrency(summary?.retailValue ?? 0), tone: 'text-emerald-300', caption, financial: true },
     ...operational.slice(2)
   ];
 };
@@ -101,7 +107,10 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
   useEffect(() => {
     let cancelled = false;
     const refresh = async (quiet = false) => {
-      if (!quiet) setLoading(true);
+      if (!quiet) {
+        setLoading(true);
+        setSummary(null);
+      }
       try {
         const next = await fetchStockMovementSummary(days);
         if (!cancelled) {
@@ -125,6 +134,10 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
   const maxUnits = useMemo(() => Math.max(1, ...(summary?.daily.map((day) => Math.max(day.soldUnits, day.restockedUnits)) || [1])), [summary]);
   const maxProductUnits = useMemo(() => Math.max(1, ...(summary?.topItems.map((item) => item.units) || [1])), [summary]);
   const maxTyreUnits = useMemo(() => Math.max(1, ...(summary?.topTyres.map((item) => item.units) || [1])), [summary]);
+  const activeDays = useMemo(() => summary?.daily.filter((day) => day.soldUnits > 0 || day.restockedUnits > 0).length || 0, [summary]);
+  const peakSalesDay = useMemo(() => (summary?.daily || []).reduce((peak, day) => (
+    day.soldUnits > peak.soldUnits ? day : peak
+  ), { date: '', soldUnits: 0 }), [summary]);
   const filteredMovements = useMemo(() => {
     const normalizedQuery = movementQuery.trim().toUpperCase();
     return (summary?.movements || []).filter((movement) => {
@@ -175,7 +188,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
     }
   };
 
-  const metrics = buildStockMovementMetrics(summary, showFinancials);
+  const metrics = buildStockMovementMetrics(summary, showFinancials, days);
 
   return (
     <section aria-labelledby="stock-movement-heading" className={fullView ? 'min-h-full' : undefined}>
@@ -202,8 +215,11 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
       <div className={`grid grid-cols-2 gap-3 ${showFinancials ? 'lg:grid-cols-3 xl:grid-cols-6' : 'lg:grid-cols-4'}`}>
         {metrics.map((metric) => (
           <div key={metric.label} className="min-w-0 rounded-lg border border-gp-border bg-gp-panel p-3.5">
-            <div className="flex min-h-7 items-start justify-between gap-2">
-              <p className="pt-1 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">{metric.label}</p>
+            <div className="flex min-h-8 items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-[9px] font-black uppercase tracking-wider text-gp-text-muted">{metric.label}</p>
+                <p className="mt-0.5 text-[8px] font-bold uppercase text-slate-500">{metric.caption}</p>
+              </div>
               {metric.financial ? (
                 <button
                   type="button"
@@ -228,41 +244,73 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
       </div>
 
       <div className="mt-3 grid gap-3 xl:grid-cols-[minmax(0,2fr)_minmax(260px,1fr)]">
-        <div className="rounded-lg border border-gp-border bg-gp-panel p-4">
+        <div className="overflow-hidden rounded-lg border border-gp-border bg-gp-panel">
           {days === 1 ? (
             <>
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <p className="text-[10px] font-black uppercase tracking-wider text-white">Products sold today</p>
-                <span className="text-[9px] font-black uppercase text-gp-text-muted">Since opening</span>
+              <div className="flex flex-col gap-4 border-b border-gp-border bg-gp-black p-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-gp-text-muted">Sales pulse</p>
+                  <div className="mt-1 flex items-baseline gap-2">
+                    <strong className="font-mono text-4xl font-black text-gp-red">{summary?.soldUnits ?? 0}</strong>
+                    <span className="text-xs font-black uppercase text-white">units sold</span>
+                  </div>
+                  <p className="mt-1 text-[10px] font-bold text-gp-text-muted">Today since opening</p>
+                </div>
+                <div className="flex gap-5">
+                  <div><p className="text-[8px] font-black uppercase text-gp-text-muted">Restocked</p><p className="mt-1 font-mono text-lg font-black text-blue-300">{summary?.restockedUnits ?? 0}</p></div>
+                  <div><p className="text-[8px] font-black uppercase text-gp-text-muted">Products</p><p className="mt-1 font-mono text-lg font-black text-white">{summary?.uniqueProducts ?? 0}</p></div>
+                </div>
               </div>
-              <div className="space-y-3" role="img" aria-label="Units sold today by product">
-                {(summary?.topItems || []).length ? summary?.topItems.map((item) => (
-                  <div key={item.productId} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+              <div className="p-4">
+                <div className="mb-4 flex h-2 overflow-hidden rounded-sm bg-slate-800" aria-hidden="true">
+                  <div className="bg-gp-red transition-[width] duration-500 ease-out" style={{ width: `${(summary?.soldUnits || 0) + (summary?.restockedUnits || 0) ? (summary?.soldUnits || 0) / ((summary?.soldUnits || 0) + (summary?.restockedUnits || 0)) * 100 : 0}%` }} />
+                  <div className="bg-blue-500 transition-[width] duration-500 ease-out" style={{ width: `${(summary?.soldUnits || 0) + (summary?.restockedUnits || 0) ? (summary?.restockedUnits || 0) / ((summary?.soldUnits || 0) + (summary?.restockedUnits || 0)) * 100 : 0}%` }} />
+                </div>
+                <div className="space-y-3" role="img" aria-label="Units sold today by product">
+                {(summary?.topItems || []).slice(0, 7).length ? summary?.topItems.slice(0, 7).map((item, index) => (
+                  <div key={item.productId} className="grid animate-fade-in-up grid-cols-[minmax(0,1fr)_auto] items-center gap-3" style={{ animationDelay: `${Math.min(index * 30, 150)}ms` }}>
                     <div className="min-w-0">
                       <p className="truncate text-[10px] font-bold uppercase text-white" title={item.description}>{item.description}</p>
-                      <div className="mt-1.5 h-2 overflow-hidden rounded-sm bg-gp-black">
-                        <div className="h-full bg-gp-red" style={{ width: `${Math.max(5, item.units / maxProductUnits * 100)}%` }} />
+                      <div className="mt-1.5 h-1.5 overflow-hidden rounded-sm bg-gp-black">
+                        <div className="h-full bg-gp-red transition-[width] duration-500 ease-out" style={{ width: `${Math.max(5, item.units / maxProductUnits * 100)}%` }} />
                       </div>
                     </div>
                     <span className="min-w-8 text-right font-mono text-sm font-black text-gp-red">{item.units}</span>
                   </div>
                 )) : <p className="py-14 text-center text-xs font-bold text-gp-text-muted">No sales recorded since opening today.</p>}
+                </div>
               </div>
             </>
           ) : (
             <>
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <p className="text-[10px] font-black uppercase tracking-wider text-white">Daily units</p>
-                <div className="flex gap-3 text-[9px] font-black uppercase text-gp-text-muted"><span><i className="mr-1 inline-block h-2 w-2 bg-gp-red" />Sold</span><span><i className="mr-1 inline-block h-2 w-2 bg-blue-500" />Restocked</span></div>
+              <div className="flex flex-col gap-4 border-b border-gp-border bg-gp-black p-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-gp-text-muted">{days}-day sales pulse</p>
+                  <div className="mt-1 flex items-baseline gap-2">
+                    <strong className="font-mono text-4xl font-black text-gp-red">{summary?.soldUnits ?? 0}</strong>
+                    <span className="text-xs font-black uppercase text-white">units sold</span>
+                  </div>
+                </div>
+                <div className="flex gap-5">
+                  <div><p className="text-[8px] font-black uppercase text-gp-text-muted">Active days</p><p className="mt-1 font-mono text-lg font-black text-white">{activeDays}</p></div>
+                  <div><p className="text-[8px] font-black uppercase text-gp-text-muted">Peak day</p><p className="mt-1 font-mono text-lg font-black text-gp-red">{peakSalesDay.soldUnits}</p></div>
+                </div>
               </div>
-              <div className="flex h-48 items-end gap-1.5 overflow-x-auto border-b border-gp-border pb-6 sm:gap-2" role="img" aria-label={`${days} day units sold and restocked chart`}>
+              <div className="p-4">
+                <div className="mb-3 flex items-center justify-end gap-3 text-[9px] font-black uppercase text-gp-text-muted"><span><i className="mr-1 inline-block h-2 w-2 bg-gp-red" />Sold</span><span><i className="mr-1 inline-block h-2 w-2 bg-blue-500" />Restocked</span></div>
+                <div className="relative flex h-52 items-end gap-1.5 overflow-x-auto border-b border-gp-border pb-7 sm:gap-2" role="img" aria-label={`${days} day units sold and restocked chart`}>
+                  <div className="pointer-events-none absolute inset-x-0 top-1/4 border-t border-dashed border-slate-700/60" />
+                  <div className="pointer-events-none absolute inset-x-0 top-1/2 border-t border-dashed border-slate-700/60" />
+                  <div className="pointer-events-none absolute inset-x-0 top-3/4 border-t border-dashed border-slate-700/60" />
                 {(summary?.daily || []).map((day) => (
                   <div key={day.date} className="group relative flex h-full min-w-8 flex-1 items-end justify-center gap-0.5" title={`${day.date}: ${day.soldUnits} sold, ${day.restockedUnits} restocked`}>
-                    <div className="w-2.5 bg-gp-red transition-all sm:w-3" style={{ height: `${Math.max(day.soldUnits ? 4 : 0, day.soldUnits / maxUnits * 100)}%` }} />
-                    <div className="w-2.5 bg-blue-500 transition-all sm:w-3" style={{ height: `${Math.max(day.restockedUnits ? 4 : 0, day.restockedUnits / maxUnits * 100)}%` }} />
+                    {day.soldUnits ? <span className="absolute text-[8px] font-black text-white" style={{ bottom: `calc(${Math.max(4, day.soldUnits / maxUnits * 100)}% + 4px)` }}>{day.soldUnits}</span> : null}
+                    <div className="w-2.5 bg-gp-red transition-[height] duration-500 ease-out sm:w-3" style={{ height: `${Math.max(day.soldUnits ? 4 : 0, day.soldUnits / maxUnits * 100)}%` }} />
+                    <div className="w-2.5 bg-blue-500 transition-[height] duration-500 ease-out sm:w-3" style={{ height: `${Math.max(day.restockedUnits ? 4 : 0, day.restockedUnits / maxUnits * 100)}%` }} />
                     <span className="absolute -bottom-5 whitespace-nowrap text-[8px] font-bold text-gp-text-muted">{shortDate(day.date)}</span>
                   </div>
                 ))}
+                </div>
               </div>
             </>
           )}

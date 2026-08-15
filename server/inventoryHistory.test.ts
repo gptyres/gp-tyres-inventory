@@ -39,6 +39,11 @@ describe('inventory history summaries', () => {
     expect(summary.soldUnitsToday).toBe(2);
     expect(summary.costValueToday).toBe(1600);
     expect(summary.retailValueToday).toBe(2400);
+    expect(summary.soldUnits).toBe(2);
+    expect(summary.uniqueProducts).toBe(1);
+    expect(summary.costValue).toBe(1600);
+    expect(summary.retailValue).toBe(2400);
+    expect(summary.restockedUnits).toBe(4);
     expect(summary.daily.find((day) => day.date === '2026-08-14')?.restockedUnits).toBe(4);
     expect(summary.movements).toHaveLength(2);
   });
