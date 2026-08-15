@@ -244,7 +244,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <StatsDashboard stats={stats} visible={isAdmin} />
       </div>
 
-      <StockMovementDashboard currentUser={currentUser} />
+      <StockMovementDashboard currentUser={currentUser} isAdmin={isAdmin} />
 
       <div>
         <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">

@@ -8,6 +8,7 @@ import gpLogo from '../assets/gp-tyres-logo-transparent.png';
 
 interface StockMovementDashboardProps {
   currentUser: string;
+  isAdmin: boolean;
 }
 
 const getTodayKey = () => new Intl.DateTimeFormat('en-CA', {
@@ -18,8 +19,24 @@ const shortDate = (value: string) => new Intl.DateTimeFormat('en-ZA', {
   timeZone: 'Africa/Johannesburg', day: '2-digit', month: 'short'
 }).format(new Date(`${value}T12:00:00+02:00`));
 
-export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ currentUser }) => {
-  const [days, setDays] = useState(15);
+export const buildStockMovementMetrics = (summary: StockMovementSummary | null, isAdmin: boolean) => {
+  const operational = [
+    { label: 'Units sold today', value: summary?.soldUnitsToday ?? 0, tone: 'text-gp-red' },
+    { label: 'Products sold', value: summary?.uniqueProductsToday ?? 0, tone: 'text-white' },
+    { label: 'Restocked today', value: summary?.restockedUnitsToday ?? 0, tone: 'text-blue-300' },
+    { label: 'Edits today', value: summary?.editCountToday ?? 0, tone: 'text-slate-200' }
+  ];
+  if (!isAdmin) return operational;
+  return [
+    ...operational.slice(0, 2),
+    { label: 'Cost value', value: formatCurrency(summary?.costValueToday ?? 0), tone: 'text-amber-300' },
+    { label: 'Retail value', value: formatCurrency(summary?.retailValueToday ?? 0), tone: 'text-emerald-300' },
+    ...operational.slice(2)
+  ];
+};
+
+export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ currentUser, isAdmin }) => {
+  const [days, setDays] = useState(1);
   const [summary, setSummary] = useState<StockMovementSummary | null>(null);
   const [reportDate, setReportDate] = useState(getTodayKey);
   const [loading, setLoading] = useState(true);
@@ -51,6 +68,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
   }, [days]);
 
   const maxUnits = useMemo(() => Math.max(1, ...(summary?.daily.map((day) => Math.max(day.soldUnits, day.restockedUnits)) || [1])), [summary]);
+  const maxProductUnits = useMemo(() => Math.max(1, ...(summary?.topItems.map((item) => item.units) || [1])), [summary]);
 
   const downloadReport = async () => {
     if (reporting) return;
@@ -73,14 +91,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
     }
   };
 
-  const metrics = [
-    { label: 'Units sold today', value: summary?.soldUnitsToday ?? 0, tone: 'text-gp-red' },
-    { label: 'Products sold', value: summary?.uniqueProductsToday ?? 0, tone: 'text-white' },
-    { label: 'Cost value', value: formatCurrency(summary?.costValueToday ?? 0), tone: 'text-amber-300' },
-    { label: 'Retail value', value: formatCurrency(summary?.retailValueToday ?? 0), tone: 'text-emerald-300' },
-    { label: 'Restocked today', value: summary?.restockedUnitsToday ?? 0, tone: 'text-blue-300' },
-    { label: 'Edits today', value: summary?.editCountToday ?? 0, tone: 'text-slate-200' }
-  ];
+  const metrics = buildStockMovementMetrics(summary, isAdmin);
 
   return (
     <section aria-labelledby="stock-movement-heading">
@@ -91,7 +102,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
         </div>
         <div className="flex flex-wrap items-end gap-2">
           <div className="flex h-10 rounded-md border border-gp-border bg-gp-panel p-1">
-            {[5, 15, 30].map((option) => <button key={option} type="button" onClick={() => setDays(option)} className={`min-w-12 rounded px-2 text-[10px] font-black uppercase ${days === option ? 'bg-gp-red text-white' : 'text-gp-text-muted hover:text-white'}`}>{option}D</button>)}
+            {[1, 5, 15, 30].map((option) => <button key={option} type="button" onClick={() => setDays(option)} className={`min-w-12 rounded px-2 text-[10px] font-black uppercase ${days === option ? 'bg-gp-red text-white' : 'text-gp-text-muted hover:text-white'}`}>{option === 1 ? 'Today' : `${option}D`}</button>)}
           </div>
           <input type="date" value={reportDate} max={getTodayKey()} onChange={(event) => setReportDate(event.target.value)} className="h-10 rounded-md border border-gp-border bg-gp-input px-3 text-xs font-bold text-white focus:border-gp-red focus:outline-none" aria-label="Daily stock report date" />
           <button type="button" onClick={() => void downloadReport()} disabled={reporting} className="inline-flex h-10 items-center gap-2 rounded-md bg-gp-red px-4 text-xs font-black uppercase tracking-wider text-white transition hover:bg-red-700 disabled:opacity-50">
@@ -102,7 +113,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
       </div>
 
       {error ? <div className="mb-3 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-300">{error}</div> : null}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
+      <div className={`grid grid-cols-2 gap-3 ${isAdmin ? 'lg:grid-cols-3 xl:grid-cols-6' : 'lg:grid-cols-4'}`}>
         {metrics.map((metric) => (
           <div key={metric.label} className="min-w-0 rounded-lg border border-gp-border bg-gp-panel p-3.5">
             <p className="text-[9px] font-black uppercase tracking-wider text-gp-text-muted">{metric.label}</p>
@@ -113,19 +124,43 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
 
       <div className="mt-3 grid gap-3 xl:grid-cols-[minmax(0,2fr)_minmax(260px,1fr)]">
         <div className="rounded-lg border border-gp-border bg-gp-panel p-4">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <p className="text-[10px] font-black uppercase tracking-wider text-white">Daily units</p>
-            <div className="flex gap-3 text-[9px] font-black uppercase text-gp-text-muted"><span><i className="mr-1 inline-block h-2 w-2 bg-gp-red" />Sold</span><span><i className="mr-1 inline-block h-2 w-2 bg-blue-500" />Restocked</span></div>
-          </div>
-          <div className="flex h-48 items-end gap-1.5 overflow-x-auto border-b border-gp-border pb-6 sm:gap-2" role="img" aria-label={`${days} day units sold and restocked chart`}>
-            {(summary?.daily || []).map((day) => (
-              <div key={day.date} className="group relative flex h-full min-w-8 flex-1 items-end justify-center gap-0.5" title={`${day.date}: ${day.soldUnits} sold, ${day.restockedUnits} restocked`}>
-                <div className="w-2.5 bg-gp-red transition-all sm:w-3" style={{ height: `${Math.max(day.soldUnits ? 4 : 0, day.soldUnits / maxUnits * 100)}%` }} />
-                <div className="w-2.5 bg-blue-500 transition-all sm:w-3" style={{ height: `${Math.max(day.restockedUnits ? 4 : 0, day.restockedUnits / maxUnits * 100)}%` }} />
-                <span className="absolute -bottom-5 whitespace-nowrap text-[8px] font-bold text-gp-text-muted">{shortDate(day.date)}</span>
+          {days === 1 ? (
+            <>
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <p className="text-[10px] font-black uppercase tracking-wider text-white">Products sold today</p>
+                <span className="text-[9px] font-black uppercase text-gp-text-muted">Since opening</span>
               </div>
-            ))}
-          </div>
+              <div className="space-y-3" role="img" aria-label="Units sold today by product">
+                {(summary?.topItems || []).length ? summary?.topItems.map((item) => (
+                  <div key={item.productId} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-[10px] font-bold uppercase text-white" title={item.description}>{item.description}</p>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-sm bg-gp-black">
+                        <div className="h-full bg-gp-red" style={{ width: `${Math.max(5, item.units / maxProductUnits * 100)}%` }} />
+                      </div>
+                    </div>
+                    <span className="min-w-8 text-right font-mono text-sm font-black text-gp-red">{item.units}</span>
+                  </div>
+                )) : <p className="py-14 text-center text-xs font-bold text-gp-text-muted">No sales recorded since opening today.</p>}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <p className="text-[10px] font-black uppercase tracking-wider text-white">Daily units</p>
+                <div className="flex gap-3 text-[9px] font-black uppercase text-gp-text-muted"><span><i className="mr-1 inline-block h-2 w-2 bg-gp-red" />Sold</span><span><i className="mr-1 inline-block h-2 w-2 bg-blue-500" />Restocked</span></div>
+              </div>
+              <div className="flex h-48 items-end gap-1.5 overflow-x-auto border-b border-gp-border pb-6 sm:gap-2" role="img" aria-label={`${days} day units sold and restocked chart`}>
+                {(summary?.daily || []).map((day) => (
+                  <div key={day.date} className="group relative flex h-full min-w-8 flex-1 items-end justify-center gap-0.5" title={`${day.date}: ${day.soldUnits} sold, ${day.restockedUnits} restocked`}>
+                    <div className="w-2.5 bg-gp-red transition-all sm:w-3" style={{ height: `${Math.max(day.soldUnits ? 4 : 0, day.soldUnits / maxUnits * 100)}%` }} />
+                    <div className="w-2.5 bg-blue-500 transition-all sm:w-3" style={{ height: `${Math.max(day.restockedUnits ? 4 : 0, day.restockedUnits / maxUnits * 100)}%` }} />
+                    <span className="absolute -bottom-5 whitespace-nowrap text-[8px] font-bold text-gp-text-muted">{shortDate(day.date)}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
         <div className="rounded-lg border border-gp-border bg-gp-panel p-4">
           <p className="text-[10px] font-black uppercase tracking-wider text-white">Top sold products</p>
