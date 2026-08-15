@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { fetchDailyStockMovementReport, fetchStockMovementSummary } from '../inventoryHistory';
 import { createStockMovementReport } from '../stockMovementReport';
 import type { StockMovementSummary } from '../types';
@@ -21,7 +22,19 @@ const shortDate = (value: string) => new Intl.DateTimeFormat('en-ZA', {
   timeZone: 'Africa/Johannesburg', day: '2-digit', month: 'short'
 }).format(new Date(`${value}T12:00:00+02:00`));
 
-export const buildStockMovementMetrics = (summary: StockMovementSummary | null, showFinancials: boolean) => {
+export interface StockMovementMetric {
+  label: string;
+  value: string | number;
+  tone: string;
+  financial?: boolean;
+}
+
+export const getStockMovementMetricDisplayValue = (
+  metric: StockMovementMetric,
+  financialValuesVisible: boolean
+) => metric.financial && !financialValuesVisible ? 'Hidden' : metric.value;
+
+export const buildStockMovementMetrics = (summary: StockMovementSummary | null, showFinancials: boolean): StockMovementMetric[] => {
   const operational = [
     { label: 'Units sold today', value: summary?.soldUnitsToday ?? 0, tone: 'text-gp-red' },
     { label: 'Products sold', value: summary?.uniqueProductsToday ?? 0, tone: 'text-white' },
@@ -31,8 +44,8 @@ export const buildStockMovementMetrics = (summary: StockMovementSummary | null, 
   if (!showFinancials) return operational;
   return [
     ...operational.slice(0, 2),
-    { label: 'Cost value', value: formatCurrency(summary?.costValueToday ?? 0), tone: 'text-amber-300' },
-    { label: 'Retail value', value: formatCurrency(summary?.retailValueToday ?? 0), tone: 'text-emerald-300' },
+    { label: 'Cost value', value: formatCurrency(summary?.costValueToday ?? 0), tone: 'text-amber-300', financial: true },
+    { label: 'Retail value', value: formatCurrency(summary?.retailValueToday ?? 0), tone: 'text-emerald-300', financial: true },
     ...operational.slice(2)
   ];
 };
@@ -44,7 +57,12 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
   const [loading, setLoading] = useState(true);
   const [reporting, setReporting] = useState(false);
   const [error, setError] = useState('');
+  const [financialValuesVisible, setFinancialValuesVisible] = useState(false);
   const showFinancials = canViewStockMovementFinancials(currentUser, isAdmin);
+
+  useEffect(() => {
+    setFinancialValuesVisible(false);
+  }, [currentUser, isAdmin]);
 
   useEffect(() => {
     let cancelled = false;
@@ -121,8 +139,27 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
       <div className={`grid grid-cols-2 gap-3 ${showFinancials ? 'lg:grid-cols-3 xl:grid-cols-6' : 'lg:grid-cols-4'}`}>
         {metrics.map((metric) => (
           <div key={metric.label} className="min-w-0 rounded-lg border border-gp-border bg-gp-panel p-3.5">
-            <p className="text-[9px] font-black uppercase tracking-wider text-gp-text-muted">{metric.label}</p>
-            <p className={`mt-2 truncate font-mono text-2xl font-black ${metric.tone}`}>{loading ? '-' : metric.value}</p>
+            <div className="flex min-h-7 items-start justify-between gap-2">
+              <p className="pt-1 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">{metric.label}</p>
+              {metric.financial ? (
+                <button
+                  type="button"
+                  onClick={() => setFinancialValuesVisible((visible) => !visible)}
+                  className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border border-gp-border bg-gp-black text-gp-text-muted transition-all duration-300 hover:border-gp-red hover:text-white active:scale-90"
+                  aria-label={financialValuesVisible ? 'Hide financial values' : 'Show financial values'}
+                  title={financialValuesVisible ? 'Hide financial values' : 'Show financial values'}
+                >
+                  {financialValuesVisible ? <EyeOff className="h-3.5 w-3.5" aria-hidden="true" /> : <Eye className="h-3.5 w-3.5" aria-hidden="true" />}
+                </button>
+              ) : null}
+            </div>
+            <p
+              key={`${metric.label}-${financialValuesVisible}`}
+              className={`mt-1 truncate font-mono text-2xl font-black animate-fade-in-up ${metric.financial && !financialValuesVisible ? 'text-gp-text-muted' : metric.tone}`}
+              aria-live={metric.financial ? 'polite' : undefined}
+            >
+              {loading ? '-' : getStockMovementMetricDisplayValue(metric, financialValuesVisible)}
+            </p>
           </div>
         ))}
       </div>
