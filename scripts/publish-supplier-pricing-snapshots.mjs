@@ -45,7 +45,7 @@ const sources = [
     catalog: 'APEX',
     supplier: 'Apex',
     dataFile: 'supplier_data/apexData.ts',
-    sourceFile: 'apex_stockfinder_inventory_2026-08-05.csv'
+    sourceFile: 'apex_stockfinder_inventory_2026-08-15.csv'
   },
   {
     catalog: 'TREADS_UNLIMITED',

@@ -170,7 +170,7 @@ const standardRefreshes = [
     output: 'supplier_data/apexData.ts',
     exportName: 'APEX_RAW_DATA',
     supplier: 'Apex',
-    locations: ['Cape Town']
+    locations: ['APEX TYRES WC']
   },
   {
     input: treadsSource,
