@@ -36,6 +36,16 @@ interface SyncPayload {
   mode?: 'row' | 'batch' | 'full';
   dryRun?: boolean;
   rows?: SheetRowPayload[];
+  editContext?: {
+    occurredAt?: string;
+    rangeA1?: string;
+    editedColumns?: number[];
+    triggerUid?: string;
+    oldValue?: unknown;
+    value?: unknown;
+    editorEmail?: string;
+    editorDisplayName?: string;
+  };
 }
 
 interface ParsedSheetRow {
@@ -379,6 +389,7 @@ Deno.serve(async (request) => {
     const mode = payload.mode || 'batch';
     const dryRun = Boolean(payload.dryRun);
     const rows = Array.isArray(payload.rows) ? payload.rows : [];
+    const editContext = payload.editContext || {};
 
     if (spreadsheetId !== SPREADSHEET_ID || sheetName !== SHEET_NAME) {
       return jsonResponse({ ok: false, error: 'This function only accepts the configured INVENTORY sheet.' }, 400);
@@ -461,14 +472,6 @@ Deno.serve(async (request) => {
       };
     });
 
-    if (!dryRun && upsertRows.length) {
-      const { error: upsertError } = await supabase
-        .from('inventory_items')
-        .upsert(upsertRows, { onConflict: 'id' });
-
-      if (upsertError) throw upsertError;
-    }
-
     const activePortalIds = new Set(upsertRows.map((row) => row.id));
     const staleSheetIds = mode === 'full'
       ? inventoryRows
@@ -476,16 +479,29 @@ Deno.serve(async (request) => {
         .map((row) => row.id)
       : [];
 
-    if (!dryRun && staleSheetIds.length) {
-      for (const idChunk of chunkValues(staleSheetIds, 200)) {
-        const { error: deleteError } = await supabase
-          .from('inventory_items')
-          .delete()
-          .eq('type', 'TYRE')
-          .in('id', idChunk);
-
-        if (deleteError) throw deleteError;
-      }
+    if (!dryRun && (upsertRows.length || staleSheetIds.length)) {
+      const { error: syncError } = await supabase.rpc('sync_inventory_items_audited', {
+        p_items: upsertRows,
+        p_delete_ids: staleSheetIds,
+        p_audit_context: {
+          source: 'GOOGLE_SHEET',
+          confidence: 'VERIFIED',
+          occurredAt: editContext.occurredAt || startedAt,
+          editorEmail: editContext.editorEmail || '',
+          editorDisplayName: editContext.editorDisplayName || '',
+          syncRunId: runId,
+          dedupePrefix: `sheet-${runId}`,
+          spreadsheetId,
+          sheetName,
+          syncMode: mode,
+          rangeA1: editContext.rangeA1 || '',
+          editedColumns: editContext.editedColumns || [],
+          triggerUid: editContext.triggerUid || '',
+          oldValue: editContext.oldValue ?? null,
+          value: editContext.value ?? null
+        }
+      });
+      if (syncError) throw syncError;
     }
 
     const rowsSkipped = rowResults.filter((row) => row.status === 'skipped').length;

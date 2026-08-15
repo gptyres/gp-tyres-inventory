@@ -6,6 +6,11 @@ export interface StockAdjustment {
   delta: number;
 }
 
+interface InventoryMutationOptions {
+  staffName?: string;
+  eventType?: 'ADD' | 'EDIT' | 'SALE' | 'RESERVE' | 'REFUND';
+}
+
 const getErrorMessage = (error: unknown) => {
   if (error instanceof Error) return error.message;
   if (typeof error === 'string') return error;
@@ -129,43 +134,57 @@ export const fetchGlobalInventory = async () => {
 };
 
 export const seedGlobalInventoryIfEmpty = async (items: InventoryItem[]) => {
-  const { data, error } = await (supabase.rpc as any)('seed_inventory_items', {
-    p_items: items
-  });
-
-  if (error) throw new Error(error.message);
-  return Number(data) || 0;
+  const data = await callInventoryMutation({ action: 'SEED', items });
+  return Number(data.count) || 0;
 };
 
-export const upsertGlobalInventoryItem = async (item: InventoryItem) => {
-  const { data, error } = await (supabase.rpc as any)('upsert_inventory_item', {
-    p_item: item
+const callInventoryMutation = async (body: Record<string, unknown>) => {
+  const response = await fetch('/api/inventory-mutation', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
   });
-
-  if (error) throw new Error(error.message);
-  return mapInventoryRowToItem(data as InventoryItemRow);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'Inventory change could not be saved.');
+  return data;
 };
 
-export const deleteGlobalInventoryItem = async (itemId: string) => {
-  const { error } = await (supabase.rpc as any)('delete_inventory_item', {
-    p_item_id: itemId
+export const upsertGlobalInventoryItem = async (
+  item: InventoryItem,
+  options: InventoryMutationOptions = {}
+) => {
+  const data = await callInventoryMutation({
+    action: 'UPSERT',
+    item,
+    staffName: options.staffName,
+    eventType: options.eventType || 'EDIT'
   });
+  return mapInventoryRowToItem(data.item as InventoryItemRow);
+};
 
-  if (error) throw new Error(error.message);
+export const deleteGlobalInventoryItem = async (
+  itemId: string,
+  options: InventoryMutationOptions = {}
+) => {
+  await callInventoryMutation({
+    action: 'DELETE',
+    itemId,
+    staffName: options.staffName
+  });
 };
 
 export const processInventoryTransaction = async (
   stockAdjustments: StockAdjustment[],
-  salesLogEntries: SalesLogInsert[]
+  salesLogEntries: SalesLogInsert[],
+  options: InventoryMutationOptions = {}
 ) => {
-  const { data, error } = await (supabase.rpc as any)('process_inventory_transaction', {
-    p_stock_adjustments: stockAdjustments,
-    p_sales_log_entries: salesLogEntries
+  const data = await callInventoryMutation({
+    action: 'TRANSACTION',
+    stockAdjustments,
+    salesLogEntries,
+    staffName: options.staffName,
+    eventType: options.eventType
   });
-
-  if (error) {
-    throw new Error(getErrorMessage(error));
-  }
-
-  return (data || []).map((row: InventoryItemRow) => mapInventoryRowToItem(row));
+  return (data.items || []).map((row: InventoryItemRow) => mapInventoryRowToItem(row));
 };

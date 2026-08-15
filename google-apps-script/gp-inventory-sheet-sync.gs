@@ -46,7 +46,7 @@ function handleInventoryEdit(event) {
 
   const startRow = Math.max(range.getRow(), GP_SYNC_CONFIG.firstDataRow);
   const rowCount = range.getLastRow() - startRow + 1;
-  syncInventoryRows_(sheet, startRow, rowCount, 'batch');
+  syncInventoryRows_(sheet, startRow, rowCount, 'batch', buildInventoryEditContext_(event));
 }
 
 function syncInventoryNow() {
@@ -60,7 +60,11 @@ function syncInventoryNow() {
     return;
   }
 
-  const result = syncInventoryRows_(sheet, GP_SYNC_CONFIG.firstDataRow, lastRow - 1, 'full');
+  const result = syncInventoryRows_(sheet, GP_SYNC_CONFIG.firstDataRow, lastRow - 1, 'full', {
+    occurredAt: new Date().toISOString(),
+    editorEmail: getInventoryEditorEmail_(),
+    editorDisplayName: 'Manual full sync'
+  });
   SpreadsheetApp.getUi().alert(`GP Portal sync complete.\nUpdated: ${result.rowsUpserted}\nRetired stale: ${result.rowsRetired || 0}\nSkipped: ${result.rowsSkipped}`);
 }
 
@@ -95,7 +99,7 @@ function doPost(event) {
   }
 }
 
-function syncInventoryRows_(sheet, startRow, rowCount, mode) {
+function syncInventoryRows_(sheet, startRow, rowCount, mode, editContext) {
   ensureHelperHeaders_(sheet);
 
   const values = sheet.getRange(startRow, 1, rowCount, GP_SYNC_CONFIG.readColumnCount).getValues();
@@ -122,6 +126,7 @@ function syncInventoryRows_(sheet, startRow, rowCount, mode) {
       spreadsheetId: GP_SYNC_CONFIG.spreadsheetId,
       sheetName: GP_SYNC_CONFIG.sheetName,
       mode,
+      editContext: editContext || {},
       rows
     })
   });
@@ -139,6 +144,38 @@ function syncInventoryRows_(sheet, startRow, rowCount, mode) {
   );
 
   return result;
+}
+
+function buildInventoryEditContext_(event) {
+  const range = event && event.range;
+  const editedColumns = [];
+  if (range) {
+    for (let column = range.getColumn(); column <= range.getLastColumn(); column += 1) {
+      editedColumns.push(column);
+    }
+  }
+  return {
+    occurredAt: new Date().toISOString(),
+    rangeA1: range ? range.getA1Notation() : '',
+    editedColumns,
+    triggerUid: event && event.triggerUid ? String(event.triggerUid) : '',
+    oldValue: event && Object.prototype.hasOwnProperty.call(event, 'oldValue') ? event.oldValue : null,
+    value: event && Object.prototype.hasOwnProperty.call(event, 'value') ? event.value : null,
+    editorEmail: getInventoryEditorEmail_(event),
+    editorDisplayName: 'Google Sheet editor'
+  };
+}
+
+function getInventoryEditorEmail_(event) {
+  try {
+    if (event && event.user && typeof event.user.getEmail === 'function') {
+      const eventEmail = event.user.getEmail();
+      if (eventEmail) return eventEmail;
+    }
+    return Session.getActiveUser().getEmail() || '';
+  } catch (error) {
+    return '';
+  }
 }
 
 function applySyncResults_(sheet, rowResults) {

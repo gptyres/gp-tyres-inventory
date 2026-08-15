@@ -22,6 +22,7 @@ import { type SupplierMarkupAdjustment } from '../supplierMarkup';
 import { type InventoryReportGroupMode } from '../inventoryReport';
 import { TERMINAL_STAFF_NAMES } from '../trainingProgress';
 import { InventoryReportModal } from './InventoryReportModal';
+import { ProductHistoryModal } from './ProductHistoryModal';
 import { SupplierMarkupAdjuster } from './SupplierMarkupAdjuster';
 
 interface InventoryViewProps {
@@ -1055,9 +1056,10 @@ interface ViewComponentProps extends InventoryViewProps {
   onGenerateImage: (item: InventoryItem) => void;
   onUploadSupplierTyreImage: (item: InventoryItem, file?: File) => void;
   onCopyItem: (item: InventoryItem) => void;
+  onHistory: (item: InventoryItem) => void;
 }
 
-const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
+const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, onHistory, aspectRatio, priceLabel = 'Selling Price' }) => {
   
   const SortIcon = ({ colKey }: { colKey: SortKey }) => (
     <span className={`ml-1 inline-block transition-opacity ${sortConfig.key === colKey ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`}>
@@ -1130,6 +1132,9 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                     </button>
                     <button onClick={() => onEdit(item)} className="text-gp-text-muted hover:text-blue-400 p-1" title="Edit">
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    </button>
+                    <button onClick={() => onHistory(item)} className="p-1 text-gp-text-muted hover:text-amber-300" title="View stock history" aria-label={`View history for ${getItemDisplayName(item)}`}>
+                      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 2m6-2a9 9 0 11-3-6.708M21 3v6h-6" /></svg>
                     </button>
                     {isAdmin && (
                       <button onClick={() => onDelete(item)} className="text-gp-text-muted hover:text-red-400 p-1" title="Delete">
@@ -1226,7 +1231,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
   );
 };
 
-const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
+const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, onHistory, aspectRatio, priceLabel = 'Selling Price' }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
       {items.map((item) => (
@@ -1250,6 +1255,9 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             <div className="absolute top-2 left-2 z-10 flex gap-1">
                <button onClick={() => onEdit(item)} className="p-1 bg-gp-black/50 rounded-full text-gp-text-muted hover:text-blue-400 backdrop-blur-sm transition-colors border border-transparent hover:border-blue-500/30">
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+               </button>
+               <button onClick={() => onHistory(item)} className="rounded-full border border-transparent bg-gp-black/70 p-1 text-gp-text-muted backdrop-blur-sm transition-colors hover:border-amber-500/30 hover:text-amber-300" title="View stock history" aria-label={`View history for ${getItemDisplayName(item)}`}>
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 2m6-2a9 9 0 11-3-6.708M21 3v6h-6" /></svg>
                </button>
                {isAdmin && (
                   <button onClick={() => onDelete(item)} className="p-1 bg-gp-black/50 rounded-full text-gp-text-muted hover:text-red-400 backdrop-blur-sm transition-colors border border-transparent hover:border-red-500/30">
@@ -1397,7 +1405,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
   );
 };
 
-const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, aspectRatio, priceLabel = 'Selling Price' }) => {
+const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReserve, visibleColumns, isAdmin, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, onHistory, aspectRatio, priceLabel = 'Selling Price' }) => {
   return (
     <div className="flex flex-col divide-y divide-gp-border p-2 mb-6">
       {items.map((item) => (
@@ -1476,6 +1484,9 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                 <CopyItemButton item={item} onCopyItem={onCopyItem} />
                 {!isReadOnly && (
                   <>
+                    <button type="button" onClick={() => onHistory(item)} className="flex h-8 w-8 items-center justify-center rounded border border-gp-border bg-gp-black text-gp-text-muted transition hover:border-amber-500/50 hover:text-amber-300" title="View stock history" aria-label={`View history for ${getItemDisplayName(item)}`}>
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 2m6-2a9 9 0 11-3-6.708M21 3v6h-6" /></svg>
+                    </button>
                     <button 
                         onClick={() => onReserve(item)}
                         className="px-3 py-1.5 rounded text-xs font-bold uppercase bg-blue-900/20 text-blue-500 border border-blue-900/50 hover:bg-blue-900/40 transition-colors"
@@ -1504,6 +1515,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: SortDirection }>({ key: 'price', direction: 'asc' });
   const [groupBy, setGroupBy] = useState<GroupMode>('none');
   const [hideLowStock, setHideLowStock] = useState(false);
+  const [historyItem, setHistoryItem] = useState<InventoryItem | null>(null);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const lastSelectedIdRef = useRef<string | null>(null);
@@ -1966,6 +1978,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         onGenerateImage: handleGenerateImage,
         onUploadSupplierTyreImage: openSupplierTyreImageUploader,
         onCopyItem: handleCopyItem,
+        onHistory: setHistoryItem,
         aspectRatio
     };
 
@@ -2020,6 +2033,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         onClose={closeSupplierTyreImageUploader}
         onUploaded={handleSupplierTyreImageUploaded}
       />
+
+      {historyItem && !props.isReadOnly ? (
+        <ProductHistoryModal item={historyItem} onClose={() => setHistoryItem(null)} />
+      ) : null}
 
       {isInventoryReportOpen && (
         <InventoryReportModal

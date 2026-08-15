@@ -172,3 +172,84 @@ export interface InventoryStats {
   totalValueCost: number;
   lowStockCount: number;
 }
+
+export type InventoryChangeEventType = 'SALE' | 'REFUND' | 'RESERVE' | 'RESTOCK' | 'EDIT' | 'ADD' | 'DELETE';
+export type InventoryChangeSource = 'GOOGLE_SHEET' | 'PORTAL' | 'POS' | 'BACKFILL' | 'SYSTEM';
+export type InventoryChangeConfidence = 'VERIFIED' | 'RECONSTRUCTED';
+
+export interface InventoryChangeEvent {
+  id: string;
+  productId: string;
+  productType: string;
+  productSnapshot: Record<string, unknown>;
+  eventType: InventoryChangeEventType;
+  source: InventoryChangeSource;
+  quantityBefore: number | null;
+  quantityAfter: number | null;
+  quantityDelta: number;
+  costPriceAtChange: number;
+  sellingPriceAtChange: number;
+  changedFields: string[];
+  oldValues: Record<string, unknown>;
+  newValues: Record<string, unknown>;
+  staffName?: string | null;
+  terminalId?: string | null;
+  editorEmail?: string | null;
+  editorDisplayName?: string | null;
+  referenceId?: string | null;
+  sheetRowNumber?: number | null;
+  confidence: InventoryChangeConfidence;
+  occurredAt: string;
+  metadata: Record<string, unknown>;
+}
+
+export interface StockMovementDay {
+  date: string;
+  soldUnits: number;
+  refundUnits: number;
+  reservedUnits: number;
+  restockedUnits: number;
+  editCount: number;
+  costValue: number;
+  retailValue: number;
+  reconstructedEvents: number;
+}
+
+export interface StockMovementTopItem {
+  productId: string;
+  description: string;
+  units: number;
+}
+
+export interface StockMovementSummary {
+  timezone: string;
+  days: number;
+  from: string;
+  to: string;
+  soldUnitsToday: number;
+  refundUnitsToday: number;
+  uniqueProductsToday: number;
+  costValueToday: number;
+  retailValueToday: number;
+  restockedUnitsToday: number;
+  editCountToday: number;
+  daily: StockMovementDay[];
+  topItems: StockMovementTopItem[];
+}
+
+export interface DailySalesReportRow {
+  id: string;
+  occurredAt: string;
+  productId: string;
+  productDescription: string;
+  eventType: InventoryChangeEventType;
+  source: InventoryChangeSource;
+  units: number;
+  quantityBefore: number | null;
+  quantityAfter: number | null;
+  currentCostPrice: number;
+  currentSellingPrice: number;
+  staffOrEditor: string;
+  terminalOrSheet: string;
+  confidence: InventoryChangeConfidence;
+}

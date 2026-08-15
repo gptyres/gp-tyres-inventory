@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { AppView, InventoryStats, ProductType } from '../types';
 import { StatsDashboard } from './StatsDashboard';
+import { StockMovementDashboard } from './StockMovementDashboard';
 import { STAFF_NAMES } from '../config';
 import { fetchWorkshopBoard, WorkshopSummary } from '../workshopTracker';
 import {
@@ -242,6 +243,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <h2 className="text-sm font-bold text-gp-text-muted uppercase tracking-widest mb-4">System Overview</h2>
         <StatsDashboard stats={stats} visible={isAdmin} />
       </div>
+
+      <StockMovementDashboard currentUser={currentUser} />
 
       <div>
         <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">

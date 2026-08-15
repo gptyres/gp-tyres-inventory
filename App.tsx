@@ -1404,7 +1404,10 @@ const App: React.FC = () => {
           delta: -item.cartQuantity
         }));
 
-      const updatedInventory = await processInventoryTransaction(stockAdjustments, salesLogEntries);
+      const updatedInventory = await processInventoryTransaction(stockAdjustments, salesLogEntries, {
+        staffName,
+        eventType: 'SALE'
+      });
       if (updatedInventory.length > 0) {
         setItems(prev => mergeInventoryItems(prev, updatedInventory));
         mirrorInventoryToGoogleSheet(updatedInventory, 'pos-sale');
@@ -1456,14 +1459,17 @@ const App: React.FC = () => {
 
     try {
       if (action === 'DELETE') {
-        await deleteGlobalInventoryItem(item.id);
+        await deleteGlobalInventoryItem(item.id, { staffName });
         setItems(prev => prev.filter(i => i.id !== item.id));
         mirrorInventoryToGoogleSheet([item], 'portal-stock-delete', 'delete');
         await logAdminControlEvent(`STOCK_${action}_${item.id}`, staffName);
         return;
       }
 
-      const savedItem = await upsertGlobalInventoryItem(item);
+      const savedItem = await upsertGlobalInventoryItem(item, {
+        staffName,
+        eventType: action === 'ADD' ? 'ADD' : 'EDIT'
+      });
       setItems(prev => mergeInventoryItems(prev, [savedItem]));
       mirrorInventoryToGoogleSheet([savedItem], `portal-stock-${action.toLowerCase()}`);
       await logAdminControlEvent(`STOCK_${action}_${item.id}`, staffName);
@@ -1498,7 +1504,8 @@ const App: React.FC = () => {
     try {
       const updatedInventory = await processInventoryTransaction(
         [{ item_id: item.id, delta: -quantity }],
-        [salesLogEntry]
+        [salesLogEntry],
+        { staffName, eventType: 'SALE' }
       );
       if (updatedInventory.length > 0) {
         setItems(prev => mergeInventoryItems(prev, updatedInventory));
@@ -1551,7 +1558,8 @@ const App: React.FC = () => {
     try {
       const updatedInventory = await processInventoryTransaction(
         [{ item_id: item.id, delta: -quantity }],
-        [salesLogEntry]
+        [salesLogEntry],
+        { staffName, eventType: 'RESERVE' }
       );
       if (updatedInventory.length > 0) {
         setItems(prev => mergeInventoryItems(prev, updatedInventory));
@@ -1604,7 +1612,8 @@ const App: React.FC = () => {
             const shouldReturnStock = items.some(item => item.id === order.productId);
             const updatedInventory = await processInventoryTransaction(
                 shouldReturnStock ? [{ item_id: order.productId, delta: order.quantity }] : [],
-                [salesLogEntry]
+                [salesLogEntry],
+                { staffName: currentUser || 'ADMIN', eventType: 'REFUND' }
             );
             if (updatedInventory.length > 0) {
                 setItems(prev => mergeInventoryItems(prev, updatedInventory));
@@ -1635,7 +1644,7 @@ const App: React.FC = () => {
     if (window.confirm(`Are you sure you want to delete ${ids.length} items? This cannot be undone.`)) {
       try {
         const deletedItems = items.filter(item => ids.includes(item.id));
-        await Promise.all(ids.map(id => deleteGlobalInventoryItem(id)));
+        await Promise.all(ids.map(id => deleteGlobalInventoryItem(id, { staffName: currentUser || 'ADMIN' })));
         setItems(prev => prev.filter(item => !ids.includes(item.id)));
         mirrorInventoryToGoogleSheet(deletedItems, 'portal-bulk-stock-delete', 'delete');
         await logAdminControlEvent(`BULK_STOCK_DELETE_${ids.length}`, currentUser || 'ADMIN');
