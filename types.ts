@@ -219,6 +219,25 @@ export interface StockMovementTopItem {
   productId: string;
   description: string;
   units: number;
+  location?: string;
+}
+
+export interface StockMovementLedgerRow {
+  id: string;
+  occurredAt: string;
+  productId: string;
+  productType: string;
+  productDescription: string;
+  eventType: InventoryChangeEventType;
+  source: InventoryChangeSource;
+  quantityBefore: number | null;
+  quantityAfter: number | null;
+  quantityDelta: number;
+  location: string;
+  actor: string;
+  terminalOrSheet: string;
+  confidence: InventoryChangeConfidence;
+  changedFields: string[];
 }
 
 export interface StockMovementSummary {
@@ -235,6 +254,8 @@ export interface StockMovementSummary {
   editCountToday: number;
   daily: StockMovementDay[];
   topItems: StockMovementTopItem[];
+  topTyres: StockMovementTopItem[];
+  movements: StockMovementLedgerRow[];
 }
 
 export interface DailySalesReportRow {

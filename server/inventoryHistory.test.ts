@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { InventoryChangeEvent } from '../types';
 import {
+  buildStockMovementLedgerRows,
   buildDailySalesReportRows,
   getJohannesburgDayBounds,
   summarizeStockMovements
@@ -39,6 +40,31 @@ describe('inventory history summaries', () => {
     expect(summary.costValueToday).toBe(1600);
     expect(summary.retailValueToday).toBe(2400);
     expect(summary.daily.find((day) => day.date === '2026-08-14')?.restockedUnits).toBe(4);
+    expect(summary.movements).toHaveLength(2);
+  });
+
+  it('builds a tyre-only top ten with the stock location', () => {
+    const summary = summarizeStockMovements([
+      event({ id: 'sale-a', productSnapshot: { type: 'TYRE', size: '195/50R15', brand: 'DUNLOP', pattern: 'FM800', location: 'Deck' } }),
+      event({ id: 'sale-b', productId: 't-2', quantityBefore: 9, quantityAfter: 6, quantityDelta: -3, productSnapshot: { type: 'TYRE', size: '195/50R15', brand: 'DUNLOP', pattern: 'FM800', location: 'Store' } }),
+      event({ id: 'wheel-sale', productId: 'w-1', productType: 'WHEEL', productSnapshot: { type: 'WHEEL', brand: 'MOMO', code: 'REVENGE', location: 'Deck' } })
+    ], 1, new Date('2026-08-15T12:00:00.000Z'));
+
+    expect(summary.topTyres).toEqual([expect.objectContaining({
+      description: '195/50R15 DUNLOP FM800',
+      units: 5,
+      location: 'Deck, Store'
+    })]);
+  });
+
+  it('orders movement rows newest first and includes location and actor context', () => {
+    const rows = buildStockMovementLedgerRows([
+      event({ id: 'older', productSnapshot: { type: 'TYRE', size: '195/50R15', location: 'Deck' } }),
+      event({ id: 'newer', occurredAt: '2026-08-15T10:00:00.000Z', staffName: 'Rafiek', terminalId: 'GP2', productSnapshot: { type: 'TYRE', size: '205/40R17', location: 'Store' } })
+    ]);
+
+    expect(rows.map((row) => row.id)).toEqual(['newer', 'older']);
+    expect(rows[0]).toMatchObject({ location: 'Store', actor: 'Rafiek', terminalOrSheet: 'GP2 / Rafiek' });
   });
 
   it('uses South African midnight boundaries', () => {

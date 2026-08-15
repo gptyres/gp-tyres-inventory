@@ -4,6 +4,7 @@ import type {
   InventoryChangeEventType,
   InventoryChangeSource,
   StockMovementDay,
+  StockMovementLedgerRow,
   StockMovementSummary
 } from '../types.js';
 import { GP_ORGANIZATION_ID } from './staffSession.js';
@@ -84,6 +85,40 @@ export const describeInventorySnapshot = (snapshot: Record<string, unknown>) => 
   }
   return cleanText(snapshot.id || 'Inventory item').toUpperCase();
 };
+
+export const getInventorySnapshotLocation = (event: InventoryChangeEvent) => cleanText(
+  event.productSnapshot.location
+  || event.productSnapshot.stockLocation
+  || event.newValues.location
+  || event.oldValues.location
+  || event.metadata.location
+) || 'Unspecified';
+
+export const buildStockMovementLedgerRows = (events: InventoryChangeEvent[]): StockMovementLedgerRow[] => (
+  [...events]
+    .sort((left, right) => right.occurredAt.localeCompare(left.occurredAt) || left.id.localeCompare(right.id))
+    .map((event) => ({
+      id: event.id,
+      occurredAt: event.occurredAt,
+      productId: event.productId,
+      productType: cleanText(event.productType).toUpperCase() || 'ITEM',
+      productDescription: describeInventorySnapshot(event.productSnapshot),
+      eventType: event.eventType,
+      source: event.source,
+      quantityBefore: event.quantityBefore,
+      quantityAfter: event.quantityAfter,
+      quantityDelta: event.quantityDelta,
+      location: getInventorySnapshotLocation(event),
+      actor: cleanText(event.staffName || event.editorDisplayName || event.editorEmail) || 'System',
+      terminalOrSheet: event.terminalId
+        ? `${event.terminalId}${TERMINAL_STAFF_NAMES[event.terminalId] ? ` / ${TERMINAL_STAFF_NAMES[event.terminalId]}` : ''}`
+        : event.sheetRowNumber
+          ? `Sheet row ${event.sheetRowNumber}`
+          : event.source.replaceAll('_', ' '),
+      confidence: event.confidence,
+      changedFields: event.changedFields
+    }))
+);
 
 export const mapInventoryChangeRow = (row: Record<string, any>): InventoryChangeEvent => ({
   id: String(row.id),
@@ -182,6 +217,7 @@ export const summarizeStockMovements = (
     dailyMap.set(date, emptyDay(date));
   }
   const topItems = new Map<string, { description: string; units: number }>();
+  const topTyres = new Map<string, { productId: string; description: string; units: number; locations: Set<string> }>();
 
   events.forEach((event) => {
     const date = getJohannesburgDateKey(new Date(event.occurredAt));
@@ -198,6 +234,19 @@ export const summarizeStockMovements = (
       };
       current.units += units;
       topItems.set(event.productId, current);
+      if (cleanText(event.productType).toUpperCase() === 'TYRE') {
+        const description = describeInventorySnapshot(event.productSnapshot);
+        const tyreKey = description.toUpperCase();
+        const tyre = topTyres.get(tyreKey) || {
+          productId: event.productId,
+          description,
+          units: 0,
+          locations: new Set<string>()
+        };
+        tyre.units += units;
+        tyre.locations.add(getInventorySnapshotLocation(event));
+        topTyres.set(tyreKey, tyre);
+      }
     } else if (event.eventType === 'REFUND') day.refundUnits += units;
     else if (event.eventType === 'RESERVE') day.reservedUnits += units;
     else if (event.eventType === 'RESTOCK') day.restockedUnits += Math.max(0, event.quantityDelta);
@@ -227,7 +276,17 @@ export const summarizeStockMovements = (
     topItems: Array.from(topItems.entries())
       .map(([productId, item]) => ({ productId, ...item }))
       .sort((left, right) => right.units - left.units || left.description.localeCompare(right.description))
-      .slice(0, 8)
+      .slice(0, 10),
+    topTyres: Array.from(topTyres.values())
+      .map((item) => ({
+        productId: item.productId,
+        description: item.description,
+        units: item.units,
+        location: Array.from(item.locations).sort().join(', ')
+      }))
+      .sort((left, right) => right.units - left.units || left.description.localeCompare(right.description))
+      .slice(0, 10),
+    movements: buildStockMovementLedgerRows(events)
   };
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Eye, EyeOff, Search } from 'lucide-react';
 import { fetchDailyStockMovementReport, fetchStockMovementSummary } from '../inventoryHistory';
 import { createStockMovementReport } from '../stockMovementReport';
 import type { StockMovementSummary } from '../types';
@@ -21,6 +21,37 @@ const getTodayKey = () => new Intl.DateTimeFormat('en-CA', {
 const shortDate = (value: string) => new Intl.DateTimeFormat('en-ZA', {
   timeZone: 'Africa/Johannesburg', day: '2-digit', month: 'short'
 }).format(new Date(`${value}T12:00:00+02:00`));
+
+const formatMovementTime = (value: string) => new Intl.DateTimeFormat('en-ZA', {
+  timeZone: 'Africa/Johannesburg',
+  day: '2-digit',
+  month: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false
+}).format(new Date(value));
+
+const movementLabels: Record<string, string> = {
+  SALE: 'Sale',
+  REFUND: 'Refund',
+  RESERVE: 'Reserved',
+  RESTOCK: 'Restock',
+  EDIT: 'Edit',
+  ADD: 'Added',
+  DELETE: 'Deleted'
+};
+
+const movementTones: Record<string, string> = {
+  SALE: 'border-red-500/40 bg-red-500/10 text-red-300',
+  REFUND: 'border-violet-500/40 bg-violet-500/10 text-violet-300',
+  RESERVE: 'border-amber-500/40 bg-amber-500/10 text-amber-300',
+  RESTOCK: 'border-blue-500/40 bg-blue-500/10 text-blue-300',
+  EDIT: 'border-slate-500/40 bg-slate-500/10 text-slate-300',
+  ADD: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300',
+  DELETE: 'border-orange-500/40 bg-orange-500/10 text-orange-300'
+};
+
+const formatQuantityChange = (value: number) => value > 0 ? `+${value}` : String(value);
 
 export interface StockMovementMetric {
   label: string;
@@ -58,6 +89,9 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
   const [reporting, setReporting] = useState(false);
   const [error, setError] = useState('');
   const [financialValuesVisible, setFinancialValuesVisible] = useState(false);
+  const [movementQuery, setMovementQuery] = useState('');
+  const [movementType, setMovementType] = useState('ALL');
+  const [movementPage, setMovementPage] = useState(1);
   const showFinancials = canViewStockMovementFinancials(currentUser, isAdmin);
 
   useEffect(() => {
@@ -90,6 +124,35 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
 
   const maxUnits = useMemo(() => Math.max(1, ...(summary?.daily.map((day) => Math.max(day.soldUnits, day.restockedUnits)) || [1])), [summary]);
   const maxProductUnits = useMemo(() => Math.max(1, ...(summary?.topItems.map((item) => item.units) || [1])), [summary]);
+  const maxTyreUnits = useMemo(() => Math.max(1, ...(summary?.topTyres.map((item) => item.units) || [1])), [summary]);
+  const filteredMovements = useMemo(() => {
+    const normalizedQuery = movementQuery.trim().toUpperCase();
+    return (summary?.movements || []).filter((movement) => {
+      if (movementType !== 'ALL' && movement.eventType !== movementType) return false;
+      if (!normalizedQuery) return true;
+      return [
+        movement.productDescription,
+        movement.productType,
+        movement.location,
+        movement.actor,
+        movement.terminalOrSheet,
+        movement.source
+      ].some((value) => value.toUpperCase().includes(normalizedQuery));
+    });
+  }, [movementQuery, movementType, summary]);
+  const movementPageSize = 25;
+  const movementPageCount = Math.max(1, Math.ceil(filteredMovements.length / movementPageSize));
+  const visibleMovements = useMemo(() => (
+    filteredMovements.slice((movementPage - 1) * movementPageSize, movementPage * movementPageSize)
+  ), [filteredMovements, movementPage]);
+
+  useEffect(() => {
+    setMovementPage(1);
+  }, [days, movementQuery, movementType]);
+
+  useEffect(() => {
+    setMovementPage((current) => Math.min(current, movementPageCount));
+  }, [movementPageCount]);
 
   const downloadReport = async () => {
     if (reporting) return;
@@ -205,18 +268,152 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
           )}
         </div>
         <div className="rounded-lg border border-gp-border bg-gp-panel p-4">
-          <p className="text-[10px] font-black uppercase tracking-wider text-white">Top sold products</p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[10px] font-black uppercase tracking-wider text-white">Top 10 tyres sold</p>
+            <span className="text-[9px] font-black uppercase text-gp-text-muted">{days === 1 ? 'Today' : `${days} days`}</span>
+          </div>
           <div className="mt-3 space-y-2">
-            {(summary?.topItems || []).length ? summary?.topItems.slice(0, fullView ? 8 : 6).map((item, index) => (
-              <div key={item.productId} className="flex items-center gap-3 border-b border-gp-border pb-2 last:border-0">
+            {(summary?.topTyres || []).length ? summary?.topTyres.slice(0, fullView ? 10 : 6).map((item, index) => (
+              <div
+                key={`${item.productId}-${item.description}`}
+                className="animate-fade-in-up border-b border-gp-border pb-2 last:border-0"
+                style={{ animationDelay: `${Math.min(index * 35, 180)}ms` }}
+              >
+                <div className="flex items-center gap-3">
                 <span className="font-mono text-xs font-black text-gp-red">{String(index + 1).padStart(2, '0')}</span>
-                <p className="min-w-0 flex-1 truncate text-xs font-bold uppercase text-white" title={item.description}>{item.description}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-bold uppercase text-white" title={item.description}>{item.description}</p>
+                    <p className="mt-0.5 truncate text-[9px] font-bold uppercase text-gp-text-muted" title={item.location}>{item.location || 'Location not recorded'}</p>
+                  </div>
                 <span className="font-mono text-sm font-black text-emerald-300">{item.units}</span>
+                </div>
+                <div className="mt-2 h-1 overflow-hidden rounded-sm bg-gp-black">
+                  <div className="h-full bg-gp-red transition-[width] duration-700 ease-out" style={{ width: `${Math.max(4, item.units / maxTyreUnits * 100)}%` }} />
+                </div>
               </div>
             )) : <p className="py-10 text-center text-xs font-bold text-gp-text-muted">No recorded sales in this period.</p>}
           </div>
         </div>
       </div>
+
+      {fullView ? (
+        <div className="mt-3 overflow-hidden rounded-lg border border-gp-border bg-gp-panel">
+          <div className="flex flex-col gap-3 border-b border-gp-border p-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-wider text-white">All stock movements</p>
+              <p className="mt-1 text-xs text-gp-text-muted">
+                {filteredMovements.length} {filteredMovements.length === 1 ? 'movement' : 'movements'} in the selected {days === 1 ? 'day' : `${days} days`}
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <label className="relative min-w-0 sm:w-72">
+                <span className="sr-only">Search stock movements</span>
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gp-text-muted" aria-hidden="true" />
+                <input
+                  value={movementQuery}
+                  onChange={(event) => setMovementQuery(event.target.value)}
+                  placeholder="Search product, location or staff"
+                  className="h-10 w-full rounded-md border border-gp-border bg-gp-input pl-9 pr-3 text-xs font-bold text-white outline-none transition focus:border-gp-red"
+                />
+              </label>
+              <select
+                value={movementType}
+                onChange={(event) => setMovementType(event.target.value)}
+                className="h-10 rounded-md border border-gp-border bg-gp-input px-3 text-xs font-black uppercase text-white outline-none transition focus:border-gp-red"
+                aria-label="Filter stock movements by type"
+              >
+                <option value="ALL">All movements</option>
+                {Object.entries(movementLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div className="hidden overflow-x-auto md:block">
+            <table className="w-full min-w-[1040px] border-collapse text-left">
+              <thead className="bg-gp-black text-[9px] font-black uppercase text-gp-text-muted">
+                <tr>
+                  <th className="px-4 py-3">Date / Time</th>
+                  <th className="px-3 py-3">Movement</th>
+                  <th className="px-3 py-3">Product</th>
+                  <th className="px-3 py-3">Location</th>
+                  <th className="px-3 py-3 text-right">Change</th>
+                  <th className="px-3 py-3">Stock</th>
+                  <th className="px-3 py-3">Source</th>
+                  <th className="px-4 py-3">Staff / Terminal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibleMovements.map((movement, index) => (
+                  <tr
+                    key={movement.id}
+                    className="animate-fade-in-up border-t border-gp-border text-xs transition-colors duration-200 hover:bg-white/[0.025]"
+                    style={{ animationDelay: `${Math.min(index * 18, 160)}ms` }}
+                  >
+                    <td className="whitespace-nowrap px-4 py-3 font-mono text-[11px] text-gp-text-muted">{formatMovementTime(movement.occurredAt)}</td>
+                    <td className="px-3 py-3">
+                      <span className={`inline-flex rounded border px-2 py-1 text-[9px] font-black uppercase ${movementTones[movement.eventType] || movementTones.EDIT}`}>
+                        {movementLabels[movement.eventType] || movement.eventType}
+                      </span>
+                    </td>
+                    <td className="max-w-sm px-3 py-3">
+                      <p className="font-bold uppercase text-white">{movement.productDescription}</p>
+                      <p className="mt-0.5 text-[9px] font-black uppercase text-gp-text-muted">{movement.productType}</p>
+                    </td>
+                    <td className="px-3 py-3 font-bold text-slate-200">{movement.location}</td>
+                    <td className={`px-3 py-3 text-right font-mono text-sm font-black ${movement.quantityDelta < 0 ? 'text-gp-red' : movement.quantityDelta > 0 ? 'text-emerald-300' : 'text-gp-text-muted'}`}>
+                      {formatQuantityChange(movement.quantityDelta)}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3 font-mono text-[11px] text-slate-200">{movement.quantityBefore ?? '-'} → {movement.quantityAfter ?? '-'}</td>
+                    <td className="px-3 py-3 text-[10px] font-bold uppercase text-gp-text-muted">{movement.source.replaceAll('_', ' ')}</td>
+                    <td className="px-4 py-3">
+                      <p className="font-bold text-white">{movement.actor}</p>
+                      <p className="mt-0.5 text-[9px] uppercase text-gp-text-muted">{movement.terminalOrSheet}</p>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="divide-y divide-gp-border md:hidden">
+            {visibleMovements.map((movement, index) => (
+              <article
+                key={movement.id}
+                className="animate-fade-in-up p-4"
+                style={{ animationDelay: `${Math.min(index * 18, 160)}ms` }}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold uppercase text-white">{movement.productDescription}</p>
+                    <p className="mt-1 text-[10px] font-bold uppercase text-gp-text-muted">{movement.productType} · {movement.location}</p>
+                  </div>
+                  <span className={`shrink-0 rounded border px-2 py-1 text-[9px] font-black uppercase ${movementTones[movement.eventType] || movementTones.EDIT}`}>
+                    {movementLabels[movement.eventType] || movement.eventType}
+                  </span>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2 rounded-md border border-gp-border bg-gp-black p-3">
+                  <div><p className="text-[8px] font-black uppercase text-gp-text-muted">Change</p><p className={`mt-1 font-mono text-sm font-black ${movement.quantityDelta < 0 ? 'text-gp-red' : movement.quantityDelta > 0 ? 'text-emerald-300' : 'text-gp-text-muted'}`}>{formatQuantityChange(movement.quantityDelta)}</p></div>
+                  <div><p className="text-[8px] font-black uppercase text-gp-text-muted">Stock</p><p className="mt-1 font-mono text-sm font-black text-white">{movement.quantityBefore ?? '-'} → {movement.quantityAfter ?? '-'}</p></div>
+                  <div><p className="text-[8px] font-black uppercase text-gp-text-muted">Recorded</p><p className="mt-1 text-[10px] font-bold text-white">{formatMovementTime(movement.occurredAt)}</p></div>
+                  <div><p className="text-[8px] font-black uppercase text-gp-text-muted">Staff / source</p><p className="mt-1 text-[10px] font-bold text-white">{movement.actor} · {movement.source.replaceAll('_', ' ')}</p></div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {!visibleMovements.length ? <p className="px-4 py-16 text-center text-xs font-bold text-gp-text-muted">No stock movements match these filters.</p> : null}
+
+          {filteredMovements.length > movementPageSize ? (
+            <div className="flex items-center justify-between gap-3 border-t border-gp-border bg-gp-black px-4 py-3">
+              <p className="text-[10px] font-bold uppercase text-gp-text-muted">Page {movementPage} of {movementPageCount}</p>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => setMovementPage((page) => Math.max(1, page - 1))} disabled={movementPage === 1} className="inline-flex h-8 w-8 items-center justify-center rounded border border-gp-border text-gp-text-muted transition hover:border-gp-red hover:text-white disabled:opacity-30" aria-label="Previous movement page"><ChevronLeft className="h-4 w-4" /></button>
+                <button type="button" onClick={() => setMovementPage((page) => Math.min(movementPageCount, page + 1))} disabled={movementPage === movementPageCount} className="inline-flex h-8 w-8 items-center justify-center rounded border border-gp-border text-gp-text-muted transition hover:border-gp-red hover:text-white disabled:opacity-30" aria-label="Next movement page"><ChevronRight className="h-4 w-4" /></button>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 };

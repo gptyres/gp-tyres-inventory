@@ -15,7 +15,9 @@ const summary: StockMovementSummary = {
   restockedUnitsToday: 2,
   editCountToday: 1,
   daily: [],
-  topItems: []
+  topItems: [],
+  topTyres: [],
+  movements: []
 };
 
 describe('stock movement financial access', () => {
