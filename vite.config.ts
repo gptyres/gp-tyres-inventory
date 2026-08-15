@@ -1,15 +1,27 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
 const rootDir = fileURLToPath(new URL('.', import.meta.url));
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, rootDir, '');
+    const developmentApiTarget = env.GP_DEV_API_TARGET || 'https://gp-tyres-inventory.vercel.app';
+
     return {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        proxy: {
+          // Vite does not execute Vercel API functions. Keep authenticated local
+          // dashboards connected to the same protected API used in production.
+          '/api/staff-session': {
+            target: developmentApiTarget,
+            changeOrigin: true,
+            secure: true
+          }
+        }
       },
       plugins: [react()],
       resolve: {

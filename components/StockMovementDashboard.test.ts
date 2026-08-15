@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildStockMovementMetrics, getStockMovementMetricDisplayValue } from './StockMovementDashboard';
+import { buildStockMovementChartBuckets, buildStockMovementMetrics, getStockMovementMetricDisplayValue } from './StockMovementDashboard';
 import { canViewStockMovementFinancials } from '../stockMovementAccess';
 import type { StockMovementSummary } from '../types';
 
@@ -50,5 +50,30 @@ describe('stock movement dashboard visibility', () => {
     expect(metrics.find((metric) => metric.label === 'Restocked')?.value).toBe(23);
     expect(metrics.find((metric) => metric.label === 'Edits')?.value).toBe(4);
     expect(String(metrics.find((metric) => metric.label === 'Retail value')?.value).replace(/\s/g, ' ')).toBe('R 18 500');
+  });
+});
+
+describe('stock movement chart density', () => {
+  const day = (date: string, soldUnits: number, restockedUnits: number) => ({
+    date, soldUnits, restockedUnits, refundUnits: 0, reservedUnits: 0,
+    editCount: 0, costValue: 0, retailValue: 0, reconstructedEvents: 0
+  });
+
+  it('keeps five and fifteen day views at daily detail', () => {
+    const daily = [day('2026-08-11', 2, 1), day('2026-08-12', 4, 3)];
+    expect(buildStockMovementChartBuckets(daily, 5)).toHaveLength(2);
+    expect(buildStockMovementChartBuckets(daily, 15)[1]).toMatchObject({ soldUnits: 4, restockedUnits: 3, dayCount: 1 });
+  });
+
+  it('groups the thirty day chart into readable five-day blocks', () => {
+    const daily = Array.from({ length: 10 }, (_, index) => day(
+      `2026-08-${String(index + 1).padStart(2, '0')}`,
+      index + 1,
+      1
+    ));
+    const buckets = buildStockMovementChartBuckets(daily, 30);
+    expect(buckets).toHaveLength(2);
+    expect(buckets[0]).toMatchObject({ label: '01-05 Aug', fullLabel: '01 Aug to 05 Aug', soldUnits: 15, restockedUnits: 5, dayCount: 5 });
+    expect(buckets[1]).toMatchObject({ soldUnits: 40, restockedUnits: 5, dayCount: 5 });
   });
 });
