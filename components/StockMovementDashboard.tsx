@@ -10,6 +10,7 @@ import gpLogo from '../assets/gp-tyres-logo-transparent.png';
 interface StockMovementDashboardProps {
   currentUser: string;
   isAdmin: boolean;
+  fullView?: boolean;
 }
 
 const getTodayKey = () => new Intl.DateTimeFormat('en-CA', {
@@ -36,7 +37,7 @@ export const buildStockMovementMetrics = (summary: StockMovementSummary | null, 
   ];
 };
 
-export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ currentUser, isAdmin }) => {
+export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ currentUser, isAdmin, fullView = false }) => {
   const [days, setDays] = useState(1);
   const [summary, setSummary] = useState<StockMovementSummary | null>(null);
   const [reportDate, setReportDate] = useState(getTodayKey);
@@ -96,11 +97,13 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
   const metrics = buildStockMovementMetrics(summary, showFinancials);
 
   return (
-    <section aria-labelledby="stock-movement-heading">
+    <section aria-labelledby="stock-movement-heading" className={fullView ? 'min-h-full' : undefined}>
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h2 id="stock-movement-heading" className="text-sm font-bold uppercase tracking-widest text-gp-text-muted">Stock Movement</h2>
-          <p className="mt-1 text-sm text-gp-text-muted">Verified portal activity and reconstructed Google Sheet changes in South African time.</p>
+          <h2 id="stock-movement-heading" className={fullView ? 'text-2xl font-black uppercase text-white' : 'text-sm font-bold uppercase tracking-widest text-gp-text-muted'}>
+            {fullView ? 'Stock Movement Dashboard' : 'Stock Movement'}
+          </h2>
+          <p className="mt-1 text-sm text-gp-text-muted">Sales, restocks and verified portal or reconstructed Google Sheet changes in South African time.</p>
         </div>
         <div className="flex flex-wrap items-end gap-2">
           <div className="flex h-10 rounded-md border border-gp-border bg-gp-panel p-1">
@@ -167,7 +170,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
         <div className="rounded-lg border border-gp-border bg-gp-panel p-4">
           <p className="text-[10px] font-black uppercase tracking-wider text-white">Top sold products</p>
           <div className="mt-3 space-y-2">
-            {(summary?.topItems || []).length ? summary?.topItems.slice(0, 6).map((item, index) => (
+            {(summary?.topItems || []).length ? summary?.topItems.slice(0, fullView ? 8 : 6).map((item, index) => (
               <div key={item.productId} className="flex items-center gap-3 border-b border-gp-border pb-2 last:border-0">
                 <span className="font-mono text-xs font-black text-gp-red">{String(index + 1).padStart(2, '0')}</span>
                 <p className="min-w-0 flex-1 truncate text-xs font-bold uppercase text-white" title={item.description}>{item.description}</p>

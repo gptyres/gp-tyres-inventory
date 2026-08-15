@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Activity } from 'lucide-react';
 import { AppView, ProductType, SupplierCatalog } from '../types';
 import { APP_VERSION } from '../config';
 import gpLogo from '../assets/gp-tyres-logo-transparent.png';
@@ -186,6 +187,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
             <span className="font-bold text-sm">Dashboard</span>
+          </button>
+
+          <button
+            onClick={() => handleOrderClick('STOCK_MOVEMENT')}
+            className={`flex items-center w-full px-3 py-2 rounded transition-colors ${currentView === 'STOCK_MOVEMENT' ? 'bg-gp-red/10 text-gp-red' : 'text-gp-text-muted hover:text-gp-text-main hover:bg-gp-border'}`}
+          >
+            <Activity className="mr-3 h-5 w-5 flex-shrink-0" aria-hidden="true" />
+            <span className="font-bold text-sm">Stock Movement</span>
           </button>
 
           <button

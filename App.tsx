@@ -6,6 +6,7 @@ import { InventoryView } from './components/InventoryView';
 import { StatsDashboard } from './components/StatsDashboard';
 import { SheetInventorySyncStatus } from './components/SheetInventorySyncStatus';
 import { DashboardView } from './components/DashboardView';
+import { StockMovementDashboard } from './components/StockMovementDashboard';
 import { OrdersView } from './components/OrdersView';
 import { BackordersView } from './components/BackordersView';
 import { SystemLogsView } from './components/SystemLogsView';
@@ -1812,6 +1813,8 @@ const App: React.FC = () => {
 
   const topNavTitle = currentView === 'TRAINING_PORTAL'
     ? 'TRAINING PORTAL'
+    : currentView === 'STOCK_MOVEMENT'
+      ? 'STOCK MOVEMENT'
     : currentView === 'CUSTOMER_HUB'
       ? 'CUSTOMER HUB'
       : currentView === 'PHOTO_LIBRARY'
@@ -1823,7 +1826,7 @@ const App: React.FC = () => {
         : currentView === 'RADAR_RED'
           ? 'RADAR RED'
         : undefined;
-  const shouldShowTopSearch = currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'RADAR_RED'
+  const shouldShowTopSearch = currentView === 'STOCK_MOVEMENT' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'RADAR_RED'
     ? false
     : isSearchVisible || currentView === 'WHEEL_CATALOG';
 
@@ -1872,6 +1875,12 @@ const App: React.FC = () => {
               onNavigate={handleDashboardNavigate}
               onPortalSelect={handlePortalSelect}
             />
+          )}
+
+          {currentView === 'STOCK_MOVEMENT' && (
+            <div className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
+              <StockMovementDashboard currentUser={currentUser} isAdmin={isAdmin} fullView />
+            </div>
           )}
 
           {(currentView === 'INVENTORY' || currentView === 'SUPPLIER_INVENTORY' || currentView === 'WHEEL_CATALOG') && (
