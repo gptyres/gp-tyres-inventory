@@ -66,8 +66,8 @@ export const compareInventoryRevisionSnapshots = (
 
   const resolveCurrentItem = (row: (typeof currentRows)[number]) => (
     (row.portalId ? maps.byId.get(row.portalId) : undefined)
-    || maps.byRow.get(row.rowNumber)
     || maps.byFingerprint.get(row.fingerprint.toLowerCase())
+    || maps.byRow.get(row.rowNumber)
   );
 
   const addChange = (
@@ -137,15 +137,40 @@ export const compareInventoryRevisionSnapshots = (
   };
 
   currentRows.forEach((after) => {
-    const before = previousRows.find((candidate) => (
-      (after.portalId && candidate.portalId === after.portalId)
-      || candidate.rowNumber === after.rowNumber
-      || candidate.fingerprint === after.fingerprint
-    ));
+    const findRemaining = (predicate: (candidate: (typeof previousRows)[number]) => boolean) => (
+      previousRows.find((candidate) => remainingPrevious.has(candidate) && predicate(candidate))
+    );
+    const resolvedCurrentItem = resolveCurrentItem(after);
+    const before = (after.portalId
+      ? findRemaining((candidate) => candidate.portalId === after.portalId)
+      : undefined)
+      || findRemaining((candidate) => candidate.fingerprint === after.fingerprint)
+      || (resolvedCurrentItem
+        ? findRemaining((candidate) => candidate.rowNumber === after.rowNumber)
+        : undefined);
     if (before) remainingPrevious.delete(before);
     addChange(before, after);
   });
   remainingPrevious.forEach((before) => addChange(before, undefined));
 
-  return { events, skipped };
+  const eventsByDedupeKey = new Map<string, BackfillEventInsert[]>();
+  events.forEach((event) => {
+    const candidates = eventsByDedupeKey.get(event.dedupe_key) || [];
+    candidates.push(event);
+    eventsByDedupeKey.set(event.dedupe_key, candidates);
+  });
+
+  const uniqueEvents: BackfillEventInsert[] = [];
+  eventsByDedupeKey.forEach((candidates, dedupeKey) => {
+    if (candidates.length === 1) {
+      uniqueEvents.push(candidates[0]);
+      return;
+    }
+    skipped.push({
+      identity: dedupeKey,
+      reason: 'Multiple historical rows resolved to the same product in one revision pair.'
+    });
+  });
+
+  return { events: uniqueEvents, skipped };
 };
