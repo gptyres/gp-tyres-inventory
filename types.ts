@@ -240,6 +240,13 @@ export interface StockMovementLedgerRow {
   changedFields: string[];
 }
 
+export interface StockMovementLedgerPage {
+  rows: StockMovementLedgerRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
 export interface StockMovementSummary {
   timezone: string;
   days: number;

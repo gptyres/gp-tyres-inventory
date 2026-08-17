@@ -1,8 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Activity, CalendarDays, ChevronLeft, ChevronRight, Eye, EyeOff, Search } from 'lucide-react';
-import { fetchDailyStockMovementReport, fetchStockMovementSummary } from '../inventoryHistory';
+import {
+  fetchDailyStockMovementReport,
+  fetchStockMovementLedger,
+  fetchStockMovementSummary,
+  fetchStockMovementSummaryByDateRange
+} from '../inventoryHistory';
 import { createStockMovementReport } from '../stockMovementReport';
-import type { StockMovementDay, StockMovementSummary } from '../types';
+import type { StockMovementDay, StockMovementLedgerRow, StockMovementSummary } from '../types';
 import { formatCurrency } from '../utils';
 import { TERMINAL_STAFF_NAMES } from '../trainingProgress';
 import { canViewStockMovementFinancials } from '../stockMovementAccess';
@@ -17,6 +22,42 @@ interface StockMovementDashboardProps {
 const getTodayKey = () => new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Africa/Johannesburg', year: 'numeric', month: '2-digit', day: '2-digit'
 }).format(new Date());
+
+type StockMovementRangePreset = '1D' | '5D' | '15D' | '30D' | '3M' | '6M' | 'CUSTOM';
+
+const dateKeyToUtc = (value: string) => {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day));
+};
+
+const utcToDateKey = (date: Date) => [
+  date.getUTCFullYear(),
+  String(date.getUTCMonth() + 1).padStart(2, '0'),
+  String(date.getUTCDate()).padStart(2, '0')
+].join('-');
+
+const countInclusiveDays = (from: string, to: string) => (
+  Math.round((dateKeyToUtc(to).getTime() - dateKeyToUtc(from).getTime()) / 86400000) + 1
+);
+
+export const getRollingStockMovementRange = (months: number, to = getTodayKey()) => {
+  const target = dateKeyToUtc(to);
+  const targetMonthIndex = target.getUTCFullYear() * 12 + target.getUTCMonth() - months;
+  const year = Math.floor(targetMonthIndex / 12);
+  const month = ((targetMonthIndex % 12) + 12) % 12;
+  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  const from = utcToDateKey(new Date(Date.UTC(year, month, Math.min(target.getUTCDate(), lastDay))));
+  return { from, to, days: countInclusiveDays(from, to) };
+};
+
+const rangeOptions: Array<{ value: Exclude<StockMovementRangePreset, 'CUSTOM'>; label: string }> = [
+  { value: '1D', label: '1 Day' },
+  { value: '5D', label: '5D' },
+  { value: '15D', label: '15D' },
+  { value: '30D', label: '30D' },
+  { value: '3M', label: '3M' },
+  { value: '6M', label: '6M' }
+];
 
 const shortDate = (value: string) => new Intl.DateTimeFormat('en-ZA', {
   timeZone: 'Africa/Johannesburg', day: '2-digit', month: 'short'
@@ -70,7 +111,7 @@ export const buildStockMovementChartBuckets = (
   daily: StockMovementDay[],
   selectedDays: number
 ): StockMovementChartBucket[] => {
-  const bucketSize = selectedDays >= 30 ? 5 : 1;
+  const bucketSize = selectedDays >= 150 ? 14 : selectedDays >= 60 ? 7 : selectedDays >= 30 ? 5 : 1;
   const buckets: StockMovementChartBucket[] = [];
   for (let index = 0; index < daily.length; index += bucketSize) {
     const group = daily.slice(index, index + bucketSize);
@@ -114,9 +155,10 @@ export const getStockMovementMetricDisplayValue = (
 export const buildStockMovementMetrics = (
   summary: StockMovementSummary | null,
   showFinancials: boolean,
-  selectedDays = summary?.days || 1
+  selectedDays = summary?.days || 1,
+  selectedCaption?: string
 ): StockMovementMetric[] => {
-  const caption = selectedDays === 1 ? 'Today' : `${selectedDays}-day total`;
+  const caption = selectedCaption || (selectedDays === 1 ? 'Today' : `${selectedDays}-day total`);
   const operational = [
     { label: 'Units sold', value: summary?.soldUnits ?? 0, tone: 'text-gp-red', caption },
     { label: 'Products sold', value: summary?.uniqueProducts ?? 0, tone: 'text-white', caption },
@@ -133,7 +175,14 @@ export const buildStockMovementMetrics = (
 };
 
 export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ currentUser, isAdmin, fullView = false }) => {
-  const [days, setDays] = useState(1);
+  const todayKey = getTodayKey();
+  const initialCustomRange = getRollingStockMovementRange(1, todayKey);
+  const [rangePreset, setRangePreset] = useState<StockMovementRangePreset>('1D');
+  const [rangePickerOpen, setRangePickerOpen] = useState(false);
+  const [customFrom, setCustomFrom] = useState(initialCustomRange.from);
+  const [customTo, setCustomTo] = useState(initialCustomRange.to);
+  const [appliedCustomRange, setAppliedCustomRange] = useState<{ from: string; to: string } | null>(null);
+  const [rangeError, setRangeError] = useState('');
   const [summary, setSummary] = useState<StockMovementSummary | null>(null);
   const [reportDate, setReportDate] = useState(getTodayKey);
   const [loading, setLoading] = useState(true);
@@ -143,7 +192,65 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
   const [movementQuery, setMovementQuery] = useState('');
   const [movementType, setMovementType] = useState('ALL');
   const [movementPage, setMovementPage] = useState(1);
+  const [movementRows, setMovementRows] = useState<StockMovementLedgerRow[]>([]);
+  const [movementTotal, setMovementTotal] = useState(0);
+  const [movementLoading, setMovementLoading] = useState(false);
+  const [movementError, setMovementError] = useState('');
   const showFinancials = canViewStockMovementFinancials(currentUser, isAdmin);
+
+  const activeRange = useMemo(() => {
+    if (rangePreset === '3M') return { ...getRollingStockMovementRange(3, todayKey), mode: 'dates' as const };
+    if (rangePreset === '6M') return { ...getRollingStockMovementRange(6, todayKey), mode: 'dates' as const };
+    if (rangePreset === 'CUSTOM' && appliedCustomRange) return {
+      ...appliedCustomRange,
+      days: countInclusiveDays(appliedCustomRange.from, appliedCustomRange.to),
+      mode: 'dates' as const
+    };
+    const days = Number.parseInt(rangePreset, 10) || 1;
+    return { days, from: '', to: '', mode: 'days' as const };
+  }, [appliedCustomRange, rangePreset, todayKey]);
+  const days = activeRange.days;
+  const periodCaption = rangePreset === '3M'
+    ? '3-month total'
+    : rangePreset === '6M'
+      ? '6-month total'
+      : rangePreset === 'CUSTOM'
+        ? 'Custom range total'
+        : days === 1 ? 'Today' : `${days}-day total`;
+  const periodLabel = rangePreset === '3M'
+    ? 'Last 3 months'
+    : rangePreset === '6M'
+      ? 'Last 6 months'
+      : rangePreset === 'CUSTOM' && activeRange.from && activeRange.to
+        ? `${shortDate(activeRange.from)} to ${shortDate(activeRange.to)}`
+        : days === 1 ? 'Today' : `Last ${days} days`;
+  const isTodayView = rangePreset === '1D';
+
+  const selectPreset = (preset: Exclude<StockMovementRangePreset, 'CUSTOM'>) => {
+    setRangePreset(preset);
+    setRangePickerOpen(false);
+    setRangeError('');
+  };
+
+  const applyCustomRange = () => {
+    if (!customFrom || !customTo) {
+      setRangeError('Choose both a start and end date.');
+      return;
+    }
+    const selectedDays = countInclusiveDays(customFrom, customTo);
+    if (selectedDays < 1) {
+      setRangeError('The start date must be before the end date.');
+      return;
+    }
+    if (selectedDays > 366) {
+      setRangeError('Choose a date range of 366 days or less.');
+      return;
+    }
+    setAppliedCustomRange({ from: customFrom, to: customTo });
+    setRangePreset('CUSTOM');
+    setRangePickerOpen(false);
+    setRangeError('');
+  };
 
   useEffect(() => {
     setFinancialValuesVisible(false);
@@ -157,7 +264,9 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
         setSummary(null);
       }
       try {
-        const next = await fetchStockMovementSummary(days);
+        const next = activeRange.mode === 'dates'
+          ? await fetchStockMovementSummaryByDateRange(activeRange.from, activeRange.to)
+          : await fetchStockMovementSummary(activeRange.days);
         if (!cancelled) {
           setSummary(next);
           setError('');
@@ -174,7 +283,44 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
       cancelled = true;
       window.clearInterval(interval);
     };
-  }, [days, showFinancials]);
+  }, [activeRange.days, activeRange.from, activeRange.mode, activeRange.to, showFinancials]);
+
+  const movementPageSize = 25;
+  useEffect(() => {
+    if (!fullView) return;
+    let cancelled = false;
+    const timer = window.setTimeout(async () => {
+      setMovementLoading(true);
+      try {
+        const result = await fetchStockMovementLedger({
+          days: activeRange.mode === 'days' ? activeRange.days : undefined,
+          from: activeRange.mode === 'dates' ? activeRange.from : undefined,
+          to: activeRange.mode === 'dates' ? activeRange.to : undefined,
+          eventType: movementType === 'ALL' ? '' : movementType as any,
+          search: movementQuery,
+          page: movementPage,
+          pageSize: movementPageSize
+        });
+        if (!cancelled) {
+          setMovementRows(result.rows);
+          setMovementTotal(result.total);
+          setMovementError('');
+        }
+      } catch (reason) {
+        if (!cancelled) {
+          setMovementRows([]);
+          setMovementTotal(0);
+          setMovementError(reason instanceof Error ? reason.message : 'Stock movements could not be loaded.');
+        }
+      } finally {
+        if (!cancelled) setMovementLoading(false);
+      }
+    }, movementQuery.trim() ? 250 : 0);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [activeRange.days, activeRange.from, activeRange.mode, activeRange.to, fullView, movementPage, movementQuery, movementType]);
 
   const maxProductUnits = useMemo(() => Math.max(1, ...(summary?.topItems.map((item) => item.units) || [1])), [summary]);
   const maxTyreUnits = useMemo(() => Math.max(1, ...(summary?.topTyres.map((item) => item.units) || [1])), [summary]);
@@ -188,31 +334,15 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
   const netStockFlow = (summary?.restockedUnits || 0) + (summary?.refundUnits || 0) - (summary?.soldUnits || 0);
   const movementVolume = (summary?.soldUnits || 0) + (summary?.restockedUnits || 0);
   const soldShare = movementVolume ? (summary?.soldUnits || 0) / movementVolume * 100 : 0;
-  const chartDensityLabel = days >= 30 ? 'Grouped into five-day blocks' : 'Daily movement';
-  const filteredMovements = useMemo(() => {
-    const normalizedQuery = movementQuery.trim().toUpperCase();
-    return (summary?.movements || []).filter((movement) => {
-      if (movementType !== 'ALL' && movement.eventType !== movementType) return false;
-      if (!normalizedQuery) return true;
-      return [
-        movement.productDescription,
-        movement.productType,
-        movement.location,
-        movement.actor,
-        movement.terminalOrSheet,
-        movement.source
-      ].some((value) => value.toUpperCase().includes(normalizedQuery));
-    });
-  }, [movementQuery, movementType, summary]);
-  const movementPageSize = 25;
-  const movementPageCount = Math.max(1, Math.ceil(filteredMovements.length / movementPageSize));
-  const visibleMovements = useMemo(() => (
-    filteredMovements.slice((movementPage - 1) * movementPageSize, movementPage * movementPageSize)
-  ), [filteredMovements, movementPage]);
+  const chartDensityLabel = days >= 150
+    ? 'Grouped into two-week blocks'
+    : days >= 60 ? 'Grouped into weekly blocks' : days >= 30 ? 'Grouped into five-day blocks' : 'Daily movement';
+  const movementPageCount = Math.max(1, Math.ceil(movementTotal / movementPageSize));
+  const visibleMovements = movementRows;
 
   useEffect(() => {
     setMovementPage(1);
-  }, [days, movementQuery, movementType]);
+  }, [activeRange.days, activeRange.from, activeRange.mode, activeRange.to, movementQuery, movementType]);
 
   useEffect(() => {
     setMovementPage((current) => Math.min(current, movementPageCount));
@@ -239,7 +369,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
     }
   };
 
-  const metrics = buildStockMovementMetrics(summary, showFinancials, days);
+  const metrics = buildStockMovementMetrics(summary, showFinancials, days, periodCaption);
 
   return (
     <section aria-labelledby="stock-movement-heading" className={fullView ? 'min-h-full' : undefined}>
@@ -251,10 +381,30 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
           <p className="mt-1 text-sm text-gp-text-muted">Sales, restocks and verified portal or reconstructed Google Sheet changes in South African time.</p>
         </div>
         <div className="flex flex-wrap items-end gap-2">
-          <div className="flex h-10 rounded-md border border-gp-border bg-gp-panel p-1">
-            {[1, 5, 15, 30].map((option) => <button key={option} type="button" onClick={() => setDays(option)} aria-pressed={days === option} className={`min-w-12 rounded px-2 text-[10px] font-black uppercase ${days === option ? 'bg-gp-red text-white' : 'text-gp-text-muted hover:text-white'}`}>{option === 1 ? '1 Day' : `${option}D`}</button>)}
+          <div className="grid min-h-10 grid-cols-3 rounded-md border border-gp-border bg-gp-panel p-1 sm:flex">
+            {rangeOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => selectPreset(option.value)}
+                aria-pressed={rangePreset === option.value}
+                className={`min-w-12 rounded px-2 py-2 text-[10px] font-black uppercase transition ${rangePreset === option.value ? 'bg-gp-red text-white' : 'text-gp-text-muted hover:bg-white/5 hover:text-white'}`}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
-          <input type="date" value={reportDate} max={getTodayKey()} onChange={(event) => setReportDate(event.target.value)} className="h-10 rounded-md border border-gp-border bg-gp-input px-3 text-xs font-bold text-white focus:border-gp-red focus:outline-none" aria-label="Daily stock report date" />
+          <button
+            type="button"
+            onClick={() => setRangePickerOpen((open) => !open)}
+            aria-expanded={rangePickerOpen}
+            aria-pressed={rangePreset === 'CUSTOM'}
+            className={`inline-flex h-10 items-center gap-2 rounded-md border px-3 text-[10px] font-black uppercase transition ${rangePreset === 'CUSTOM' ? 'border-gp-red bg-red-500/10 text-white' : 'border-gp-border bg-gp-panel text-gp-text-muted hover:border-gp-red hover:text-white'}`}
+          >
+            <CalendarDays className="h-4 w-4" aria-hidden="true" />
+            Date range
+          </button>
+          <input type="date" value={reportDate} max={todayKey} onChange={(event) => setReportDate(event.target.value)} className="h-10 rounded-md border border-gp-border bg-gp-input px-3 text-xs font-bold text-white focus:border-gp-red focus:outline-none" aria-label="Daily stock report date" />
           <button type="button" onClick={() => void downloadReport()} disabled={reporting} className="inline-flex h-10 items-center gap-2 rounded-md bg-gp-red px-4 text-xs font-black uppercase tracking-wider text-white transition hover:bg-red-700 disabled:opacity-50">
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0-3-3m3 3 3-3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2h-5l-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
             {reporting ? 'Building PDF...' : 'Daily PDF'}
@@ -262,15 +412,32 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
         </div>
       </div>
 
-      {error ? <div className="mb-3 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-300">{error}</div> : null}
-      <div className={days === 1
+      {rangePickerOpen ? (
+        <div className="stock-movement-enter mb-4 grid gap-3 rounded-lg border border-gp-border bg-gp-panel p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
+          <label className="min-w-0">
+            <span className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gp-text-muted">From date</span>
+            <input type="date" value={customFrom} max={customTo || todayKey} onChange={(event) => setCustomFrom(event.target.value)} className="h-10 w-full rounded-md border border-gp-border bg-gp-input px-3 text-xs font-bold text-white outline-none transition focus:border-gp-red" />
+          </label>
+          <label className="min-w-0">
+            <span className="mb-1.5 block text-[9px] font-black uppercase tracking-wider text-gp-text-muted">To date</span>
+            <input type="date" value={customTo} min={customFrom} max={todayKey} onChange={(event) => setCustomTo(event.target.value)} className="h-10 w-full rounded-md border border-gp-border bg-gp-input px-3 text-xs font-bold text-white outline-none transition focus:border-gp-red" />
+          </label>
+          <div className="flex gap-2 sm:justify-end">
+            <button type="button" onClick={() => setRangePickerOpen(false)} className="h-10 flex-1 rounded-md border border-gp-border px-4 text-[10px] font-black uppercase text-gp-text-muted transition hover:text-white sm:flex-none">Cancel</button>
+            <button type="button" onClick={applyCustomRange} className="h-10 flex-1 rounded-md bg-gp-red px-5 text-[10px] font-black uppercase text-white transition hover:bg-red-700 sm:flex-none">Apply range</button>
+          </div>
+        </div>
+      ) : null}
+
+      {rangeError || error ? <div className="mb-3 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-300">{rangeError || error}</div> : null}
+      <div className={isTodayView
         ? `grid grid-cols-2 gap-3 ${showFinancials ? 'lg:grid-cols-3 xl:grid-cols-6' : 'lg:grid-cols-4'}`
         : `grid grid-cols-2 overflow-hidden rounded-lg border border-gp-border bg-gp-panel ${showFinancials ? 'lg:grid-cols-3 xl:grid-cols-6' : 'lg:grid-cols-4'}`
       } aria-busy={loading}>
         {metrics.map((metric, index) => (
           <div
             key={metric.label}
-            className={days === 1
+            className={isTodayView
               ? 'min-w-0 rounded-lg border border-gp-border bg-gp-panel p-3.5'
               : `min-w-0 border-b border-r border-gp-border p-4 ${index === 0 ? 'bg-gp-black' : 'bg-gp-panel'}`
             }
@@ -309,7 +476,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
 
       <div className="mt-3 grid gap-3 xl:grid-cols-[minmax(0,2fr)_minmax(260px,1fr)]">
         <div className="overflow-hidden rounded-lg border border-gp-border bg-gp-panel">
-          {days === 1 ? (
+          {isTodayView ? (
             <>
               <div className="flex flex-col gap-4 border-b border-gp-border bg-gp-black p-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
@@ -351,7 +518,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
                 <div>
                   <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider text-gp-text-muted">
                     <Activity className="h-3.5 w-3.5 text-gp-red" aria-hidden="true" />
-                    {days}-day sales activity
+                    {periodLabel} sales activity
                   </div>
                   <div className="mt-2 flex items-baseline gap-2">
                     {loading ? <span className="block h-12 w-24 animate-pulse rounded-sm bg-slate-700/70" aria-label="Loading sales total" /> : <strong className="stock-movement-enter font-mono text-4xl font-black text-gp-red sm:text-5xl">{summary?.soldUnits ?? 0}</strong>}
@@ -440,7 +607,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
         <div className="rounded-lg border border-gp-border bg-gp-panel p-4">
           <div className="flex items-center justify-between gap-3">
             <p className="text-[10px] font-black uppercase tracking-wider text-white">Top 10 tyres sold</p>
-            <span className="text-[9px] font-black uppercase text-gp-text-muted">{days === 1 ? 'Today' : `${days} days`}</span>
+            <span className="text-[9px] font-black uppercase text-gp-text-muted">{periodLabel}</span>
           </div>
           <div className="mt-3 space-y-2">
             {(summary?.topTyres || []).length ? summary?.topTyres.slice(0, fullView ? 10 : 6).map((item, index) => (
@@ -472,7 +639,7 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
             <div>
               <p className="text-[10px] font-black uppercase tracking-wider text-white">All stock movements</p>
               <p className="mt-1 text-xs text-gp-text-muted">
-                {filteredMovements.length} {filteredMovements.length === 1 ? 'movement' : 'movements'} in the selected {days === 1 ? 'day' : `${days} days`}
+                {movementTotal} {movementTotal === 1 ? 'movement' : 'movements'} in {periodLabel.toLowerCase()}
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -571,9 +738,11 @@ export const StockMovementDashboard: React.FC<StockMovementDashboardProps> = ({ 
             ))}
           </div>
 
-          {!visibleMovements.length ? <p className="px-4 py-16 text-center text-xs font-bold text-gp-text-muted">No stock movements match these filters.</p> : null}
+          {movementError ? <p className="border-t border-red-500/20 bg-red-500/10 px-4 py-4 text-center text-xs font-bold text-red-300">{movementError}</p> : null}
+          {movementLoading ? <p className="px-4 py-16 text-center text-xs font-bold text-gp-text-muted">Loading stock movements...</p> : null}
+          {!movementLoading && !movementError && !visibleMovements.length ? <p className="px-4 py-16 text-center text-xs font-bold text-gp-text-muted">No stock movements match these filters.</p> : null}
 
-          {filteredMovements.length > movementPageSize ? (
+          {movementTotal > movementPageSize ? (
             <div className="flex items-center justify-between gap-3 border-t border-gp-border bg-gp-black px-4 py-3">
               <p className="text-[10px] font-bold uppercase text-gp-text-muted">Page {movementPage} of {movementPageCount}</p>
               <div className="flex gap-2">

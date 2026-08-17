@@ -3,6 +3,7 @@ import type {
   InventoryChangeEvent,
   InventoryChangeEventType,
   InventoryChangeSource,
+  StockMovementLedgerPage,
   StockMovementSummary
 } from './types';
 
@@ -42,6 +43,46 @@ export const fetchProductHistory = async (
 export const fetchStockMovementSummary = async (days = 1): Promise<StockMovementSummary> => {
   const data = await readJson(await fetch(`/api/staff-session?resource=stock-movement&days=${days}`, { credentials: 'same-origin' }));
   return data.summary;
+};
+
+export const fetchStockMovementSummaryByDateRange = async (from: string, to: string): Promise<StockMovementSummary> => {
+  const params = new URLSearchParams({ resource: 'stock-movement', from, to });
+  const data = await readJson(await fetch(`/api/staff-session?${params}`, { credentials: 'same-origin' }));
+  return data.summary;
+};
+
+export interface StockMovementLedgerFilters {
+  days?: number;
+  from?: string;
+  to?: string;
+  eventType?: InventoryChangeEventType | '';
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export const fetchStockMovementLedger = async (filters: StockMovementLedgerFilters): Promise<StockMovementLedgerPage> => {
+  const params = new URLSearchParams({
+    resource: 'stock-movement',
+    mode: 'movements',
+    page: String(filters.page || 1),
+    pageSize: String(filters.pageSize || 25)
+  });
+  if (filters.from && filters.to) {
+    params.set('from', filters.from);
+    params.set('to', filters.to);
+  } else {
+    params.set('days', String(filters.days || 1));
+  }
+  if (filters.eventType) params.set('eventType', filters.eventType);
+  if (filters.search?.trim()) params.set('search', filters.search.trim());
+  const data = await readJson(await fetch(`/api/staff-session?${params}`, { credentials: 'same-origin' }));
+  return {
+    rows: Array.isArray(data.rows) ? data.rows : [],
+    total: Number(data.total) || 0,
+    page: Number(data.page) || 1,
+    pageSize: Number(data.pageSize) || filters.pageSize || 25
+  };
 };
 
 export const fetchDailyStockMovementReport = async (date: string): Promise<DailySalesReportRow[]> => {

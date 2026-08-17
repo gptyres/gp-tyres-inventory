@@ -3,6 +3,7 @@ import type { InventoryChangeEvent } from '../types';
 import {
   buildStockMovementLedgerRows,
   buildDailySalesReportRows,
+  getJohannesburgDateRange,
   getJohannesburgDayBounds,
   summarizeStockMovements
 } from './inventoryHistory';
@@ -77,6 +78,34 @@ describe('inventory history summaries', () => {
       start: '2026-08-14T22:00:00.000Z',
       end: '2026-08-15T22:00:00.000Z'
     });
+  });
+
+  it('builds inclusive six-month custom ranges in South African time', () => {
+    expect(getJohannesburgDateRange('2026-02-17', '2026-08-17')).toEqual({
+      days: 182,
+      from: '2026-02-16T22:00:00.000Z',
+      to: '2026-08-17T22:00:00.000Z'
+    });
+    expect(() => getJohannesburgDateRange('2026-08-17', '2026-02-17')).toThrow(/start date/i);
+  });
+
+  it('keeps every day in a six-month trend and includes older movement events', () => {
+    const range = getJohannesburgDateRange('2026-02-17', '2026-08-17');
+    const summary = summarizeStockMovements([
+      event({
+        id: 'march-sale',
+        occurredAt: '2026-03-01T08:00:00.000Z',
+        quantityBefore: 8,
+        quantityAfter: 5,
+        quantityDelta: -3
+      })
+    ], range.days, new Date('2026-08-17T10:00:00.000Z'), range, false);
+
+    expect(summary.daily).toHaveLength(182);
+    expect(summary.daily[0].date).toBe('2026-02-17');
+    expect(summary.daily.at(-1)?.date).toBe('2026-08-17');
+    expect(summary.daily.find((day) => day.date === '2026-03-01')?.soldUnits).toBe(3);
+    expect(summary.soldUnits).toBe(3);
   });
 
   it('uses current prices in daily report rows and retains reconstructed labels', () => {

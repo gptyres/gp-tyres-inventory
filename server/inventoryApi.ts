@@ -6,7 +6,9 @@ import { canViewStockMovementFinancials, maskStockMovementFinancials } from '../
 import {
   fetchDailySalesReport,
   fetchInventoryHistory,
+  fetchStockMovementLedgerPage,
   fetchStockMovementSummary,
+  fetchStockMovementSummaryByDateRange,
   getJohannesburgDateKey
 } from './inventoryHistory.js';
 
@@ -16,6 +18,7 @@ const cleanText = (value: unknown, maximum = 180) => (
 
 const one = (value: unknown) => Array.isArray(value) ? value[0] : value;
 const allowedTypes = new Set(['TYRE', 'WHEEL', 'COILOVER', 'BATTERY']);
+const movementEventTypes = new Set(['SALE', 'REFUND', 'RESERVE', 'RESTOCK', 'EDIT', 'ADD', 'DELETE']);
 
 const requireSession = (request: any, response: any) => {
   const session = verifyStaffSession(request);
@@ -171,17 +174,39 @@ export const handleStockMovement = async (request: any, response: any) => {
       const date = String(one(request.query?.date) || getJohannesburgDateKey());
       return response.status(200).json({ ok: true, date, rows: await fetchDailySalesReport(date) });
     }
-    const days = Math.min(30, Math.max(1, Number(one(request.query?.days)) || 1));
-    const summary = await fetchStockMovementSummary(days);
+    const fromDate = cleanText(one(request.query?.from), 10);
+    const toDate = cleanText(one(request.query?.to), 10);
+    if ((fromDate && !toDate) || (!fromDate && toDate)) {
+      return response.status(400).json({ error: 'Both stock movement dates are required.' });
+    }
+    const days = Math.min(366, Math.max(1, Number(one(request.query?.days)) || 1));
+    if (mode === 'movements') {
+      const requestedType = cleanText(one(request.query?.eventType), 16).toUpperCase();
+      const result = await fetchStockMovementLedgerPage({
+        days,
+        fromDate: fromDate || undefined,
+        toDate: toDate || undefined,
+        eventType: movementEventTypes.has(requestedType) ? requestedType as any : '',
+        search: cleanText(one(request.query?.search), 120),
+        page: Number(one(request.query?.page)) || 1,
+        pageSize: Number(one(request.query?.pageSize)) || 25
+      });
+      return response.status(200).json({ ok: true, ...result });
+    }
+    const summary = fromDate && toDate
+      ? await fetchStockMovementSummaryByDateRange(fromDate, toDate)
+      : await fetchStockMovementSummary(days);
     const showFinancials = canViewStockMovementFinancials(
       session.terminalId,
       Boolean(verifyAdminSession(request))
     );
     return response.status(200).json({
       ok: true,
-      summary: maskStockMovementFinancials(summary, showFinancials)
+      summary: maskStockMovementFinancials({ ...summary, movements: [] }, showFinancials)
     });
   } catch (error) {
-    return response.status(500).json({ error: error instanceof Error ? error.message : 'Stock movement could not be loaded.' });
+    const message = error instanceof Error ? error.message : 'Stock movement could not be loaded.';
+    const isRangeError = /date|range|366 days/i.test(message);
+    return response.status(isRangeError ? 400 : 500).json({ error: message });
   }
 };

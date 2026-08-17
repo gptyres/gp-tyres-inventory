@@ -13,6 +13,9 @@ import { createSupabaseAdmin } from './supabaseAdmin.js';
 export const STOCK_HISTORY_TIMEZONE = 'Africa/Johannesburg';
 const JOHANNESBURG_OFFSET = '+02:00';
 const HISTORY_PAGE_SIZE = 1000;
+const MAX_STOCK_MOVEMENT_DAYS = 366;
+const HISTORY_PAGE_CONCURRENCY = 5;
+const HISTORY_RANGE_CACHE_MS = 15000;
 const TERMINAL_STAFF_NAMES: Record<string, string> = {
   GP1: 'Noor',
   GP2: 'Rafiek',
@@ -51,7 +54,7 @@ export const getJohannesburgDayBounds = (dateKey: string) => {
 };
 
 export const getJohannesburgRange = (days: number, now = new Date()) => {
-  const safeDays = Math.min(30, Math.max(1, Math.trunc(days) || 15));
+  const safeDays = Math.min(MAX_STOCK_MOVEMENT_DAYS, Math.max(1, Math.trunc(days) || 15));
   const toDate = getJohannesburgDateKey(now);
   const todayStart = new Date(`${toDate}T00:00:00${JOHANNESBURG_OFFSET}`);
   const fromDate = new Date(todayStart.getTime() - (safeDays - 1) * 24 * 60 * 60 * 1000);
@@ -60,6 +63,17 @@ export const getJohannesburgRange = (days: number, now = new Date()) => {
     from: fromDate.toISOString(),
     to: new Date(todayStart.getTime() + 24 * 60 * 60 * 1000).toISOString()
   };
+};
+
+export const getJohannesburgDateRange = (fromDate: string, toDate: string) => {
+  const fromBounds = getJohannesburgDayBounds(fromDate);
+  const toBounds = getJohannesburgDayBounds(toDate);
+  const fromTime = new Date(fromBounds.start).getTime();
+  const toStartTime = new Date(toBounds.start).getTime();
+  if (fromTime > toStartTime) throw new Error('The start date must be before the end date.');
+  const days = Math.round((toStartTime - fromTime) / 86400000) + 1;
+  if (days > MAX_STOCK_MOVEMENT_DAYS) throw new Error('Stock movement date ranges cannot exceed 366 days.');
+  return { days, from: fromBounds.start, to: toBounds.end };
 };
 
 export const describeInventorySnapshot = (snapshot: Record<string, unknown>) => {
@@ -146,24 +160,57 @@ export const mapInventoryChangeRow = (row: Record<string, any>): InventoryChange
   metadata: row.metadata || {}
 });
 
-const loadAllEvents = async (from: string, to: string) => {
+const loadEventRange = async (from: string, to: string) => {
   const supabase = createSupabaseAdmin();
+  const { count, error: countError } = await supabase
+    .from('inventory_change_events')
+    .select('id', { count: 'exact', head: true })
+    .eq('organization_id', GP_ORGANIZATION_ID)
+    .gte('occurred_at', from)
+    .lt('occurred_at', to);
+  if (countError) throw new Error(countError.message);
+
   const rows: Record<string, any>[] = [];
-  for (let offset = 0; ; offset += HISTORY_PAGE_SIZE) {
-    const { data, error } = await supabase
-      .from('inventory_change_events')
-      .select('*')
-      .eq('organization_id', GP_ORGANIZATION_ID)
-      .gte('occurred_at', from)
-      .lt('occurred_at', to)
-      .order('occurred_at', { ascending: true })
-      .range(offset, offset + HISTORY_PAGE_SIZE - 1);
-    if (error) throw new Error(error.message);
-    const page = (data || []) as Record<string, any>[];
-    rows.push(...page);
-    if (page.length < HISTORY_PAGE_SIZE) break;
+  const totalPages = Math.ceil((count || 0) / HISTORY_PAGE_SIZE);
+  for (let pageStart = 0; pageStart < totalPages; pageStart += HISTORY_PAGE_CONCURRENCY) {
+    const pages = await Promise.all(Array.from(
+      { length: Math.min(HISTORY_PAGE_CONCURRENCY, totalPages - pageStart) },
+      async (_, pageOffset) => {
+        const page = pageStart + pageOffset;
+        const offset = page * HISTORY_PAGE_SIZE;
+        const { data, error } = await supabase
+          .from('inventory_change_events')
+          .select('*')
+          .eq('organization_id', GP_ORGANIZATION_ID)
+          .gte('occurred_at', from)
+          .lt('occurred_at', to)
+          .order('occurred_at', { ascending: true })
+          .range(offset, offset + HISTORY_PAGE_SIZE - 1);
+        if (error) throw new Error(error.message);
+        return (data || []) as Record<string, any>[];
+      }
+    ));
+    pages.forEach((page) => rows.push(...page));
   }
   return rows.map(mapInventoryChangeRow);
+};
+
+const eventRangeCache = new Map<string, { expiresAt: number; request: Promise<InventoryChangeEvent[]> }>();
+
+const loadAllEvents = (from: string, to: string) => {
+  const key = `${from}|${to}`;
+  const now = Date.now();
+  const cached = eventRangeCache.get(key);
+  if (cached && cached.expiresAt > now) return cached.request;
+  for (const [cacheKey, entry] of eventRangeCache) {
+    if (entry.expiresAt <= now) eventRangeCache.delete(cacheKey);
+  }
+  const request = loadEventRange(from, to).catch((error) => {
+    eventRangeCache.delete(key);
+    throw error;
+  });
+  eventRangeCache.set(key, { expiresAt: now + HISTORY_RANGE_CACHE_MS, request });
+  return request;
 };
 
 export const fetchInventoryHistory = async (query: InventoryHistoryQuery) => {
@@ -208,9 +255,11 @@ const emptyDay = (date: string): StockMovementDay => ({
 export const summarizeStockMovements = (
   events: InventoryChangeEvent[],
   days: number,
-  now = new Date()
+  now = new Date(),
+  selectedRange?: { days: number; from: string; to: string },
+  includeMovements = true
 ): StockMovementSummary => {
-  const range = getJohannesburgRange(days, now);
+  const range = selectedRange || getJohannesburgRange(days, now);
   const dailyMap = new Map<string, StockMovementDay>();
   for (let index = 0; index < range.days; index += 1) {
     const date = getJohannesburgDateKey(new Date(new Date(range.from).getTime() + index * 86400000));
@@ -295,13 +344,62 @@ export const summarizeStockMovements = (
       }))
       .sort((left, right) => right.units - left.units || left.description.localeCompare(right.description))
       .slice(0, 10),
-    movements: buildStockMovementLedgerRows(events)
+    movements: includeMovements ? buildStockMovementLedgerRows(events) : []
   };
 };
 
 export const fetchStockMovementSummary = async (days: number) => {
   const range = getJohannesburgRange(days);
-  return summarizeStockMovements(await loadAllEvents(range.from, range.to), range.days);
+  return summarizeStockMovements(await loadAllEvents(range.from, range.to), range.days, new Date(), range, false);
+};
+
+export const fetchStockMovementSummaryByDateRange = async (fromDate: string, toDate: string) => {
+  const range = getJohannesburgDateRange(fromDate, toDate);
+  return summarizeStockMovements(
+    await loadAllEvents(range.from, range.to),
+    range.days,
+    new Date(),
+    range,
+    false
+  );
+};
+
+export interface StockMovementLedgerQuery {
+  days?: number;
+  fromDate?: string;
+  toDate?: string;
+  eventType?: InventoryChangeEventType | '';
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export const fetchStockMovementLedgerPage = async (query: StockMovementLedgerQuery) => {
+  const range = query.fromDate && query.toDate
+    ? getJohannesburgDateRange(query.fromDate, query.toDate)
+    : getJohannesburgRange(query.days || 1);
+  const normalizedSearch = cleanText(query.search).toUpperCase();
+  const pageSize = Math.min(100, Math.max(1, Math.trunc(query.pageSize || 25)));
+  const page = Math.max(1, Math.trunc(query.page || 1));
+  const rows = buildStockMovementLedgerRows(await loadAllEvents(range.from, range.to)).filter((movement) => {
+    if (query.eventType && movement.eventType !== query.eventType) return false;
+    if (!normalizedSearch) return true;
+    return [
+      movement.productDescription,
+      movement.productType,
+      movement.location,
+      movement.actor,
+      movement.terminalOrSheet,
+      movement.source
+    ].some((value) => value.toUpperCase().includes(normalizedSearch));
+  });
+  const offset = (page - 1) * pageSize;
+  return {
+    rows: rows.slice(offset, offset + pageSize),
+    total: rows.length,
+    page,
+    pageSize
+  };
 };
 
 export const buildDailySalesReportRows = (

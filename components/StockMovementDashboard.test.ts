@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { buildStockMovementChartBuckets, buildStockMovementMetrics, getStockMovementMetricDisplayValue } from './StockMovementDashboard';
+import {
+  buildStockMovementChartBuckets,
+  buildStockMovementMetrics,
+  getRollingStockMovementRange,
+  getStockMovementMetricDisplayValue
+} from './StockMovementDashboard';
 import { canViewStockMovementFinancials } from '../stockMovementAccess';
 import type { StockMovementSummary } from '../types';
 
@@ -51,6 +56,11 @@ describe('stock movement dashboard visibility', () => {
     expect(metrics.find((metric) => metric.label === 'Edits')?.value).toBe(4);
     expect(String(metrics.find((metric) => metric.label === 'Retail value')?.value).replace(/\s/g, ' ')).toBe('R 18 500');
   });
+
+  it('uses a clear caption for calendar-month ranges', () => {
+    const metrics = buildStockMovementMetrics(summary({ days: 182 }), false, 182, '6-month total');
+    expect(metrics.every((metric) => metric.caption === '6-month total')).toBe(true);
+  });
 });
 
 describe('stock movement chart density', () => {
@@ -75,5 +85,29 @@ describe('stock movement chart density', () => {
     expect(buckets).toHaveLength(2);
     expect(buckets[0]).toMatchObject({ label: '01-05 Aug', fullLabel: '01 Aug to 05 Aug', soldUnits: 15, restockedUnits: 5, dayCount: 5 });
     expect(buckets[1]).toMatchObject({ soldUnits: 40, restockedUnits: 5, dayCount: 5 });
+  });
+
+  it('groups six-month charts into readable two-week blocks', () => {
+    const daily = Array.from({ length: 28 }, (_, index) => day(
+      `2026-07-${String(index + 1).padStart(2, '0')}`,
+      1,
+      2
+    ));
+    const buckets = buildStockMovementChartBuckets(daily, 182);
+    expect(buckets).toHaveLength(2);
+    expect(buckets[0]).toMatchObject({ soldUnits: 14, restockedUnits: 28, dayCount: 14 });
+  });
+
+  it('calculates rolling calendar-month ranges instead of fixed thirty-day months', () => {
+    expect(getRollingStockMovementRange(3, '2026-08-17')).toEqual({
+      from: '2026-05-17',
+      to: '2026-08-17',
+      days: 93
+    });
+    expect(getRollingStockMovementRange(6, '2026-08-17')).toEqual({
+      from: '2026-02-17',
+      to: '2026-08-17',
+      days: 182
+    });
   });
 });
