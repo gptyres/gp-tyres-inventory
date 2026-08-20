@@ -67,7 +67,9 @@ export default async function handler(request: any, response: any) {
     return response.status(400).json({ error: 'Invalid JSON request.' });
   }
   if (routingBody.action === 'SUBMIT_FEEDBACK') return feedbackHandler(request, response);
-  if (routingBody.action === 'FIND_TYRE_VISUAL') return tyreVisualHandler(request, response);
+  if (routingBody.action === 'FIND_TYRE_VISUAL' || routingBody.action === 'IMPORT_SUPPLIER_VISUAL_URL') {
+    return tyreVisualHandler(request, response);
+  }
   if (routingBody.action === 'APPROVE_FEEDBACK' || routingBody.action === 'REJECT_FEEDBACK') return adminHandler(request, response);
 
   const staffSession = verifyStaffSession(request);

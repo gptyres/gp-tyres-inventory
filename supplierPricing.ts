@@ -12,6 +12,10 @@ export const calculateVatInclusiveSellingPrice = (costPriceExVat: number): numbe
   )
 );
 
+export const calculateEibachSellingPrice = (costPrice: number): number => (
+  Math.round((Math.max(0, Number.isFinite(costPrice) ? costPrice : 0) * 1.25) / 50) * 50
+);
+
 const VAT_INCLUSIVE_LIVE_PRICE_CATALOGS = new Set<SupplierCatalog>([
   'ALINE',
   'NDT',

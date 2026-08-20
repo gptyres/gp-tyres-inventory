@@ -125,6 +125,7 @@ const formatOffset = (value: string): string => {
 const getRawLocation = (item: InventoryItem): string => {
   if (item.type === ProductType.TYRE) return cleanPart((item as TyreProduct).location);
   if (item.type === ProductType.WHEEL) return cleanPart((item as WheelProduct).location);
+  if (item.type === ProductType.COILOVER) return cleanPart((item as CoiloverProduct).location);
   return '';
 };
 
@@ -204,11 +205,19 @@ export const mapInventoryItemToReportRow = (
     const coilover = item as CoiloverProduct;
     return {
       ...common,
-      type: 'Coilover',
+      type: 'Lowering Kit',
       mainSpec: cleanPart(coilover.vehicleCompatibility) || '-',
       brandModel: uniqueParts([coilover.brand, coilover.series]).join(' / ') || '-',
-      details: '-',
-      location: 'General stock'
+      details: uniqueParts([
+        coilover.vehicleBrand,
+        coilover.vehicleModel,
+        coilover.yearRange,
+        coilover.frontLowering ? `Front ${cleanPart(coilover.frontLowering)}` : '',
+        coilover.rearLowering ? `Rear ${cleanPart(coilover.rearLowering)}` : '',
+        coilover.supplierStockCode ? `SKU ${cleanPart(coilover.supplierStockCode)}` : '',
+        coilover.stockStatus
+      ]).join(' | ') || '-',
+      location: getInventoryReportLocation(item)
     };
   }
 

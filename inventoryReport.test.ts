@@ -70,6 +70,26 @@ const coilover: CoiloverProduct = {
   vehicleCompatibility: 'VW GOLF 7'
 };
 
+const eibachKit: CoiloverProduct = {
+  ...coilover,
+  id: 'eibach-3648',
+  brand: 'EIBACH',
+  series: 'PRO-KIT',
+  vehicleCompatibility: 'BMW 7 Series E38 730i, 735i, 740i',
+  vehicleBrand: 'BMW',
+  vehicleModel: '7 Series E38',
+  frontLowering: '30mm',
+  rearLowering: '30mm',
+  stockStatus: '1 in stock',
+  location: 'Eibach SA',
+  stockByLocation: { 'Eibach SA': 1 },
+  supplierName: 'EIBACH',
+  supplierStockCode: '2049-140',
+  quantity: 1,
+  costPrice: 9655,
+  sellingPrice: 12050
+};
+
 const battery: BatteryProduct = {
   id: 'dixon-646',
   type: ProductType.BATTERY,
@@ -127,6 +147,12 @@ describe('inventory report row mapping', () => {
     const coiloverRow = mapInventoryItemToReportRow(coilover);
     expect(coiloverRow.mainSpec).toBe('VW GOLF 7');
     expect(coiloverRow.brandModel).toBe('ARC / YELLOW');
+
+    const eibachRow = mapInventoryItemToReportRow(eibachKit);
+    expect(eibachRow.type).toBe('Lowering Kit');
+    expect(eibachRow.details).toContain('Front 30mm');
+    expect(eibachRow.details).toContain('SKU 2049-140');
+    expect(eibachRow.location).toBe('Eibach SA: 1');
 
     const batteryRow = mapInventoryItemToReportRow(battery);
     expect(batteryRow.mainSpec).toBe('646');

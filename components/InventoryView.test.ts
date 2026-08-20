@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { formatBulkClipboardText, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupportedStaffImageMimeType, getWarehouseStockSummary, isSpecialItem } from './InventoryView';
-import { ProductType, type TyreProduct, type WheelProduct } from '../types';
+import { extractDroppedVisualUrl, formatBulkClipboardText, getCoiloverDetails, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupportedStaffImageMimeType, getWarehouseStockSummary, isSpecialItem } from './InventoryView';
+import { ProductType, type CoiloverProduct, type TyreProduct, type WheelProduct } from '../types';
 
 const supplierTyre: TyreProduct = {
   id: 'live-apex-cps60',
@@ -59,6 +59,55 @@ describe('supplier tyre visual drag and drop', () => {
 
   it('rejects non-image drops', () => {
     expect(getSupportedStaffImageMimeType({ name: 'supplier-pricing.pdf', type: 'application/pdf' })).toBe('');
+  });
+
+  it('accepts direct HTTPS images dragged from another browser tab', () => {
+    expect(extractDroppedVisualUrl({
+      html: '<a href="https://brand.example/product"><img src="https://cdn.example.com/tyres/at3g.webp?width=900" /></a>'
+    })).toBe('https://cdn.example.com/tyres/at3g.webp?width=900');
+    expect(extractDroppedVisualUrl({
+      uriList: '# first line is a comment\nhttps://cdn.example.com/wheels/dx381.png'
+    })).toBe('https://cdn.example.com/wheels/dx381.png');
+  });
+
+  it('rejects insecure or executable dragged URLs', () => {
+    expect(extractDroppedVisualUrl({ plainText: 'http://cdn.example.com/tyre.jpg' })).toBe('');
+    expect(extractDroppedVisualUrl({ uriList: 'javascript:alert(1)' })).toBe('');
+  });
+});
+
+describe('EIBACH lowering-kit card formatting', () => {
+  const loweringKit: CoiloverProduct = {
+    id: 'eibach-3648',
+    type: ProductType.COILOVER,
+    brand: 'EIBACH',
+    series: 'PRO-KIT',
+    vehicleCompatibility: 'BMW 7 Series 730i 735i 740i 750i 1994 - 2001',
+    vehicleBrand: 'BMW',
+    vehicleModel: '7 Series',
+    yearRange: '1994 - 2001',
+    frontLowering: '30mm',
+    rearLowering: '30mm',
+    stockStatus: '1 in stock',
+    location: 'Eibach SA',
+    stockByLocation: { 'Eibach SA': 1 },
+    quantity: 1,
+    costPrice: 9655,
+    sellingPrice: 12050,
+    supplierName: 'EIBACH',
+    supplierStockCode: '2049-140',
+    lastUpdated: '2026-08-20'
+  };
+
+  it('keeps the complete vehicle fitment on the main line', () => {
+    expect(getItemDisplayName(loweringKit)).toBe('BMW 7 Series 730i 735i 740i 750i 1994 - 2001');
+    expect(getItemSecondaryLine(loweringKit)).toBe('EIBACH PRO-KIT');
+  });
+
+  it('shows vehicle, lowering, and SKU details on the card', () => {
+    expect(getCoiloverDetails(loweringKit)).toBe(
+      'BMW / 7 Series / 1994 - 2001 / Front 30mm / Rear 30mm / SKU 2049-140'
+    );
   });
 });
 

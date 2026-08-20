@@ -74,6 +74,11 @@ describe('supplier markup pricing', () => {
     )).toBe(1400);
   });
 
+  it('does not add VAT to EIBACH cost pricing', () => {
+    expect(getSupplierCostIncludingVat(tyre(), 'EIBACH')).toBe(1000);
+    expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 25 }, 'EIBACH')).toBe(1250);
+  });
+
   it('preserves source selling prices in base mode without cloning the list', () => {
     const items = [tyre()];
     expect(applySupplierMarkup(items, { mode: 'BASE', value: 0 }, 'APEX')).toBe(items);

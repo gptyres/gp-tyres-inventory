@@ -87,7 +87,15 @@ const getInventoryMeta = (item: InventoryItem) => {
   }
   if (item.type === ProductType.BATTERY) return (item as BatteryProduct).batteryDescription;
   const coilover = item as CoiloverProduct;
-  return coilover.series;
+  return [
+    coilover.series,
+    coilover.vehicleBrand,
+    coilover.vehicleModel,
+    coilover.yearRange,
+    coilover.frontLowering ? `Front ${coilover.frontLowering}` : '',
+    coilover.rearLowering ? `Rear ${coilover.rearLowering}` : '',
+    coilover.stockStatus
+  ].filter(Boolean).join(' | ');
 };
 
 const getLineTotal = (item: CartItem) => {

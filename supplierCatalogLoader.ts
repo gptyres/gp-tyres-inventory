@@ -8,6 +8,7 @@ import {
   parseArcData,
   parseAttData,
   parseBridgestoneData,
+  parseEibachData,
   parseExclusiveTyresData,
   parseExoticData,
   parseMaxxisData,
@@ -44,6 +45,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'TUBESTONE',
   'EXOTIC',
   'ARC',
+  'EIBACH',
   'TREAD_ZONE',
   'SUMITOMO_DUNLOP',
   'TREADS_UNLIMITED',
@@ -71,6 +73,7 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   TUBESTONE: 'TUBESTONE',
   EXOTIC: 'EXOTIC',
   ARC: 'ARC',
+  EIBACH: 'EIBACH',
   TREAD_ZONE: 'TREAD ZONE',
   SUMITOMO_DUNLOP: 'SUMITOMO/DUNLOP',
   TREADS_UNLIMITED: 'TREADS UNLIMITED',
@@ -103,6 +106,7 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   TUBESTONE: 'tubestone',
   EXOTIC: 'exotic',
   ARC: 'arc',
+  EIBACH: 'eibach',
   TREAD_ZONE: 'treadzone',
   SUMITOMO_DUNLOP: 'sumitomo-dunlop',
   TREADS_UNLIMITED: 'treads',
@@ -344,6 +348,10 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     case 'ARC': {
       const { ARC_RAW_DATA } = await import('./supplier_data/arcData');
       return parseArcData(ARC_RAW_DATA);
+    }
+    case 'EIBACH': {
+      const { EIBACH_CATALOG_SYNCED_AT, EIBACH_ROWS } = await import('./supplier_data/eibachData');
+      return parseEibachData(EIBACH_ROWS, EIBACH_CATALOG_SYNCED_AT);
     }
     case 'TREAD_ZONE': {
       const { TREAD_ZONE_RAW_DATA } = await import('./supplier_data/treadZoneData');

@@ -455,6 +455,11 @@ const App: React.FC = () => {
       label: 'ARC',
       note: 'Viewing External Supplier Suspension Data. Prices use the supplied lowest selling price; exact unit counts are not provided in the supplier file.'
     },
+    EIBACH: {
+      label: 'EIBACH',
+      note: 'Viewing Eibach South Africa lowering-kit stock. Cost is the supplied website price with no VAT added; selling price adds 25% and rounds to the nearest R50. Official stock units and fitment details are shown per product.',
+      portalUrl: 'https://www.eibachsa.co.za/index.php/product-category/eibach-products/'
+    },
     TREAD_ZONE: {
       label: 'TREAD ZONE',
       note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.',

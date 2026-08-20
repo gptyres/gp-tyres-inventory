@@ -31,6 +31,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(isRegistryBackedSupplierCatalog('BRIDGESTONE')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('ARC')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('DIXON_BATTERIES')).toBe(false);
+    expect(isRegistryBackedSupplierCatalog('EIBACH')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('APEX')).toBe(true);
     expect(isManualSupplierCatalog('SAILUN')).toBe(true);
     expect(isManualSupplierCatalog('MAXXIS')).toBe(true);
@@ -41,6 +42,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(isLiveSupplierCatalog('MAXXIS')).toBe(true);
     expect(isLiveSupplierCatalog('ARC')).toBe(false);
     expect(isLiveSupplierCatalog('DIXON_BATTERIES')).toBe(false);
+    expect(isLiveSupplierCatalog('EIBACH')).toBe(false);
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.sheetName).toBe('SUPPLIER_SAILUN');
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.supplier).toBe('SAILUN');
     expect(MANUAL_SUPPLIER_BY_CATALOG.MAXXIS.sheetName).toBe('SUPPLIER_MAXXIS');
@@ -60,6 +62,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(isSupplierImportCatalog('TYRE_LIFE_WHEELS')).toBe(true);
     expect(isSupplierImportCatalog('ALL_SUPPLIERS')).toBe(false);
     expect(isSupplierImportCatalog('ARC')).toBe(false);
+    expect(isSupplierImportCatalog('EIBACH')).toBe(false);
     expect(SUPPLIER_IMPORT_BY_CATALOG.ALINE.productType).toBe('WHEEL');
   });
 });

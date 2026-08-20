@@ -4,7 +4,7 @@ import { parseAlineWheelDescription, parseSupplierTyreImageKeys, parseSupplierWh
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsData';
 import { ROYAL_TYRES_CAPE_TOWN_RAW_DATA } from './supplier_data/royalTyresCapeTownData';
-import { calculateVatInclusiveSellingPrice, roundSupplierSellingPrice } from './supplierPricing';
+import { calculateEibachSellingPrice, calculateVatInclusiveSellingPrice, roundSupplierSellingPrice } from './supplierPricing';
 import {
   extractFlotationTyreSizeQuery,
   flotationTyreSizesEqual,
@@ -102,7 +102,15 @@ const getInventorySearchIndex = (item: InventoryItem): InventorySearchIndex => {
       coilover.brand,
       coilover.series,
       coilover.vehicleCompatibility,
-      'Coilover'
+      coilover.vehicleBrand,
+      coilover.vehicleModel,
+      coilover.yearRange,
+      coilover.frontLowering,
+      coilover.rearLowering,
+      coilover.details,
+      coilover.supplierStockCode,
+      'Coilover',
+      'Lowering Kit'
     ];
 
     if (coilover.vehicleCompatibility) {
@@ -1617,6 +1625,61 @@ export const parseArcData = (rawCsv: string): InventoryItem[] => {
   });
 
   return items;
+};
+
+export interface EibachSupplierRow {
+  websiteProductId: number;
+  supplierSku: string;
+  vehicleBrand: string;
+  vehicleModel: string;
+  productName: string;
+  productLine: string;
+  vehicleCompatibility: string;
+  yearRange: string;
+  frontLowering: string;
+  rearLowering: string;
+  details: string;
+  stockUnits: number;
+  stockStatus: string;
+  costPrice: number;
+  imageUrl: string;
+  sourceUrl: string;
+}
+
+export const parseEibachData = (
+  rows: readonly EibachSupplierRow[],
+  syncedAt: string
+): InventoryItem[] => {
+  const lastUpdated = syncedAt.slice(0, 10) || new Date().toISOString().slice(0, 10);
+
+  return rows.map((row): CoiloverProduct => {
+    const quantity = Math.max(0, Math.trunc(Number(row.stockUnits) || 0));
+    const costPrice = Math.max(0, Number(row.costPrice) || 0);
+    return {
+      id: `eibach-${row.websiteProductId}`,
+      type: ProductType.COILOVER,
+      brand: 'EIBACH',
+      series: row.productLine || 'PRO-KIT',
+      vehicleCompatibility: row.vehicleCompatibility,
+      vehicleBrand: row.vehicleBrand,
+      vehicleModel: row.vehicleModel,
+      yearRange: row.yearRange,
+      frontLowering: row.frontLowering,
+      rearLowering: row.rearLowering,
+      details: row.details || row.productName,
+      stockStatus: row.stockStatus,
+      location: 'Eibach SA',
+      stockByLocation: { 'Eibach SA': quantity },
+      quantity,
+      costPrice,
+      sellingPrice: calculateEibachSellingPrice(costPrice),
+      lastUpdated,
+      supplierName: 'EIBACH',
+      supplierStockCode: row.supplierSku || String(row.websiteProductId),
+      imageUrl: row.imageUrl,
+      sourceUrl: row.sourceUrl
+    };
+  });
 };
 
 // --- TUBESTONE PARSER ---

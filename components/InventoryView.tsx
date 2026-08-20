@@ -165,6 +165,15 @@ export const getItemSecondaryLine = (item: InventoryItem): string => {
   return `${coilover.brand} ${coilover.series}`.trim();
 };
 
+export const getCoiloverDetails = (coilover: CoiloverProduct): string => uniqueDisplayParts([
+  coilover.vehicleBrand,
+  coilover.vehicleModel,
+  coilover.yearRange,
+  coilover.frontLowering ? `Front ${coilover.frontLowering}` : undefined,
+  coilover.rearLowering ? `Rear ${coilover.rearLowering}` : undefined,
+  coilover.supplierStockCode ? `SKU ${coilover.supplierStockCode}` : undefined
+]).join(' / ');
+
 const getDragFileName = (item: InventoryItem): string => (
   `${getItemDisplayName(item).replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() || 'gp-wheel'}.jpg`
 );
@@ -236,7 +245,9 @@ const getStockEntries = (item: InventoryItem): Array<[string, number]> => {
     ? (item as TyreProduct).location
     : item.type === ProductType.WHEEL
       ? (item as WheelProduct).location
-      : '';
+      : item.type === ProductType.COILOVER
+        ? (item as CoiloverProduct).location || ''
+        : '';
   return sortStockLocationEntries(parseStockLocationSummary(location));
 };
 
@@ -245,7 +256,9 @@ const getItemLocation = (item: InventoryItem): string => (
     ? (item as TyreProduct).location
     : item.type === ProductType.WHEEL
       ? (item as WheelProduct).location || ''
-      : ''
+      : item.type === ProductType.COILOVER
+        ? (item as CoiloverProduct).location || ''
+        : ''
 );
 
 export const getWarehouseStockSummary = (items: InventoryItem[]): Array<[string, number]> => {
@@ -565,6 +578,58 @@ const normalizeStaffImageFile = (file: File): File => {
   return new File([file], file.name, { type: mimeType, lastModified: file.lastModified });
 };
 
+export type VisualUploadSource = File | string;
+
+const normalizeDroppedVisualUrl = (value: string): string => {
+  const candidate = value
+    .trim()
+    .replace(/^['"]|['"]$/g, '')
+    .replace(/&amp;/gi, '&');
+  try {
+    const url = new URL(candidate);
+    return url.protocol === 'https:' ? url.toString() : '';
+  } catch {
+    return '';
+  }
+};
+
+export const extractDroppedVisualUrl = ({
+  uriList = '',
+  html = '',
+  plainText = ''
+}: {
+  uriList?: string;
+  html?: string;
+  plainText?: string;
+}): string => {
+  const uriCandidates = uriList
+    .split(/\r?\n/)
+    .map((value) => value.trim())
+    .filter((value) => value && !value.startsWith('#'));
+  const htmlImageSource = html.match(/<img\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/i)?.[1] ?? '';
+  const plainCandidates = plainText.match(/https:\/\/[^\s<>"']+/gi) ?? [];
+
+  return [...uriCandidates, htmlImageSource, ...plainCandidates]
+    .map(normalizeDroppedVisualUrl)
+    .find(Boolean) ?? '';
+};
+
+const getDroppedVisualSource = (dataTransfer: DataTransfer): VisualUploadSource | null => {
+  const fileFromItems = Array.from(dataTransfer.items ?? [])
+    .filter((item) => item.kind === 'file')
+    .map((item) => item.getAsFile())
+    .find((file): file is File => Boolean(file && getSupportedStaffImageMimeType(file)));
+  const file = fileFromItems ?? Array.from(dataTransfer.files as ArrayLike<File>)
+    .find((candidate) => Boolean(getSupportedStaffImageMimeType(candidate)));
+  if (file) return normalizeStaffImageFile(file);
+
+  return extractDroppedVisualUrl({
+    uriList: dataTransfer.getData('text/uri-list'),
+    html: dataTransfer.getData('text/html'),
+    plainText: dataTransfer.getData('text/plain')
+  }) || null;
+};
+
 const fileToBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
   reader.onload = () => {
@@ -581,6 +646,24 @@ const hashFile = async (file: File): Promise<string> => {
   return Array.from(new Uint8Array(digest))
     .map((byte) => byte.toString(16).padStart(2, '0'))
     .join('');
+};
+
+const hashText = async (value: string): Promise<string> => {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+};
+
+const getRemoteVisualFileName = (url: string, imageKind: 'wheel' | 'tyre'): string => {
+  try {
+    const pathName = new URL(url).pathname;
+    const fileName = decodeURIComponent(pathName.split('/').filter(Boolean).pop() ?? '');
+    if (/\.(?:jpe?g|png|webp|gif)$/i.test(fileName)) return fileName;
+  } catch {
+    // URL validation happens before this helper is called.
+  }
+  return `${imageKind}-visual.jpg`;
 };
 
 // --- SUB-COMPONENTS ---
@@ -613,7 +696,7 @@ interface ProductImageProps {
   errorMessage?: string;
   onGenerate: () => void;
   canUploadImage?: boolean;
-  onUploadImage?: (file?: File) => void;
+  onUploadImage?: (source?: VisualUploadSource) => void;
   aspectRatio: AspectRatio;
 }
 
@@ -653,9 +736,8 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
     event.preventDefault();
     event.stopPropagation();
     setIsDragOver(false);
-    const droppedFile = Array.from(event.dataTransfer.files as ArrayLike<File>)
-      .find((candidate) => Boolean(getSupportedStaffImageMimeType(candidate)));
-    if (droppedFile) onUploadImage?.(normalizeStaffImageFile(droppedFile));
+    const source = getDroppedVisualSource(event.dataTransfer);
+    if (source) onUploadImage?.(source);
   };
   
   return (
@@ -721,11 +803,13 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
         </div>
       )}
       
-      {/* Search Grounding Badge */}
+      {/* Keep the visual state clear even when cards are viewed quickly. */}
       {imageUrl && (
-        <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded flex items-center gap-1">
-            <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-            <span className="text-[8px] font-bold text-white uppercase">Visual</span>
+        <div
+          className="absolute left-2 top-2 rounded border border-white/25 bg-gp-red px-2 py-1 shadow-lg"
+          aria-label="Product visual"
+        >
+          <span className="text-[8px] font-black uppercase tracking-widest text-white">Visual</span>
         </div>
       )}
       {imageUrl && canUploadImage && (
@@ -750,13 +834,13 @@ const ProductImage: React.FC<ProductImageProps> = ({ item, imageUrl, isLoading, 
 
 interface SupplierTyreImageUploadModalProps {
   item: InventoryItem | null;
-  initialFile?: File | null;
+  initialSource?: VisualUploadSource | null;
   currentUser?: string | null;
   onClose: () => void;
   onUploaded: (item: InventoryItem, supplier: string, brand: string, pattern: string, imageUrl: string) => void;
 }
 
-const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> = ({ item, initialFile, currentUser, onClose, onUploaded }) => {
+const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> = ({ item, initialSource, currentUser, onClose, onUploaded }) => {
   const tyre = item?.type === ProductType.TYRE ? item as TyreProduct : null;
   const wheel = item?.type === ProductType.WHEEL ? item as WheelProduct : null;
   const isWheel = Boolean(wheel);
@@ -766,27 +850,37 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
   const [brand, setBrand] = useState('');
   const [pattern, setPattern] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [remoteImageUrl, setRemoteImageUrl] = useState('');
   const [previewUrl, setPreviewUrl] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [isDropActive, setIsDropActive] = useState(false);
   const [message, setMessage] = useState('');
 
+  const itemIdentity = item?.id ?? '';
+  const initialSourceIdentity = initialSource instanceof File
+    ? `${initialSource.name}:${initialSource.size}:${initialSource.lastModified}`
+    : initialSource ?? '';
+
   useEffect(() => {
     if (!tyre && !wheel) {
       setFile(null);
+      setRemoteImageUrl('');
       setPreviewUrl('');
       setMessage('');
       return;
     }
     setBrand(isWheel ? wheel?.finish || wheel?.imageFinishKey || '' : tyre?.brand || tyre?.imageFinishKey || '');
     setPattern(isWheel ? wheel?.code || wheel?.imageDesignKey || '' : tyre?.pattern || tyre?.imageDesignKey || '');
-    setFile(initialFile ?? null);
-    setPreviewUrl(initialFile ? URL.createObjectURL(initialFile) : '');
+    const nextFile = initialSource instanceof File ? initialSource : null;
+    const nextRemoteUrl = typeof initialSource === 'string' ? normalizeDroppedVisualUrl(initialSource) : '';
+    setFile(nextFile);
+    setRemoteImageUrl(nextRemoteUrl);
+    setPreviewUrl(nextFile ? URL.createObjectURL(nextFile) : nextRemoteUrl);
     setMessage('');
-  }, [tyre, wheel, isWheel, initialFile]);
+  }, [itemIdentity, initialSourceIdentity]);
 
   useEffect(() => () => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    if (previewUrl.startsWith('blob:')) URL.revokeObjectURL(previewUrl);
   }, [previewUrl]);
 
   if ((!tyre && !wheel) || !item) return null;
@@ -794,7 +888,8 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
   const selectImageFile = (nextFile: File | null) => {
     if (!nextFile) {
       setFile(null);
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setRemoteImageUrl('');
+      if (previewUrl.startsWith('blob:')) URL.revokeObjectURL(previewUrl);
       setPreviewUrl('');
       setMessage('');
       return;
@@ -810,9 +905,23 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
     }
     const normalizedFile = normalizeStaffImageFile(nextFile);
     setFile(normalizedFile);
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setRemoteImageUrl('');
+    if (previewUrl.startsWith('blob:')) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(URL.createObjectURL(normalizedFile));
     setMessage(`Review the ${imageKind} visual, then confirm its details.`);
+  };
+
+  const selectRemoteImage = (value: string) => {
+    const nextUrl = normalizeDroppedVisualUrl(value);
+    if (!nextUrl) {
+      setMessage('Use a direct HTTPS image URL or drop a valid image file.');
+      return;
+    }
+    setFile(null);
+    setRemoteImageUrl(nextUrl);
+    if (previewUrl.startsWith('blob:')) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(nextUrl);
+    setMessage(`Review the dragged ${imageKind} visual, then confirm its details.`);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -834,26 +943,26 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
     event.preventDefault();
     event.stopPropagation();
     setIsDropActive(false);
-    const nextFile = Array.from(event.dataTransfer.files as ArrayLike<File>)
-      .find((candidate) => Boolean(getSupportedStaffImageMimeType(candidate))) ?? null;
-    if (!nextFile) {
-      setMessage('Drop an image file to continue.');
+    const source = getDroppedVisualSource(event.dataTransfer);
+    if (!source) {
+      setMessage('Drop a JPG, PNG, WEBP or GIF file, or drag an image from an HTTPS page.');
       return;
     }
-    selectImageFile(nextFile);
+    if (source instanceof File) selectImageFile(source);
+    else selectRemoteImage(source);
   };
 
   const handleUpload = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!file) {
-      setMessage(`Select the ${imageKind} image first.`);
+    if (!file && !remoteImageUrl) {
+      setMessage(`Select or drag the ${imageKind} image first.`);
       return;
     }
-    if (!getSupportedStaffImageMimeType(file)) {
+    if (file && !getSupportedStaffImageMimeType(file)) {
       setMessage('Use a JPG, PNG, WEBP or GIF image.');
       return;
     }
-    if (file.size > MAX_STAFF_UPLOAD_IMAGE_SIZE) {
+    if (file && file.size > MAX_STAFF_UPLOAD_IMAGE_SIZE) {
       setMessage('Image is too large. Maximum upload size is 10MB.');
       return;
     }
@@ -866,14 +975,19 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
     setMessage(`Uploading confirmed ${imageKind} visual...`);
 
     try {
-      const [base64, hash] = await Promise.all([fileToBase64(file), hashFile(file)]);
+      const remoteFileName = remoteImageUrl ? getRemoteVisualFileName(remoteImageUrl, imageKind) : '';
+      const [base64, hash] = file
+        ? await Promise.all([fileToBase64(file), hashFile(file)])
+        : ['', await hashText(remoteImageUrl)];
+      const fileName = file?.name || remoteFileName;
+      const mimeType = file ? getSupportedStaffImageMimeType(file) : getSupportedStaffImageMimeType({ name: fileName, type: '' }) || 'image/jpeg';
       const payload = isWheel
         ? buildStaffSupplierWheelImageUploadPayload({
           item,
           finish: brand.trim(),
           design: pattern.trim(),
-          fileName: file.name,
-          mimeType: file.type,
+          fileName,
+          mimeType,
           base64,
           hash,
           uploadedBy: currentUser ?? undefined
@@ -882,18 +996,43 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
           item,
           brand: brand.trim(),
           pattern: pattern.trim(),
-          fileName: file.name,
-          mimeType: file.type,
+          fileName,
+          mimeType,
           base64,
           hash,
           uploadedBy: currentUser ?? undefined
         });
 
-      const { data, error } = await supabase.functions.invoke(SUPPLIER_IMAGE_IMPORT_FUNCTION, {
-        body: payload
-      });
-
-      if (error) throw error;
+      let data: any;
+      if (remoteImageUrl) {
+        const response = await fetch('/api/business-agent', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'IMPORT_SUPPLIER_VISUAL_URL',
+            ...payload,
+            base64: undefined,
+            remoteImageUrl
+          })
+        });
+        data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data?.error || 'The dragged image could not be imported.');
+      } else {
+        const result = await supabase.functions.invoke(SUPPLIER_IMAGE_IMPORT_FUNCTION, { body: payload });
+        data = result.data;
+        if (result.error) {
+          let detail = result.error.message;
+          try {
+            const context = (result.error as { context?: { json?: () => Promise<{ error?: string }> } }).context;
+            const errorBody = context?.json ? await context.json() : null;
+            detail = errorBody?.error || detail;
+          } catch {
+            // Keep the SDK error when the response body is unavailable.
+          }
+          throw new Error(detail || 'Supplier image upload failed.');
+        }
+      }
       if (!data?.ok) throw new Error(data?.error || 'Supplier image upload failed.');
 
       onUploaded(
@@ -1007,8 +1146,29 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
                 className="w-full rounded border border-gp-border bg-gp-input p-2 text-sm text-gp-text-main file:mr-3 file:rounded file:border-0 file:bg-gp-red file:px-3 file:py-1.5 file:text-xs file:font-black file:uppercase file:text-white"
               />
               <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">
-                You can also drag an image into the preview box.
+                You can also drag a local file or an image from another browser tab into the preview box.
               </p>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-gp-text-muted">Direct Image URL</label>
+              <input
+                type="url"
+                value={remoteImageUrl}
+                onChange={(event) => {
+                  const nextValue = event.target.value;
+                  setRemoteImageUrl(nextValue);
+                  if (!nextValue) {
+                    setMessage('');
+                    if (!file) setPreviewUrl('');
+                    return;
+                  }
+                  const normalizedUrl = normalizeDroppedVisualUrl(nextValue);
+                  if (normalizedUrl) selectRemoteImage(normalizedUrl);
+                }}
+                className="w-full rounded border border-gp-border bg-gp-input p-2 text-xs text-gp-text-main focus:border-gp-red focus:outline-none"
+                placeholder="https://.../product-image.jpg"
+              />
             </div>
 
             {message && (
@@ -1054,7 +1214,7 @@ interface ViewComponentProps extends InventoryViewProps {
   errorImages: Set<string>;
   imageErrors: Record<string, string>;
   onGenerateImage: (item: InventoryItem) => void;
-  onUploadSupplierTyreImage: (item: InventoryItem, file?: File) => void;
+  onUploadSupplierTyreImage: (item: InventoryItem, source?: VisualUploadSource) => void;
   onCopyItem: (item: InventoryItem) => void;
   onHistory: (item: InventoryItem) => void;
 }
@@ -1196,15 +1356,13 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                 <td className="p-3 border-r border-gp-border text-gp-text-muted text-xs">
                   {item.type === ProductType.TYRE ? getItemSecondaryLine(item) : 
                    item.type === ProductType.WHEEL ? getItemSecondaryLine(item) :
-                   (item as CoiloverProduct).series}
+                   getCoiloverDetails(item as CoiloverProduct)}
                 </td>
               )}
 
               {visibleColumns.location && (
                 <td className="p-3 border-r border-gp-border text-gp-text-muted text-xs">
-                  {item.type === ProductType.TYRE || item.type === ProductType.WHEEL
-                    ? formatItemStockSummary(item)
-                    : '-'}
+                  {item.type === ProductType.BATTERY ? '-' : formatItemStockSummary(item)}
                 </td>
               )}
 
@@ -1309,7 +1467,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
 
           {/* Specs Area */}
           {(visibleColumns.specs || visibleColumns.location) && (
-            <div className={`p-3 grid gap-2 flex-grow content-start bg-gradient-to-b from-gp-panel to-gp-overlay ${item.type === ProductType.WHEEL ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-3'}`}>
+            <div className={`p-3 grid gap-2 flex-grow content-start bg-gradient-to-b from-gp-panel to-gp-overlay ${item.type === ProductType.WHEEL ? 'grid-cols-2 lg:grid-cols-4' : item.type === ProductType.COILOVER ? 'grid-cols-2' : 'grid-cols-3'}`}>
                 {visibleColumns.specs && item.type === ProductType.TYRE && (
                     <>
                     <SpecBadge
@@ -1329,11 +1487,21 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 )}
                 {visibleColumns.specs && item.type === ProductType.COILOVER && (
                     <>
-                    <SpecBadge label="Series" value={(item as CoiloverProduct).series} />
-                    <div className="col-span-2"><SpecBadge label="Fitment" value={(item as CoiloverProduct).vehicleCompatibility} /></div>
+                    <SpecBadge label="Kit" value={(item as CoiloverProduct).series} />
+                    <SpecBadge label="Vehicle" value={(item as CoiloverProduct).vehicleBrand || 'Multiple'} />
+                    {(item as CoiloverProduct).vehicleModel && <SpecBadge label="Model" value={(item as CoiloverProduct).vehicleModel || ''} />}
+                    {(item as CoiloverProduct).yearRange && <SpecBadge label="Years" value={(item as CoiloverProduct).yearRange || ''} />}
+                    {(item as CoiloverProduct).frontLowering && <SpecBadge label="Front" value={(item as CoiloverProduct).frontLowering || ''} />}
+                    {(item as CoiloverProduct).rearLowering && <SpecBadge label="Rear" value={(item as CoiloverProduct).rearLowering || ''} />}
+                    <div className="col-span-full rounded border border-gp-border bg-gp-black/60 p-2.5">
+                      <span className="block text-[9px] font-bold uppercase tracking-wider text-gp-text-muted">Additional details</span>
+                      <p className="mt-1 whitespace-normal break-words text-[11px] font-semibold leading-relaxed text-gp-text-main">
+                        {(item as CoiloverProduct).details || getCoiloverDetails(item as CoiloverProduct)}
+                      </p>
+                    </div>
                     </>
                 )}
-                {visibleColumns.location && (item.type === ProductType.TYRE || item.type === ProductType.WHEEL) && (
+                {visibleColumns.location && (item.type === ProductType.TYRE || item.type === ProductType.WHEEL || item.type === ProductType.COILOVER) && (
                   <StockLocationPanel item={item} />
                 )}
             </div>
@@ -1453,7 +1621,13 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                     </span>
                   )}
 
-                  {visibleColumns.location && (item.type === ProductType.TYRE || item.type === ProductType.WHEEL) && (
+                  {visibleColumns.specs && item.type === ProductType.COILOVER && (
+                    <span className="mt-1 max-w-3xl text-[11px] font-semibold leading-relaxed text-gp-text-muted">
+                      {getCoiloverDetails(item as CoiloverProduct)}
+                    </span>
+                  )}
+
+                  {visibleColumns.location && (item.type === ProductType.TYRE || item.type === ProductType.WHEEL || item.type === ProductType.COILOVER) && (
                     <div className="flex items-center gap-2 mt-1">
                       <span className="px-1.5 py-0.5 rounded bg-gp-overlay text-[10px] text-gp-text-muted border border-gp-border font-mono">
                         {formatItemStockSummary(item)}
@@ -1535,7 +1709,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   const [errorImages, setErrorImages] = useState<Set<string>>(new Set());
   const [imageErrors, setImageErrors] = useState<Record<string, string>>({});
   const [uploadImageItem, setUploadImageItem] = useState<InventoryItem | null>(null);
-  const [uploadImageInitialFile, setUploadImageInitialFile] = useState<File | null>(null);
+  const [uploadImageInitialSource, setUploadImageInitialSource] = useState<VisualUploadSource | null>(null);
   const [supplierImageRefreshKey, setSupplierImageRefreshKey] = useState(0);
   const [clipboardNotice, setClipboardNotice] = useState('');
   const [uploadNotice, setUploadNotice] = useState('');
@@ -1648,14 +1822,14 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
     setSupplierImageRefreshKey((value) => value + 1);
   };
 
-  const openSupplierTyreImageUploader = (item: InventoryItem, file?: File) => {
+  const openSupplierTyreImageUploader = (item: InventoryItem, source?: VisualUploadSource) => {
     setUploadImageItem(item);
-    setUploadImageInitialFile(file ?? null);
+    setUploadImageInitialSource(source ?? null);
   };
 
   const closeSupplierTyreImageUploader = () => {
     setUploadImageItem(null);
-    setUploadImageInitialFile(null);
+    setUploadImageInitialSource(null);
   };
 
   const handleHeaderClick = (key: SortKey) => {
@@ -2028,7 +2202,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
       <SupplierTyreImageUploadModal
         item={uploadImageItem}
-        initialFile={uploadImageInitialFile}
+        initialSource={uploadImageInitialSource}
         currentUser={props.currentUser}
         onClose={closeSupplierTyreImageUploader}
         onUploaded={handleSupplierTyreImageUploaded}

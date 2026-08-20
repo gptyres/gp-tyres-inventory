@@ -20,6 +20,7 @@ const keyText = (value: unknown) => clean(value).toLowerCase().replace(/[^a-z0-9
 const decodeHtml = (value: string) => value
   .replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 const stripHtml = (value: string) => decodeHtml(value.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+const pathToken = (value: unknown) => clean(value, 180).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'unknown';
 
 const fetchWithTimeout = async (url: string, init: RequestInit = {}, timeoutMs = 6000) => {
   const controller = new AbortController();
@@ -142,6 +143,100 @@ const selectCandidateWithGlm = async (apiKey: string, brand: string, pattern: st
   return { candidate: candidates[index], confidence: Number(selection.confidence), reason: clean(selection.reason, 300) };
 };
 
+const importSupplierVisualUrl = async (body: any, terminalId: string) => {
+  const remoteImageUrl = clean(body.remoteImageUrl, 2_000);
+  const supplier = clean(body.supplier, 120);
+  const sourceFileId = clean(body.sourceFileId, 300);
+  const designKey = clean(body.designKey, 180);
+  const finishKey = clean(body.finishKey, 180);
+  const isWheel = clean(body.storagePath, 500).startsWith('wheels/staff-upload/');
+  const isExpectedStaffUpload = body.source === 'staff-upload'
+    && sourceFileId.startsWith('staff-upload:')
+    && (isWheel || clean(body.storagePath, 500).startsWith('tyres/staff-upload/'));
+
+  if (!isExpectedStaffUpload || !supplier || !designKey || !finishKey || !isSafePublicHttpsUrl(remoteImageUrl)) {
+    throw new Error('The dragged visual is missing valid supplier, matching, or HTTPS image details.');
+  }
+
+  const imageResponse = await fetchWithTimeout(remoteImageUrl, {
+    headers: {
+      Accept: 'image/avif,image/webp,image/png,image/jpeg,image/gif;q=0.9,*/*;q=0.5',
+      'User-Agent': 'Mozilla/5.0 (compatible; GP-Tyres-Staff-Visual-Import/1.0)'
+    }
+  }, 12_000);
+  if (!imageResponse.ok || !isSafePublicHttpsUrl(imageResponse.url)) {
+    throw new Error('The dragged image could not be downloaded from its source.');
+  }
+
+  const contentLength = Number(imageResponse.headers.get('content-length') || 0);
+  if (contentLength > MAX_IMAGE_BYTES) throw new Error('Image is too large. Maximum upload size is 10MB.');
+  const mimeType = (imageResponse.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+  if (!allowedImageTypes.has(mimeType)) throw new Error('The dragged URL does not point to a supported image file.');
+  const bytes = new Uint8Array(await imageResponse.arrayBuffer());
+  if (!bytes.length || bytes.byteLength > MAX_IMAGE_BYTES) throw new Error('The dragged image is empty or larger than 10MB.');
+
+  const digest = createHash('sha256').update(bytes).digest('hex');
+  const extension = mimeType === 'image/jpeg' ? 'jpg' : mimeType.split('/')[1];
+  const storagePath = `${isWheel ? 'wheels' : 'tyres'}/staff-upload/${pathToken(supplier)}/${pathToken(finishKey)}/${pathToken(designKey)}/${digest}.${extension}`;
+  const fileName = `${pathToken(finishKey)}-${pathToken(designKey)}.${extension}`;
+  const supabase = createSupabaseAdmin();
+  const upload = await supabase.storage.from(BUCKET).upload(storagePath, bytes, { contentType: mimeType, upsert: true });
+  if (upload.error) throw upload.error;
+  const publicImageUrl = supabase.storage.from(BUCKET).getPublicUrl(storagePath).data.publicUrl;
+
+  const { data: replacedRows, error: replaceError } = await supabase.from('supplier_stock_images')
+    .update({ active: false })
+    .ilike('supplier', supplier)
+    .eq('source', 'staff-upload')
+    .eq('design_key', designKey)
+    .eq('finish_key', finishKey)
+    .neq('source_file_id', sourceFileId)
+    .select('id');
+  if (replaceError) throw replaceError;
+
+  const suppliedTags = Array.isArray(body.tags) ? body.tags.map((tag: unknown) => clean(tag, 180)).filter(Boolean) : [];
+  const { error: rowError } = await supabase.from('supplier_stock_images').upsert({
+    supplier,
+    source: 'staff-upload',
+    source_file_id: sourceFileId,
+    file_name: fileName,
+    storage_bucket: BUCKET,
+    storage_path: storagePath,
+    public_image_url: publicImageUrl,
+    mime_type: mimeType,
+    design_key: designKey,
+    finish_key: finishKey,
+    rim_size: clean(body.rimSize, 20) || null,
+    pcd: clean(body.pcd, 80) || null,
+    tags: Array.from(new Set([...suppliedTags, `uploaded-by:${terminalId}`, `source-url:${remoteImageUrl}`])),
+    active: true,
+    imported_at: new Date().toISOString()
+  }, { onConflict: 'supplier,source_file_id' });
+  if (rowError) throw rowError;
+
+  await supabase.from('ai_agent_audit_logs').insert({
+    terminal_id: terminalId,
+    staff_name: terminalId,
+    actor_role: 'STAFF',
+    action: 'SUPPLIER_VISUAL_URL_IMPORTED',
+    resource_type: 'SUPPLIER_STOCK_IMAGE',
+    resource_id: sourceFileId,
+    details: { supplier, designKey, finishKey, remoteImageUrl, storagePath }
+  });
+
+  return {
+    ok: true,
+    supplier,
+    source: 'staff-upload',
+    sourceFileId,
+    designKey,
+    finishKey,
+    storagePath,
+    publicImageUrl,
+    replacedStaffUploadRows: replacedRows?.length ?? 0
+  };
+};
+
 export default async function handler(request: any, response: any) {
   response.setHeader('Cache-Control', 'no-store');
   if (request.method !== 'POST') {
@@ -149,13 +244,19 @@ export default async function handler(request: any, response: any) {
     return response.status(405).json({ error: 'Only POST is supported.' });
   }
   const staff = verifyStaffSession(request);
-  const admin = verifyAdminSession(request);
-  if (!staff || !admin) return response.status(403).json({ error: 'Admin mode is required to load product visuals.' });
-  const apiKey = process.env.NVIDIA_API_KEY || process.env.NGC_API_KEY;
-  if (!apiKey) return response.status(503).json({ error: 'The server-side NVIDIA visual verifier is not configured.' });
+  if (!staff) return response.status(401).json({ error: 'A valid staff login is required.' });
 
   try {
     const body = await readApiBody(request);
+    if (body.action === 'IMPORT_SUPPLIER_VISUAL_URL') {
+      const result = await importSupplierVisualUrl(body, staff.terminalId);
+      return response.status(200).json(result);
+    }
+
+    const admin = verifyAdminSession(request);
+    if (!admin) return response.status(403).json({ error: 'Admin mode is required to load product visuals.' });
+    const apiKey = process.env.NVIDIA_API_KEY || process.env.NGC_API_KEY;
+    if (!apiKey) return response.status(503).json({ error: 'The server-side NVIDIA visual verifier is not configured.' });
     const supplier = clean(body.supplier, 120);
     const supplierStockCode = clean(body.supplierStockCode, 160);
     const brand = clean(body.brand, 120);
