@@ -106,10 +106,10 @@ export const applySupplierMarkup = (
 
 export const getSupplierMarkupPriceLabel = (
   adjustment: SupplierMarkupAdjustment,
-  fallback = 'Selling Price'
+  fallback = 'VAT Inclusive Price'
 ): string => {
   if (adjustment.mode === 'BASE') return fallback;
   return adjustment.mode === 'PERCENT'
-    ? `Selling Price (+${adjustment.value}%)`
-    : `Selling Price (+R${adjustment.value})`;
+    ? `VAT Inclusive Price (+${adjustment.value}%)`
+    : `VAT Inclusive Price (+R${adjustment.value})`;
 };

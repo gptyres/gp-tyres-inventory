@@ -481,7 +481,8 @@ const BatteryCatalogueView: React.FC<{
   items: BatteryProduct[];
   viewMode: ViewMode;
   showSupplierName?: boolean;
-}> = ({ items, viewMode, showSupplierName }) => {
+  priceLabel?: string;
+}> = ({ items, viewMode, showSupplierName, priceLabel = 'Selling Price' }) => {
   if (viewMode === ViewMode.TABLE) {
     return (
       <div className="mb-6 overflow-x-auto rounded-lg border border-gp-border bg-gp-black shadow-xl">
@@ -494,7 +495,7 @@ const BatteryCatalogueView: React.FC<{
               <th className="border-b border-r border-gp-border p-3 text-right">Nett Price<br /><span className="font-medium">Cost Excl. — Without Scrap</span></th>
               <th className="border-b border-r border-gp-border p-3 text-right">Gross Price<br /><span className="font-medium">Cost Excl. — With Scrap</span></th>
               <th className="border-b border-r border-gp-border p-3 text-right">Cost Including</th>
-              <th className="border-b border-gp-border p-3 text-right text-gp-red">Selling Price</th>
+              <th className="border-b border-gp-border p-3 text-right text-gp-red">{priceLabel}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gp-border">
@@ -530,7 +531,7 @@ const BatteryCatalogueView: React.FC<{
                 <BatteryPrice label="Nett · Excl. Without Scrap" value={battery.nettPrice} />
                 <BatteryPrice label="Gross · Excl. With Scrap" value={battery.grossPrice} />
                 <BatteryPrice label="Cost Including" value={battery.costIncluding} />
-                <BatteryPrice label="Selling Price" value={battery.sellingPrice} emphasis />
+                <BatteryPrice label={priceLabel} value={battery.sellingPrice} emphasis />
               </div>
             </div>
           </article>
@@ -555,7 +556,7 @@ const BatteryCatalogueView: React.FC<{
             <BatteryPrice label="Nett · Excl. Without Scrap" value={battery.nettPrice} />
             <BatteryPrice label="Gross · Excl. With Scrap" value={battery.grossPrice} />
             <BatteryPrice label="Cost Including" value={battery.costIncluding} />
-            <BatteryPrice label="Selling Price" value={battery.sellingPrice} emphasis />
+            <BatteryPrice label={priceLabel} value={battery.sellingPrice} emphasis />
           </div>
         </article>
       ))}
@@ -1538,10 +1539,10 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     <div className="flex flex-col">
                         {hasNormalSpecialPrice(item) && (
                           <span className="mb-0.5 text-[10px] font-semibold text-gp-text-muted line-through">
-                            Normal {formatCurrency(item.normalSellingPrice)}
+                            {isReadOnly ? 'Normal VAT Inclusive Price ' : 'Normal '}{formatCurrency(item.normalSellingPrice)}
                           </span>
                         )}
-                        <span className="text-[9px] text-gp-red uppercase font-bold tracking-wider">{hasNormalSpecialPrice(item) ? 'Special Price' : (isReadOnly ? priceLabel : "Selling Price")}</span>
+                        <span className="text-[9px] text-gp-red uppercase font-bold tracking-wider">{hasNormalSpecialPrice(item) && isReadOnly ? 'Special VAT Inclusive Price' : (hasNormalSpecialPrice(item) ? 'Special Price' : (isReadOnly ? priceLabel : "Selling Price"))}</span>
                         <span className="text-xl font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
                     </div>
 
@@ -1672,10 +1673,10 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                 <div className="flex flex-col items-end">
                   {hasNormalSpecialPrice(item) && (
                     <span className="text-[10px] font-semibold text-gp-text-muted line-through">
-                      Normal {formatCurrency(item.normalSellingPrice)}
+                      {isReadOnly ? 'Normal VAT Inclusive Price ' : 'Normal '}{formatCurrency(item.normalSellingPrice)}
                     </span>
                   )}
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-gp-red">{hasNormalSpecialPrice(item) ? 'Special Price' : (isReadOnly ? priceLabel : 'Selling Price')}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-gp-red">{hasNormalSpecialPrice(item) && isReadOnly ? 'Special VAT Inclusive Price' : (hasNormalSpecialPrice(item) ? 'Special Price' : (isReadOnly ? priceLabel : 'Selling Price'))}</span>
                   <span className="text-base font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
                 </div>
               )}
@@ -2204,12 +2205,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
               <h3 className="font-display text-lg font-black uppercase tracking-wide text-gp-text-main">Dixon Batteries</h3>
               <span className="rounded-full bg-gp-red px-2 py-0.5 text-[10px] font-black text-white">{batteryItems.length}</span>
             </div>
-            <BatteryCatalogueView items={batteryItems} viewMode={props.viewMode} showSupplierName={props.showSupplierName} />
+            <BatteryCatalogueView items={batteryItems} viewMode={props.viewMode} showSupplierName={props.showSupplierName} priceLabel={props.priceLabel} />
           </section>
         </div>
       );
     }
-    if (batteryItems.length) return <BatteryCatalogueView items={batteryItems} viewMode={props.viewMode} showSupplierName={props.showSupplierName} />;
+    if (batteryItems.length) return <BatteryCatalogueView items={batteryItems} viewMode={props.viewMode} showSupplierName={props.showSupplierName} priceLabel={props.priceLabel} />;
     return renderStandardItems();
   };
 

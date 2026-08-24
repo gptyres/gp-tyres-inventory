@@ -382,7 +382,7 @@ const App: React.FC = () => {
     },
     MAXXIS: {
       label: 'MAXXIS',
-      note: 'Viewing MAXXIS 4x4/SUV, ATV and motorcycle dealer pricing. Cost uses the normal nett price; selling adds 15% VAT once and rounds to the nearest R1. Specials are excluded and stock quantities were not supplied.'
+      note: 'Viewing MAXXIS 4x4/SUV, ATV and motorcycle dealer pricing. Cost uses the normal nett price; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1. Specials are excluded and stock quantities were not supplied.'
     },
     EXCLUSIVE_TYRES: {
       label: 'EXCLUSIVE TYRES — LEGACY CATALOGUE',
@@ -391,17 +391,17 @@ const App: React.FC = () => {
     },
     EXCLUSIVE_TYRES_NEW: {
       label: 'EXCLUSIVE TYRES NEW — CURRENT CATALOGUE',
-      note: 'NEW PORTAL / CURRENT DATA. Listings use only tyre size, brand, cleaned pattern, stock on hand, SLA and cost excluding VAT. List price and GP are excluded; selling adds 15% VAT once and rounds to the nearest R1.',
+      note: 'NEW PORTAL / CURRENT DATA. Listings use only tyre size, brand, cleaned pattern, stock on hand, SLA and cost excluding VAT. List price and GP are excluded; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1.',
       portalUrl: 'https://www.exclusivetyres.co.za/'
     },
     TYREWAREHOUSE: {
       label: 'TYREWAREHOUSE',
-      note: 'Viewing External Supplier Data. Prices use the discounted selling price from the latest TyreWarehouse file.',
+      note: 'Viewing External Supplier Data. Prices use the discounted VAT-inclusive price from the latest TyreWarehouse file.',
       portalUrl: 'https://www.tyrewarehouse.co.za/eshop/index.html'
     },
     ATT: {
       label: 'ATT',
-      note: 'Viewing External Supplier Data. Prices use ATT selling prices.',
+      note: 'Viewing External Supplier Data. Prices use ATT VAT-inclusive prices.',
       portalUrl: 'https://onlinestore.autoandtrucktyres.co.za/#!/evo-client-portal/dashboard'
     },
     BRIDGESTONE: {
@@ -411,24 +411,24 @@ const App: React.FC = () => {
     },
     SAFETY_GRIP: {
       label: 'SAFETY GRIP',
-      note: 'Viewing External Supplier Data. Cost is the supplied nett price; selling price adds 15% VAT once and rounds to the nearest R1.'
+      note: 'Viewing External Supplier Data. Cost is the supplied nett price; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1.'
     },
     ROYAL_TYRES: {
       label: 'ROYAL TYRES',
-      note: 'Viewing Royal Tyres PCR and TBR supplier stock. Cost uses the normal price; selling price adds 15% VAT once. Bulk-deal pricing is excluded.'
+      note: 'Viewing Royal Tyres PCR and TBR supplier stock. Cost uses the normal price; the VAT-inclusive price adds 15% VAT once. Bulk-deal pricing is excluded.'
     },
     DIXON_BATTERIES: {
       label: 'DIXON BATTERIES',
-      note: 'Viewing the Dixon Batteries price catalogue. Nett and gross costs exclude VAT; gross includes scrap. Cost Including and Selling Price are shown exactly as supplied.'
+      note: 'Viewing the Dixon Batteries price catalogue. Nett and gross costs exclude VAT; gross includes scrap. Cost Including and VAT Inclusive Price are shown exactly as supplied.'
     },
     REVOLUTION_TYRES: {
       label: 'REVOLUTION TYRES',
-      note: 'Viewing authenticated Revolution Tyres supplier stock. Cost is the portal nett price; selling price adds 15% VAT once and rounds to the nearest R1.',
+      note: 'Viewing authenticated Revolution Tyres supplier stock. Cost is the portal nett price; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1.',
       portalUrl: 'https://revolutiontyres.com/login'
     },
     ALINE: {
       label: 'ALINE',
-      note: 'Viewing External Supplier Data. Recommended selling prices include VAT and are a guide only, not the final selling price. Branch wheel stock is shown by location.',
+      note: 'Viewing External Supplier Data. Recommended VAT-inclusive prices are a guide only, not the final customer price. Branch wheel stock is shown by location.',
       portalUrl: 'https://alinewheels.cataloghive.com/'
     },
     STAMFORD: {
@@ -438,7 +438,7 @@ const App: React.FC = () => {
     },
     APEX: {
       label: 'APEX',
-      note: 'Viewing External Supplier Data. Prices use APEX selling prices, with lead time shown in the location field.',
+      note: 'Viewing External Supplier Data. Prices use APEX VAT-inclusive prices, with lead time shown in the location field.',
       portalUrl: 'https://app.stockfinder.co.za/login'
     },
     TUBESTONE: {
@@ -453,11 +453,11 @@ const App: React.FC = () => {
     },
     ARC: {
       label: 'ARC',
-      note: 'Viewing External Supplier Suspension Data. Prices use the supplied lowest selling price; exact unit counts are not provided in the supplier file.'
+      note: 'Viewing External Supplier Suspension Data. Prices use the supplied lowest VAT-inclusive price; exact unit counts are not provided in the supplier file.'
     },
     EIBACH: {
       label: 'EIBACH',
-      note: 'Viewing Eibach South Africa lowering-kit stock. Cost is the supplied website price with no VAT added; selling price adds 25% and rounds to the nearest R50. Official stock units and fitment details are shown per product.',
+      note: 'Viewing Eibach South Africa lowering-kit stock. Cost is the supplied website price with no VAT added; the VAT-inclusive price adds 25% and rounds to the nearest R50. Official stock units and fitment details are shown per product.',
       portalUrl: 'https://www.eibachsa.co.za/index.php/product-category/eibach-products/'
     },
     TREAD_ZONE: {
@@ -1987,9 +1987,7 @@ const App: React.FC = () => {
                     onBulkDelete={handleBulkDelete}
                     isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
                     showSupplierName={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS'}
-                    priceLabel={currentView === 'SUPPLIER_INVENTORY'
-                      ? (activeSupplierCatalog === 'ALINE' ? 'Recommended Selling Price' : 'Selling Price')
-                      : undefined}
+                    priceLabel={currentView === 'SUPPLIER_INVENTORY' ? 'VAT Inclusive Price' : undefined}
                     reportCatalogueLabel={currentView === 'SUPPLIER_INVENTORY'
                       ? `${supplierCatalogLabel} Catalog`
                       : activeFilter === 'ALL' ? 'Available Stock' : `${activeFilter} Available Stock`}

@@ -42,7 +42,7 @@ export const InventoryReportModal: React.FC<InventoryReportModalProps> = ({
     { key: 'location', label: 'Location' },
     { key: 'quantity', label: 'Qty' },
     { key: 'cost', label: 'Cost', disabled: !canShowCost },
-    { key: 'sellingPrice', label: 'Selling Price' }
+    { key: 'sellingPrice', label: context.priceLabel || 'Selling Price' }
   ];
 
   const selectedColumnCount = Object.values(visibility).filter(Boolean).length;

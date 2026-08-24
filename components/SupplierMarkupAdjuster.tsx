@@ -33,7 +33,7 @@ export const SupplierMarkupAdjuster: React.FC<SupplierMarkupAdjusterProps> = ({ 
   };
 
   return (
-    <div className="min-w-0 xl:border-l xl:border-gp-border xl:pl-4" aria-label="Supplier selling price markup">
+    <div className="min-w-0 xl:border-l xl:border-gp-border xl:pl-4" aria-label="Supplier VAT-inclusive price markup">
       <div className="mb-1.5 flex min-h-5 items-center gap-3">
         <div className="flex min-w-0 items-center gap-2">
           <p className="shrink-0 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">Price markup</p>
@@ -46,7 +46,7 @@ export const SupplierMarkupAdjuster: React.FC<SupplierMarkupAdjusterProps> = ({ 
             type="button"
             onClick={() => selectAdjustment('BASE')}
             className="shrink-0 border-l border-gp-border pl-3 text-[9px] font-black uppercase text-gp-text-muted transition-colors hover:text-gp-text-main"
-            title="Reset supplier selling prices"
+            title="Reset supplier VAT-inclusive prices"
           >
             Reset
           </button>

@@ -87,7 +87,7 @@ describe('supplier markup pricing', () => {
 
   it('sanitizes invalid custom values and labels adjusted prices clearly', () => {
     expect(calculateSupplierSellingPrice(tyre(), { mode: 'FIXED', value: Number.NaN }, 'ALINE')).toBe(1000);
-    expect(getSupplierMarkupPriceLabel({ mode: 'PERCENT', value: 25 })).toBe('Selling Price (+25%)');
-    expect(getSupplierMarkupPriceLabel({ mode: 'FIXED', value: 300 })).toBe('Selling Price (+R300)');
+    expect(getSupplierMarkupPriceLabel({ mode: 'PERCENT', value: 25 })).toBe('VAT Inclusive Price (+25%)');
+    expect(getSupplierMarkupPriceLabel({ mode: 'FIXED', value: 300 })).toBe('VAT Inclusive Price (+R300)');
   });
 });
