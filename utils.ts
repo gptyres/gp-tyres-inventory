@@ -1224,6 +1224,10 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
   const lines = rawCsv.split('\n');
   const today = new Date().toISOString().split('T')[0];
   let idCounter = 1;
+  const headers = parseCSVLine(lines.find((line) => line.trim()) || '').map((header) => header.trim().toUpperCase());
+  const normalCostIndex = headers.indexOf('NORMAL COST EX VAT');
+  const specialCostIndex = headers.indexOf('SPECIAL COST EX VAT');
+  const legacyCostIndex = headers.indexOf('COST + VAT');
 
   lines.forEach((line, index) => {
     const trimmed = line.trim();
@@ -1242,8 +1246,11 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
 
     const { brand, pattern } = splitBrandPattern(brandPattern, 'SAFETY GRIP');
     const quantity = parseStockUnits(cols[2]);
-    const priceExVat = parseCurrencyString(cols[3]);
-    const priceIncVat = calculateVatInclusiveSellingPrice(priceExVat);
+    const specialCostExVat = parseCurrencyString(cols[specialCostIndex >= 0 ? specialCostIndex : legacyCostIndex]);
+    const normalCostExVat = parseCurrencyString(cols[normalCostIndex >= 0 ? normalCostIndex : (specialCostIndex >= 0 ? specialCostIndex : legacyCostIndex)]);
+    const specialSellingPrice = calculateVatInclusiveSellingPrice(specialCostExVat);
+    const normalSellingPrice = calculateVatInclusiveSellingPrice(normalCostExVat);
+    const isSpecial = normalSellingPrice > specialSellingPrice;
 
     const itemId = `safetygrip-${idCounter++}`;
     items.push({
@@ -1254,10 +1261,15 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
       pattern,
       size,
       loadSpeedIndex: code,
+      tyreSpecs: isSpecial ? 'SPECIAL' : undefined,
       location: 'SAFETY GRIP',
       quantity,
-      costPrice: priceExVat,
-      sellingPrice: priceIncVat,
+      stockByLocation: { CPT: quantity },
+      costPrice: specialCostExVat,
+      sellingPrice: specialSellingPrice,
+      normalSellingPrice: isSpecial ? normalSellingPrice : undefined,
+      promotionLabel: isSpecial ? 'SPECIAL' : undefined,
+      supplierStockCode: code,
       lastUpdated: today
     });
   });

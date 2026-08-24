@@ -24,6 +24,13 @@ const sources = [
     sourceFile: 'MAXXIS DEALER PRICELIST_AUG2026.xlsx'
   },
   {
+    catalog: 'SAFETY_GRIP',
+    supplier: 'Safety Grip',
+    dataFile: 'supplier_data/safetygripData.ts',
+    sourceFile: 'Passenger New D.pdf',
+    parser: 'safetyGripSpecials'
+  },
+  {
     catalog: 'ROYAL_TYRES',
     supplier: 'ROYAL TYRES',
     dataFile: 'supplier_data/royalTyresData.ts',
@@ -283,9 +290,67 @@ const buildAlineItems = (rows, source) => {
   return items;
 };
 
+const buildSafetyGripSpecialItems = (rows, source) => {
+  const headers = rows[0].map(clean);
+  const column = (name) => {
+    const index = headers.indexOf(name);
+    if (index < 0) throw new Error(`${source.catalog}: missing ${name}.`);
+    return index;
+  };
+  const get = (row, name) => clean(row[column(name)]);
+
+  return rows.slice(1).map((row) => {
+    const sku = get(row, 'CODE');
+    const description = get(row, 'DESCRPTION').replace(/\s+/g, ' ').trim();
+    const size = description.split(/\s+/)[0] || '';
+    const brand = /\bANNAITE\b/i.test(description) ? 'ANNAITE' : source.supplier;
+    const pattern = description.match(/\bAN\d+\b/i)?.[0]?.toUpperCase()
+      || description.match(/\bEXPLORER\s+MT1\b/i)?.[0]?.toUpperCase()
+      || '';
+    const specs = [
+      description.match(/\b(?:A\/T|H\/T|WSW)\b/i)?.[0]?.toUpperCase(),
+      /(?:\(WL\)|\bWL\b)/i.test(description) ? 'WL' : '',
+      'SPECIAL'
+    ].filter(Boolean).join(' / ');
+    const stockUnits = Math.max(0, parseStock(get(row, 'QUANTITY')));
+    const normalCost = parseMoney(get(row, 'NORMAL COST EX VAT'));
+    const specialCost = parseMoney(get(row, 'SPECIAL COST EX VAT'));
+    const normalSelling = vatInclusiveSellingPrice(normalCost);
+    const specialSelling = vatInclusiveSellingPrice(specialCost);
+    const rawIdentity = [source.catalog, sku, description].join('-').toLowerCase();
+    const sourceKey = `${rawIdentity.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 168)}-${stableIdentityHash(rawIdentity)}`;
+
+    return {
+      catalog_key: source.catalog,
+      source_key: sourceKey,
+      product_type: 'TYRE',
+      supplier: source.supplier,
+      supplier_sku: sku,
+      brand,
+      product_name: description,
+      tyre_pattern: pattern || null,
+      tyre_rating: null,
+      tyre_index: null,
+      tyre_specs: specs,
+      stock_by_location: { CPT: stockUnits },
+      category: 'Passenger Tyres',
+      size,
+      stock_location: `CPT: ${stockUnits}`,
+      stock_units_availability: stockUnits > 0 ? 'In stock' : 'Out of stock',
+      supplier_lead_time: null,
+      stock_units: stockUnits,
+      cost_price: specialCost,
+      selling_price: specialSelling,
+      source_stock_detail: `CPT: ${stockUnits} | Normal cost ex VAT: R${normalCost.toFixed(2)} | Normal selling price incl VAT: R${normalSelling.toFixed(2)} | Special cost ex VAT: R${specialCost.toFixed(2)} | Special selling price incl VAT: R${specialSelling.toFixed(2)}`,
+      source_file: basename(source.sourceFile)
+    };
+  }).filter((item) => item.supplier_sku && item.size && item.cost_price > 0);
+};
+
 const buildItems = async (source) => {
   const rows = parseCsv(await readEmbeddedCsv(source.dataFile));
   if (source.parser === 'aline') return buildAlineItems(rows, source);
+  if (source.parser === 'safetyGripSpecials') return buildSafetyGripSpecialItems(rows, source);
   const headers = rows[0].map(clean);
   const column = (name) => {
     const index = headers.indexOf(name);

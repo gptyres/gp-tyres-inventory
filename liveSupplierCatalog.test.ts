@@ -25,6 +25,7 @@ const baseRow: LiveSupplierCatalogRow = {
   stock_units: 8,
   cost_price: '1100.00',
   selling_price: '1450.00',
+  source_stock_detail: 'Cape Town: 8',
   source_file: 'apex_inventory_sync.csv',
   imported_at: '2026-07-13T10:00:00Z'
 };
@@ -134,6 +135,21 @@ describe('live supplier catalogue conversion', () => {
     expect(item.sellingPrice).toBe(1265);
     expect(item.supplierLeadTime).toBe('6 Hours');
     expect(item.location).toBe('Cape Town | In stock');
+  });
+
+  it('restores a Safety Grip normal selling price from audited promotion metadata', () => {
+    const item = liveSupplierRowToInventoryItem({
+      ...baseRow,
+      catalog_key: 'SAFETY_GRIP',
+      tyre_specs: 'H/T / SPECIAL',
+      cost_price: '637.00',
+      selling_price: '733.00',
+      source_stock_detail: 'CPT: 7 | Normal cost ex VAT: R655.00 | Normal selling price incl VAT: R753.00 | Special cost ex VAT: R637.00'
+    });
+
+    expect(item.sellingPrice).toBe(733);
+    expect(item.normalSellingPrice).toBe(753);
+    expect(item.promotionLabel).toBe('SPECIAL');
   });
 
   it('does not add VAT twice to VAT-inclusive catalogues or rows without an ex-VAT cost', () => {

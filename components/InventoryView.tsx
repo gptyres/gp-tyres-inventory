@@ -107,7 +107,16 @@ export const getItemSupplierName = (item: InventoryItem): string => (
 );
 
 export const isSpecialItem = (item: InventoryItem): boolean => (
-  item.type === ProductType.TYRE && /\bSPECIAL\b/i.test((item as TyreProduct).tyreSpecs || '')
+  item.type === ProductType.TYRE && (
+    /\bSPECIAL\b/i.test((item as TyreProduct).tyreSpecs || '')
+    || /\bSPECIAL\b/i.test(item.promotionLabel || '')
+  )
+);
+
+const hasNormalSpecialPrice = (item: InventoryItem): item is InventoryItem & { normalSellingPrice: number } => (
+  isSpecialItem(item)
+  && Number.isFinite(item.normalSellingPrice)
+  && Number(item.normalSellingPrice) > item.sellingPrice
 );
 
 const uniqueDisplayParts = (parts: Array<string | undefined>) => {
@@ -1378,7 +1387,14 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
 
               {visibleColumns.price && (
                 <td className="p-3 text-right font-mono text-gp-text-main font-bold">
-                  {formatCurrency(item.sellingPrice)}
+                  {hasNormalSpecialPrice(item) && (
+                    <div className="mb-1 text-[10px] font-semibold text-gp-text-muted line-through">
+                      Normal {formatCurrency(item.normalSellingPrice)}
+                    </div>
+                  )}
+                  <div className={hasNormalSpecialPrice(item) ? 'text-gp-red' : ''}>
+                    {formatCurrency(item.sellingPrice)}
+                  </div>
                 </td>
               )}
             </tr>
@@ -1520,7 +1536,12 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             {visibleColumns.price && (
                 <div className="bg-gp-black p-3 grid grid-cols-2 gap-3 items-center">
                     <div className="flex flex-col">
-                        <span className="text-[9px] text-gp-red uppercase font-bold tracking-wider">{isReadOnly ? priceLabel : "Selling Price"}</span>
+                        {hasNormalSpecialPrice(item) && (
+                          <span className="mb-0.5 text-[10px] font-semibold text-gp-text-muted line-through">
+                            Normal {formatCurrency(item.normalSellingPrice)}
+                          </span>
+                        )}
+                        <span className="text-[9px] text-gp-red uppercase font-bold tracking-wider">{hasNormalSpecialPrice(item) ? 'Special Price' : (isReadOnly ? priceLabel : "Selling Price")}</span>
                         <span className="text-xl font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
                     </div>
 
@@ -1649,7 +1670,12 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
 
               {visibleColumns.price && (
                 <div className="flex flex-col items-end">
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-gp-red">{isReadOnly ? priceLabel : 'Selling Price'}</span>
+                  {hasNormalSpecialPrice(item) && (
+                    <span className="text-[10px] font-semibold text-gp-text-muted line-through">
+                      Normal {formatCurrency(item.normalSellingPrice)}
+                    </span>
+                  )}
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-gp-red">{hasNormalSpecialPrice(item) ? 'Special Price' : (isReadOnly ? priceLabel : 'Selling Price')}</span>
                   <span className="text-base font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
                 </div>
               )}

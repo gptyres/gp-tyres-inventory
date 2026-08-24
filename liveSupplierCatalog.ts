@@ -38,11 +38,19 @@ export interface LiveSupplierCatalogRow {
   cost_price: number | string;
   selling_price: number | string;
   product_url?: string | null;
+  source_stock_detail?: string | null;
   source_file: string;
   imported_at: string;
 }
 
 const PAGE_SIZE = 1_000;
+
+const parseNormalSellingPrice = (detail?: string | null): number | undefined => {
+  const match = String(detail || '').match(/Normal selling price incl(?:uding)? VAT:\s*R?\s*([\d,.]+)/i);
+  if (!match) return undefined;
+  const value = Number.parseFloat(match[1].replace(/,/g, ''));
+  return Number.isFinite(value) && value > 0 ? Math.round(value) : undefined;
+};
 
 const stockEntries = (row: LiveSupplierCatalogRow): Array<[string, number]> => {
   const existing = normalizeStockByLocation(row.stock_by_location);
@@ -131,6 +139,8 @@ export const liveSupplierRowToInventoryItem = (
       suppliedSellingPrice
     ),
     costPrice,
+    normalSellingPrice: parseNormalSellingPrice(row.source_stock_detail),
+    promotionLabel: /\bSPECIAL\b/i.test(row.tyre_specs || '') ? 'SPECIAL' : undefined,
     lastUpdated: row.imported_at.slice(0, 10),
     supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS' : row.supplier,
     supplierStockCode: row.supplier_sku || undefined,
@@ -216,7 +226,7 @@ export const loadLiveSupplierCatalogItems = async (
     const { data, error } = await (supabase
       .from('supplier_catalog_items') as any)
       .select(
-        'id,snapshot_id,catalog_key,source_key,product_type,supplier,supplier_sku,brand,product_name,tyre_pattern,tyre_rating,tyre_index,tyre_specs,wheel_pcd,wheel_offset,wheel_center_bore,stock_by_location,category,size,stock_location,stock_units_availability,supplier_lead_time,stock_units,cost_price,selling_price,product_url,source_file,imported_at'
+        'id,snapshot_id,catalog_key,source_key,product_type,supplier,supplier_sku,brand,product_name,tyre_pattern,tyre_rating,tyre_index,tyre_specs,wheel_pcd,wheel_offset,wheel_center_bore,stock_by_location,category,size,stock_location,stock_units_availability,supplier_lead_time,stock_units,cost_price,selling_price,product_url,source_stock_detail,source_file,imported_at'
       )
       .eq('snapshot_id', source.active_snapshot_id)
       .gt('id', lastId)

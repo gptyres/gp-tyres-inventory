@@ -24,6 +24,8 @@ export interface BaseProduct {
   quantity: number;
   sellingPrice: number;
   costPrice: number; // Only visible to admin
+  normalSellingPrice?: number;
+  promotionLabel?: string;
   lastUpdated: string;
   supplierName?: string;
   supplierStockCode?: string;
