@@ -3,7 +3,11 @@ import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct 
 import { isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import { parseAlineWheelDescription, parseSupplierWheelImageKeys } from './supplierStockImages';
-import { calculateLiveSupplierSellingPrice } from './supplierPricing';
+import {
+  ALINE_RIM_SET_QUANTITY,
+  calculateAlineFourRimPrice,
+  calculateLiveSupplierSellingPrice
+} from './supplierPricing';
 import {
   normalizeStockByLocation,
   normalizeStockLocationName,
@@ -127,8 +131,23 @@ export const groupLiveSupplierCatalogRows = (
 export const liveSupplierRowToInventoryItem = (
   row: LiveSupplierCatalogRow
 ): InventoryItem => {
-  const suppliedSellingPrice = Math.max(0, Number(row.selling_price) || 0);
-  const supplierCostPrice = Math.max(0, Number(row.cost_price) || 0);
+  const parsedAlineWheel = row.catalog_key === 'ALINE' && row.product_type === 'WHEEL'
+    ? parseAlineWheelDescription(row.product_name)
+    : null;
+  const hasAlineWheelSize = Boolean(
+    parsedAlineWheel?.size || /^\s*\d{2}\s*[xX]\s*\d/.test(row.size || '')
+  );
+  const isAlineFourRimListing = row.catalog_key === 'ALINE'
+    && row.product_type === 'WHEEL'
+    && hasAlineWheelSize;
+  const rawSellingPrice = Math.max(0, Number(row.selling_price) || 0);
+  const rawCostPrice = Math.max(0, Number(row.cost_price) || 0);
+  const suppliedSellingPrice = isAlineFourRimListing
+    ? calculateAlineFourRimPrice(rawSellingPrice)
+    : rawSellingPrice;
+  const supplierCostPrice = isAlineFourRimListing
+    ? calculateAlineFourRimPrice(rawCostPrice)
+    : rawCostPrice;
   const costPrice = supplierCostPrice || suppliedSellingPrice;
   const common = {
     id: 'live-' + row.catalog_key.toLowerCase() + '-' + row.source_key,
@@ -150,9 +169,7 @@ export const liveSupplierRowToInventoryItem = (
   };
 
   if (row.product_type === 'WHEEL') {
-    const alineWheel = row.catalog_key === 'ALINE'
-      ? parseAlineWheelDescription(row.product_name)
-      : null;
+    const alineWheel = parsedAlineWheel;
     const brandPrefix = row.brand?.trim();
     const fallbackName = row.product_name
       .replace(brandPrefix ? new RegExp(`^${brandPrefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+`, 'i') : /^$/, '')
@@ -172,7 +189,7 @@ export const liveSupplierRowToInventoryItem = (
       offset: row.wheel_offset?.trim().replace(/^--/, '-') || alineWheel?.offset || '',
       centerBore: row.wheel_center_bore?.trim() || alineWheel?.centerBore || '',
       colour: [row.brand, finish, row.category, row.supplier_sku].filter(Boolean).join(' | '),
-      setQuantity: 1,
+      setQuantity: isAlineFourRimListing ? ALINE_RIM_SET_QUANTITY : 1,
       location: buildLocation(row),
       imageDesignKey: imageKeys.designKey,
       imageFinishKey: imageKeys.finishKey,

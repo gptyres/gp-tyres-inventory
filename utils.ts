@@ -4,7 +4,13 @@ import { parseAlineWheelDescription, parseSupplierTyreImageKeys, parseSupplierWh
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsData';
 import { ROYAL_TYRES_CAPE_TOWN_RAW_DATA } from './supplier_data/royalTyresCapeTownData';
-import { calculateEibachSellingPrice, calculateVatInclusiveSellingPrice, roundSupplierSellingPrice } from './supplierPricing';
+import {
+  ALINE_RIM_SET_QUANTITY,
+  calculateAlineFourRimPrice,
+  calculateEibachSellingPrice,
+  calculateVatInclusiveSellingPrice,
+  roundSupplierSellingPrice
+} from './supplierPricing';
 import {
   extractFlotationTyreSizeQuery,
   flotationTyreSizesEqual,
@@ -1386,6 +1392,11 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
     const category = cols[4]?.trim();
     const catalogueNumber = cols[10]?.trim();
     const spec = parseAlineWheelDescription(description);
+    const isFourRimListing = Boolean(spec.size);
+    const listingCost = isFourRimListing ? calculateAlineFourRimPrice(priceIncVat) : priceIncVat;
+    const listingSellingPrice = isFourRimListing
+      ? calculateAlineFourRimPrice(recommendedRetail || priceIncVat)
+      : recommendedRetail || priceIncVat;
 
     items.push({
       id: `aline-${idCounter++}`,
@@ -1400,12 +1411,12 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
       offset: spec.offset,
       centerBore: spec.centerBore,
       colour: [brand, description, category, catalogueNumber, recommendedRetail ? `RR ${formatCurrency(recommendedRetail)}` : ''].filter(Boolean).join(' | '),
-      setQuantity: 4,
+      setQuantity: isFourRimListing ? ALINE_RIM_SET_QUANTITY : 1,
       location: `JHB: ${qtyJhb} | CPT: ${qtyCpt} | DBN: ${qtyDbn}`,
       stockByLocation: { JHB: qtyJhb, CPT: qtyCpt, DBN: qtyDbn },
       quantity: qtyJhb + qtyCpt + qtyDbn,
-      costPrice: priceIncVat,
-      sellingPrice: roundSupplierSellingPrice(recommendedRetail || priceIncVat),
+      costPrice: listingCost,
+      sellingPrice: roundSupplierSellingPrice(listingSellingPrice),
       lastUpdated: today
     });
   });

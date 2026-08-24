@@ -152,10 +152,13 @@ describe('live supplier catalogue conversion', () => {
     expect(item.promotionLabel).toBe('SPECIAL');
   });
 
-  it('does not add VAT twice to VAT-inclusive catalogues or rows without an ex-VAT cost', () => {
+  it('shows ALINE VAT-inclusive prices as four-rim totals without adding VAT twice', () => {
     const alineItem = liveSupplierRowToInventoryItem({
       ...baseRow,
       catalog_key: 'ALINE',
+      product_type: 'WHEEL',
+      product_name: '410015X8BLISS ET25 SSML ChRiv',
+      size: '15x8',
       cost_price: '5590.00',
       selling_price: '6990.49'
     });
@@ -165,7 +168,11 @@ describe('live supplier catalogue conversion', () => {
       selling_price: '1450.49'
     });
 
-    expect(alineItem.sellingPrice).toBe(6990);
+    expect(alineItem.costPrice).toBe(22360);
+    expect(alineItem.sellingPrice).toBe(27962);
+    expect(alineItem.type).toBe(ProductType.WHEEL);
+    if (alineItem.type !== ProductType.WHEEL) throw new Error('Expected wheel item');
+    expect(alineItem.setQuantity).toBe(4);
     expect(missingCostItem.sellingPrice).toBe(1450);
     expect(missingCostItem.costPrice).toBe(1450.49);
   });

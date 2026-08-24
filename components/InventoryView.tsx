@@ -39,6 +39,7 @@ interface InventoryViewProps {
   showSupplierName?: boolean;
   currentUser?: string | null;
   priceLabel?: string;
+  costLabel?: string;
   emptyStateTitle?: string;
   emptyStateDetail?: string;
   reportCatalogueLabel?: string;
@@ -1229,7 +1230,7 @@ interface ViewComponentProps extends InventoryViewProps {
   onHistory: (item: InventoryItem) => void;
 }
 
-const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, onHistory, aspectRatio, priceLabel = 'Selling Price' }) => {
+const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, onHistory, aspectRatio, priceLabel = 'Selling Price', costLabel = 'Cost' }) => {
   
   const SortIcon = ({ colKey }: { colKey: SortKey }) => (
     <span className={`ml-1 inline-block transition-opacity ${sortConfig.key === colKey ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`}>
@@ -1264,7 +1265,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
             {visibleColumns.specs && <th className="p-3 border-r border-b border-gp-border">Details</th>}
             {visibleColumns.location && <Header label="Location" colKey="location" />}
             <Header label="Qty" colKey="quantity" align="center" />
-            {visibleColumns.cost && <th className="p-3 border-r border-b border-gp-border text-right text-green-600 bg-green-900/10">Cost</th>}
+            {visibleColumns.cost && <th className="p-3 border-r border-b border-gp-border text-right text-green-600 bg-green-900/10">{costLabel}</th>}
             {visibleColumns.price && <Header label={isReadOnly ? priceLabel : "Sell Price"} colKey="price" align="right" />}
           </tr>
         </thead>
@@ -1406,7 +1407,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
   );
 };
 
-const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, onHistory, aspectRatio, priceLabel = 'Selling Price' }) => {
+const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, onHistory, aspectRatio, priceLabel = 'Selling Price', costLabel = 'Cost Price' }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-6">
       {items.map((item) => (
@@ -1529,7 +1530,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             {/* Cost Price Section */}
             {visibleColumns.cost && (
                 <div className="bg-green-900/10 px-3 py-2 border-b border-gp-border flex justify-between items-center">
-                    <span className="text-[9px] text-green-600 uppercase font-bold tracking-wider">Cost Price</span>
+                    <span className="text-[9px] text-green-600 uppercase font-bold tracking-wider">{costLabel}</span>
                     <span className="text-sm font-bold text-green-600 font-mono">{formatCurrency(item.costPrice)}</span>
                 </div>
             )}

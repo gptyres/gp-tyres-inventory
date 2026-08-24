@@ -429,7 +429,7 @@ const App: React.FC = () => {
     },
     ALINE: {
       label: 'ALINE',
-      note: 'Viewing External Supplier Data. Recommended VAT-inclusive prices are a guide only, not the final customer price. Branch wheel stock is shown by location.',
+      note: 'Viewing External Supplier Data. Cost and recommended VAT-inclusive prices are shown as totals for 4 rims. Recommended prices are a guide only, not the final customer price. Branch wheel stock is shown by location.',
       portalUrl: 'https://alinewheels.cataloghive.com/'
     },
     STAMFORD: {
@@ -1999,7 +1999,12 @@ const App: React.FC = () => {
                     onBulkDelete={handleBulkDelete}
                     isReadOnly={currentView === 'SUPPLIER_INVENTORY'}
                     showSupplierName={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS'}
-                    priceLabel={currentView === 'SUPPLIER_INVENTORY' ? 'VAT Inclusive Price' : undefined}
+                    priceLabel={currentView === 'SUPPLIER_INVENTORY'
+                      ? activeSupplierCatalog === 'ALINE' ? 'VAT Inclusive Price (4 Rims)' : 'VAT Inclusive Price'
+                      : undefined}
+                    costLabel={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALINE'
+                      ? 'Cost incl. VAT (4 Rims)'
+                      : undefined}
                     reportCatalogueLabel={currentView === 'SUPPLIER_INVENTORY'
                       ? `${supplierCatalogLabel} Catalog`
                       : activeFilter === 'ALL' ? 'Available Stock' : `${activeFilter} Available Stock`}

@@ -11,7 +11,7 @@ describe('ALINE supplier data', () => {
     expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(124607);
   });
 
-  it('keeps supplier cost separate from recommended selling price', () => {
+  it('shows supplier cost and recommended selling price as totals for four rims', () => {
     const item = parseAlineData(ALINE_RAW_DATA).find((candidate) => candidate.supplierStockCode === '82410224');
 
     expect(item).toMatchObject({
@@ -20,8 +20,20 @@ describe('ALINE supplier data', () => {
       pcd: '4/100',
       quantity: 6,
       location: 'JHB: 6 | CPT: 0 | DBN: 0',
-      costPrice: 5590,
-      sellingPrice: 6990
+      setQuantity: 4,
+      costPrice: 22360,
+      sellingPrice: 27960
+    });
+  });
+
+  it('does not multiply accessory prices by the four-rim set quantity', () => {
+    const item = parseAlineData(ALINE_RAW_DATA).find((candidate) => candidate.supplierStockCode === '82440005');
+
+    expect(item).toMatchObject({
+      size: 'Accessory',
+      setQuantity: 1,
+      costPrice: 7.8,
+      sellingPrice: 8
     });
   });
 });
