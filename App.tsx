@@ -14,6 +14,7 @@ import { StockActionModal } from './components/StockActionModal';
 import { SellModal } from './components/SellModal';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { SupplierSyncButton } from './components/SupplierSyncButton';
+import { SupplierCatalogSyncStamp, latestCatalogItemDate } from './components/SupplierCatalogSyncStamp';
 import { ManualSupplierImport } from './components/ManualSupplierImport';
 import { SupplierSearchFilters } from './components/SupplierSearchFilters';
 import { BackorderModal } from './components/BackorderModal';
@@ -502,6 +503,10 @@ const App: React.FC = () => {
   const supplierPortalUrl = supplierCatalogMeta[activeSupplierCatalog].portalUrl;
   const supplierHasLiveSync = isLiveSupplierCatalog(activeSupplierCatalog);
   const supplierUsesPortalWorker = isRegistryBackedSupplierCatalog(activeSupplierCatalog);
+  const supplierCatalogFallbackSyncedAt = useMemo(
+    () => activeSupplierCatalog === 'ALL_SUPPLIERS' ? null : latestCatalogItemDate(supplierItems),
+    [activeSupplierCatalog, supplierItems]
+  );
 
   // Helper to determine transaction type based on amount and fields
   const inferTransactionType = (row: any): 'SALE' | 'RESERVE' | 'REFUND' => {
@@ -1904,6 +1909,13 @@ const App: React.FC = () => {
                     : activeFilter === 'ALL' ? 'Full Inventory' : `${activeFilter} Inventory (${filteredItems.length})`}
                 </h2>
                 {currentView === 'INVENTORY' && <SheetInventorySyncStatus visible compact />}
+                {currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog !== 'ALL_SUPPLIERS' && (
+                  <SupplierCatalogSyncStamp
+                    catalog={activeSupplierCatalog}
+                    fallbackSyncedAt={supplierCatalogFallbackSyncedAt}
+                    refreshKey={supplierCatalogRefreshVersion}
+                  />
+                )}
               </div>
               <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
                 {currentView === 'SUPPLIER_INVENTORY' && (
