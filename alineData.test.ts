@@ -11,7 +11,7 @@ describe('ALINE supplier data', () => {
     expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(124607);
   });
 
-  it('shows supplier cost and recommended selling price as totals for four rims', () => {
+  it('uses the supplied four-rim set cost and recommended selling price without multiplying twice', () => {
     const item = parseAlineData(ALINE_RAW_DATA).find((candidate) => candidate.supplierStockCode === '82410224');
 
     expect(item).toMatchObject({
@@ -21,8 +21,9 @@ describe('ALINE supplier data', () => {
       quantity: 6,
       location: 'JHB: 6 | CPT: 0 | DBN: 0',
       setQuantity: 4,
-      costPrice: 22360,
-      sellingPrice: 27960
+      costPrice: 5590,
+      sellingPrice: 6990,
+      vehicleFitments: expect.stringContaining('Toy Corolla')
     });
   });
 

@@ -168,8 +168,8 @@ describe('live supplier catalogue conversion', () => {
       selling_price: '1450.49'
     });
 
-    expect(alineItem.costPrice).toBe(22360);
-    expect(alineItem.sellingPrice).toBe(27962);
+    expect(alineItem.costPrice).toBe(5590);
+    expect(alineItem.sellingPrice).toBe(6990);
     expect(alineItem.type).toBe(ProductType.WHEEL);
     if (alineItem.type !== ProductType.WHEEL) throw new Error('Expected wheel item');
     expect(alineItem.setQuantity).toBe(4);
@@ -235,7 +235,8 @@ describe('live supplier catalogue conversion', () => {
       offset: '38',
       centerBore: '',
       imageDesignKey: 'SPY',
-      imageFinishKey: 'ARCTIC SILVER'
+      imageFinishKey: 'ARCTIC SILVER',
+      vehicleFitments: expect.stringContaining('ToyCor')
     });
 
     expect(buildSupplierImageMap([item], [{

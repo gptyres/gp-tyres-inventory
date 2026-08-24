@@ -63,6 +63,7 @@ export interface WheelProduct extends BaseProduct {
   colour: string;
   setQuantity: number; // e.g., 4 per set
   location?: string; // e.g., JHB: 4, CPT: 2
+  vehicleFitments?: string; // Supplier-confirmed vehicle applications
 }
 
 export interface CoiloverProduct extends BaseProduct {

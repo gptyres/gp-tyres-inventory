@@ -8,7 +8,8 @@ const argument = (name) => {
 
 const inputFile = argument('--file');
 const outputFile = argument('--out') || 'aline_cataloghive_items.json';
-if (!inputFile) throw new Error('Usage: --file <raw.json> [--out <items.json>]');
+const fitmentsOutputFile = argument('--fitments-out');
+if (!inputFile) throw new Error('Usage: --file <raw.json> [--out <items.json>] [--fitments-out <fitments.ts>]');
 
 const rows = JSON.parse(await readFile(resolve(inputFile), 'utf8'));
 if (!Array.isArray(rows) || rows.length === 0) throw new Error('The A-Line extraction contains no rows.');
@@ -16,6 +17,12 @@ if (!Array.isArray(rows) || rows.length === 0) throw new Error('The A-Line extra
 const money = (value) => Number(String(value || '').replace(/[^0-9.-]/g, '')) || 0;
 const quantity = (value) => Math.max(0, Number.parseInt(String(value || '').replace(/[^0-9-]/g, ''), 10) || 0);
 const normalize = (value) => String(value || '').replace(/\s+/g, ' ').trim();
+const vehicleFitmentsFromRow = (row) => {
+  const fitment = normalize(row.fitment);
+  const separator = fitment.match(/\s+[—–]\s+/);
+  if (!separator?.index) return '';
+  return normalize(fitment.slice(separator.index + separator[0].length));
+};
 
 const finishHints = [
   ['ARCTICSILVERMF', 'ARCTIC SILVER'], ['ARCTICSILVER', 'ARCTIC SILVER'],
@@ -158,6 +165,7 @@ const items = [...grouped.entries()].map(([sku, entry]) => {
   const sellingPrice = Math.round((retailSetPrice || dealerSetPrice) * 100) / 100;
   const stockLocation = Object.entries(stockByLocation).map(([location, value]) => `${location}: ${value}`).join(' | ');
   const imageUrl = normalize(row.image_url);
+  const vehicleFitments = vehicleFitmentsFromRow(row);
   return {
     catalog_key: 'ALINE',
     source_key: `aline-${sku.toLowerCase()}`,
@@ -180,7 +188,13 @@ const items = [...grouped.entries()].map(([sku, entry]) => {
     cost_price: costPrice,
     selling_price: sellingPrice,
     product_url: imageUrl ? new URL(imageUrl, 'https://alinewheels.cataloghive.com/').href : null,
-    source_stock_detail: `${stockLocation} | Pricing basis: set of 4 | Dealer set incl VAT: R${dealerSetPrice.toFixed(2)} | RRP set: R${retailSetPrice.toFixed(2)}`,
+    source_stock_detail: [
+      stockLocation,
+      'Pricing basis: set of 4',
+      `Dealer set incl VAT: R${dealerSetPrice.toFixed(2)}`,
+      `RRP set: R${retailSetPrice.toFixed(2)}`,
+      vehicleFitments ? `Vehicle fitment: ${vehicleFitments}` : ''
+    ].filter(Boolean).join(' | '),
     source_file: sourceFile
   };
 }).sort((a, b) => a.product_name.localeCompare(b.product_name) || a.supplier_sku.localeCompare(b.supplier_sku));
@@ -200,4 +214,17 @@ const summary = {
 };
 
 await writeFile(resolve(outputFile), JSON.stringify(items, null, 2), 'utf8');
+if (fitmentsOutputFile) {
+  const fitments = Object.fromEntries(
+    [...grouped.entries()]
+      .map(([sku, entry]) => [sku, vehicleFitmentsFromRow(entry.row)])
+      .filter(([, fitment]) => fitment)
+      .sort(([left], [right]) => left.localeCompare(right))
+  );
+  await writeFile(
+    resolve(fitmentsOutputFile),
+    `export const ALINE_VEHICLE_FITMENTS: Readonly<Record<string, string>> = ${JSON.stringify(fitments, null, 2)};\n`,
+    'utf8'
+  );
+}
 console.log(JSON.stringify(summary, null, 2));

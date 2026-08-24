@@ -1,4 +1,4 @@
-import { InventoryItem, ProductType, TyreProduct } from './types';
+import { InventoryItem, ProductType, TyreProduct, WheelProduct } from './types';
 import { searchInventory } from './utils';
 import {
   extractFlotationTyreSizeQuery,
@@ -13,6 +13,13 @@ export interface SupplierSizeQuery {
   remainingQuery: string;
   kind: 'metric' | 'flotation';
   flotation?: FlotationTyreSizeComponents;
+}
+
+export interface SupplierWheelSizeQuery {
+  diameter: string;
+  width?: string;
+  displaySize: string;
+  remainingQuery: string;
 }
 
 const numericSizeKey = (value: string) => value.replace(/[^0-9]/g, '');
@@ -62,6 +69,38 @@ export const extractSupplierTyreSizeQuery = (query: string): SupplierSizeQuery |
   return null;
 };
 
+export const extractSupplierWheelSizeQuery = (
+  query: string,
+  allowBareDiameter = false
+): SupplierWheelSizeQuery | null => {
+  const buildResult = (
+    match: RegExpMatchArray,
+    diameter: string,
+    width?: string
+  ): SupplierWheelSizeQuery => ({
+    diameter: String(Number(diameter)),
+    width: width ? String(Number(width)) : undefined,
+    displaySize: width ? `${Number(diameter)}x${Number(width)}` : `${Number(diameter)} inch`,
+    remainingQuery: `${query.slice(0, match.index ?? 0)} ${query.slice((match.index ?? 0) + match[0].length)}`.trim()
+  });
+
+  const fullSize = query.match(/\b(1[2-9]|2[0-6])\s*[xX×*]\s*(\d{1,2}(?:\.\d+)?)\s*(?:J\b|["”]?)/i);
+  if (fullSize) return buildResult(fullSize, fullSize[1], fullSize[2]);
+
+  const inchSize = query.match(/\b(1[2-9]|2[0-6])\s*(?:inch(?:es)?\b|["”])/i);
+  if (inchSize) return buildResult(inchSize, inchSize[1]);
+
+  const labelledSize = query.match(/\b(1[2-9]|2[0-6])\s+(?:wheel(?:s)?|rim(?:s)?)\b/i);
+  if (labelledSize) return buildResult(labelledSize, labelledSize[1]);
+
+  if (allowBareDiameter) {
+    const bareSize = query.match(/^\s*(1[2-9]|2[0-6])\s*$/i);
+    if (bareSize) return buildResult(bareSize, bareSize[1]);
+  }
+
+  return null;
+};
+
 const supplierName = (item: InventoryItem) => String(item.supplierName || '').trim();
 
 const matchesSizeQuery = (item: InventoryItem, sizeQuery: SupplierSizeQuery): boolean => {
@@ -72,6 +111,19 @@ const matchesSizeQuery = (item: InventoryItem, sizeQuery: SupplierSizeQuery): bo
 
   const itemSize = parseFlotationTyreSize((item as TyreProduct).size);
   return Boolean(itemSize && flotationTyreSizesEqual(sizeQuery.flotation, itemSize));
+};
+
+const wheelSizeParts = (value: string): { diameter: string; width?: string } | null => {
+  const match = String(value || '').match(/\b(\d{2})\s*[xX×*]\s*(\d{1,2}(?:\.\d+)?)/);
+  if (!match) return null;
+  return { diameter: String(Number(match[1])), width: String(Number(match[2])) };
+};
+
+const matchesWheelSizeQuery = (item: InventoryItem, sizeQuery: SupplierWheelSizeQuery): boolean => {
+  if (item.type !== ProductType.WHEEL) return false;
+  const parts = wheelSizeParts((item as WheelProduct).size);
+  if (!parts || parts.diameter !== sizeQuery.diameter) return false;
+  return !sizeQuery.width || parts.width === sizeQuery.width;
 };
 
 const compareSupplierResults = (preferredIds: Set<string>) => (left: InventoryItem, right: InventoryItem) => {
@@ -90,6 +142,18 @@ const compareSupplierResults = (preferredIds: Set<string>) => (left: InventoryIt
 };
 
 export const searchSupplierInventory = (items: InventoryItem[], query: string): InventoryItem[] => {
+  const hasWheels = items.some((item) => item.type === ProductType.WHEEL);
+  const hasNonWheels = items.some((item) => item.type !== ProductType.WHEEL);
+  const wheelSizeQuery = hasWheels
+    ? extractSupplierWheelSizeQuery(query, !hasNonWheels)
+    : null;
+  if (wheelSizeQuery) {
+    const matchingWheels = items.filter((item) => matchesWheelSizeQuery(item, wheelSizeQuery));
+    return wheelSizeQuery.remainingQuery
+      ? searchInventory(matchingWheels, wheelSizeQuery.remainingQuery)
+      : matchingWheels;
+  }
+
   const sizeQuery = extractSupplierTyreSizeQuery(query);
   if (!sizeQuery) return searchInventory(items, query);
 

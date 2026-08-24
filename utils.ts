@@ -6,11 +6,11 @@ import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsDa
 import { ROYAL_TYRES_CAPE_TOWN_RAW_DATA } from './supplier_data/royalTyresCapeTownData';
 import {
   ALINE_RIM_SET_QUANTITY,
-  calculateAlineFourRimPrice,
   calculateEibachSellingPrice,
   calculateVatInclusiveSellingPrice,
   roundSupplierSellingPrice
 } from './supplierPricing';
+import { expandWheelFitmentSearchText, getAlineVehicleFitments } from './alineFitment';
 import {
   extractFlotationTyreSizeQuery,
   flotationTyreSizesEqual,
@@ -43,6 +43,7 @@ export const getStatusColor = (qty: number) => {
 const normalizeSearchTerm = (str: string) => {
   if (!str) return '';
   return str
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
     .toLowerCase()
     .replace(/(\d)[xX*](\d)/g, '$1 $2') // standardized separator for dimensions
     .replace(/[^a-z0-9\s]/g, ' '); // remove special chars to create clean tokens
@@ -86,11 +87,20 @@ const getInventorySearchIndex = (item: InventoryItem): InventorySearchIndex => {
     const wheel = item as WheelProduct;
     searchableParts = [
       wheel.code,
+      wheel.brand,
+      wheel.finish,
       wheel.size,
       wheel.pcd,
       wheel.colour,
       wheel.offset,
       wheel.centerBore,
+      wheel.supplierName,
+      wheel.supplierStockCode,
+      wheel.vehicleFitments,
+      expandWheelFitmentSearchText(wheel.vehicleFitments || ''),
+      wheel.size ? `${wheel.size.split(/[xX]/)[0]} inch` : '',
+      wheel.offset ? `ET${wheel.offset}` : '',
+      wheel.centerBore ? `CB${wheel.centerBore}` : '',
       'Wheel'
     ];
 
@@ -1393,10 +1403,6 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
     const catalogueNumber = cols[10]?.trim();
     const spec = parseAlineWheelDescription(description);
     const isFourRimListing = Boolean(spec.size);
-    const listingCost = isFourRimListing ? calculateAlineFourRimPrice(priceIncVat) : priceIncVat;
-    const listingSellingPrice = isFourRimListing
-      ? calculateAlineFourRimPrice(recommendedRetail || priceIncVat)
-      : recommendedRetail || priceIncVat;
 
     items.push({
       id: `aline-${idCounter++}`,
@@ -1412,11 +1418,12 @@ export const parseAlineData = (rawCsv: string): InventoryItem[] => {
       centerBore: spec.centerBore,
       colour: [brand, description, category, catalogueNumber, recommendedRetail ? `RR ${formatCurrency(recommendedRetail)}` : ''].filter(Boolean).join(' | '),
       setQuantity: isFourRimListing ? ALINE_RIM_SET_QUANTITY : 1,
+      vehicleFitments: getAlineVehicleFitments(stockCode),
       location: `JHB: ${qtyJhb} | CPT: ${qtyCpt} | DBN: ${qtyDbn}`,
       stockByLocation: { JHB: qtyJhb, CPT: qtyCpt, DBN: qtyDbn },
       quantity: qtyJhb + qtyCpt + qtyDbn,
-      costPrice: listingCost,
-      sellingPrice: roundSupplierSellingPrice(listingSellingPrice),
+      costPrice: priceIncVat,
+      sellingPrice: roundSupplierSellingPrice(recommendedRetail || priceIncVat),
       lastUpdated: today
     });
   });

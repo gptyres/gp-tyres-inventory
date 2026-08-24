@@ -3,10 +3,6 @@ import type { SupplierCatalog } from './types';
 export const SUPPLIER_VAT_RATE = 0.15;
 export const ALINE_RIM_SET_QUANTITY = 4;
 
-export const calculateAlineFourRimPrice = (singleRimPrice: number): number => (
-  Math.max(0, Number.isFinite(singleRimPrice) ? singleRimPrice : 0) * ALINE_RIM_SET_QUANTITY
-);
-
 export const roundSupplierSellingPrice = (value: number): number => (
   Math.round(Math.max(0, Number.isFinite(value) ? value : 0) + 1e-9)
 );

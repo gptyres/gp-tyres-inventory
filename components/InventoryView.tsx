@@ -686,6 +686,48 @@ const SpecBadge = ({ label, value }: { label: string; value: string | number }) 
   </div>
 );
 
+const WheelDetailsDisclosure = ({ wheel, compact = false }: { wheel: WheelProduct; compact?: boolean }) => {
+  const specificationRows = [
+    ['Size', wheel.size],
+    ['PCD', formatWheelPcd(wheel.pcd)],
+    ['ET', formatWheelOffset(wheel.offset)],
+    ['CB', wheel.centerBore ? `CB ${wheel.centerBore}` : ''],
+    ['SKU', wheel.supplierStockCode || wheel.code]
+  ].filter((entry): entry is [string, string] => Boolean(entry[1]));
+
+  return (
+    <details
+      className={`group rounded border border-gp-border bg-gp-black/60 ${compact ? 'mt-1.5 max-w-3xl' : 'col-span-full mt-1'}`}
+      onClick={(event) => event.stopPropagation()}
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-2.5 py-2 text-[10px] font-black uppercase tracking-wider text-gp-text-muted transition-colors hover:text-gp-text-main focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gp-red">
+        <span>Wheel details</span>
+        <span className="font-mono text-gp-red transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+      </summary>
+      <div className="border-t border-gp-border px-2.5 py-2.5">
+        {specificationRows.length > 0 && (
+          <dl className="flex flex-wrap gap-1.5">
+            {specificationRows.map(([label, value]) => (
+              <div key={label} className="min-w-[5.5rem] flex-1 rounded border border-gp-border bg-gp-overlay px-2 py-1.5">
+                <dt className="text-[8px] font-black uppercase tracking-wider text-gp-text-muted">{label}</dt>
+                <dd className="mt-0.5 break-words font-mono text-[10px] font-bold text-gp-text-main">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        {wheel.vehicleFitments && (
+          <div className={specificationRows.length > 0 ? 'mt-2' : ''}>
+            <span className="text-[8px] font-black uppercase tracking-wider text-gp-red">Confirmed vehicle fitment</span>
+            <p className="mt-1 whitespace-normal break-words text-[10px] font-semibold leading-relaxed text-gp-text-main">
+              {wheel.vehicleFitments}
+            </p>
+          </div>
+        )}
+      </div>
+    </details>
+  );
+};
+
 const SupplierBadge = ({ item, className = '' }: { item: InventoryItem; className?: string }) => {
   const supplierName = getItemSupplierName(item);
   if (!supplierName) return null;
@@ -1366,8 +1408,12 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               {visibleColumns.specs && (
                 <td className="p-3 border-r border-gp-border text-gp-text-muted text-xs">
                   {item.type === ProductType.TYRE ? getItemSecondaryLine(item) : 
-                   item.type === ProductType.WHEEL ? getItemSecondaryLine(item) :
-                   getCoiloverDetails(item as CoiloverProduct)}
+                   item.type === ProductType.WHEEL ? (
+                     <>
+                       <span>{getItemSecondaryLine(item)}</span>
+                       <WheelDetailsDisclosure wheel={item as WheelProduct} compact />
+                     </>
+                   ) : getCoiloverDetails(item as CoiloverProduct)}
                 </td>
               )}
 
@@ -1501,6 +1547,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     <SpecBadge label="PCD" value={formatWheelPcd((item as WheelProduct).pcd)} />
                     <SpecBadge label="ET" value={formatWheelOffset((item as WheelProduct).offset)} />
                     <SpecBadge label="CB" value={(item as WheelProduct).centerBore || ''} />
+                    <WheelDetailsDisclosure wheel={item as WheelProduct} />
                     </>
                 )}
                 {visibleColumns.specs && item.type === ProductType.COILOVER && (
@@ -1642,6 +1689,10 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                     <span className="text-xs text-gp-silver uppercase font-bold mt-0.5">
                         {getItemSecondaryLine(item)}
                     </span>
+                  )}
+
+                  {visibleColumns.specs && item.type === ProductType.WHEEL && (
+                    <WheelDetailsDisclosure wheel={item as WheelProduct} compact />
                   )}
 
                   {visibleColumns.specs && item.type === ProductType.COILOVER && (
