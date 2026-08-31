@@ -38,7 +38,7 @@ export const SupplierMarkupAdjuster: React.FC<SupplierMarkupAdjusterProps> = ({ 
         <div className="flex min-w-0 items-center gap-2">
           <p className="shrink-0 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">Price markup</p>
           <span className="truncate rounded-sm border border-sky-500/20 bg-sky-500/10 px-1.5 py-0.5 text-[8px] font-bold uppercase text-sky-300">
-            Cost incl. VAT
+            VAT after markup
           </span>
         </div>
         {isAdjusted && (

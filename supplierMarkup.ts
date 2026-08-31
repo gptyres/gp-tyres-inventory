@@ -9,7 +9,9 @@ export const SUPPLIER_MARKUP_PERCENTAGES = [10, 15, 20, 25, 35] as const;
 export const BASE_SUPPLIER_MARKUP: SupplierMarkupAdjustment = { mode: 'BASE', value: 0 };
 
 const VAT_MULTIPLIER = 1.15;
-const EX_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
+export type SupplierCostTaxBasis = 'EXCLUDES_VAT' | 'INCLUDES_VAT' | 'NO_VAT';
+
+const BUNDLED_EX_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
   'SAILUN',
   'MAXXIS',
   'EXCLUSIVE_TYRES_NEW',
@@ -25,6 +27,16 @@ const EX_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
   'SUMITOMO_DUNLOP'
 ]);
 
+const LIVE_VAT_INCLUDED_COST_CATALOGS = new Set<SupplierCatalog>([
+  'ALINE',
+  'NDT',
+  'WHEEL_TECH'
+]);
+
+const NO_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
+  'EIBACH'
+]);
+
 const SUPPLIER_NAME_CATALOGS: Record<string, SupplierCatalog> = {
   SAILUN: 'SAILUN',
   MAXXIS: 'MAXXIS',
@@ -36,6 +48,7 @@ const SUPPLIER_NAME_CATALOGS: Record<string, SupplierCatalog> = {
   SAFETYGRIP: 'SAFETY_GRIP',
   ROYALTYRES: 'ROYAL_TYRES',
   REVOLUTIONTYRES: 'REVOLUTION_TYRES',
+  DIXONBATTERIES: 'DIXON_BATTERIES',
   ALINE: 'ALINE',
   STAMFORD: 'STAMFORD',
   APEX: 'APEX',
@@ -48,7 +61,8 @@ const SUPPLIER_NAME_CATALOGS: Record<string, SupplierCatalog> = {
   TREADSUNLIMITED: 'TREADS_UNLIMITED',
   TYRELIFE: 'TYRE_LIFE',
   TYRELIFEWHEELS: 'TYRE_LIFE_WHEELS',
-  NDT: 'NDT'
+  NDT: 'NDT',
+  WHEELTECH: 'WHEEL_TECH'
 };
 
 const normalizeSupplierName = (value: string) => value.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -65,13 +79,47 @@ const sanitizeMarkupValue = (value: number) => (
   Number.isFinite(value) ? Math.max(0, value) : 0
 );
 
+const getSuppliedCost = (item: InventoryItem) => (
+  item.costPrice > 0 ? item.costPrice : item.sellingPrice
+);
+
+export const getSupplierCostTaxBasis = (
+  item: InventoryItem,
+  activeCatalog: SupplierCatalog
+): SupplierCostTaxBasis => {
+  const catalog = resolveItemCatalog(item, activeCatalog);
+  if (!catalog) return 'INCLUDES_VAT';
+  if (NO_VAT_COST_CATALOGS.has(catalog)) return 'NO_VAT';
+
+  // Live snapshots normalize supplier costs to ex-VAT, except catalogues whose
+  // source prices are explicitly retained as VAT-inclusive/listed amounts.
+  if (item.id.toLowerCase().startsWith('live-')) {
+    return LIVE_VAT_INCLUDED_COST_CATALOGS.has(catalog)
+      ? 'INCLUDES_VAT'
+      : 'EXCLUDES_VAT';
+  }
+
+  return BUNDLED_EX_VAT_COST_CATALOGS.has(catalog)
+    ? 'EXCLUDES_VAT'
+    : 'INCLUDES_VAT';
+};
+
+export const getSupplierCostExcludingVat = (
+  item: InventoryItem,
+  activeCatalog: SupplierCatalog
+): number => {
+  const suppliedCost = getSuppliedCost(item);
+  return getSupplierCostTaxBasis(item, activeCatalog) === 'INCLUDES_VAT'
+    ? suppliedCost / VAT_MULTIPLIER
+    : suppliedCost;
+};
+
 export const getSupplierCostIncludingVat = (
   item: InventoryItem,
   activeCatalog: SupplierCatalog
 ): number => {
-  const suppliedCost = item.costPrice > 0 ? item.costPrice : item.sellingPrice;
-  const catalog = resolveItemCatalog(item, activeCatalog);
-  return catalog && EX_VAT_COST_CATALOGS.has(catalog)
+  const suppliedCost = getSuppliedCost(item);
+  return getSupplierCostTaxBasis(item, activeCatalog) === 'EXCLUDES_VAT'
     ? suppliedCost * VAT_MULTIPLIER
     : suppliedCost;
 };
@@ -83,13 +131,17 @@ export const calculateSupplierSellingPrice = (
 ): number => {
   if (adjustment.mode === 'BASE') return item.sellingPrice;
 
-  const costIncludingVat = getSupplierCostIncludingVat(item, activeCatalog);
+  const taxBasis = getSupplierCostTaxBasis(item, activeCatalog);
+  const costExcludingVat = getSupplierCostExcludingVat(item, activeCatalog);
   const value = sanitizeMarkupValue(adjustment.value);
-  const adjustedPrice = adjustment.mode === 'PERCENT'
-    ? costIncludingVat * (1 + value / 100)
-    : costIncludingVat + value;
+  const markedUpSubtotal = adjustment.mode === 'PERCENT'
+    ? costExcludingVat * (1 + value / 100)
+    : costExcludingVat + value;
+  const adjustedPrice = taxBasis === 'NO_VAT'
+    ? markedUpSubtotal
+    : markedUpSubtotal * VAT_MULTIPLIER;
 
-  return Math.round(adjustedPrice);
+  return Math.round(adjustedPrice + 1e-9);
 };
 
 export const applySupplierMarkup = (
