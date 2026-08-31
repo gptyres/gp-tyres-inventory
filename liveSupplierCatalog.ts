@@ -140,9 +140,11 @@ export const liveSupplierRowToInventoryItem = (
   const isAlineFourRimListing = row.catalog_key === 'ALINE'
     && row.product_type === 'WHEEL'
     && hasAlineWheelSize;
+  const listingPriceMultiplier = isAlineFourRimListing ? ALINE_RIM_SET_QUANTITY : 1;
   const suppliedSellingPrice = Math.max(0, Number(row.selling_price) || 0);
   const supplierCostPrice = Math.max(0, Number(row.cost_price) || 0);
-  const costPrice = supplierCostPrice || suppliedSellingPrice;
+  const costPrice = (supplierCostPrice || suppliedSellingPrice) * listingPriceMultiplier;
+  const normalSellingPrice = parseNormalSellingPrice(row.source_stock_detail);
   const common = {
     id: 'live-' + row.catalog_key.toLowerCase() + '-' + row.source_key,
     quantity: Math.max(0, Math.trunc(Number(row.stock_units) || 0)),
@@ -150,9 +152,11 @@ export const liveSupplierRowToInventoryItem = (
       row.catalog_key as SupplierCatalog,
       supplierCostPrice,
       suppliedSellingPrice
-    ),
+    ) * listingPriceMultiplier,
     costPrice,
-    normalSellingPrice: parseNormalSellingPrice(row.source_stock_detail),
+    normalSellingPrice: normalSellingPrice === undefined
+      ? undefined
+      : normalSellingPrice * listingPriceMultiplier,
     promotionLabel: /\bSPECIAL\b/i.test(row.tyre_specs || '') ? 'SPECIAL' : undefined,
     lastUpdated: row.imported_at.slice(0, 10),
     supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS' : row.supplier,

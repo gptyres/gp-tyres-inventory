@@ -159,8 +159,17 @@ describe('live supplier catalogue conversion', () => {
       product_type: 'WHEEL',
       product_name: '410015X8BLISS ET25 SSML ChRiv',
       size: '15x8',
-      cost_price: '5590.00',
-      selling_price: '6990.49'
+      cost_price: '1397.50',
+      selling_price: '1748.00'
+    });
+    const alineAccessory = liveSupplierRowToInventoryItem({
+      ...baseRow,
+      catalog_key: 'ALINE',
+      product_type: 'WHEEL',
+      product_name: '1/2 19MM NUT',
+      size: null,
+      cost_price: '7.80',
+      selling_price: '8.00'
     });
     const missingCostItem = liveSupplierRowToInventoryItem({
       ...baseRow,
@@ -169,10 +178,15 @@ describe('live supplier catalogue conversion', () => {
     });
 
     expect(alineItem.costPrice).toBe(5590);
-    expect(alineItem.sellingPrice).toBe(6990);
+    expect(alineItem.sellingPrice).toBe(6992);
     expect(alineItem.type).toBe(ProductType.WHEEL);
     if (alineItem.type !== ProductType.WHEEL) throw new Error('Expected wheel item');
     expect(alineItem.setQuantity).toBe(4);
+    expect(alineAccessory.costPrice).toBe(7.8);
+    expect(alineAccessory.sellingPrice).toBe(8);
+    expect(alineAccessory.type).toBe(ProductType.WHEEL);
+    if (alineAccessory.type !== ProductType.WHEEL) throw new Error('Expected wheel accessory item');
+    expect(alineAccessory.setQuantity).toBe(1);
     expect(missingCostItem.sellingPrice).toBe(1450);
     expect(missingCostItem.costPrice).toBe(1450.49);
   });
