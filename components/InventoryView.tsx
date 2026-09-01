@@ -56,6 +56,10 @@ type GroupMode = 'none' | 'location' | 'brand' | 'type';
 type AspectRatio = '1:1' | '2:3' | '3:2' | '3:4' | '4:3' | '9:16' | '16:9' | '21:9';
 const RENDER_CHUNK_SIZE = 120;
 
+const formatDisplayedPrice = (value: number): string => (
+  Number.isFinite(value) && value > 0 ? formatCurrency(value) : '—'
+);
+
 interface VisibleColumns {
   specs: boolean;
   location: boolean;
@@ -1578,7 +1582,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             {visibleColumns.cost && (
                 <div className="bg-green-900/10 px-3 py-2 border-b border-gp-border flex justify-between items-center">
                     <span className="text-[9px] text-green-600 uppercase font-bold tracking-wider">{costLabel}</span>
-                    <span className="text-sm font-bold text-green-600 font-mono">{formatCurrency(item.costPrice)}</span>
+                    <span className="text-sm font-bold text-green-600 font-mono">{formatDisplayedPrice(item.costPrice)}</span>
                 </div>
             )}
 
@@ -1591,7 +1595,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                           </span>
                         )}
                         <span className="text-[9px] text-gp-red uppercase font-bold tracking-wider">{hasNormalSpecialPrice(item) && isReadOnly ? 'Special VAT Inclusive Price' : (hasNormalSpecialPrice(item) ? 'Special Price' : (isReadOnly ? priceLabel : "Selling Price"))}</span>
-                        <span className="text-xl font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
+                        <span className="text-xl font-bold text-gp-text-main font-mono">{formatDisplayedPrice(item.sellingPrice)}</span>
                     </div>
 
                     <div className="flex justify-end gap-1">
@@ -1718,7 +1722,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
               
               {/* Added Cost Price */}
               {visibleColumns.cost && (
-                 <span className="text-xs font-bold text-green-600 font-mono bg-green-900/10 px-1 rounded">{formatCurrency(item.costPrice)}</span>
+                 <span className="text-xs font-bold text-green-600 font-mono bg-green-900/10 px-1 rounded">{formatDisplayedPrice(item.costPrice)}</span>
               )}
 
               {visibleColumns.price && (
@@ -1729,7 +1733,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                     </span>
                   )}
                   <span className="text-[9px] font-bold uppercase tracking-wider text-gp-red">{hasNormalSpecialPrice(item) && isReadOnly ? 'Special VAT Inclusive Price' : (hasNormalSpecialPrice(item) ? 'Special Price' : (isReadOnly ? priceLabel : 'Selling Price'))}</span>
-                  <span className="text-base font-bold text-gp-text-main font-mono">{formatCurrency(item.sellingPrice)}</span>
+                  <span className="text-base font-bold text-gp-text-main font-mono">{formatDisplayedPrice(item.sellingPrice)}</span>
                 </div>
               )}
               

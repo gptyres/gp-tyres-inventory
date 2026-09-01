@@ -1,0 +1,9 @@
+# Local captures, reports, and scratch files must not be sent with production builds.
+output/
+outputs/
+.codex_tmp/
+tmp-eibach-extract-v2.mjs
+tmp-eibach-extract.js
+tmp-eibach-extract.mjs
+tmp-eibach-fix.mjs
+eibach-product-links.txt
