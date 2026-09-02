@@ -30,6 +30,11 @@ describe('supplier markup pricing', () => {
     expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 20 }, 'APEX')).toBe(1380);
   });
 
+  it('keeps the HOOSIER TYRES website price VAT-inclusive before markup', () => {
+    expect(getSupplierCostTaxBasis(tyre(), 'HOOSIER_TYRES')).toBe('INCLUDES_VAT');
+    expect(calculateSupplierSellingPrice(tyre(), { mode: 'FIXED', value: 300 }, 'HOOSIER_TYRES')).toBe(1345);
+  });
+
   it('uses cost plus 15% VAT as the base for percentage and Rand markup', () => {
     expect(getSupplierCostIncludingVat(tyre(), 'REVOLUTION_TYRES')).toBeCloseTo(1150);
     expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 10 }, 'REVOLUTION_TYRES')).toBe(1265);

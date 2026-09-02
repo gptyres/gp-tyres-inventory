@@ -178,6 +178,7 @@ export const mapInventoryItemToReportRow = (
         tyre.tyreIndex,
         tyre.loadSpeedIndex,
         tyre.tyreSpecs,
+        item.supplierOrderStatus ? `Order status: ${item.supplierOrderStatus}` : '',
         item.supplierLeadTime ? `Lead time: ${item.supplierLeadTime}` : ''
       ]).join(' | ') || '-',
       location: getInventoryReportLocation(item)

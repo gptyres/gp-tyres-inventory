@@ -1,7 +1,7 @@
 {
   "name": "gp-tyres-&-mags-inventory-tracker",
   "private": true,
-  "version": "4.6.44",
+  "version": "4.6.45",
   "type": "module",
   "scripts": {
     "dev": "node ./node_modules/vite/bin/vite.js",
@@ -9,6 +9,7 @@
     "preview": "node ./node_modules/vite/bin/vite.js preview",
     "test": "node ./node_modules/vitest/vitest.mjs run",
     "supplier:eibach:sync": "node scripts/sync-eibach-catalog.mjs",
+    "supplier:hoosier:sync": "node scripts/sync-hoosier-catalog.mjs",
     "wheel:audit": "node scripts/audit-wheel-catalog-cleanup.mjs audit",
     "wheel:quarantine:dry-run": "node scripts/audit-wheel-catalog-cleanup.mjs quarantine --dry-run",
     "wheel:quarantine": "node scripts/audit-wheel-catalog-cleanup.mjs quarantine",

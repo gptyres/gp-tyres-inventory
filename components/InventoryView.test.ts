@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { extractDroppedVisualUrl, formatBulkClipboardText, getCoiloverDetails, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupportedStaffImageMimeType, getWarehouseStockSummary, isSpecialItem } from './InventoryView';
+import { extractDroppedVisualUrl, formatBulkClipboardText, getCoiloverDetails, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupplierOrderStatus, getSupportedStaffImageMimeType, getWarehouseStockSummary, isSpecialItem } from './InventoryView';
 import { ProductType, type CoiloverProduct, type TyreProduct, type WheelProduct } from '../types';
 
 const supplierTyre: TyreProduct = {
@@ -48,6 +48,12 @@ describe('supplier tyre card formatting', () => {
     };
     expect(getItemDisplayName(incomplete)).toBe('10.00R20');
     expect(getItemSecondaryLine(incomplete)).toBe('');
+  });
+
+  it('exposes an explicit supplier order status without inferring other zero-stock items', () => {
+    expect(getSupplierOrderStatus({ ...supplierTyre, supplierOrderStatus: 'AVAILABLE' })).toBe('AVAILABLE');
+    expect(getSupplierOrderStatus({ ...supplierTyre, quantity: 0, supplierOrderStatus: 'PREORDER' })).toBe('PREORDER');
+    expect(getSupplierOrderStatus({ ...supplierTyre, quantity: 0 })).toBeNull();
   });
 });
 

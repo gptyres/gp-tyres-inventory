@@ -177,6 +177,16 @@ describe('inventory report row mapping', () => {
     expect(isInventoryReportUnavailable(mapInventoryItemToReportRow(tyre))).toBe(false);
   });
 
+  it('includes an explicit supplier preorder status in report details', () => {
+    const preorderRow = mapInventoryItemToReportRow({
+      ...tyre,
+      supplierName: 'HOOSIER TYRES',
+      supplierOrderStatus: 'PREORDER',
+      quantity: 0
+    });
+    expect(preorderRow.details).toContain('Order status: PREORDER');
+  });
+
   it('adds deterministic group labels without changing row order', () => {
     const rows = buildInventoryReportRows([wheel, tyre], { groupBy: 'type' });
     expect(rows.map((row) => [row.id, row.groupLabel])).toEqual([

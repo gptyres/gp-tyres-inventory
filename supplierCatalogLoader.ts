@@ -11,6 +11,7 @@ import {
   parseEibachData,
   parseExclusiveTyresData,
   parseExoticData,
+  parseHoosierData,
   parseMaxxisData,
   parseRoyalTyresData,
   parseSafetyGripData,
@@ -46,6 +47,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'EXOTIC',
   'ARC',
   'EIBACH',
+  'HOOSIER_TYRES',
   'TREAD_ZONE',
   'SUMITOMO_DUNLOP',
   'TREADS_UNLIMITED',
@@ -74,6 +76,7 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   EXOTIC: 'EXOTIC',
   ARC: 'ARC',
   EIBACH: 'EIBACH',
+  HOOSIER_TYRES: 'HOOSIER TYRES',
   TREAD_ZONE: 'TREAD ZONE',
   SUMITOMO_DUNLOP: 'SUMITOMO/DUNLOP',
   TREADS_UNLIMITED: 'TREADS UNLIMITED',
@@ -107,6 +110,7 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   EXOTIC: 'exotic',
   ARC: 'arc',
   EIBACH: 'eibach',
+  HOOSIER_TYRES: 'hoosier-tyres',
   TREAD_ZONE: 'treadzone',
   SUMITOMO_DUNLOP: 'sumitomo-dunlop',
   TREADS_UNLIMITED: 'treads',
@@ -352,6 +356,10 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     case 'EIBACH': {
       const { EIBACH_CATALOG_SYNCED_AT, EIBACH_ROWS } = await import('./supplier_data/eibachData');
       return parseEibachData(EIBACH_ROWS, EIBACH_CATALOG_SYNCED_AT);
+    }
+    case 'HOOSIER_TYRES': {
+      const { HOOSIER_CATALOG_SYNCED_AT, HOOSIER_ROWS } = await import('./supplier_data/hoosierData');
+      return parseHoosierData(HOOSIER_ROWS, HOOSIER_CATALOG_SYNCED_AT);
     }
     case 'TREAD_ZONE': {
       const { TREAD_ZONE_RAW_DATA } = await import('./supplier_data/treadZoneData');

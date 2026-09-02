@@ -744,6 +744,28 @@ const SupplierBadge = ({ item, className = '' }: { item: InventoryItem; classNam
   );
 };
 
+export const getSupplierOrderStatus = (item: InventoryItem): 'AVAILABLE' | 'PREORDER' | null => (
+  item.supplierOrderStatus === 'AVAILABLE' || item.supplierOrderStatus === 'PREORDER'
+    ? item.supplierOrderStatus
+    : null
+);
+
+const SupplierOrderStatusBadge = ({ item, className = '' }: { item: InventoryItem; className?: string }) => {
+  const status = getSupplierOrderStatus(item);
+  if (!status) return null;
+  const isAvailable = status === 'AVAILABLE';
+
+  return (
+    <span
+      className={`inline-flex min-h-6 items-center gap-1.5 rounded border px-2 py-1 text-[9px] font-black uppercase tracking-wider ${isAvailable ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400' : 'border-gp-red/50 bg-gp-red/10 text-gp-red'} ${className}`}
+      title={isAvailable ? 'Available from supplier' : 'Preorder required'}
+    >
+      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${isAvailable ? 'bg-emerald-400' : 'bg-gp-red'}`} aria-hidden="true" />
+      {status}
+    </span>
+  );
+};
+
 // --- IMAGE COMPONENT ---
 interface ProductImageProps {
   item: InventoryItem;
@@ -1277,6 +1299,7 @@ interface ViewComponentProps extends InventoryViewProps {
 }
 
 const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDelete, onSell, onReserve, visibleColumns, sortConfig, onHeaderClick, selectedIds, onToggleSelect, isReadOnly, showSupplierName, showImages, generatedImages, loadingImages, errorImages, imageErrors, onGenerateImage, onUploadSupplierTyreImage, onCopyItem, onHistory, aspectRatio, priceLabel = 'Selling Price', costLabel = 'Cost' }) => {
+  const showOrderStatus = items.some((item) => getSupplierOrderStatus(item));
   
   const SortIcon = ({ colKey }: { colKey: SortKey }) => (
     <span className={`ml-1 inline-block transition-opacity ${sortConfig.key === colKey ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`}>
@@ -1311,6 +1334,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
             {visibleColumns.specs && <th className="p-3 border-r border-b border-gp-border">Details</th>}
             {visibleColumns.location && <Header label="Location" colKey="location" />}
             <Header label="Qty" colKey="quantity" align="center" />
+            {showOrderStatus && <th className="p-3 border-r border-b border-gp-border text-center">Order Status</th>}
             {visibleColumns.cost && <th className="p-3 border-r border-b border-gp-border text-right text-green-600 bg-green-900/10">{costLabel}</th>}
             {visibleColumns.price && <Header label={isReadOnly ? priceLabel : "Sell Price"} colKey="price" align="right" />}
           </tr>
@@ -1431,6 +1455,12 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                 {item.quantity}
               </td>
 
+              {showOrderStatus && (
+                <td className="p-3 border-r border-gp-border text-center">
+                  <SupplierOrderStatusBadge item={item} className="justify-center" />
+                </td>
+              )}
+
               {visibleColumns.cost && (
                 <td className="p-3 border-r border-gp-border text-right font-mono text-green-500 bg-green-900/5">
                   {formatCurrency(item.costPrice)}
@@ -1507,6 +1537,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                     </span>
                   )}
                   {showSupplierName && <SupplierBadge item={item} />}
+                  <SupplierOrderStatusBadge item={item} />
                 </div>
                 <div className="flex shrink-0 flex-col items-end">
                   <div className={`text-right ${getStatusColor(item.quantity)}`}>
@@ -1684,7 +1715,10 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                )}
 
                <div className="flex flex-col cursor-pointer" onClick={() => !isReadOnly && onEdit(item)}>
-                  {showSupplierName && <SupplierBadge item={item} className="mb-1 self-start" />}
+                  <div className="mb-1 flex flex-wrap items-center gap-1.5">
+                    {showSupplierName && <SupplierBadge item={item} />}
+                    <SupplierOrderStatusBadge item={item} />
+                  </div>
                   <span className="text-lg font-black text-gp-text-main font-display">
                     {getItemDisplayName(item)}
                   </span>

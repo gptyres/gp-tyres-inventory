@@ -1712,6 +1712,66 @@ export const parseEibachData = (
   });
 };
 
+export interface HoosierSupplierRow {
+  websiteProductId: number;
+  supplierSku: string;
+  brand: string;
+  pattern: string;
+  size: string;
+  category: string;
+  productName: string;
+  stockUnits: number;
+  orderStatus: 'AVAILABLE' | 'PREORDER';
+  websiteStockDetail: string;
+  sellingPrice: number;
+  imageUrl: string;
+  sourceUrl: string;
+}
+
+export const parseHoosierData = (
+  rows: readonly HoosierSupplierRow[],
+  syncedAt: string
+): InventoryItem[] => {
+  const lastUpdated = syncedAt.slice(0, 10) || new Date().toISOString().slice(0, 10);
+
+  return rows.map((row): TyreProduct => {
+    const quantity = row.orderStatus === 'AVAILABLE'
+      ? Math.max(0, Math.trunc(Number(row.stockUnits) || 0))
+      : 0;
+    const listedPrice = Math.max(0, Number(row.sellingPrice) || 0);
+    const parsed = parseSupplierTyreFields({
+      description: row.productName,
+      explicitSize: row.size,
+      explicitBrand: row.brand,
+      explicitPattern: row.pattern,
+      explicitSpecs: row.category
+    });
+
+    return {
+      id: `hoosier-${row.websiteProductId}`,
+      type: ProductType.TYRE,
+      ...supplierTyreImageMetadata('HOOSIER TYRES', parsed.brand, parsed.pattern, row.supplierSku),
+      brand: parsed.brand || 'HOOSIER',
+      pattern: parsed.pattern || row.pattern,
+      size: parsed.size || row.size,
+      loadSpeedIndex: buildTyreIndexDisplay(parsed.rating, parsed.index),
+      tyreRating: parsed.rating,
+      tyreIndex: parsed.index,
+      tyreSpecs: parsed.specs || row.category,
+      location: 'Hoosier South Africa',
+      stockByLocation: { 'Hoosier South Africa': quantity },
+      quantity,
+      costPrice: listedPrice,
+      sellingPrice: listedPrice,
+      supplierCostTaxBasis: 'INCLUDES_VAT',
+      supplierOrderStatus: row.orderStatus,
+      lastUpdated,
+      imageUrl: row.imageUrl || undefined,
+      sourceUrl: row.sourceUrl || undefined
+    };
+  });
+};
+
 // --- TUBESTONE PARSER ---
 export const parseTubestoneData = (rawCsv: string): InventoryItem[] => {
   const refreshedItems = parseStructuredSupplierRefreshData(rawCsv, 'tubestone', 'TUBESTONE');

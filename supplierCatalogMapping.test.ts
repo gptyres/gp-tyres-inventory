@@ -32,6 +32,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(isRegistryBackedSupplierCatalog('ARC')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('EIBACH')).toBe(false);
+    expect(isRegistryBackedSupplierCatalog('HOOSIER_TYRES')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('APEX')).toBe(true);
     expect(isManualSupplierCatalog('SAILUN')).toBe(true);
     expect(isManualSupplierCatalog('MAXXIS')).toBe(true);
@@ -43,6 +44,7 @@ describe('supplier catalogue registry mapping', () => {
     expect(isLiveSupplierCatalog('ARC')).toBe(false);
     expect(isLiveSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(isLiveSupplierCatalog('EIBACH')).toBe(false);
+    expect(isLiveSupplierCatalog('HOOSIER_TYRES')).toBe(false);
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.sheetName).toBe('SUPPLIER_SAILUN');
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.supplier).toBe('SAILUN');
     expect(MANUAL_SUPPLIER_BY_CATALOG.MAXXIS.sheetName).toBe('SUPPLIER_MAXXIS');

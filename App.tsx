@@ -461,6 +461,11 @@ const App: React.FC = () => {
       note: 'Viewing Eibach South Africa lowering-kit stock. Cost is the supplied website price with no VAT added; the VAT-inclusive price adds 25% and rounds to the nearest R50. Official stock units and fitment details are shown per product.',
       portalUrl: 'https://www.eibachsa.co.za/index.php/product-category/eibach-products/'
     },
+    HOOSIER_TYRES: {
+      label: 'HOOSIER TYRES',
+      note: 'Viewing the official Hoosier South Africa Dirt Oval, Drag, Racing and Pro Street catalogue. Website prices are VAT inclusive. Available products show exact units; preorder products remain visible with a clear order status.',
+      portalUrl: 'https://hoosiertyres.co.za/shop/'
+    },
     TREAD_ZONE: {
       label: 'TREAD ZONE',
       note: 'Viewing External Supplier Data. Quantity uses total stock, with branch stock shown in the location field.',
