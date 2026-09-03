@@ -7,7 +7,6 @@ describe('SupplierSyncButton', () => {
   it('keeps the admin sync action enabled while worker status is loading', () => {
     const html = renderToStaticMarkup(
       <SupplierSyncButton
-        terminal="GP1"
         catalog="APEX"
         supplierLabel="APEX"
         visible
@@ -28,7 +27,6 @@ describe('SupplierSyncButton', () => {
   it('uses the supplier currently open in the portal', () => {
     const html = renderToStaticMarkup(
       <SupplierSyncButton
-        terminal="GP1"
         catalog="EXOTIC"
         supplierLabel="EXOTIC"
         visible
@@ -49,12 +47,16 @@ describe('SupplierSyncButton', () => {
     expect(apiSource).toContain('blockingJob');
     expect(apiSource).toContain('if (!currentStatus.worker.online)');
     expect(apiSource).toContain('response.status(503)');
+    expect(apiSource).toContain('verifyStaffSession(request)');
+    expect(apiSource).toContain('staffSession.terminalId');
+    expect(apiSource).not.toContain('body.terminal.trim()');
+    expect(apiSource).not.toContain("json({ error: message })");
+    expect(apiSource).toContain('Existing catalogue kept.');
   });
 
   it('keeps the sync action visible but admin-gated in sales mode', () => {
     const html = renderToStaticMarkup(
       <SupplierSyncButton
-        terminal="GP1"
         catalog="APEX"
         supplierLabel="APEX"
         visible

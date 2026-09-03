@@ -7,7 +7,6 @@ import {
 } from '../supplierSync';
 
 interface SupplierSyncButtonProps {
-  terminal: string;
   catalog: string;
   supplierLabel: string;
   visible: boolean;
@@ -35,8 +34,8 @@ const formatTime = (value?: string | null) => {
 const formatCount = (value: number) => new Intl.NumberFormat('en-ZA').format(value);
 
 const stageLabel: Record<string, string> = {
-  queued: 'Starting supplier sync',
-  fetching: 'Fetching supplier stock',
+  queued: 'Connecting to supplier',
+  fetching: 'Loading supplier catalogue',
   validating: 'Validating stock rows',
   publishing: 'Publishing live stock',
   completed: 'Complete',
@@ -45,7 +44,6 @@ const stageLabel: Record<string, string> = {
 };
 
 export function SupplierSyncButton({
-  terminal,
   catalog,
   supplierLabel,
   visible,
@@ -156,7 +154,7 @@ export function SupplierSyncButton({
     setLoading(true);
     setError('');
     try {
-      const next = await triggerSupplierSync(terminal, catalog);
+      const next = await triggerSupplierSync(catalog);
       setStatus(next);
       if (next.activeJob) trackedJobId.current = next.activeJob.id;
     } catch (syncError) {
@@ -167,6 +165,8 @@ export function SupplierSyncButton({
   };
 
   const resultSuppliers = latestJob?.result_summary?.suppliers || [];
+  const totalAvailableUnits = latestJob?.result_summary?.totalAvailableUnits;
+  const rejectedRows = latestJob?.result_summary?.rejectedRows || 0;
   const progressCurrent = Math.max(0, activeJob?.progress_current || 0);
   const progressTotal = activeJob?.progress_total && activeJob.progress_total > 0
     ? activeJob.progress_total
@@ -286,7 +286,11 @@ export function SupplierSyncButton({
             </summary>
             <div className="mt-2 space-y-1">
               <p>{formatTime(latestJob.completed_at || latestJob.requested_at)}</p>
-              <p>{latestJob.rows_published} rows published</p>
+              <p>{formatCount(latestJob.rows_published)} products updated</p>
+              {totalAvailableUnits !== undefined && (
+                <p>{formatCount(totalAvailableUnits)} total available units</p>
+              )}
+              <p>{formatCount(rejectedRows)} rejected rows</p>
               {latestJob.safe_error && <p className="text-gp-red">{latestJob.safe_error}</p>}
               {resultSuppliers.length > 0 && (
                 <ul className="mt-2 max-h-48 space-y-1 overflow-y-auto">

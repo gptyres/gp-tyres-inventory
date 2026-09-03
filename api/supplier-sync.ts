@@ -1,5 +1,6 @@
 import { getClientIpHash, verifyAdminSession } from '../server/adminSession.js';
 import { readApiBody } from '../server/readApiBody.js';
+import { verifyStaffSession } from '../server/staffSession.js';
 import { createSupabaseAdmin } from '../server/supabaseAdmin.js';
 import {
   REGISTRY_SUPPLIER_BY_CATALOG,
@@ -12,6 +13,8 @@ import type { SupplierCatalog } from '../types.js';
 
 const createRequestTimes = new Map<string, number>();
 const CREATE_RATE_LIMIT_MS = 10_000;
+
+const safeServerError = () => 'Supplier synchronization could not be completed.';
 
 const JOB_SELECT = [
   'id',
@@ -51,6 +54,82 @@ const normalizeStatusCatalog = (value: unknown): LiveSupplierCatalog | null => {
   return isLiveSupplierCatalog(catalog as SupplierCatalog)
     ? catalog as LiveSupplierCatalog
     : null;
+};
+
+const countValue = (value: unknown) => {
+  const number = Number(value);
+  return Number.isFinite(number) ? Math.max(0, Math.trunc(number)) : 0;
+};
+
+const safeFailureMessage = (value: unknown) => {
+  const message = typeof value === 'string' ? value.toLowerCase() : '';
+  if (message.includes('login required') || message.includes('credential')) {
+    return 'Supplier login required. Existing catalogue kept.';
+  }
+  if (message.includes('manual verification') || message.includes('captcha')) {
+    return 'Supplier portal requires manual verification. Existing catalogue kept.';
+  }
+  if (message.includes('timed out') || message.includes('timeout')) {
+    return 'Supplier portal timed out. Existing catalogue kept.';
+  }
+  if (message.includes('worker heartbeat')) {
+    return 'The supplier sync worker stopped responding. Existing catalogue kept.';
+  }
+  return 'Supplier synchronization failed. Existing catalogue kept.';
+};
+
+const safeProgressMessage = (job: any) => {
+  if (job?.status === 'failed' || job?.status === 'cancelled') {
+    return safeFailureMessage(job?.safe_error || job?.progress_message);
+  }
+  if (job?.status === 'succeeded' || job?.status === 'partial') {
+    return `Published ${countValue(job?.rows_published).toLocaleString('en-ZA')} stock rows`;
+  }
+  const message = typeof job?.progress_message === 'string' ? job.progress_message.trim() : '';
+  return /^(starting|connecting|signing in|loading|reading|fetching|validating|publishing)/i.test(message)
+    ? message.slice(0, 300)
+    : 'Supplier synchronization is in progress.';
+};
+
+const safeJob = (job: any): SupplierSyncJob | null => {
+  if (!job) return null;
+  const summary = job.result_summary && typeof job.result_summary === 'object'
+    ? job.result_summary
+    : {};
+  const suppliers = Array.isArray(summary.suppliers)
+    ? summary.suppliers.map((result: any) => ({
+        supplier: String(result?.supplier || 'Supplier').slice(0, 80),
+        status: String(result?.status || 'unknown').slice(0, 30),
+        detail: result?.status === 'published' || result?.status === 'ok'
+          ? 'Published successfully.'
+          : safeFailureMessage(result?.detail),
+        rowsPublished: countValue(result?.rowsPublished),
+        totalAvailableUnits: countValue(result?.totalAvailableUnits),
+        rejectedRows: countValue(result?.rejectedRows),
+        catalogs: Array.isArray(result?.catalogs)
+          ? result.catalogs.map((catalog: unknown) => String(catalog).slice(0, 80))
+          : []
+      }))
+    : [];
+
+  return {
+    ...job,
+    progress_message: safeProgressMessage(job),
+    safe_error: job.safe_error ? safeFailureMessage(job.safe_error) : null,
+    result_summary: {
+      currentSupplier: typeof summary.currentSupplier === 'string'
+        ? summary.currentSupplier.slice(0, 80)
+        : null,
+      totalAvailableUnits: summary.totalAvailableUnits === undefined
+        ? undefined
+        : countValue(summary.totalAvailableUnits),
+      rejectedRows: countValue(summary.rejectedRows),
+      rejectionReasons: Array.isArray(summary.rejectionReasons)
+        ? summary.rejectionReasons.slice(0, 25).map((reason: unknown) => String(reason).slice(0, 160))
+        : [],
+      suppliers
+    }
+  } as SupplierSyncJob;
 };
 
 const getSyncStatus = async (
@@ -106,7 +185,8 @@ const getSyncStatus = async (
   if (workerError) throw workerError;
   if (snapshotError) throw snapshotError;
 
-  const globalActiveJob = activeJobData as unknown as SupplierSyncJob | null;
+  const globalActiveJob = safeJob(activeJobData);
+  const safeLatestJob = safeJob(latestJob);
 
   let sourceJob: { scope?: string; artifact_name?: string | null } | null = null;
   if (activeSnapshot?.job_id) {
@@ -131,7 +211,7 @@ const getSyncStatus = async (
   return {
     activeJob,
     blockingJob,
-    latestJob: latestJob || null,
+    latestJob: safeLatestJob,
     lastSuccessfulSync: activeSnapshot?.activated_at
       ? {
           at: activeSnapshot.activated_at,
@@ -158,10 +238,14 @@ export default async function handler(request: any, response: any) {
   response.setHeader('Cache-Control', 'no-store');
 
   try {
-    const supabase = createSupabaseAdmin();
     const queryCatalog = normalizeStatusCatalog(request.query?.catalog);
 
     if (request.method === 'GET') {
+      const staffSession = verifyStaffSession(request);
+      if (!staffSession) {
+        return response.status(401).json({ error: 'A secure staff session is required.' });
+      }
+      const supabase = createSupabaseAdmin();
       return response.status(200).json(await getSyncStatus(supabase, queryCatalog));
     }
 
@@ -172,6 +256,11 @@ export default async function handler(request: any, response: any) {
 
     const session = verifyAdminSession(request);
     if (!session) return response.status(401).json({ error: 'Admin authentication is required.' });
+    const staffSession = verifyStaffSession(request);
+    if (!staffSession) {
+      return response.status(401).json({ error: 'A secure staff session is required.' });
+    }
+    const supabase = createSupabaseAdmin();
 
     const lastCreate = createRequestTimes.get(session.staffName) || 0;
     if (Date.now() - lastCreate < CREATE_RATE_LIMIT_MS) {
@@ -183,9 +272,7 @@ export default async function handler(request: any, response: any) {
       return response.status(400).json({ error: 'Choose a supported supplier catalogue before syncing.' });
     }
     const targetSupplier = REGISTRY_SUPPLIER_BY_CATALOG[requestedCatalog];
-    const requestedByTerminal = typeof body.terminal === 'string'
-      ? body.terminal.trim().slice(0, 80)
-      : 'UNKNOWN';
+    const requestedByTerminal = staffSession.terminalId;
 
     const currentStatus = await getSyncStatus(supabase, requestedCatalog);
     if (currentStatus.activeJob || currentStatus.blockingJob) {
@@ -212,7 +299,7 @@ export default async function handler(request: any, response: any) {
         status: 'queued',
         progress_stage: 'queued',
         progress_current: 0,
-        progress_message: `Starting ${targetSupplier} sync…`,
+        progress_message: `Connecting to ${targetSupplier}…`,
         requested_by_staff: session.staffName,
         requested_by_terminal: requestedByTerminal || 'UNKNOWN',
         requested_ip_hash: getClientIpHash(request)
@@ -242,7 +329,7 @@ export default async function handler(request: any, response: any) {
       ...(await getSyncStatus(supabase, requestedCatalog))
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Supplier sync request failed.';
-    return response.status(500).json({ error: message });
+    console.error('Supplier sync API failed.', error);
+    return response.status(500).json({ error: safeServerError() });
   }
 }

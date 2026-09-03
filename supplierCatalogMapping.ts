@@ -2,16 +2,28 @@ import type { SupplierCatalog } from './types.js';
 
 export type RegistryBackedSupplierCatalog = Exclude<
   SupplierCatalog,
-  'ALL_SUPPLIERS' | 'SAILUN' | 'MAXXIS' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'BRIDGESTONE' | 'DIXON_BATTERIES' | 'ARC' | 'EIBACH' | 'HOOSIER_TYRES'
+  'ALL_SUPPLIERS'
+  | 'SAILUN'
+  | 'MAXXIS'
+  | 'SAFETY_GRIP'
+  | 'ROYAL_TYRES'
+  | 'BRIDGESTONE'
+  | 'DIXON_BATTERIES'
+  | 'ARC'
+  | 'EIBACH'
+  | 'HOOSIER_TYRES'
+  | 'EXCLUSIVE_TYRES_NEW'
+  | 'NDT'
+  | 'WHEEL_TECH'
 >;
 
 export type ManualSupplierCatalog = Extract<SupplierCatalog, 'SAILUN' | 'MAXXIS' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'BRIDGESTONE'>;
-export type LiveSupplierCatalog = RegistryBackedSupplierCatalog | ManualSupplierCatalog;
+export type AdditionalLiveSupplierCatalog = Extract<SupplierCatalog, 'EXCLUSIVE_TYRES_NEW' | 'NDT' | 'WHEEL_TECH'>;
+export type LiveSupplierCatalog = RegistryBackedSupplierCatalog | ManualSupplierCatalog | AdditionalLiveSupplierCatalog;
 export type SupplierImportCatalog = LiveSupplierCatalog;
 
 export const REGISTRY_SUPPLIER_BY_CATALOG: Record<RegistryBackedSupplierCatalog, string> = {
   EXCLUSIVE_TYRES: 'Exclusive Tyres',
-  EXCLUSIVE_TYRES_NEW: 'EXCLUSIVE TYRES NEW',
   TYREWAREHOUSE: 'Tyrewarehouse',
   ATT: 'ATT',
   REVOLUTION_TYRES: 'Revolution Tyres',
@@ -24,9 +36,7 @@ export const REGISTRY_SUPPLIER_BY_CATALOG: Record<RegistryBackedSupplierCatalog,
   SUMITOMO_DUNLOP: 'Sumitomo/Dunlop',
   TREADS_UNLIMITED: 'Threads Unlimited',
   TYRE_LIFE: 'Tyre Life',
-  TYRE_LIFE_WHEELS: 'Tyre Life',
-  NDT: 'NDT',
-  WHEEL_TECH: 'WHEEL TECH'
+  TYRE_LIFE_WHEELS: 'Tyre Life'
 };
 
 export const isRegistryBackedSupplierCatalog = (
@@ -91,5 +101,5 @@ export const isManualSupplierCatalog = (
 export const isLiveSupplierCatalog = (
   catalog: SupplierCatalog
 ): catalog is LiveSupplierCatalog => (
-  isRegistryBackedSupplierCatalog(catalog) || isManualSupplierCatalog(catalog)
+  Object.prototype.hasOwnProperty.call(SUPPLIER_IMPORT_BY_CATALOG, catalog)
 );

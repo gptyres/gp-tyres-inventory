@@ -93,7 +93,9 @@ Start the persistent worker:
 
 Production also registers the Windows task `GP Tyres Supplier Sync Worker`. It launches the same command in a hidden window at user login and uses `IgnoreNew` instance handling. The currently running worker id is `gp-tyres-office-worker`.
 
-The button shows **Sync Worker Offline** when its heartbeat is older than 45 seconds. While a job is active, the worker streams safe stock-row counts into the private job record; the portal polls them every 1.5 seconds and displays the current stage, row count, and percentage when a total is known. Sales mode receives the same safe progress and last-successful-sync timestamp but cannot trigger a sync.
+The button shows **Sync Worker Offline** when its heartbeat is older than 45 seconds. While a job is active, the worker streams safe stock-row counts into the private job record; the portal polls them every 1.5 seconds and displays connection, sign-in, catalogue loading, validation, and publication progress. Staff status requests require the signed, HttpOnly staff-session cookie. Sales mode can view safe progress and the last-successful-sync timestamp but cannot trigger a sync.
+
+The button is rendered only for catalogues backed by a genuine online adapter. Local-document suppliers such as Safety Grip continue to use **Upload Stock**; the worker must not present a reused local PDF as a successful online portal synchronization.
 
 ## 4. Weekly automation
 

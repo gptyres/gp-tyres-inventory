@@ -11,6 +11,8 @@ export interface SupplierSyncSupplierResult {
   status: string;
   detail?: string;
   rowsPublished?: number;
+  totalAvailableUnits?: number;
+  rejectedRows?: number;
   catalogs?: string[];
 }
 
@@ -36,6 +38,9 @@ export interface SupplierSyncJob {
   progress_message?: string | null;
   result_summary?: {
     currentSupplier?: string | null;
+    totalAvailableUnits?: number;
+    rejectedRows?: number;
+    rejectionReasons?: string[];
     suppliers?: SupplierSyncSupplierResult[];
   } | null;
   safe_error?: string | null;
@@ -107,15 +112,12 @@ export const fetchSupplierSyncStatus = async (catalog: string): Promise<Supplier
   return data as SupplierSyncStatusResponse;
 };
 
-export const triggerSupplierSync = async (
-  terminal: string,
-  catalog: string
-): Promise<SupplierSyncStatusResponse> => {
+export const triggerSupplierSync = async (catalog: string): Promise<SupplierSyncStatusResponse> => {
   const response = await fetch('/api/supplier-sync', {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ terminal, catalog })
+    body: JSON.stringify({ catalog })
   });
   const data = await readJson(response);
   if (!response.ok && response.status !== 409) {

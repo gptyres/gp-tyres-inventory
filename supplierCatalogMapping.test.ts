@@ -12,7 +12,6 @@ import {
 describe('supplier catalogue registry mapping', () => {
   it('maps frontend aliases to the exact registry supplier names', () => {
     expect(REGISTRY_SUPPLIER_BY_CATALOG.EXCLUSIVE_TYRES).toBe('Exclusive Tyres');
-    expect(REGISTRY_SUPPLIER_BY_CATALOG.EXCLUSIVE_TYRES_NEW).toBe('EXCLUSIVE TYRES NEW');
     expect(REGISTRY_SUPPLIER_BY_CATALOG.TREADS_UNLIMITED).toBe('Threads Unlimited');
     expect(REGISTRY_SUPPLIER_BY_CATALOG.SUMITOMO_DUNLOP).toBe('Sumitomo/Dunlop');
     expect(REGISTRY_SUPPLIER_BY_CATALOG.REVOLUTION_TYRES).toBe('Revolution Tyres');
@@ -33,6 +32,9 @@ describe('supplier catalogue registry mapping', () => {
     expect(isRegistryBackedSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('EIBACH')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('HOOSIER_TYRES')).toBe(false);
+    expect(isRegistryBackedSupplierCatalog('EXCLUSIVE_TYRES_NEW')).toBe(false);
+    expect(isRegistryBackedSupplierCatalog('NDT')).toBe(false);
+    expect(isRegistryBackedSupplierCatalog('WHEEL_TECH')).toBe(false);
     expect(isRegistryBackedSupplierCatalog('APEX')).toBe(true);
     expect(isManualSupplierCatalog('SAILUN')).toBe(true);
     expect(isManualSupplierCatalog('MAXXIS')).toBe(true);
@@ -45,6 +47,9 @@ describe('supplier catalogue registry mapping', () => {
     expect(isLiveSupplierCatalog('DIXON_BATTERIES')).toBe(false);
     expect(isLiveSupplierCatalog('EIBACH')).toBe(false);
     expect(isLiveSupplierCatalog('HOOSIER_TYRES')).toBe(false);
+    expect(isLiveSupplierCatalog('EXCLUSIVE_TYRES_NEW')).toBe(true);
+    expect(isLiveSupplierCatalog('NDT')).toBe(true);
+    expect(isLiveSupplierCatalog('WHEEL_TECH')).toBe(true);
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.sheetName).toBe('SUPPLIER_SAILUN');
     expect(MANUAL_SUPPLIER_BY_CATALOG.SAILUN.supplier).toBe('SAILUN');
     expect(MANUAL_SUPPLIER_BY_CATALOG.MAXXIS.sheetName).toBe('SUPPLIER_MAXXIS');

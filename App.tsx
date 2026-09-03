@@ -1949,7 +1949,6 @@ const App: React.FC = () => {
                             </a>
                           )}
                           <SupplierSyncButton
-                            terminal={currentUser}
                             catalog={activeSupplierCatalog}
                             supplierLabel={supplierCatalogLabel}
                             visible={supplierHasLiveSync}
