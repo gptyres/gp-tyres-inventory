@@ -108,7 +108,7 @@ const items = rawRows.map((row, rowIndex) => {
     cost_price: cost,
     selling_price: vatInclusivePrice(cost),
     supplier_lead_time: '',
-    product_url: 'https://safetygrip.brilliantcloud.online/SafetyGripCustomerPortal/Main?CompanyID=SafetyGrip&ScreenId=SP504001',
+    product_url: 'https://safetygrip.brilliantcloud.online/SafetyGripCustomerPortal/(W(2))/Main?CompanyID=SafetyGrip&ScreenId=SP504001',
     source_file: basename(resolve(input))
   };
 });

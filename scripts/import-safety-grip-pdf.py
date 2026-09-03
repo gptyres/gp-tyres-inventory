@@ -135,7 +135,7 @@ def snapshot_item(row, source_file):
         "cost_price": row["cost"],
         "selling_price": selling_price,
         "supplier_lead_time": "",
-        "product_url": "https://safetygrip.brilliantcloud.online/SafetyGripCustomerPortal/Main?CompanyID=SafetyGrip&ScreenId=SP504001",
+        "product_url": "https://safetygrip.brilliantcloud.online/SafetyGripCustomerPortal/(W(2))/Main?CompanyID=SafetyGrip&ScreenId=SP504001",
         "source_file": source_file,
     }
 

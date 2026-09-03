@@ -412,7 +412,8 @@ const App: React.FC = () => {
     },
     SAFETY_GRIP: {
       label: 'SAFETY GRIP',
-      note: 'Viewing External Supplier Data. Cost is the supplied nett price; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1.'
+      note: 'Viewing External Supplier Data. Cost is the supplied nett price; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1.',
+      portalUrl: 'https://safetygrip.brilliantcloud.online/SafetyGripCustomerPortal/(W(2))/Main?CompanyID=SafetyGrip&ScreenId=SP504001'
     },
     ROYAL_TYRES: {
       label: 'ROYAL TYRES',

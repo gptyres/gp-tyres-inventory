@@ -97,4 +97,12 @@ describe('SupplierSyncButton', () => {
     expect(appSource).toContain('catalog={activeSupplierCatalog}');
     expect(appSource).toContain('sm:grid-cols-3');
   });
+
+  it('opens the requested Safety Grip customer portal', () => {
+    const appSource = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
+
+    expect(appSource).toContain(
+      "portalUrl: 'https://safetygrip.brilliantcloud.online/SafetyGripCustomerPortal/(W(2))/Main?CompanyID=SafetyGrip&ScreenId=SP504001'"
+    );
+  });
 });
