@@ -126,4 +126,14 @@ describe('SupplierSyncButton', () => {
       "portalUrl: 'https://safetygrip.brilliantcloud.online/SafetyGripCustomerPortal/(W(2))/Main?CompanyID=SafetyGrip&ScreenId=SP504001'"
     );
   });
+
+  it('does not offer the retired Exclusive Tyres portal as a live action', () => {
+    const appSource = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
+    const legacyStart = appSource.indexOf('EXCLUSIVE_TYRES: {');
+    const currentStart = appSource.indexOf('EXCLUSIVE_TYRES_NEW: {', legacyStart);
+    const legacyMetadata = appSource.slice(legacyStart, currentStart);
+
+    expect(legacyMetadata).toContain('RETIRED PORTAL / LEGACY DATA');
+    expect(legacyMetadata).not.toContain('portalUrl:');
+  });
 });

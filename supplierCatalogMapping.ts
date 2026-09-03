@@ -12,18 +12,18 @@ export type RegistryBackedSupplierCatalog = Exclude<
   | 'ARC'
   | 'EIBACH'
   | 'HOOSIER_TYRES'
+  | 'EXCLUSIVE_TYRES'
   | 'EXCLUSIVE_TYRES_NEW'
   | 'NDT'
   | 'WHEEL_TECH'
 >;
 
 export type ManualSupplierCatalog = Extract<SupplierCatalog, 'SAILUN' | 'MAXXIS' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'BRIDGESTONE'>;
-export type AdditionalLiveSupplierCatalog = Extract<SupplierCatalog, 'EXCLUSIVE_TYRES_NEW' | 'NDT' | 'WHEEL_TECH'>;
+export type AdditionalLiveSupplierCatalog = Extract<SupplierCatalog, 'EXCLUSIVE_TYRES' | 'EXCLUSIVE_TYRES_NEW' | 'NDT' | 'WHEEL_TECH'>;
 export type LiveSupplierCatalog = RegistryBackedSupplierCatalog | ManualSupplierCatalog | AdditionalLiveSupplierCatalog;
 export type SupplierImportCatalog = LiveSupplierCatalog;
 
 export const REGISTRY_SUPPLIER_BY_CATALOG: Record<RegistryBackedSupplierCatalog, string> = {
-  EXCLUSIVE_TYRES: 'Exclusive Tyres',
   TYREWAREHOUSE: 'Tyrewarehouse',
   ATT: 'ATT',
   REVOLUTION_TYRES: 'Revolution Tyres',

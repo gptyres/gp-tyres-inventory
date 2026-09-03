@@ -387,8 +387,7 @@ const App: React.FC = () => {
     },
     EXCLUSIVE_TYRES: {
       label: 'EXCLUSIVE TYRES — LEGACY CATALOGUE',
-      note: 'OLD PORTAL / LEGACY DATA. This catalogue remains separate from the current Exclusive Tyres website feed.',
-      portalUrl: 'https://etonline.co.za/#/'
+      note: 'RETIRED PORTAL / LEGACY DATA. Use Exclusive Tyres New for the current catalogue; this historical catalogue remains available for reference.'
     },
     EXCLUSIVE_TYRES_NEW: {
       label: 'EXCLUSIVE TYRES NEW — CURRENT CATALOGUE',
