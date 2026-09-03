@@ -13,6 +13,7 @@ import type { SupplierCatalog } from '../types.js';
 
 const createRequestTimes = new Map<string, number>();
 const CREATE_RATE_LIMIT_MS = 10_000;
+type SupplierSyncCatalog = RegistryBackedSupplierCatalog | 'ALL_SUPPLIERS';
 
 const safeServerError = () => 'Supplier synchronization could not be completed.';
 
@@ -42,8 +43,9 @@ const JOB_SELECT = [
   'completed_at'
 ].join(',');
 
-const normalizeCatalog = (value: unknown): RegistryBackedSupplierCatalog | null => {
+const normalizeCatalog = (value: unknown): SupplierSyncCatalog | null => {
   const catalog = typeof value === 'string' ? value.trim().toUpperCase() : '';
+  if (catalog === 'ALL_SUPPLIERS') return 'ALL_SUPPLIERS';
   return Object.prototype.hasOwnProperty.call(REGISTRY_SUPPLIER_BY_CATALOG, catalog)
     ? catalog as RegistryBackedSupplierCatalog
     : null;
@@ -271,15 +273,21 @@ export default async function handler(request: any, response: any) {
     if (!requestedCatalog) {
       return response.status(400).json({ error: 'Choose a supported supplier catalogue before syncing.' });
     }
-    const targetSupplier = REGISTRY_SUPPLIER_BY_CATALOG[requestedCatalog];
+    const isAllSuppliers = requestedCatalog === 'ALL_SUPPLIERS';
+    const targetSupplier = isAllSuppliers
+      ? null
+      : REGISTRY_SUPPLIER_BY_CATALOG[requestedCatalog];
     const requestedByTerminal = staffSession.terminalId;
 
-    const currentStatus = await getSyncStatus(supabase, requestedCatalog);
+    const currentStatus = await getSyncStatus(
+      supabase,
+      isAllSuppliers ? null : requestedCatalog
+    );
     if (currentStatus.activeJob || currentStatus.blockingJob) {
       return response.status(409).json({
         error: currentStatus.blockingJob
           ? `Another supplier is already syncing: ${currentStatus.blockingJob.target_supplier || 'supplier'}.`
-          : `${targetSupplier} is already syncing.`,
+          : `${targetSupplier || 'Live supplier portals'} are already syncing.`,
         ...currentStatus
       });
     }
@@ -293,13 +301,15 @@ export default async function handler(request: any, response: any) {
     const { data: job, error } = await supabase
       .from('supplier_sync_jobs')
       .insert({
-        scope: 'SINGLE_SUPPLIER',
+        scope: isAllSuppliers ? 'ALL_ENABLED' : 'SINGLE_SUPPLIER',
         target_supplier: targetSupplier,
-        target_catalog: requestedCatalog,
+        target_catalog: isAllSuppliers ? null : requestedCatalog,
         status: 'queued',
         progress_stage: 'queued',
         progress_current: 0,
-        progress_message: `Connecting to ${targetSupplier}…`,
+        progress_message: isAllSuppliers
+          ? 'Connecting to live supplier portals…'
+          : `Connecting to ${targetSupplier}…`,
         requested_by_staff: session.staffName,
         requested_by_terminal: requestedByTerminal || 'UNKNOWN',
         requested_ip_hash: getClientIpHash(request)
@@ -308,7 +318,10 @@ export default async function handler(request: any, response: any) {
       .single();
 
     if (error?.code === '23505') {
-      const status = await getSyncStatus(supabase, requestedCatalog);
+      const status = await getSyncStatus(
+        supabase,
+        isAllSuppliers ? null : requestedCatalog
+      );
       return response.status(409).json({
         error: 'A supplier sync is already queued or running.',
         ...status
@@ -326,7 +339,7 @@ export default async function handler(request: any, response: any) {
     return response.status(202).json({
       ok: true,
       job,
-      ...(await getSyncStatus(supabase, requestedCatalog))
+      ...(await getSyncStatus(supabase, isAllSuppliers ? null : requestedCatalog))
     });
   } catch (error) {
     console.error('Supplier sync API failed.', error);

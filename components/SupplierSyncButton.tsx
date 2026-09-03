@@ -52,6 +52,7 @@ export function SupplierSyncButton({
   onAdminRequired,
   onCompleted
 }: SupplierSyncButtonProps) {
+  const isAllSuppliers = catalog === 'ALL_SUPPLIERS';
   const [status, setStatus] = useState<SupplierSyncStatusResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -210,7 +211,7 @@ export function SupplierSyncButton({
         {(loading || isActive) && (
           <span className="mr-2 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
         )}
-        Sync Stock
+        {isAllSuppliers ? 'Sync All Stock' : 'Sync Stock'}
         <span className={`ml-2 text-[10px] transition-transform ${isPanelOpen ? 'rotate-180' : ''}`} aria-hidden="true">▼</span>
       </button>
 

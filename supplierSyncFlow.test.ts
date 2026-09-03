@@ -14,6 +14,14 @@ describe('supplier portal synchronization contract', () => {
     expect(api).toContain('staffSession.terminalId');
   });
 
+  it('queues an all-enabled job for the combined supplier catalogue', () => {
+    const api = read('./api/supplier-sync.ts');
+
+    expect(api).toContain("if (catalog === 'ALL_SUPPLIERS')");
+    expect(api).toContain("scope: isAllSuppliers ? 'ALL_ENABLED' : 'SINGLE_SUPPLIER'");
+    expect(api).toContain('target_catalog: isAllSuppliers ? null : requestedCatalog');
+  });
+
   it('prevents overlapping jobs at the database boundary', () => {
     const migration = read('./supabase/migrations/20260713074309_supplier_portal_sync.sql');
 

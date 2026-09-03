@@ -1931,11 +1931,21 @@ const App: React.FC = () => {
                         <p className="text-xs text-blue-400"><strong>READ ONLY MODE:</strong> {supplierCatalogNote}</p>
                       </div>
                       {activeSupplierCatalog === 'ALL_SUPPLIERS' ? (
-                        <SupplierSearchFilters
-                          options={SUPPLIER_CATALOG_OPTIONS}
-                          selected={selectedSupplierCatalogs}
-                          onChange={setSelectedSupplierCatalogs}
-                        />
+                        <div className="grid w-full items-start gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,12rem)]">
+                          <SupplierSearchFilters
+                            options={SUPPLIER_CATALOG_OPTIONS}
+                            selected={selectedSupplierCatalogs}
+                            onChange={setSelectedSupplierCatalogs}
+                          />
+                          <SupplierSyncButton
+                            catalog="ALL_SUPPLIERS"
+                            supplierLabel="ALL LIVE SUPPLIERS"
+                            visible
+                            canTrigger={isAdmin}
+                            onAdminRequired={() => setShowAuthModal(true)}
+                            onCompleted={handleSupplierSyncCompleted}
+                          />
+                        </div>
                       ) : (supplierPortalUrl || supplierHasLiveSync) ? (
                         <div className="grid w-full items-start gap-2 sm:grid-cols-3" aria-label={`${supplierCatalogLabel} supplier actions`}>
                           {supplierPortalUrl && (

@@ -54,6 +54,21 @@ describe('SupplierSyncButton', () => {
     expect(apiSource).toContain('Existing catalogue kept.');
   });
 
+  it('offers one batch action for every configured live supplier portal', () => {
+    const html = renderToStaticMarkup(
+      <SupplierSyncButton
+        catalog="ALL_SUPPLIERS"
+        supplierLabel="ALL LIVE SUPPLIERS"
+        visible
+        canTrigger
+        onCompleted={vi.fn()}
+      />
+    );
+
+    expect(html).toContain('Sync All Stock');
+    expect(html).toContain('aria-label="Start ALL LIVE SUPPLIERS stock sync"');
+  });
+
   it('keeps the sync action visible but admin-gated in sales mode', () => {
     const html = renderToStaticMarkup(
       <SupplierSyncButton
@@ -77,6 +92,8 @@ describe('SupplierSyncButton', () => {
     expect(appSource).toContain('<SupplierSyncButton');
     expect(appSource).toContain('canTrigger={isAdmin && supplierUsesPortalWorker}');
     expect(appSource).toContain('onAdminRequired={() => setShowAuthModal(true)}');
+    expect(appSource).toContain('catalog="ALL_SUPPLIERS"');
+    expect(appSource).toContain('supplierLabel="ALL LIVE SUPPLIERS"');
   });
 
   it('keeps idle sync status inside an anchored dropdown so the action row stays aligned', () => {
@@ -90,9 +107,11 @@ describe('SupplierSyncButton', () => {
 
   it('uses a symmetrical Live Portal, Sync Stock, Upload Stock action order', () => {
     const appSource = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
-    const livePortalPosition = appSource.indexOf('Live Portal');
-    const syncButtonPosition = appSource.indexOf('<SupplierSyncButton');
-    const uploadButtonPosition = appSource.indexOf('<ManualSupplierImport');
+    const supplierActionsPosition = appSource.indexOf('aria-label={`${supplierCatalogLabel} supplier actions`}');
+    const livePortalPosition = appSource.indexOf('Live Portal', supplierActionsPosition);
+    const syncButtonPosition = appSource.indexOf('<SupplierSyncButton', supplierActionsPosition);
+    const uploadButtonPosition = appSource.indexOf('<ManualSupplierImport', supplierActionsPosition);
+    expect(supplierActionsPosition).toBeGreaterThan(-1);
     expect(livePortalPosition).toBeGreaterThan(-1);
     expect(syncButtonPosition).toBeGreaterThan(livePortalPosition);
     expect(uploadButtonPosition).toBeGreaterThan(syncButtonPosition);
