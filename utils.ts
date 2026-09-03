@@ -1239,11 +1239,13 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
   const items: InventoryItem[] = [];
   const lines = rawCsv.split('\n');
   const today = new Date().toISOString().split('T')[0];
-  let idCounter = 1;
   const headers = parseCSVLine(lines.find((line) => line.trim()) || '').map((header) => header.trim().toUpperCase());
   const normalCostIndex = headers.indexOf('NORMAL COST EX VAT');
   const specialCostIndex = headers.indexOf('SPECIAL COST EX VAT');
   const legacyCostIndex = headers.indexOf('COST + VAT');
+  const singleCostIndex = ['COST EX VAT', 'PRICE EX VAT', 'PRICE']
+    .map((header) => headers.indexOf(header))
+    .find((columnIndex) => columnIndex >= 0) ?? -1;
 
   lines.forEach((line, index) => {
     const trimmed = line.trim();
@@ -1256,28 +1258,50 @@ export const parseSafetyGripData = (rawCsv: string): InventoryItem[] => {
     if (index === 0 && code?.toUpperCase() === 'CODE') return;
     if (!code || !description) return;
 
-    const [size, ...brandPatternParts] = description.split(/\s+/).filter(Boolean);
-    const brandPattern = brandPatternParts.join(' ');
-    if (!size || !brandPattern) return;
+    const normalizedDescription = description
+      .replace(/\(WL\)/gi, ' WL ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const isAnnaite = /\bANNAITE\b/i.test(normalizedDescription);
+    const hasWhiteLetter = /(?:^|\s)WL(?:\s|$)/i.test(normalizedDescription);
+    const parsed = parseSupplierTyreFields({
+      description: normalizedDescription.replace(/\bANNAITE\b/i, ' '),
+      explicitBrand: isAnnaite ? 'ANNAITE' : undefined,
+      explicitSpecs: hasWhiteLetter ? 'WL' : undefined,
+      inferBrandFromDescription: true
+    });
+    const pattern = parsed.pattern
+      .replace(/(?:^|\s)WL(?=\s|$)/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!parsed.size || !parsed.brand || !pattern) return;
 
-    const { brand, pattern } = splitBrandPattern(brandPattern, 'SAFETY GRIP');
     const quantity = parseStockUnits(cols[2]);
-    const specialCostExVat = parseCurrencyString(cols[specialCostIndex >= 0 ? specialCostIndex : legacyCostIndex]);
-    const normalCostExVat = parseCurrencyString(cols[normalCostIndex >= 0 ? normalCostIndex : (specialCostIndex >= 0 ? specialCostIndex : legacyCostIndex)]);
+    const priceIndex = specialCostIndex >= 0
+      ? specialCostIndex
+      : (singleCostIndex >= 0 ? singleCostIndex : legacyCostIndex);
+    const specialCostExVat = parseCurrencyString(cols[priceIndex]);
+    const normalCostExVat = parseCurrencyString(cols[
+      normalCostIndex >= 0 ? normalCostIndex : priceIndex
+    ]);
     const specialSellingPrice = calculateVatInclusiveSellingPrice(specialCostExVat);
     const normalSellingPrice = calculateVatInclusiveSellingPrice(normalCostExVat);
     const isSpecial = normalSellingPrice > specialSellingPrice;
 
-    const itemId = `safetygrip-${idCounter++}`;
+    const tyreSpecs = [parsed.specs, isSpecial ? 'SPECIAL' : '']
+      .filter(Boolean)
+      .join(' / ');
     items.push({
-      id: itemId,
+      id: `safetygrip-${code.toLowerCase()}`,
       type: ProductType.TYRE,
-      ...supplierTyreImageMetadata('SAFETY GRIP', brand, pattern, code),
-      brand,
+      ...supplierTyreImageMetadata('SAFETY GRIP', parsed.brand, pattern, code),
+      brand: parsed.brand,
       pattern,
-      size,
-      loadSpeedIndex: code,
-      tyreSpecs: isSpecial ? 'SPECIAL' : undefined,
+      size: parsed.size,
+      loadSpeedIndex: buildTyreIndexDisplay(parsed.rating, parsed.index),
+      tyreRating: parsed.rating,
+      tyreIndex: parsed.index,
+      tyreSpecs: tyreSpecs || undefined,
       location: 'SAFETY GRIP',
       quantity,
       stockByLocation: { CPT: quantity },
