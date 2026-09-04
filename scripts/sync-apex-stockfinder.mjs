@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
+import { selectCompleteApexTyres } from './apex-stockfinder-catalog.mjs';
 
 const argument = (name, fallback = '') => {
   const index = process.argv.indexOf(name);
@@ -145,11 +146,9 @@ const inferredBrand = (description, size) => clean(description)
   .split(/\s+/)
   .find((token) => /^[A-Z][A-Z0-9-]{2,}$/i.test(token)) || '';
 
-const broadQueries = [...new Set([
-  ...seedRows.map((item) => Number(item.width)).filter((width) => Number.isFinite(width) && width >= 100).map(String),
-  ...seedRows.map((item) => clean(item.brand)).filter(Boolean),
-  ...seedRows.filter((item) => Number(item.width) < 100).map((item) => sizeTerm(item.description)).filter(Boolean)
-])].sort((left, right) => left.localeCompare(right, 'en', { numeric: true }));
+// StockFinder returns its complete tyre result set for an empty search. This
+// avoids silently missing brands or sizes that were absent from an old seed.
+const broadQueries = [''];
 
 const search = async (query, attempt = 1) => {
   const response = await fetch('https://api2.stockfinder.co.za/v1/search/searchStock', {
@@ -184,9 +183,7 @@ const search = async (query, attempt = 1) => {
 
 const liveBySku = new Map();
 const failures = [];
-const captureRows = (rows) => rows
-  .filter((row) => clean(row.stock_type || 'TYRE') === 'TYRE')
-  .filter((row) => !sellerName || clean(row.seller_name) === sellerName)
+const captureRows = (rows) => selectCompleteApexTyres(rows, sellerName)
   .forEach((row) => {
     const key = [clean(row.sellerId), clean(row.stock_code), clean(row.sla || row.sla_original)].join('|');
     liveBySku.set(key, row);
