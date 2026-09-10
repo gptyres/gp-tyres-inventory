@@ -4,6 +4,7 @@ import { parseAlineWheelDescription, parseSupplierTyreImageKeys, parseSupplierWh
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsData';
 import { ROYAL_TYRES_CAPE_TOWN_RAW_DATA } from './supplier_data/royalTyresCapeTownData';
+import { royalWorkbookItem } from './royalTyresWorkbook.mjs';
 import {
   ALINE_RIM_SET_QUANTITY,
   calculateEibachSellingPrice,
@@ -834,6 +835,34 @@ export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
 
   const headers = parseCSVLine(lines[0]).map((header) => header.trim().toLowerCase());
   const headerIndex = new Map(headers.map((header, index) => [header, index]));
+  if (headerIndex.has('price column')) {
+    const originalHeaders = parseCSVLine(lines[0]);
+    return lines.slice(1).map((line): InventoryItem => {
+      const values = parseCSVLine(line);
+      const raw = Object.fromEntries(originalHeaders.map((key, index) => [key, values[index] || '']));
+      const row = royalWorkbookItem(raw);
+      const common = {
+        id: `royal-tyres-${row.supplier_sku.toLowerCase()}`,
+        supplierName: row.supplier, supplierStockCode: row.supplier_sku,
+        brand: row.brand, size: row.size, location: row.stock_location,
+        stockByLocation: row.stock_by_location, quantity: row.stock_units,
+        costPrice: row.cost_price, sellingPrice: row.selling_price,
+        supplierLeadTime: row.supplier_lead_time || undefined,
+        lastUpdated: raw['Snapshot Date']
+      };
+      if (row.product_type === 'WHEEL') {
+        const keys = parseSupplierWheelImageKeys(row.brand, row.tyre_pattern, row.tyre_specs, row.supplier_sku);
+        return { ...common, type: ProductType.WHEEL, code: row.tyre_pattern,
+          finish: row.tyre_specs, colour: row.tyre_specs, pcd: row.wheel_pcd || '',
+          offset: row.wheel_offset || '', centerBore: row.wheel_center_bore || '', setQuantity: 1,
+          imageDesignKey: keys.designKey, imageFinishKey: keys.finishKey };
+      }
+      return { ...common, type: ProductType.TYRE,
+        ...supplierTyreImageMetadata(row.supplier, row.brand, row.tyre_pattern, row.supplier_sku),
+        pattern: row.tyre_pattern, loadSpeedIndex: buildTyreIndexDisplay(row.tyre_rating, row.tyre_index),
+        tyreRating: row.tyre_rating, tyreIndex: row.tyre_index, tyreSpecs: row.tyre_specs };
+    });
+  }
   const readColumn = (cols: string[], name: string) => {
     const index = headerIndex.get(name.toLowerCase());
     return index === undefined ? '' : cols[index]?.trim() || '';
