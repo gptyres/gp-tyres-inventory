@@ -130,6 +130,8 @@ export const calculateSupplierSellingPrice = (
   adjustment: SupplierMarkupAdjustment,
   activeCatalog: SupplierCatalog
 ): number => {
+  // A fixed markup must not turn an undisclosed supplier price into a quote.
+  if (!(item.costPrice > 0) && !(item.sellingPrice > 0)) return 0;
   if (adjustment.mode === 'BASE') return item.sellingPrice;
 
   const taxBasis = getSupplierCostTaxBasis(item, activeCatalog);

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ATT_SNAPSHOT_ROWS } from './supplier_data/attSnapshot';
 import { groupLiveSupplierCatalogRows, liveSupplierRowToInventoryItem } from './liveSupplierCatalog';
+import { calculateSupplierSellingPrice } from './supplierMarkup';
 
 describe('verified ATT catalogue including unavailable products', () => {
   const rows = ATT_SNAPSHOT_ROWS.map((row, index) => ({ ...row, id: index + 1, snapshot_id: 'att-test' }));
@@ -24,6 +25,8 @@ describe('verified ATT catalogue including unavailable products', () => {
       expect(item.quantity).toBe(0);
       expect(item.costPrice).toBe(0);
       expect(item.sellingPrice).toBe(0);
+      expect(calculateSupplierSellingPrice(item, { mode: 'FIXED', value: 500 }, 'ATT')).toBe(0);
+      expect(calculateSupplierSellingPrice(item, { mode: 'PERCENT', value: 20 }, 'ATT')).toBe(0);
     }
   });
 
