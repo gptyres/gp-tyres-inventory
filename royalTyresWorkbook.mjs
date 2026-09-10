@@ -1,6 +1,7 @@
 import { parseSupplierTyreFields } from './supplierTyreParsing.ts';
 
 export const ROYAL_WAREHOUSES = ['RVTRK', 'RTCPHX', 'RTCJHB', 'RTC_CT'];
+const WAREHOUSE_NAMES = { RVTRK: 'RIVER TRUCK', RTCPHX: 'KZN', RTCJHB: 'JHB', RTC_CT: 'CPT' };
 
 export function royalWorkbookItem(row) {
   const name = String(row['Product Name'] || '').trim().toUpperCase();
@@ -11,7 +12,7 @@ export function royalWorkbookItem(row) {
   const stock = Object.fromEntries(ROYAL_WAREHOUSES.map((warehouse) => {
     const units = Number(row[`${warehouse} Stock Units`]);
     if (!Number.isInteger(units)) throw new Error(`${sku}: invalid ${warehouse} units`);
-    return [warehouse, Math.max(0, units)];
+    return [WAREHOUSE_NAMES[warehouse], Math.max(0, units)];
   }));
   const wheel = row['Product Type'] === 'WHEEL';
   const brand = wheel ? name.replace(/^RIMS?\s+/, '').split(' ')[0]
