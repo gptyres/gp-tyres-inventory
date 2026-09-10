@@ -3,6 +3,8 @@ import React, { lazy, Suspense, useState, useMemo, useEffect, useCallback, useRe
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { InventoryView } from './components/InventoryView';
+import { StockFilterBar } from './components/StockFilterBar';
+import { matchesStockFilter, stockCounts, StockFilter, WorkspaceNavigate } from './stockWorkspace';
 import { StatsDashboard } from './components/StatsDashboard';
 import { SheetInventorySyncStatus } from './components/SheetInventorySyncStatus';
 import { DashboardView } from './components/DashboardView';
@@ -34,7 +36,7 @@ const PhotoLibraryView = lazy(() => import('./components/photo-library/PhotoLibr
 const WorkshopTrackerView = lazy(() => import('./components/WorkshopTrackerView').then((module) => ({ default: module.WorkshopTrackerView })));
 const RadarRedView = lazy(() => import('./components/RadarRedView').then((module) => ({ default: module.RadarRedView })));
 const AiAgentAdminView = lazy(() => import('./components/AiAgentAdminView').then((module) => ({ default: module.AiAgentAdminView })));
-import { ProductType, ViewMode, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, BatteryProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
+import { ProductType, InventoryItem, InventoryStats, StaffName, AppView, Order, TyreProduct, WheelProduct, CoiloverProduct, BatteryProduct, Backorder, LoginLog, WheelCatalogItem, SupplierCatalog, CartItem, InvoiceDocument, CustomerInfo } from './types';
 import { PricingPOSQuoteLine } from './pricing-processor/types';
 import { MOCK_INVENTORY, MOCK_BACKORDERS, INVENTORY_DATA_VERSION } from './constants';
 import { supabase, isSupabaseConfigured, InventoryItemRow, SalesLogInsert, SalesLogRow, SystemLogInsert, SystemLogRow, CRMCustomerRow } from './supabaseClient';
@@ -159,6 +161,7 @@ const App: React.FC = () => {
   // Navigation State
   const [currentView, setCurrentView] = useState<AppView>('DASHBOARD');
   const [activeFilter, setActiveFilter] = useState<ProductType | 'ALL'>('ALL');
+  const [stockFilter, setStockFilter] = useState<StockFilter>('ALL');
   
   // Mobile Sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -170,7 +173,6 @@ const App: React.FC = () => {
   // Chat State
   const [isChatOpen, setIsChatOpen] = useState(false);
   
-  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
   const [supplierMarkupByCatalog, setSupplierMarkupByCatalog] = useState<Partial<Record<SupplierCatalog, SupplierMarkupAdjustment>>>({});
   const [isScrollToTopVisible, setIsScrollToTopVisible] = useState(false);
   const mainScrollContainerRef = useRef<HTMLElement | null>(null);
@@ -797,20 +799,6 @@ const App: React.FC = () => {
     if (loginLogs.length > 0) localStorage.setItem('gp-login-logs', JSON.stringify(loginLogs));
   }, [loginLogs]);
 
-  // Viewport resize handler
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setViewMode(ViewMode.LIST);
-      } else {
-        setViewMode(prev => prev === ViewMode.LIST ? ViewMode.GRID : prev);
-      }
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   // Apply Theme Class
   useEffect(() => {
     if (isDarkMode) {
@@ -823,7 +811,7 @@ const App: React.FC = () => {
   }, [isDarkMode]);
 
   // --- FILTERING ---
-  const filteredItems = useMemo(() => {
+  const searchMatchedItems = useMemo(() => {
     // If viewing supplier inventory, filter that list instead of main inventory
     let sourceList = currentView === 'SUPPLIER_INVENTORY' ? supplierItems : items;
     
@@ -843,6 +831,11 @@ const App: React.FC = () => {
       : searchInventory(result, debouncedSearchQuery);
     return result;
   }, [items, supplierItems, activeFilter, debouncedSearchQuery, currentView, activeSupplierCatalog]);
+
+  const availabilityCounts = useMemo(() => stockCounts(searchMatchedItems), [searchMatchedItems]);
+  const filteredItems = useMemo(() => currentView === 'INVENTORY'
+    ? searchMatchedItems.filter(item => matchesStockFilter(item, stockFilter))
+    : searchMatchedItems, [searchMatchedItems, stockFilter, currentView]);
 
   const supplierSizeSearchSummary = useMemo(() => (
     currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS'
@@ -884,7 +877,7 @@ const App: React.FC = () => {
         totalItems: acc.totalItems + item.quantity,
         totalValueRetail: acc.totalValueRetail + (item.quantity * item.sellingPrice),
         totalValueCost: acc.totalValueCost + (item.quantity * item.costPrice),
-        lowStockCount: acc.lowStockCount + (item.quantity < 4 ? 1 : 0),
+        lowStockCount: acc.lowStockCount + (matchesStockFilter(item, 'LOW_STOCK') ? 1 : 0),
       }),
       { totalItems: 0, totalValueRetail: 0, totalValueCost: 0, lowStockCount: 0 }
     );
@@ -1695,11 +1688,26 @@ const App: React.FC = () => {
     setCurrentView(view);
   };
 
-  const handleDashboardNavigate = (view: AppView, filter?: ProductType | 'ALL') => {
+  const handleDashboardNavigate: WorkspaceNavigate = (view, filter, options) => {
     setCurrentView(view);
-    if (filter) {
-      setActiveFilter(filter);
-    }
+    setSearchQuery(options?.query ?? '');
+    setDebouncedSearchQuery(options?.query ?? '');
+    setActiveFilter(filter ?? 'ALL');
+    setStockFilter(options?.stockFilter ?? 'ALL');
+    setIsSidebarOpen(false);
+  };
+
+  const searchSuppliersForQuery = (query: string) => {
+    setActiveSupplierCatalog('ALL_SUPPLIERS');
+    handleDashboardNavigate('SUPPLIER_INVENTORY', 'ALL', { query });
+    setIsSearchVisible(true);
+  };
+
+  const resetInventoryFilters = () => {
+    setSearchQuery('');
+    setDebouncedSearchQuery('');
+    setActiveFilter('ALL');
+    setStockFilter('ALL');
   };
 
   // SYNC HANDLERS (Manual Backup)
@@ -1846,12 +1854,13 @@ const App: React.FC = () => {
     : isSearchVisible || currentView === 'WHEEL_CATALOG';
 
   return (
-    <div className="flex h-screen bg-gp-black font-sans text-gp-text-main overflow-hidden transition-colors duration-300 relative">
+    <div className="app-shell flex h-dvh bg-gp-black font-sans text-gp-text-main overflow-hidden transition-colors duration-300 relative">
+      <a className="workspace-skip-link" href="#workspace-main">Skip to main content</a>
       <Sidebar 
         currentView={currentView}
         activeFilter={activeFilter}
-        onChangeView={setCurrentView}
-        onFilterChange={setActiveFilter}
+        onChangeView={(view) => { setCurrentView(view); setStockFilter('ALL'); }}
+        onFilterChange={(filter) => { setActiveFilter(filter); setStockFilter('ALL'); }}
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
         currentUser={currentUser}
@@ -1879,9 +1888,19 @@ const App: React.FC = () => {
           isChatOpen={isChatOpen}
           placeholder={searchPlaceholder}
           pageTitle={topNavTitle}
+          onRequestSearch={() => {
+            if (!['INVENTORY', 'SUPPLIER_INVENTORY', 'WHEEL_CATALOG', 'ORDERS', 'BACKORDERS', 'DASHBOARD'].includes(currentView)) {
+              handleDashboardNavigate('INVENTORY', 'ALL');
+            }
+            setIsSearchVisible(true);
+          }}
+          onSearchSubmit={() => {
+            if (currentView === 'DASHBOARD') handleDashboardNavigate('INVENTORY', 'ALL', { query: searchQuery });
+          }}
+          searchShortcutDisabled={isStockModalOpen || isSellModalOpen || isBackorderModalOpen || isDataSyncModalOpen || isReserveModalOpen || isCashUpModalOpen || isPOSOpen || isInvoiceModalOpen || showAuthModal}
         />
 
-        <main ref={mainScrollContainerRef} className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER' || currentView === 'RADAR_RED') ? '' : 'pb-20'}`}>
+        <main id="workspace-main" tabIndex={-1} ref={mainScrollContainerRef} className={`flex-1 overflow-y-auto ${(currentView === 'SUPPLIER_PORTAL' || currentView === 'SHIPPING_PORTAL' || currentView === 'PAYMENT_PORTAL' || currentView === 'TOOLS_PORTAL' || currentView === 'WHATSAPP_PORTAL' || currentView === 'QUOTE_MODULE' || currentView === 'COURIER_LOGISTICS_ASSISTANT' || currentView === 'TRAINING_PORTAL' || currentView === 'CUSTOMER_HUB' || currentView === 'PHOTO_LIBRARY' || currentView === 'WORKSHOP_TRACKER' || currentView === 'RADAR_RED') ? '' : 'pb-20'}`}>
           {currentView === 'DASHBOARD' && (
             <DashboardView 
               currentUser={currentUser}
@@ -1889,6 +1908,10 @@ const App: React.FC = () => {
               isAdmin={isAdmin}
               onNavigate={handleDashboardNavigate}
               onPortalSelect={handlePortalSelect}
+              items={items}
+              backorders={backorders}
+              onOpenPOS={() => { setEditingPOSDocument(null); setIsPOSOpen(true); }}
+              onSearchSuppliers={searchSuppliersForQuery}
             />
           )}
 
@@ -1901,10 +1924,12 @@ const App: React.FC = () => {
           {(currentView === 'INVENTORY' || currentView === 'SUPPLIER_INVENTORY' || currentView === 'WHEEL_CATALOG') && (
             <>
               {currentView === 'INVENTORY' && (
-                <StatsDashboard stats={stats} visible={isAdmin} />
+                <StatsDashboard stats={stats} visible={isAdmin}
+                  onStockClick={resetInventoryFilters}
+                  onLowStockClick={() => handleDashboardNavigate('INVENTORY', 'ALL', { stockFilter: 'LOW_STOCK' })} />
               )}
               
-              <div className="max-w-7xl mx-auto px-4 mt-6 flex flex-col md:flex-row justify-between items-center border-b border-gp-border pb-4 gap-4">
+              <div className="inventory-screen-heading max-w-7xl mx-auto px-4 mt-6 flex flex-col md:flex-row justify-between items-center border-b border-gp-border pb-4 gap-4">
                 <h2 className="text-gp-text-muted text-xs uppercase tracking-widest font-bold flex items-center gap-2">
                   <span className={`w-2 h-2 rounded-full animate-pulse ${currentView === 'SUPPLIER_INVENTORY' ? 'bg-blue-500' : 'bg-gp-red'}`}></span>
                   {currentView === 'WHEEL_CATALOG'
@@ -1923,6 +1948,9 @@ const App: React.FC = () => {
                 )}
               </div>
               <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
+                {currentView === 'INVENTORY' && <StockFilterBar value={stockFilter} counts={availabilityCounts}
+                  query={searchQuery} category={activeFilter} onChange={setStockFilter}
+                  onReset={resetInventoryFilters} onSearchSuppliers={() => searchSuppliersForQuery(searchQuery)} />}
                 {currentView === 'SUPPLIER_INVENTORY' && (
                     <div className="mb-4 grid gap-4 rounded-xl border border-blue-900/30 bg-blue-900/10 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(560px,620px)] lg:items-start">
                       <div className="flex items-center gap-3">
@@ -2002,9 +2030,10 @@ const App: React.FC = () => {
                   </div>
                 ) : (
                   <InventoryView
+                    key={`${currentUser}:${currentView === 'SUPPLIER_INVENTORY' ? activeSupplierCatalog : 'OWNED'}`}
+                    preferenceScope={currentView === 'SUPPLIER_INVENTORY' ? activeSupplierCatalog : 'OWNED'}
+                    onResetFilters={resetInventoryFilters}
                     items={displayedInventoryItems}
-                    viewMode={viewMode}
-                    onViewModeChange={setViewMode}
                     isAdmin={isAdmin}
                     onEdit={openEditModal}
                     onDelete={openDeleteModal}

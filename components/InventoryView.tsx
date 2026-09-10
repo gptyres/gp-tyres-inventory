@@ -24,11 +24,10 @@ import { TERMINAL_STAFF_NAMES } from '../trainingProgress';
 import { InventoryReportModal } from './InventoryReportModal';
 import { ProductHistoryModal } from './ProductHistoryModal';
 import { SupplierMarkupAdjuster } from './SupplierMarkupAdjuster';
+import { preferenceKey, readInventoryPreferences } from '../stockWorkspace';
 
 interface InventoryViewProps {
   items: InventoryItem[];
-  viewMode: ViewMode;
-  onViewModeChange: (mode: ViewMode) => void;
   isAdmin: boolean;
   onEdit: (item: InventoryItem) => void;
   onDelete: (item: InventoryItem) => void;
@@ -44,7 +43,8 @@ interface InventoryViewProps {
   emptyStateDetail?: string;
   reportCatalogueLabel?: string;
   reportSearchQuery?: string;
-  currentUser?: string | null;
+  preferenceScope?: string;
+  onResetFilters?: () => void;
   markupAdjustment?: SupplierMarkupAdjustment;
   onMarkupAdjustmentChange?: (adjustment: SupplierMarkupAdjustment) => void;
 }
@@ -1309,12 +1309,14 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
 
   const Header = ({ label, colKey, align = 'left' }: { label: string, colKey?: SortKey, align?: string }) => (
     <th 
+      scope="col"
+      aria-sort={sortConfig.key === colKey ? sortConfig.direction === 'asc' ? 'ascending' : 'descending' : 'none'}
       className={`p-3 border-r border-b border-gp-border cursor-pointer hover:bg-gp-panel transition-colors group text-${align}`}
-      onClick={() => colKey && onHeaderClick(colKey)}
     >
-      <div className={`flex items-center ${align === 'center' ? 'justify-center' : align === 'right' ? 'justify-end' : 'justify-start'}`}>
+      <button type="button" onClick={() => colKey && onHeaderClick(colKey)}
+        className={`flex w-full items-center text-inherit uppercase ${align === 'center' ? 'justify-center' : align === 'right' ? 'justify-end' : 'justify-start'}`}>
         {label} {colKey && <SortIcon colKey={colKey} />}
-      </div>
+      </button>
     </th>
   );
 
@@ -1801,21 +1803,28 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
   );
 };
 
-export const InventoryView: React.FC<InventoryViewProps> = (props) => {
+export const InventoryView: React.FC<InventoryViewProps> = (incomingProps) => {
+  const storageKey = preferenceKey(incomingProps.currentUser || 'guest', incomingProps.preferenceScope || 'OWNED');
+  const [saved] = useState(() => readInventoryPreferences(storageKey));
+  const [preferredViewMode, setPreferredViewMode] = useState(saved.viewMode);
+  const props = { ...incomingProps, viewMode: preferredViewMode, onViewModeChange: setPreferredViewMode };
   // State for config
-  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: SortDirection }>({ key: 'price', direction: 'asc' });
-  const [groupBy, setGroupBy] = useState<GroupMode>('none');
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: SortDirection }>(saved.sort);
+  const [groupBy, setGroupBy] = useState<GroupMode>(saved.groupBy);
   const [hideLowStock, setHideLowStock] = useState(false);
+  const [showViewOptions, setShowViewOptions] = useState(false);
   const [historyItem, setHistoryItem] = useState<InventoryItem | null>(null);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const lastSelectedIdRef = useRef<string | null>(null);
-  const [visibleColumns, setVisibleColumns] = useState<VisibleColumns>({
-    specs: true,
-    location: true,
-    price: true,
-    cost: false // Default to false, allow user to toggle
-  });
+  const [columnPreferences, setVisibleColumns] = useState<VisibleColumns>(saved.columns);
+  const visibleColumns = { ...columnPreferences, cost: props.isAdmin && columnPreferences.cost };
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify({ version: 1, viewMode: preferredViewMode,
+        sort: sortConfig, groupBy, columns: columnPreferences }));
+    } catch { /* Storage can be disabled or full; browsing must still work. */ }
+  }, [storageKey, preferredViewMode, sortConfig, groupBy, columnPreferences]);
   
   // Image Generation State
   const [showImages, setShowImages] = useState(false);
@@ -2014,12 +2023,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
 
   // 1. Filter Items based on local view settings
   const viewFilteredItems = useMemo(() => {
-    if (hideLowStock) {
+    if (props.isReadOnly && hideLowStock) {
         // Hide items with quantity 0 or 1
         return props.items.filter(item => item.type === ProductType.BATTERY || item.quantity > 1);
     }
     return props.items;
-  }, [props.items, hideLowStock]);
+  }, [props.items, props.isReadOnly, hideLowStock]);
 
   // 2. Sort Items
   const sortedItems = useMemo(() => {
@@ -2240,6 +2249,9 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
         <p className="mt-1 px-4 text-center text-sm text-gp-text-muted opacity-70">
           {props.emptyStateDetail || 'Adjust filters or search criteria'}
         </p>
+        {props.onResetFilters && <button type="button" className="workspace-primary mt-5" onClick={() => {
+          setHideLowStock(false); props.onResetFilters?.();
+        }}>Clear filters</button>}
       </div>
     );
   }
@@ -2305,7 +2317,8 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 relative">
+    <div className="inventory-workspace flex flex-col gap-4 relative">
+      {(historyItem || isInventoryReportOpen || uploadImageItem) && <span hidden data-workspace-modal="true" />}
       {clipboardNotice && (
         <div className="fixed right-5 top-20 z-[90] max-w-sm rounded border border-green-500/40 bg-green-950/95 px-4 py-3 text-xs font-bold uppercase tracking-wider text-green-300 shadow-2xl backdrop-blur">
           {clipboardNotice}
@@ -2363,7 +2376,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       )}
       
       {/* View Configuration Toolbar */}
-      <div data-testid="inventory-toolbar" className={`sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-x-4 gap-y-3 rounded-md border border-gp-border bg-gp-panel px-3 py-2.5 shadow-xl ${hasMarkupAdjuster ? 'xl:grid-cols-[minmax(250px,auto)_minmax(420px,1fr)_auto] xl:items-end' : 'lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end'}`}>
+      <button type="button" className="inventory-settings-toggle" aria-expanded={showViewOptions} aria-controls="inventory-view-options"
+        onClick={() => setShowViewOptions(value => !value)}>
+        <span>Display & sorting <small>{props.viewMode === ViewMode.TABLE ? 'Sheet' : props.viewMode === ViewMode.LIST ? 'List' : 'Card'} view · Sort by {sortConfig.key}</small></span>
+        <span aria-hidden="true">{showViewOptions ? '−' : '+'}</span>
+      </button>
+      <div id="inventory-view-options" data-testid="inventory-toolbar" className={`${showViewOptions ? 'inventory-options-open' : ''} sticky top-0 z-20 grid min-w-0 grid-cols-1 gap-x-4 gap-y-3 rounded-md border border-gp-border bg-gp-panel px-3 py-2.5 shadow-xl ${hasMarkupAdjuster ? 'xl:grid-cols-[minmax(250px,auto)_minmax(420px,1fr)_auto] xl:items-end' : 'lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end'}`}>
         
         <div className="flex min-w-0 flex-wrap items-end gap-3">
             {/* Sorting */}
@@ -2371,6 +2389,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
                 <span className="mb-1 block text-[9px] font-black uppercase tracking-wider text-gp-text-muted">Sort by</span>
                 <div className="flex items-center gap-1.5">
                   <select
+                    aria-label="Sort inventory by"
                     value={sortConfig.key}
                     onChange={(e) => setSortConfig(prev => ({ ...prev, key: e.target.value as SortKey }))}
                     className="h-9 min-w-28 rounded-md border border-gp-border bg-gp-input px-2.5 text-xs font-bold text-gp-text-main focus:border-gp-red focus:outline-none"
@@ -2399,6 +2418,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
             {!isBatteryCatalog && <div className="min-w-0 sm:border-l sm:border-gp-border sm:pl-3">
                 <span className="mb-1 block text-[9px] font-black uppercase tracking-wider text-gp-text-muted">Group by</span>
                 <select 
+                    aria-label="Group inventory by"
                     value={groupBy}
                     onChange={(e) => setGroupBy(e.target.value as GroupMode)}
                     className="h-9 min-w-24 rounded-md border border-gp-border bg-gp-input px-2.5 text-xs font-bold text-gp-text-main focus:border-gp-red focus:outline-none"
@@ -2473,12 +2493,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
              )}
 
              {/* Hide Low Stock Toggle */}
-             <ToolbarToggle checked={hideLowStock} onChange={setHideLowStock} label="Hide low stock" />
+             {props.isReadOnly && <ToolbarToggle checked={hideLowStock} onChange={setHideLowStock} label="Hide low stock" />}
              <span className="mx-1 hidden h-5 w-px bg-gp-border sm:block" aria-hidden="true" />
-             <ToolbarToggle checked={visibleColumns.location} onChange={(checked) => setVisibleColumns({...visibleColumns, location: checked})} label="Locations" />
-             <ToolbarToggle checked={visibleColumns.specs} onChange={(checked) => setVisibleColumns({...visibleColumns, specs: checked})} label="Specs" />
-             <ToolbarToggle checked={visibleColumns.price} onChange={(checked) => setVisibleColumns({...visibleColumns, price: checked})} label="Price" />
-             <ToolbarToggle checked={visibleColumns.cost} onChange={(checked) => setVisibleColumns({...visibleColumns, cost: checked})} label="Cost" />
+             <ToolbarToggle checked={visibleColumns.location} onChange={(checked) => setVisibleColumns(previous => ({...previous, location: checked}))} label="Locations" />
+             <ToolbarToggle checked={visibleColumns.specs} onChange={(checked) => setVisibleColumns(previous => ({...previous, specs: checked}))} label="Specs" />
+             <ToolbarToggle checked={visibleColumns.price} onChange={(checked) => setVisibleColumns(previous => ({...previous, price: checked}))} label="Price" />
+             {props.isAdmin && <ToolbarToggle checked={visibleColumns.cost} onChange={(checked) => setVisibleColumns(previous => ({...previous, cost: checked}))} label="Cost" />}
             </>
           )}
              <div className="ml-auto flex min-w-0 basis-full flex-wrap items-center justify-end gap-2 sm:basis-auto sm:border-l sm:border-gp-border sm:pl-3">
@@ -2527,7 +2547,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       </div>
 
       {!isBatteryCatalog && visibleColumns.location && warehouseTotals.length > 0 && (
-        <section className="rounded-lg border border-gp-border bg-gp-panel p-3 shadow-md" aria-label="Warehouse stock totals">
+        <section className="inventory-warehouse-summary rounded-lg border border-gp-border bg-gp-panel p-3 shadow-md" aria-label="Warehouse stock totals">
           <div className="mb-2 flex min-w-0 flex-wrap items-end justify-between gap-2">
             <div>
               <h2 className="text-[10px] font-black uppercase tracking-[0.16em] text-gp-text-main">Warehouse stock totals</h2>
@@ -2581,6 +2601,10 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
       )}
 
       {/* Grouped Render */}
+      {sortedItems.length === 0 && <div className="workspace-panel p-6 text-center" role="status">
+        <p className="font-bold">No products match these display settings.</p>
+        <button type="button" className="workspace-text-button mt-2" onClick={() => setHideLowStock(false)}>Show all stock levels</button>
+      </div>}
       {Object.entries(visibleGroupedItems).map(([groupTitle, groupItems]) => {
         const isCollapsed = collapsedGroups[groupTitle];
         return (
@@ -2589,6 +2613,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (props) => {
                     <div 
                         className="flex items-center gap-2 py-2 border-b border-gp-border mt-2 cursor-pointer hover:bg-gp-panel/50 rounded px-2 transition-colors select-none"
                         onClick={() => toggleGroup(groupTitle)}
+                        role="button"
+                        tabIndex={0}
+                        aria-expanded={!isCollapsed}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleGroup(groupTitle); }
+                        }}
                     >
                         <div className={`p-1 rounded text-gp-text-muted transition-transform duration-200 ${isCollapsed ? '-rotate-90' : 'rotate-0'}`}>
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

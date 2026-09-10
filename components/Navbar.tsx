@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface NavbarProps {
   isAdmin: boolean;
@@ -15,6 +15,9 @@ interface NavbarProps {
   isChatOpen: boolean;
   placeholder?: string;
   pageTitle?: string;
+  onRequestSearch?: () => void;
+  onSearchSubmit?: () => void;
+  searchShortcutDisabled?: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -30,14 +33,32 @@ export const Navbar: React.FC<NavbarProps> = ({
   toggleChat,
   isChatOpen,
   placeholder = "Search inventory (e.g. 195 40 17, Dunlop...)",
-  pageTitle
+  pageTitle,
+  onRequestSearch,
+  onSearchSubmit,
+  searchShortcutDisabled
 }) => {
+  const searchRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    let frame = 0;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 'k' || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (searchShortcutDisabled || document.querySelector('[aria-modal="true"], dialog[open], [data-workspace-modal="true"]')
+        || target?.closest('input, textarea, select, [contenteditable="true"]')) return;
+      event.preventDefault();
+      onRequestSearch?.();
+      frame = window.requestAnimationFrame(() => searchRef.current?.focus());
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => { window.removeEventListener('keydown', onKeyDown); window.cancelAnimationFrame(frame); };
+  }, [onRequestSearch, searchShortcutDisabled]);
   const handleAiSearch = () => {
     if (searchQuery.trim() && !isChatOpen) toggleChat();
   };
 
   return (
-    <div className="sticky top-0 z-30 bg-gp-black/95 backdrop-blur-md border-b border-gp-border h-16 flex items-center px-4 shadow-md transition-colors duration-300">
+    <div className="workspace-navbar sticky top-0 z-30 bg-gp-black/95 backdrop-blur-md border-b border-gp-border min-h-16 flex items-center px-4 transition-colors duration-300">
       
       {/* Mobile/Desktop Menu Toggle */}
       <button 
@@ -70,15 +91,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             
             <input
+              ref={searchRef}
+              aria-label="Search inventory"
               type="text"
               className="block w-full pl-10 pr-12 py-2 border border-gp-border rounded-md leading-5 bg-gp-panel text-gp-text-main placeholder-gp-text-muted focus:outline-none focus:border-gp-red focus:ring-1 focus:ring-gp-red sm:text-sm transition-all shadow-sm"
               placeholder={placeholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && searchQuery) {
-                    // Optional: Default to normal search, user clicks AI button for AI
-                }
+                if (e.key === 'Enter') onSearchSubmit?.();
               }}
             />
 

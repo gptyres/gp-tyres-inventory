@@ -84,7 +84,7 @@ export function SupplierCatalogSyncStamp({
   const syncedAt = liveSync?.at || fallbackSyncedAt || null;
   const label = loading && !syncedAt
     ? 'Checking sync date...'
-    : formatCatalogSyncTime(syncedAt);
+    : failed && !syncedAt ? 'Sync date unavailable' : formatCatalogSyncTime(syncedAt);
 
   return (
     <div
@@ -105,6 +105,7 @@ export function SupplierCatalogSyncStamp({
           {formatRowCount(liveSync.rowCount)} rows
         </span>
       )}
+      {failed && syncedAt && <span className="text-xs text-gp-text-muted">Last known sync · status refresh unavailable</span>}
     </div>
   );
 }
