@@ -11,6 +11,7 @@ import {
   roundSupplierSellingPrice
 } from './supplierPricing';
 import { expandWheelFitmentSearchText, getAlineVehicleFitments } from './alineFitment';
+import { extractSingleMetricTyreQuery, extractStaggeredTyreQuery, matchesMetricTyreSize } from './staggeredTyreSearch';
 import {
   extractFlotationTyreSizeQuery,
   flotationTyreSizesEqual,
@@ -196,6 +197,18 @@ const searchInventoryStandard = (items: InventoryItem[], query: string): Invento
 
 export const searchInventory = (items: InventoryItem[], query: string): InventoryItem[] => {
   if (!query) return items;
+
+  const staggered = extractStaggeredTyreQuery(query);
+  if (staggered) {
+    const matching = items.filter(item => matchesMetricTyreSize(item, staggered.narrow) || matchesMetricTyreSize(item, staggered.wide));
+    return staggered.remainingQuery ? searchInventoryStandard(matching, staggered.remainingQuery) : matching;
+  }
+
+  const singleSize = extractSingleMetricTyreQuery(query);
+  if (singleSize) {
+    const matching = items.filter(item => matchesMetricTyreSize(item, singleSize));
+    return singleSize.remainingQuery ? searchInventoryStandard(matching, singleSize.remainingQuery) : matching;
+  }
 
   const flotationQuery = extractFlotationTyreSizeQuery(query);
   if (!flotationQuery) return searchInventoryStandard(items, query);

@@ -1,5 +1,6 @@
 import { InventoryItem, ProductType, TyreProduct, WheelProduct } from './types';
 import { searchInventory } from './utils';
+import { extractSingleMetricTyreQuery, extractStaggeredTyreQuery } from './staggeredTyreSearch';
 import {
   extractFlotationTyreSizeQuery,
   flotationTyreSizesEqual,
@@ -47,6 +48,9 @@ export const extractSupplierTyreSizeQuery = (query: string): SupplierSizeQuery |
       }
     };
   }
+
+  const metric = extractSingleMetricTyreQuery(query);
+  if (metric) return { displaySize: metric.display, numericKey: numericSizeKey(metric.display), remainingQuery: metric.remainingQuery, kind: 'metric' };
 
   const passenger = normalized.match(/\b(\d{3})\s*[\/\-\s]+\s*(\d{2,3})\s*(?:ZR|R|[\/\-\s]+)\s*(\d{2}(?:\.\d)?)(?:LT|C)?\b/);
   if (passenger) {
@@ -142,6 +146,7 @@ const compareSupplierResults = (preferredIds: Set<string>) => (left: InventoryIt
 };
 
 export const searchSupplierInventory = (items: InventoryItem[], query: string): InventoryItem[] => {
+  if (extractStaggeredTyreQuery(query) || extractSingleMetricTyreQuery(query)) return searchInventory(items, query);
   const hasWheels = items.some((item) => item.type === ProductType.WHEEL);
   const hasNonWheels = items.some((item) => item.type !== ProductType.WHEEL);
   const wheelSizeQuery = hasWheels
@@ -162,14 +167,19 @@ export const searchSupplierInventory = (items: InventoryItem[], query: string): 
     return sizeQuery.kind === 'flotation' ? [] : searchInventory(items, query);
   }
 
-  const preferredIds = new Set(
-    (sizeQuery.remainingQuery ? searchInventory(matchingSizeItems, sizeQuery.remainingQuery) : matchingSizeItems)
-      .map((item) => item.id)
-  );
-  return [...matchingSizeItems].sort(compareSupplierResults(preferredIds));
+  const matching = sizeQuery.remainingQuery ? searchInventory(matchingSizeItems, sizeQuery.remainingQuery) : matchingSizeItems;
+  return [...matching].sort(compareSupplierResults(new Set()));
+};
+
+export const buildSingleTyreQuery = (input: string, terms = '') => {
+  const size = extractSupplierTyreSizeQuery(input.trim());
+  if (!size || size.remainingQuery) return { error: 'Enter a full tyre size, for example 205/55R16.' };
+  if (/[+|&]/.test(terms) || extractSupplierTyreSizeQuery(terms)) return { error: 'Use the optional filter for a brand or pattern only.' };
+  return { query: `${size.displaySize}${terms.trim() ? ` ${terms.trim()}` : ''}` };
 };
 
 export const getSupplierSizeSearchSummary = (items: InventoryItem[], query: string) => {
+  if (extractStaggeredTyreQuery(query)) return null;
   const sizeQuery = extractSupplierTyreSizeQuery(query);
   if (!sizeQuery || !items.length) return null;
 

@@ -115,7 +115,7 @@ describe('strict flotation inventory search', () => {
     expect(searchInventory(stock, query).map((item) => item.id)).toEqual(['exact']);
   });
 
-  it('keeps strict size matching in all-supplier search while ranking a requested brand', () => {
+  it('keeps strict size and brand matching in all-supplier search', () => {
     const supplierStock = [
       tyre('bfg', '31X10.5R15', 'BFGOODRICH'),
       tyre('maxxis', '31/10.50/15', 'MAXXIS'),
@@ -123,8 +123,7 @@ describe('strict flotation inventory search', () => {
     ];
 
     expect(searchSupplierInventory(supplierStock, '3110515 BFGOODRICH').map((item) => item.id)).toEqual([
-      'bfg',
-      'maxxis'
+      'bfg'
     ]);
   });
 

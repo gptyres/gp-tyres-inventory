@@ -150,3 +150,24 @@ button.workspace-stat:hover { background: var(--color-gp-panel); border-color: #
     transition: none;
   }
 }
+
+.staggered-search { margin-bottom: 16px; border: 1px solid var(--color-gp-border); border-radius: 8px; background: var(--color-gp-panel); }
+.staggered-search summary { cursor: pointer; padding: 14px 16px; font-size: 13px; font-weight: 700; }
+.staggered-search summary span { margin-left: 10px; color: var(--color-gp-text-muted); font-size: 11px; font-weight: 400; }
+.staggered-search form { padding: 0 16px 16px; }
+.staggered-search form > p { font-size: 12px; margin-bottom: 12px; }
+.staggered-fields { display: grid; grid-template-columns: 1fr 1fr 1.3fr auto; align-items: end; gap: 12px; }
+.staggered-fields.tyre-search-single { grid-template-columns: 1fr 1.3fr auto; }
+.tyre-search-modes { display: flex; gap: 8px; padding: 0 16px 14px; }
+.tyre-search-modes button { min-height: 40px; padding: 8px 14px; border: 1px solid var(--color-gp-border); border-radius: 5px; font-size: 12px; }
+.tyre-search-modes button[aria-pressed="true"] { background: #cd2b28; color: white; border-color: #cd2b28; }
+.staggered-fields label { min-width: 0; font-size: 12px; font-weight: 600; }
+.staggered-fields input { display: block; width: 100%; min-height: 44px; margin-top: 6px; padding: 10px; background: var(--color-gp-input); border: 1px solid var(--color-gp-border); border-radius: 5px; color: var(--color-gp-text-main); }
+.staggered-fields input:focus-visible, .staggered-search summary:focus-visible, .staggered-search button:focus-visible { outline: 2px solid #e53935; outline-offset: 2px; }
+.staggered-results { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; padding: 14px 16px; border-top: 1px solid var(--color-gp-border); }
+.staggered-results > div { display: grid; gap: 3px; }
+.staggered-results small, .staggered-results span { font-size: 11px; color: var(--color-gp-text-muted); }
+.staggered-results strong { font-size: 16px; font-variant-numeric: tabular-nums; }
+.staggered-results button { margin-left: auto; min-height: 44px; font-size: 12px; text-decoration: underline; }
+@media (max-width: 760px) { .staggered-fields, .staggered-fields.tyre-search-single { grid-template-columns: 1fr 1fr; } .staggered-search summary span { display: block; margin: 4px 0 0 16px; } }
+@media (max-width: 420px) { .staggered-fields, .staggered-fields.tyre-search-single { grid-template-columns: 1fr; } }

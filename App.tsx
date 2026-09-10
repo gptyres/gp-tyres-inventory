@@ -4,6 +4,7 @@ import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { InventoryView } from './components/InventoryView';
 import { StockFilterBar } from './components/StockFilterBar';
+import { StaggeredTyreSearch } from './components/StaggeredTyreSearch';
 import { matchesStockFilter, stockCounts, StockFilter, WorkspaceNavigate } from './stockWorkspace';
 import { StatsDashboard } from './components/StatsDashboard';
 import { SheetInventorySyncStatus } from './components/SheetInventorySyncStatus';
@@ -1948,6 +1949,14 @@ const App: React.FC = () => {
                 )}
               </div>
               <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
+                {currentView !== 'WHEEL_CATALOG' && <StaggeredTyreSearch
+                  key={`${currentView}:${activeSupplierCatalog}`}
+                  query={debouncedSearchQuery} items={filteredItems}
+                  onSearch={query => {
+                    setSearchQuery(query);
+                    setDebouncedSearchQuery(query);
+                    if (currentView === 'INVENTORY') { setActiveFilter(ProductType.TYRE); setStockFilter('ALL'); }
+                  }} />}
                 {currentView === 'INVENTORY' && <StockFilterBar value={stockFilter} counts={availabilityCounts}
                   query={searchQuery} category={activeFilter} onChange={setStockFilter}
                   onReset={resetInventoryFilters} onSearchSuppliers={() => searchSuppliersForQuery(searchQuery)} />}

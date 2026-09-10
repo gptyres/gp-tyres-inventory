@@ -65,9 +65,9 @@ describe('supplier size and brand search', () => {
     expect(extractSupplierTyreSizeQuery('31x10.50R15')?.numericKey).toBe('31105015');
   });
 
-  it('shows every available brand for the requested size and ranks the requested brand first', () => {
+  it('filters the requested size to the requested brand', () => {
     const results = searchSupplierInventory(stock, '205/55R16 Sailun');
-    expect(results.map((item) => item.id)).toEqual(['sailun', 'dunlop', 'michelin']);
+    expect(results.map((item) => item.id)).toEqual(['sailun']);
   });
 
   it('keeps normal AND matching when no tyre size is present', () => {
