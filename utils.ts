@@ -5,6 +5,7 @@ import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyrePa
 import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsData';
 import { ROYAL_TYRES_CAPE_TOWN_RAW_DATA } from './supplier_data/royalTyresCapeTownData';
 import { royalWorkbookItem } from './royalTyresWorkbook.mjs';
+import { applyRoyalCapeTownUpdate } from './royalTyresCapeTownUpdate.mjs';
 import {
   ALINE_RIM_SET_QUANTITY,
   calculateEibachSellingPrice,
@@ -837,18 +838,23 @@ export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
   const headerIndex = new Map(headers.map((header, index) => [header, index]));
   if (headerIndex.has('price column')) {
     const originalHeaders = parseCSVLine(lines[0]);
-    return lines.slice(1).map((line): InventoryItem => {
+    const dates = new Map<string, string>();
+    const workbookRows = lines.slice(1).map((line) => {
       const values = parseCSVLine(line);
       const raw = Object.fromEntries(originalHeaders.map((key, index) => [key, values[index] || '']));
       const row = royalWorkbookItem(raw);
+      dates.set(row.source_key, raw['Snapshot Date']);
+      return row;
+    });
+    return applyRoyalCapeTownUpdate(workbookRows).map((row): InventoryItem => {
       const common = {
-        id: `royal-tyres-${row.supplier_sku.toLowerCase()}`,
+        id: `royal-tyres-${(row.supplier_sku || row.source_key).toLowerCase()}${row.source_key.endsWith('::cpt') ? '-cpt' : ''}`,
         supplierName: row.supplier, supplierStockCode: row.supplier_sku,
         brand: row.brand, size: row.size, location: row.stock_location,
         stockByLocation: row.stock_by_location, quantity: row.stock_units,
         costPrice: row.cost_price, sellingPrice: row.selling_price,
         supplierLeadTime: row.supplier_lead_time || undefined,
-        lastUpdated: raw['Snapshot Date']
+        lastUpdated: row.source_file.endsWith('.pdf') ? '2026-09-10' : dates.get(row.source_key) || '2026-09-08'
       };
       if (row.product_type === 'WHEEL') {
         const keys = parseSupplierWheelImageKeys(row.brand, row.tyre_pattern, row.tyre_specs, row.supplier_sku);
