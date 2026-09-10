@@ -24,9 +24,9 @@ const nearestVatInclusiveRand = (costPrice: number) => Math.round((costPrice * 1
 describe('supplier pricing refresh', () => {
   it('uses Royal Yellow prices and all four available warehouse balances without the stale supplement', () => {
     const items = parseRoyalTyresData(ROYAL_TYRES_RAW_DATA);
-    expect(items).toHaveLength(1169);
-    expect(new Set(items.map((item) => item.supplierStockCode)).size).toBe(1169);
-    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(44676);
+    expect(items).toHaveLength(1176);
+    expect(new Set(items.map((item) => item.id)).size).toBe(1176);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(44754);
     expect(items.find((item) => item.supplierStockCode === '3001010040')).toMatchObject({
       brand: 'ASCENSO', size: '11.00-16', costPrice: 2795, sellingPrice: 3214,
       quantity: 3, stockByLocation: { 'RIVER TRUCK': 0, KZN: 3, JHB: 0, CPT: 0 }, lastUpdated: '2026-09-08'
@@ -40,7 +40,7 @@ describe('supplier pricing refresh', () => {
     });
     expect(items.find((item) => item.supplierStockCode === '229101')).toMatchObject({ size: '365/85R20' });
     expect(items.filter((item) => item.type === 'WHEEL')).toHaveLength(49);
-    for (const [warehouse, total] of Object.entries({ 'RIVER TRUCK': 4071, KZN: 29378, JHB: 6236, CPT: 4991 })) {
+    for (const [warehouse, total] of Object.entries({ 'RIVER TRUCK': 4071, KZN: 29378, JHB: 6236, CPT: 5069 })) {
       expect(items.reduce((sum, item) => sum + (item.stockByLocation?.[warehouse] || 0), 0)).toBe(total);
     }
     expect(items.filter((item) => item.costPrice > 0).every((item) => (

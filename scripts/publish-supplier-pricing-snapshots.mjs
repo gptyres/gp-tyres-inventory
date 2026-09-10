@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 import { royalWorkbookItem } from '../royalTyresWorkbook.mjs';
+import { applyRoyalCapeTownUpdate } from '../royalTyresCapeTownUpdate.mjs';
 
 const SUPABASE_URL = 'https://moiybakshvuvppesbnpt.supabase.co';
 const serviceKey = process.env.SUPABASE_SECRET_KEY;
@@ -36,6 +37,7 @@ const sources = [
     supplier: 'ROYAL TYRES',
     dataFile: 'supplier_data/royalTyresData.ts',
     sourceFile: 'Reps-Stk_SoH_PriceList.xlsm.xlsx',
+    locationSupplementSourceFiles: ['Royal Tyres Cape Town - Price List Sep 2026 Update (1).pdf'],
     parser: 'royalWorkbook'
   },
   {
@@ -348,7 +350,7 @@ const buildItems = async (source) => {
   const rows = parseCsv(await readEmbeddedCsv(source.dataFile));
   if (source.parser === 'royalWorkbook') {
     const headers = rows[0];
-    return rows.slice(1).map((values) => royalWorkbookItem(Object.fromEntries(headers.map((key, index) => [key, values[index] || '']))));
+    return applyRoyalCapeTownUpdate(rows.slice(1).map((values) => royalWorkbookItem(Object.fromEntries(headers.map((key, index) => [key, values[index] || ''])))));
   }
   if (source.parser === 'aline') return buildAlineItems(rows, source);
   if (source.parser === 'safetyGripSpecials') return buildSafetyGripSpecialItems(rows, source);

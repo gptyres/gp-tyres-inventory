@@ -419,7 +419,7 @@ const App: React.FC = () => {
     },
     ROYAL_TYRES: {
       label: 'ROYAL TYRES',
-      note: 'Yellow-column pricing. VAT-inclusive selling prices add 15% VAT once. Available units after reservations are shown for RIVER TRUCK, KZN, JHB and CPT. Stock snapshot: 8 September 2026.'
+      note: 'CPT tyres updated from the September 2026 Cape Town price list. Other warehouse stock and Yellow-column pricing remain from 8 September. Selling prices include 15% VAT once. Different CPT prices are listed separately by location.'
     },
     DIXON_BATTERIES: {
       label: 'DIXON BATTERIES',

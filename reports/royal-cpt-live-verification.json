@@ -1,0 +1,13 @@
+{
+  "snapshot": "5110c21a-3d79-42e7-a981-bff8055e0432",
+  "checkedAt": "2026-09-10T10:56:40.421Z",
+  "rows": 1176,
+  "units": 44754,
+  "warehouses": {
+    "CPT": 5069,
+    "KZN": 29378,
+    "JHB": 6236,
+    "RIVER TRUCK": 4071
+  },
+  "differences": []
+}
