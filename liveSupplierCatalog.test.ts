@@ -191,6 +191,17 @@ describe('live supplier catalogue conversion', () => {
     expect(missingCostItem.costPrice).toBe(1450.49);
   });
 
+  it('does not multiply already-totalled A-Line set prices and rounds after summing legacy rims', () => {
+    const row = {...baseRow, catalog_key:'ALINE', product_type:'WHEEL' as const, product_name:'A-Line OSLO GMMF', size:'14X6', cost_price:4390, selling_price:5500, source_stock_detail:'Pricing basis: set of 4 | Dealer set incl VAT: R4390.00'};
+    const set = liveSupplierRowToInventoryItem(row);
+    expect(set.costPrice).toBe(4390);
+    expect(set.sellingPrice).toBe(5500);
+    expect(set).toMatchObject({setQuantity:4});
+    const legacy = liveSupplierRowToInventoryItem({...row, cost_price:1097.5, selling_price:1375.4, source_stock_detail:''});
+    expect(legacy.costPrice).toBe(4390);
+    expect(legacy.sellingPrice).toBe(5502);
+  });
+
   it('keeps wheel rows separate from tyre rows', () => {
     const item = liveSupplierRowToInventoryItem({
       ...baseRow,

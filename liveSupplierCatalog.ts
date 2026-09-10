@@ -140,7 +140,8 @@ export const liveSupplierRowToInventoryItem = (
   const isAlineFourRimListing = row.catalog_key === 'ALINE'
     && row.product_type === 'WHEEL'
     && hasAlineWheelSize;
-  const listingPriceMultiplier = isAlineFourRimListing ? ALINE_RIM_SET_QUANTITY : 1;
+  const hasAlineSetTotal = /Pricing basis:\s*set of 4\b/i.test(row.source_stock_detail || '');
+  const listingPriceMultiplier = isAlineFourRimListing && !hasAlineSetTotal ? ALINE_RIM_SET_QUANTITY : 1;
   const suppliedSellingPrice = Math.max(0, Number(row.selling_price) || 0);
   const supplierCostPrice = Math.max(0, Number(row.cost_price) || 0);
   const costPrice = (supplierCostPrice || suppliedSellingPrice) * listingPriceMultiplier;
@@ -150,9 +151,9 @@ export const liveSupplierRowToInventoryItem = (
     quantity: Math.max(0, Math.trunc(Number(row.stock_units) || 0)),
     sellingPrice: calculateLiveSupplierSellingPrice(
       row.catalog_key as SupplierCatalog,
-      supplierCostPrice,
-      suppliedSellingPrice
-    ) * listingPriceMultiplier,
+      supplierCostPrice * listingPriceMultiplier,
+      suppliedSellingPrice * listingPriceMultiplier
+    ),
     costPrice,
     normalSellingPrice: normalSellingPrice === undefined
       ? undefined

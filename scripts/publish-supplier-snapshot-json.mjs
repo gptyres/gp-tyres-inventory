@@ -13,6 +13,7 @@ const supplier = argument('--supplier');
 const sourceFile = argument('--source') || basename(file);
 const requestedBy = argument('--requested-by') || 'Codex supplier catalogue publish';
 const dryRun = process.argv.includes('--dry-run');
+const expectedSnapshot = argument('--expected-snapshot');
 
 if (!file || !catalog || !supplier) {
   throw new Error('Usage: --file <items.json> --catalog <key> --supplier <name> [--source <label>] [--dry-run]');
@@ -113,6 +114,12 @@ try {
     if (progressError) throw progressError;
   }
 
+  if (expectedSnapshot) {
+    const { data: active, error: activeError } = await supabase.from('supplier_catalog_snapshots')
+      .select('id').eq('catalog_key', catalog).eq('status', 'active').single();
+    if (activeError) throw activeError;
+    if (active.id !== expectedSnapshot) throw new Error(`${catalog} changed after capture; refusing to replace a newer snapshot.`);
+  }
   const { error: activateError } = await supabase.rpc('activate_supplier_catalog_snapshots', {
     p_job_id: jobId,
     p_snapshots: [{ snapshot_id: snapshotId, catalog_key: catalog, registry_supplier: supplier }]
