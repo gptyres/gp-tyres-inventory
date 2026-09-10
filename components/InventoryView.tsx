@@ -56,8 +56,12 @@ type GroupMode = 'none' | 'location' | 'brand' | 'type';
 type AspectRatio = '1:1' | '2:3' | '3:2' | '3:4' | '4:3' | '9:16' | '16:9' | '21:9';
 const RENDER_CHUNK_SIZE = 120;
 
-const formatDisplayedPrice = (value: number): string => (
+export const formatDisplayedPrice = (value: number): string => (
   Number.isFinite(value) && value > 0 ? formatCurrency(value) : '—'
+);
+
+export const formatCustomerPrice = (value: number): string => (
+  Number.isFinite(value) && value > 0 ? `@ R${Math.round(value)}` : 'PRICE ON REQUEST'
 );
 
 interface VisibleColumns {
@@ -223,7 +227,7 @@ const getTyreClipboardText = (item: InventoryItem): string => {
   if (item.type !== ProductType.TYRE) return '';
   const tyre = item as TyreProduct;
   const { size, brand, pattern } = getCleanTyreClipboardParts(tyre);
-  return [size, brand, pattern, `@ R${Math.round(item.sellingPrice)}`]
+  return [size, brand, pattern, formatCustomerPrice(item.sellingPrice)]
     .filter(Boolean)
     .join(' ');
 };
@@ -353,7 +357,7 @@ const getWheelClipboardText = (item: InventoryItem): string => {
     [wheelName, finish].filter(Boolean).join(' '),
     [diameterText, pcd].filter(Boolean).join(' '),
     detailLine,
-    `@ R${Math.round(item.sellingPrice)}`
+    formatCustomerPrice(item.sellingPrice)
   ].join('\n');
 };
 
@@ -1465,7 +1469,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
 
               {visibleColumns.cost && (
                 <td className="p-3 border-r border-gp-border text-right font-mono text-green-500 bg-green-900/5">
-                  {formatCurrency(item.costPrice)}
+                  {formatDisplayedPrice(item.costPrice)}
                 </td>
               )}
 
@@ -1477,7 +1481,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                     </div>
                   )}
                   <div className={hasNormalSpecialPrice(item) ? 'text-gp-red' : ''}>
-                    {formatCurrency(item.sellingPrice)}
+                    {formatDisplayedPrice(item.sellingPrice)}
                   </div>
                 </td>
               )}

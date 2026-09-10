@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { extractDroppedVisualUrl, formatBulkClipboardText, getCoiloverDetails, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupplierOrderStatus, getSupportedStaffImageMimeType, getWarehouseStockSummary, isSpecialItem } from './InventoryView';
+import { extractDroppedVisualUrl, formatBulkClipboardText, formatDisplayedPrice, formatCustomerPrice, getCoiloverDetails, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupplierOrderStatus, getSupportedStaffImageMimeType, getWarehouseStockSummary, isSpecialItem } from './InventoryView';
 import { ProductType, type CoiloverProduct, type TyreProduct, type WheelProduct } from '../types';
 
 const supplierTyre: TyreProduct = {
@@ -22,6 +22,12 @@ const supplierTyre: TyreProduct = {
 };
 
 describe('supplier tyre card formatting', () => {
+  it('does not present undisclosed supplier prices as free items', () => {
+    expect(formatDisplayedPrice(0)).toBe('—');
+    expect(formatDisplayedPrice(Number.NaN)).toBe('—');
+    expect(formatCustomerPrice(0)).toBe('PRICE ON REQUEST');
+    expect(formatCustomerPrice(508)).toBe('@ R508');
+  });
   it('uses size, brand, and pattern for the primary line', () => {
     expect(getItemDisplayName(supplierTyre)).toBe('10.00R20 COMPASAL CPS60');
   });

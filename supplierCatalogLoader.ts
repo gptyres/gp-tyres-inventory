@@ -1,12 +1,11 @@
 import { BatteryProduct, InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
-import { loadLiveSupplierCatalogItems } from './liveSupplierCatalog';
+import { liveSupplierRowToInventoryItem, loadLiveSupplierCatalogItems } from './liveSupplierCatalog';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import { roundSupplierSellingPrice } from './supplierPricing';
 import {
   parseAlineData,
   parseApexData,
   parseArcData,
-  parseAttData,
   parseBridgestoneData,
   parseEibachData,
   parseExclusiveTyresData,
@@ -293,8 +292,12 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
       return parseTyreWarehouseData(TYRE_WAREHOUSE_RAW_DATA);
     }
     case 'ATT': {
-      const { ATT_RAW_DATA } = await import('./supplier_data/attData');
-      return parseAttData(ATT_RAW_DATA);
+      const { ATT_SNAPSHOT_ROWS } = await import('./supplier_data/attSnapshot');
+      return ATT_SNAPSHOT_ROWS.map((row, index) => liveSupplierRowToInventoryItem({
+        ...row,
+        id: index + 1,
+        snapshot_id: 'att-bundled-2026-09-10'
+      }));
     }
     case 'BRIDGESTONE': {
       const { BRIDGESTONE_RAW_DATA } = await import('./supplier_data/bridgestoneData');
