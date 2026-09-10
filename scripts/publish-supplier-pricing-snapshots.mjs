@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { createClient } from '@supabase/supabase-js';
+import { royalWorkbookItem } from '../royalTyresWorkbook.mjs';
 
 const SUPABASE_URL = 'https://moiybakshvuvppesbnpt.supabase.co';
 const serviceKey = process.env.SUPABASE_SECRET_KEY;
@@ -34,12 +35,8 @@ const sources = [
     catalog: 'ROYAL_TYRES',
     supplier: 'ROYAL TYRES',
     dataFile: 'supplier_data/royalTyresData.ts',
-    sourceFile: 'Royal Tyres PCR + TBR August 2026 PDFs',
-    locationSupplementFile: 'supplier_data/royalTyresCapeTownData.ts',
-    locationSupplementSourceFiles: [
-      'WhatsApp Image 2026-08-11 at 09.29.49.jpeg',
-      'WhatsApp Image 2026-08-11 at 09.30.28.jpeg'
-    ]
+    sourceFile: 'Reps-Stk_SoH_PriceList.xlsm.xlsx',
+    parser: 'royalWorkbook'
   },
   {
     catalog: 'ALINE',
@@ -349,6 +346,10 @@ const buildSafetyGripSpecialItems = (rows, source) => {
 
 const buildItems = async (source) => {
   const rows = parseCsv(await readEmbeddedCsv(source.dataFile));
+  if (source.parser === 'royalWorkbook') {
+    const headers = rows[0];
+    return rows.slice(1).map((values) => royalWorkbookItem(Object.fromEntries(headers.map((key, index) => [key, values[index] || '']))));
+  }
   if (source.parser === 'aline') return buildAlineItems(rows, source);
   if (source.parser === 'safetyGripSpecials') return buildSafetyGripSpecialItems(rows, source);
   const headers = rows[0].map(clean);

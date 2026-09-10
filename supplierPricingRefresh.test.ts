@@ -8,7 +8,6 @@ import { TUBESTONE_SPECIALS_RAW_DATA } from './supplier_data/tubestoneSpecialsDa
 import { EXOTIC_RAW_DATA } from './supplier_data/exoticData';
 import { SAILUN_RAW_DATA } from './supplier_data/sailunData';
 import { ROYAL_TYRES_RAW_DATA } from './supplier_data/royalTyresData';
-import { ROYAL_TYRES_CAPE_TOWN_RAW_DATA } from './supplier_data/royalTyresCapeTownData';
 import {
   parseApexData,
   parseExoticData,
@@ -23,58 +22,33 @@ import {
 const nearestVatInclusiveRand = (costPrice: number) => Math.round((costPrice * 1.15) + 1e-9);
 
 describe('supplier pricing refresh', () => {
-  it('embeds the complete Royal Tyres PCR and TBR catalogues with VAT added to normal prices', () => {
+  it('uses Royal Yellow prices and all four available warehouse balances without the stale supplement', () => {
     const items = parseRoyalTyresData(ROYAL_TYRES_RAW_DATA);
-    const pcrSample = items.find((item) => item.supplierStockCode === 'RT-PCR-EA548652F1');
-    const tbrSample = items.find((item) => item.supplierStockCode === 'RT-TBR-C2A30F4C0F');
-    const cptTbrSample = items.find((item) => item.supplierStockCode === 'RT-TBR-BC2EB611B0');
-    const newCptTyre = items.find((item) => item.type === 'TYRE' && item.pattern === 'AC808' && item.size === '175/70R14');
-    const newCptWheel = items.find((item) => item.type === 'WHEEL' && item.size === '17.50X6.75');
-    const newCptOtr = items.find((item) => item.type === 'TYRE' && item.brand === 'AEOLUS' && item.size === '14.00-24');
-
-    expect(items).toHaveLength(247);
-    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(30421);
-    expect(pcrSample).toMatchObject({
-      brand: 'ANCHEE',
-      pattern: 'AC808',
-      size: '155/70R13',
-      tyreIndex: '75T',
-      tyreSpecs: 'PCR / H/T',
-      costPrice: 399,
-      sellingPrice: 459,
-      quantity: 96,
-      stockByLocation: { DBN: 76, CPT: 20 }
+    expect(items).toHaveLength(1169);
+    expect(new Set(items.map((item) => item.supplierStockCode)).size).toBe(1169);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(44676);
+    expect(items.find((item) => item.supplierStockCode === '3001010040')).toMatchObject({
+      brand: 'ASCENSO', size: '11.00-16', costPrice: 2795, sellingPrice: 3214,
+      quantity: 3, stockByLocation: { RVTRK: 0, RTCPHX: 3, RTCJHB: 0, RTC_CT: 0 }, lastUpdated: '2026-09-08'
     });
-    expect(tbrSample).toMatchObject({
-      brand: 'TAITONG',
-      pattern: 'HS268',
-      size: '7.00R16',
-      tyreRating: '14PR',
-      tyreIndex: '118/114L',
-      tyreSpecs: 'TBR / MP / TTF',
-      costPrice: 1740,
-      sellingPrice: 2001,
-      quantity: 58,
-      stockByLocation: { DBN: 58 }
+    expect(items.find((item) => item.supplierStockCode === '81U527')).toMatchObject({
+      type: 'WHEEL', size: '22.50X11.75', pcd: '10/335', centerBore: '281', offset: '120',
+      quantity: 8, costPrice: 0, stockByLocation: { RVTRK: 0, RTCPHX: 7, RTCJHB: 1, RTC_CT: 0 }
     });
-    expect(cptTbrSample).toMatchObject({
-      costPrice: 4495,
-      sellingPrice: 5169,
-      quantity: 22,
-      stockByLocation: { DBN: 16, CPT: 6 }
+    expect(items.find((item) => item.supplierStockCode === '3ESN514F')).toMatchObject({
+      quantity: 1, stockByLocation: { RVTRK: 0, RTCPHX: 0, RTCJHB: 1, RTC_CT: 0 }
     });
-    expect(newCptTyre).toMatchObject({ costPrice: 445, sellingPrice: 512, quantity: 10, stockByLocation: { CPT: 10 } });
-    expect(newCptWheel).toMatchObject({ pcd: '6/222', offset: '135', centerBore: '116.4', costPrice: 910, sellingPrice: 1047, quantity: 10 });
-    expect(newCptOtr).toMatchObject({ pattern: 'IND4 AIND41', tyreRating: '28PR', tyreSpecs: 'OTR / TL', quantity: 8, costPrice: 15980, sellingPrice: 18377 });
-    expect(items.filter((item) => item.stockByLocation && Object.hasOwn(item.stockByLocation, 'CPT'))).toHaveLength(87);
-    expect(items.reduce((total, item) => total + (item.stockByLocation?.CPT || 0), 0)).toBe(2276);
-    expect(items.filter((item) => item.type === 'WHEEL')).toHaveLength(3);
+    expect(items.find((item) => item.supplierStockCode === '229101')).toMatchObject({ size: '365/85R20' });
+    expect(items.filter((item) => item.type === 'WHEEL')).toHaveLength(49);
+    for (const [warehouse, total] of Object.entries({ RVTRK: 4071, RTCPHX: 29378, RTCJHB: 6236, RTC_CT: 4991 })) {
+      expect(items.reduce((sum, item) => sum + (item.stockByLocation?.[warehouse] || 0), 0)).toBe(total);
+    }
     expect(items.filter((item) => item.costPrice > 0).every((item) => (
       item.sellingPrice === nearestVatInclusiveRand(item.costPrice)
     ))).toBe(true);
-    expect(items.filter((item) => item.sellingPrice === 0)).toHaveLength(1);
-    expect(ROYAL_TYRES_RAW_DATA).not.toMatch(/bulk/i);
-    expect(ROYAL_TYRES_CAPE_TOWN_RAW_DATA.split('\n')).toHaveLength(88);
+    expect(items.filter((item) => item.sellingPrice === 0)).toHaveLength(43);
+    expect(items.filter((item) => item.sellingPrice === 0).every((item) => item.supplierLeadTime?.includes('Price to be confirmed'))).toBe(true);
+    expect(ROYAL_TYRES_RAW_DATA).not.toMatch(/Orange|Purple|Green|Cash Price|Account Price/);
   });
 
   it('embeds the complete Sailun P2 catalogue with 100 units and rounded VAT-inclusive pricing', () => {
