@@ -1827,7 +1827,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (incomingProps) => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const lastSelectedIdRef = useRef<string | null>(null);
   const [columnPreferences, setVisibleColumns] = useState<VisibleColumns>(saved.columns);
-  const visibleColumns = { ...columnPreferences, cost: props.isAdmin && columnPreferences.cost };
+  const visibleColumns = columnPreferences;
   useEffect(() => {
     try {
       localStorage.setItem(storageKey, JSON.stringify({ version: 2, viewMode: preferredViewMode,
@@ -2369,12 +2369,12 @@ export const InventoryView: React.FC<InventoryViewProps> = (incomingProps) => {
               specs: visibleColumns.specs,
               location: visibleColumns.location,
               quantity: true,
-              cost: props.isAdmin && visibleColumns.cost,
+              cost: visibleColumns.cost,
               sellingPrice: visibleColumns.price
             },
             priceLabel: props.priceLabel
           }}
-          canShowCost={props.isAdmin}
+          canShowCost
           rowOptions={{
             groupBy: groupBy as InventoryReportGroupMode,
             showSupplierName: Boolean(props.showSupplierName)
@@ -2507,7 +2507,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (incomingProps) => {
              <ToolbarToggle checked={visibleColumns.location} onChange={(checked) => setVisibleColumns(previous => ({...previous, location: checked}))} label="Locations" />
              <ToolbarToggle checked={visibleColumns.specs} onChange={(checked) => setVisibleColumns(previous => ({...previous, specs: checked}))} label="Specs" />
              <ToolbarToggle checked={visibleColumns.price} onChange={(checked) => setVisibleColumns(previous => ({...previous, price: checked}))} label="Price" />
-             {props.isAdmin && <ToolbarToggle checked={visibleColumns.cost} onChange={(checked) => setVisibleColumns(previous => ({...previous, cost: checked}))} label="Cost" />}
+             <ToolbarToggle checked={visibleColumns.cost} onChange={(checked) => setVisibleColumns(previous => ({...previous, cost: checked}))} label="Cost" />
             </>
           )}
              <div className="ml-auto flex min-w-0 basis-full flex-wrap items-center justify-end gap-2 sm:basis-auto sm:border-l sm:border-gp-border sm:pl-3">
