@@ -32,6 +32,8 @@ export interface BaseProduct {
   supplierStockCode?: string;
   supplierOrderStatus?: SupplierOrderStatus;
   stockByLocation?: Record<string, number>;
+  stockQuantityIsMinimum?: boolean;
+  stockMinimumLocations?: string[];
   supplierLeadTime?: string;
   imageDesignKey?: string;
   imageFinishKey?: string;

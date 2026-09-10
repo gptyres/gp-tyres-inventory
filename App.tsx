@@ -466,7 +466,7 @@ const App: React.FC = () => {
     },
     HOOSIER_TYRES: {
       label: 'HOOSIER TYRES',
-      note: 'Viewing the official Hoosier South Africa Dirt Oval, Drag, Racing and Pro Street catalogue. Website prices are VAT inclusive. Available products show exact units; preorder products remain visible with a clear order status.',
+      note: 'Viewing the official Hoosier South Africa tyre catalogue, including karting and motorcycle tyres. Website prices are VAT inclusive. Available products show exact units; preorder products remain visible with a clear order status.',
       portalUrl: 'https://hoosiertyres.co.za/shop/'
     },
     TREAD_ZONE: {

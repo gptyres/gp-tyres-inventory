@@ -10,8 +10,8 @@ describe('EIBACH supplier catalogue', () => {
   it('imports every official product once with exact stock totals', () => {
     expect(items).toHaveLength(325);
     expect(new Set(items.map((item) => item.id)).size).toBe(325);
-    expect(items.filter((item) => item.quantity > 0)).toHaveLength(152);
-    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(219);
+    expect(items.filter((item) => item.quantity > 0)).toHaveLength(151);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(216);
     expect(items.every((item) => item.type === ProductType.COILOVER)).toBe(true);
   });
 

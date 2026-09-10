@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, access } from 'node:fs/promises';
 import { resolve, basename } from 'node:path';
 import { createHash } from 'node:crypto';
 import { parseSupplierTyreFields, extractSupplierTyreSize } from '../supplierTyreParsing.ts';
@@ -42,10 +42,10 @@ const sourceSize = name => clean(name).match(/^(?:VF|IF|LT)?\d+(?:\.\d+)?(?:[LX/
 const outputs = new Map();
 const exclusions = [];
 const issues = [];
-function add({key,supplier,sku,identity=sku,name,brand='',category='',size='',pattern='',index='',rating='',specs='',stock,cost,inclusive=false,image='',page,raw,lead='',type='TYRE',wheel={}}) {
+function add({key,supplier,sku,identity=sku,name,brand='',strictBrand=false,category='',size='',pattern='',index='',rating='',specs='',stock,cost,inclusive=false,image='',page,raw,lead='',type='TYRE',wheel={}}) {
   if (!sku || !name) throw new Error(`Missing identity in ${key}`);
   const prior = existing[key]?.get(clean(sku).toUpperCase());
-  brand = clean(brand || prior?.brand || findBrand(name));
+  brand = clean(strictBrand ? brand : brand || prior?.brand || findBrand(name));
   const parsed = parseSupplierTyreFields({ description:name, explicitBrand:brand, explicitSize:size, explicitPattern:pattern, explicitIndex:index, explicitRating:rating, explicitSpecs:specs });
   const stockByLocation = Object.fromEntries(Object.entries(stock).map(([k,v])=>[loc(k),quantity(v)]));
   const units = Object.values(stockByLocation).reduce((a,b)=>a+b,0);
@@ -83,7 +83,8 @@ function add({key,supplier,sku,identity=sku,name,brand='',category='',size='',pa
       prev.stock_by_location[warehouse]=qty;
     }
     prev.stock_units=Object.values(prev.stock_by_location).reduce((a,b)=>a+b,0);
-    prev.stock_units_availability=prev.stock_units>0?'In stock':'Out of stock';
+    const capped=/portal stock counts are capped/.test(prev.stock_units_availability)||/portal stock counts are capped/.test(item.stock_units_availability);
+    prev.stock_units_availability=capped?`At least ${prev.stock_units}; portal stock counts are capped`:prev.stock_units>0?'In stock':'Out of stock';
     prev.stock_location=Object.entries(prev.stock_by_location).map(([k,v])=>`${k}: ${v}`).join(' | ');
     prev.source_stock_detail+=` | ${JSON.stringify({source:page.source,stock_display:stock,raw})}`;
     prev.imported_at = prev.imported_at > item.imported_at ? prev.imported_at : item.imported_at;
@@ -159,6 +160,25 @@ for(const file of ['stamford-tyres-all-dcs.json','stamford-wheels-all-dcs.json']
     const item=add({key:'STAMFORD',supplier:'Stamford',sku,name:isWheel?`${r.cells[1]} ${r.cells[2]}`:r.cells[1],brand,size,index:idx?idx[1]+idx[2]:'',stock:{[p.location.replace('Stamford DC ','')]:stock},cost:money(r.cost || r.cells[3].split(/EX\./)[0]),image:r.image||'',page:p,raw:r,type:isWheel?'WHEEL':'TYRE',wheel,category:isWheel?'Wheels':''});
     if(r.normalPrice){item.tyre_specs=[item.tyre_specs,'SPECIAL'].filter(Boolean).join(' / ');item.source_stock_detail+=` | Normal selling price incl VAT: R${rounded(money(r.normalPrice)*1.15)}`;}
   }
+}
+if(await access(resolve(root,'captures/tubestone-full.json')).then(()=>true,()=>false)) {
+ const all=await load('tubestone-full.json');
+ if(all.length!==122 || all.some((p,i)=>Number(p.toolbar.match(/Page (\d+) of 122/)?.[1])!==i+1))throw new Error('Tubestone full page sequence not verified');
+ const logos={deestone:'Deestone',maxtrek:'Maxtrek',bkt:'BKT',nankang:'Nankang',conti:'Continental',sailun:'Sailun',dunlop:'Dunlop',goodyear:'Goodyear',gtthumb:'General',bridgestone:'Bridgestone',tortuga:'Tortuga',nexen:'Nexen'};
+ const namedBrands=['Deestone','Maxtrek','BKT','Nankang','Continental','Sailun','Dunlop','Goodyear','General','Bridgestone','Tortuga','Nexen','NEX','Marvelous','IRA','Sumitomo'];
+ const fileName=src=>new URL(src).searchParams.get('filename')?.toLowerCase()||'';
+ const logoBrand=src=>Object.entries(logos).find(([hint])=>fileName(src).includes(hint))?.[1];
+ for(const p of all)for(const r of p.rows){
+  const sku=clean(r.cells[5]); const name=clean(r.cells[3]);
+  const brand=namedBrands.find(b=>new RegExp(`\\b${b}\\b`,'i').test(name)) || (/\bCONTI\b/i.test(name)?'Continental':'') || r.images.map(i=>logoBrand(i.src)).find(Boolean) || '';
+  if(/\b(?:FLAP|TUBE|VALVE)\b/i.test(name) || (!brand && /\b(?:TR\s*-?\s*\d+[A-Z]*|TRJ\d+|TC131|VS3|JS\d+|SC95)\b/i.test(name))){exclusions.push({catalog:'TUBESTONE',reason:'Tube, flap or valve rather than tyre/wheel',raw:r});continue;}
+  const size=name.match(/^(?:\d+(?:\.\d+)?(?:\/\d+(?:\.\d+)?)?(?:L-\d+(?:FI)?|D\d+|\-\d+K))\b/i)?.[0]||sourceSize(name);
+  if(!brand && !size){exclusions.push({catalog:'TUBESTONE',reason:'Unmatched product type requires review; not mislabeled as a tyre',raw:r});continue;}
+  const stock=Object.fromEntries(r.stock.map(w=>{const [warehouse,...count]=w.text.split('\n');return[warehouse,count.join(' ')];}));
+  const image=r.images.find(i=>fileName(i.src)&&!logoBrand(i.src))?.src||'';
+  const item=add({key:'TUBESTONE',supplier:'Tubestone',sku,name,brand,strictBrand:true,size,stock,cost:money(r.cells[4]),image,page:p,raw:r});
+  if(!item.size&&size)item.size=size.toUpperCase();
+ }
 }
 // A-Line set pricing is prepared separately; it requires an explicit frontend
 // set-of-four basis marker to avoid multiplying an already-totalled price again.

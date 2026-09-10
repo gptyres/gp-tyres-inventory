@@ -56,10 +56,10 @@ describe('site-wide supplier catalogue formatting', () => {
 
   it('loads Hoosier as a complete bundled supplier catalogue with order status', async () => {
     const items = await loadSupplierCatalogItems('HOOSIER_TYRES');
-    expect(items).toHaveLength(58);
-    expect(items.filter((item) => item.supplierOrderStatus === 'AVAILABLE')).toHaveLength(39);
-    expect(items.filter((item) => item.supplierOrderStatus === 'PREORDER')).toHaveLength(19);
-    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(128);
+    expect(items).toHaveLength(64);
+    expect(items.filter((item) => item.supplierOrderStatus === 'AVAILABLE')).toHaveLength(43);
+    expect(items.filter((item) => item.supplierOrderStatus === 'PREORDER')).toHaveLength(21);
+    expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(169);
   });
 
   it('restores ATT quantities when the entire live snapshot incorrectly reports zero stock', () => {

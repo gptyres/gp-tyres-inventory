@@ -64,6 +64,10 @@ export const formatCustomerPrice = (value: number): string => (
   Number.isFinite(value) && value > 0 ? `@ R${Math.round(value)}` : 'PRICE ON REQUEST'
 );
 
+export const formatStockQuantity = (value: number, isMinimum = false): string => (
+  `${value}${isMinimum && value > 0 ? '+' : ''}`
+);
+
 interface VisibleColumns {
   specs: boolean;
   location: boolean;
@@ -294,7 +298,7 @@ const formatItemStockSummary = (item: InventoryItem): string => {
   const availableEntries = getStockEntries(item).filter(([, quantity]) => quantity > 0);
   if (availableEntries.length === 0) return getItemLocation(item);
   const total = availableEntries.reduce((sum, [, quantity]) => sum + quantity, 0);
-  return `${availableEntries.map(([location, quantity]) => `${location} ${quantity}`).join(' • ')} • TOTAL ${total}`;
+  return `${availableEntries.map(([location, quantity]) => `${location} ${formatStockQuantity(quantity, item.stockMinimumLocations?.includes(location))}`).join(' • ')} • TOTAL ${formatStockQuantity(total, item.stockQuantityIsMinimum)}`;
 };
 
 const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
@@ -310,7 +314,7 @@ const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
           Available locations
         </span>
         <span className="shrink-0 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">
-          Total stock <span className="ml-1 font-mono text-xs tabular-nums text-green-500">{totalStock}</span>
+          Total stock <span className="ml-1 font-mono text-xs tabular-nums text-green-500">{formatStockQuantity(totalStock, item.stockQuantityIsMinimum)}</span>
         </span>
       </div>
       {availableEntries.length > 0 ? (
@@ -322,7 +326,7 @@ const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
               title={location}
             >
               <span className="truncate text-[10px] font-bold leading-none text-gp-text-muted">{location}</span>
-              <span className="shrink-0 font-mono text-xs font-black leading-none tabular-nums text-green-500">{quantity}</span>
+              <span className="shrink-0 font-mono text-xs font-black leading-none tabular-nums text-green-500">{formatStockQuantity(quantity, item.stockMinimumLocations?.includes(location))}</span>
             </div>
           ))}
         </div>
@@ -331,6 +335,7 @@ const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
           {structuredEntries.length > 0 ? 'No branch stock' : fallbackLocation}
         </span>
       )}
+      {item.stockQuantityIsMinimum ? <p className="mt-2 text-[10px] text-gp-text-muted">+ means at least this quantity; the supplier caps displayed stock.</p> : null}
       {item.supplierLeadTime ? (
         <div className="mt-2 flex min-h-8 items-center justify-between gap-3 rounded border border-sky-500/30 bg-sky-500/10 px-2.5 py-1.5">
           <span className="text-[9px] font-bold uppercase tracking-wider text-sky-300">Supplier lead time</span>
@@ -1458,7 +1463,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               )}
 
               <td className={`p-3 border-r border-gp-border text-center font-mono font-bold ${getStatusColor(item.quantity)}`}>
-                {item.quantity}
+                {formatStockQuantity(item.quantity, item.stockQuantityIsMinimum)}
               </td>
 
               {showOrderStatus && (
@@ -1547,7 +1552,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 </div>
                 <div className="flex shrink-0 flex-col items-end">
                   <div className={`text-right ${getStatusColor(item.quantity)}`}>
-                    <span className="text-3xl font-display font-bold leading-none">{item.quantity}</span>
+                    <span className="text-3xl font-display font-bold leading-none">{formatStockQuantity(item.quantity, item.stockQuantityIsMinimum)}</span>
                     <div className="text-[9px] uppercase opacity-70">Qty</div>
                   </div>
                 </div>
@@ -1757,7 +1762,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
            
            <div className="flex flex-col items-end gap-2 w-full sm:w-auto mt-4 sm:mt-0">
               <div className={`px-3 py-1 rounded text-xs font-bold ${getStatusColor(item.quantity)} bg-gp-black border border-gp-border`}>
-                {item.quantity} Left
+                {formatStockQuantity(item.quantity, item.stockQuantityIsMinimum)} Left
               </div>
               
               {/* Added Cost Price */}

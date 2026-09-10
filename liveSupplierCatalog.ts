@@ -49,6 +49,20 @@ export interface LiveSupplierCatalogRow {
 
 const PAGE_SIZE = 1_000;
 
+const minimumStockLocations = (detail?: string | null): string[] => {
+  const locations = new Set<string>();
+  // Browser captures retain the original displayed quantities, including caps.
+  for (const match of String(detail || '').matchAll(/"stock_display":(\{[^{}]*\})/g)) {
+    try {
+      const displayed = JSON.parse(match[1]) as Record<string, unknown>;
+      for (const [location, value] of Object.entries(displayed)) {
+        if (/\d\+/.test(String(value))) locations.add(normalizeStockLocationName(location));
+      }
+    } catch { /* A malformed source note must not break catalogue loading. */ }
+  }
+  return [...locations].filter(Boolean);
+};
+
 const parseNormalSellingPrice = (detail?: string | null): number | undefined => {
   const match = String(detail || '').match(/Normal selling price incl(?:uding)? VAT:\s*R?\s*([\d,.]+)/i);
   if (!match) return undefined;
@@ -120,7 +134,12 @@ export const groupLiveSupplierCatalogRows = (
       imported_at: existing && existing.imported_at > row.imported_at ? existing.imported_at : row.imported_at,
       stock_by_location: Object.keys(locations).length > 0 ? locations : null,
       stock_location: Object.keys(locations).length > 0 ? formatStockByLocation(locations) : row.stock_location,
-      stock_units_availability: totalQuantity > 0 ? 'In stock' : 'Out of stock',
+      stock_units_availability: /portal stock counts are capped/.test(`${existing?.stock_units_availability || ''} ${row.stock_units_availability || ''}`)
+        ? `At least ${totalQuantity}; portal stock counts are capped`
+        : totalQuantity > 0 ? 'In stock' : 'Out of stock',
+      source_stock_detail: existing
+        ? [existing.source_stock_detail, row.source_stock_detail].filter(Boolean).join(' | ')
+        : row.source_stock_detail,
       stock_units: totalQuantity
     });
   });
@@ -146,6 +165,7 @@ export const liveSupplierRowToInventoryItem = (
   const supplierCostPrice = Math.max(0, Number(row.cost_price) || 0);
   const costPrice = (supplierCostPrice || suppliedSellingPrice) * listingPriceMultiplier;
   const normalSellingPrice = parseNormalSellingPrice(row.source_stock_detail);
+  const stockMinimumLocations = minimumStockLocations(row.source_stock_detail);
   const common = {
     id: 'live-' + row.catalog_key.toLowerCase() + '-' + row.source_key,
     quantity: Math.max(0, Math.trunc(Number(row.stock_units) || 0)),
@@ -163,6 +183,8 @@ export const liveSupplierRowToInventoryItem = (
     supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS' : row.supplier,
     supplierStockCode: row.supplier_sku || undefined,
     stockByLocation: row.stock_by_location || undefined,
+    stockMinimumLocations,
+    stockQuantityIsMinimum: stockMinimumLocations.length > 0 || /portal stock counts are capped/.test(row.stock_units_availability || ''),
     supplierLeadTime: row.supplier_lead_time?.trim() || undefined,
     imageUrl: row.product_url?.trim() || undefined
   };

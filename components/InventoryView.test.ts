@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { extractDroppedVisualUrl, formatBulkClipboardText, formatDisplayedPrice, formatCustomerPrice, getCoiloverDetails, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupplierOrderStatus, getSupportedStaffImageMimeType, getWarehouseStockSummary, isSpecialItem } from './InventoryView';
 import { ProductType, type CoiloverProduct, type TyreProduct, type WheelProduct } from '../types';
+import { formatStockQuantity } from './InventoryView';
 
 const supplierTyre: TyreProduct = {
   id: 'live-apex-cps60',
@@ -22,6 +23,11 @@ const supplierTyre: TyreProduct = {
 };
 
 describe('supplier tyre card formatting', () => {
+  it('distinguishes stock minimums from exact quantities', () => {
+    expect(formatStockQuantity(10, true)).toBe('10+');
+    expect(formatStockQuantity(10, false)).toBe('10');
+    expect(formatStockQuantity(0, true)).toBe('0');
+  });
   it('does not present undisclosed supplier prices as free items', () => {
     expect(formatDisplayedPrice(0)).toBe('—');
     expect(formatDisplayedPrice(Number.NaN)).toBe('—');

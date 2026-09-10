@@ -31,6 +31,20 @@ const baseRow: LiveSupplierCatalogRow = {
 };
 
 describe('live supplier catalogue conversion', () => {
+  it('keeps capped warehouse quantities as minimums after grouping', () => {
+    const grouped = groupLiveSupplierCatalogRows([
+      { ...baseRow, stock_by_location: { CPT: 10 }, stock_units: 10,
+        stock_units_availability: 'At least 10; portal stock counts are capped',
+        source_stock_detail: 'Source | {"stock_display":{"CPT":"10+"}}' },
+      { ...baseRow, id: 2, stock_by_location: { DBN: 4 }, stock_units: 4,
+        source_stock_detail: 'Source | {"stock_display":{"DBN":4}}' }
+    ]);
+    expect(grouped[0].stock_units_availability).toContain('At least 14');
+    expect(liveSupplierRowToInventoryItem(grouped[0])).toMatchObject({
+      quantity: 14, stockQuantityIsMinimum: true, stockMinimumLocations: ['CPT'],
+      stockByLocation: { CPT: 10, DUR: 4 }
+    });
+  });
   it('combines branch stock for the same SKU into one listing', () => {
     const rows = ['JHB', 'GLK', 'CPT', 'DBN'].map((location, index) => ({
       ...baseRow,

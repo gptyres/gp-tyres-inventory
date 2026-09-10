@@ -1,0 +1,86 @@
+[
+  {
+    "catalog": "REVOLUTION_TYRES",
+    "products": 626,
+    "file": "REVOLUTION_TYRES.json.gz",
+    "sha256": "cc98e483b426c1f4ef0a6ebb0b003d726c54ace2cd3f73c97a8dc0491d51d066",
+    "snapshotId": "c919e3f7-b761-43a4-9e49-5c9848b0cca7",
+    "verifiedAt": "2026-09-10T09:52:09.016Z",
+    "capturedFrom": "2026-09-10T07:37:27.870Z",
+    "capturedUntil": "2026-09-10T07:41:59.304Z",
+    "zeroStockProducts": 135,
+    "stockUnitsOrPortalMinimum": 15592
+  },
+  {
+    "catalog": "TREADS_UNLIMITED",
+    "products": 2224,
+    "file": "TREADS_UNLIMITED.json.gz",
+    "sha256": "682fb2155c5807bf613460f8631a418c884bffc8986fee75d4dec8909c34dc53",
+    "snapshotId": "716f01c5-001e-4c29-b06c-e075c577229c",
+    "verifiedAt": "2026-09-10T09:52:12.488Z",
+    "capturedFrom": "2026-09-10T07:47:11.756Z",
+    "capturedUntil": "2026-09-10T07:58:49.609Z",
+    "zeroStockProducts": 1246,
+    "stockUnitsOrPortalMinimum": 119576
+  },
+  {
+    "catalog": "TYREWAREHOUSE",
+    "products": 693,
+    "file": "TYREWAREHOUSE.json.gz",
+    "sha256": "3527f1c3ecd7d8bed691358a11e1e13ad5ded819cf81b603247a4fdece00dbf2",
+    "snapshotId": "89cf099c-b16f-46c8-9132-61d642caccba",
+    "verifiedAt": "2026-09-10T09:52:13.535Z",
+    "capturedFrom": "2026-09-10T07:43:17.120Z",
+    "capturedUntil": "2026-09-10T07:58:46.565Z",
+    "zeroStockProducts": 92,
+    "stockUnitsOrPortalMinimum": 78135
+  },
+  {
+    "catalog": "STAMFORD",
+    "products": 790,
+    "file": "STAMFORD.json.gz",
+    "sha256": "b5cfde2acd3b34f506f4e59c245a9429af5649041725a7f3e5649796b553545f",
+    "snapshotId": "cee863be-b673-4103-83b9-0206e1009bc9",
+    "verifiedAt": "2026-09-10T09:52:16.564Z",
+    "capturedFrom": "2026-09-10T07:48:51.139Z",
+    "capturedUntil": "2026-09-10T07:52:37.804Z",
+    "zeroStockProducts": 117,
+    "stockUnitsOrPortalMinimum": 22032
+  },
+  {
+    "catalog": "SUMITOMO_DUNLOP",
+    "products": 485,
+    "file": "SUMITOMO_DUNLOP.json.gz",
+    "sha256": "be757eb0b71ccc1b5ab5e3a8b6eaee1f9da800eda8b13c9df09099fcedf1dd35",
+    "snapshotId": "b7ad3a2f-1829-4131-929f-41a54f83aa3c",
+    "verifiedAt": "2026-09-10T09:52:17.643Z",
+    "capturedFrom": "2026-09-10T07:53:18.376Z",
+    "capturedUntil": "2026-09-10T08:01:51.176Z",
+    "zeroStockProducts": 38,
+    "stockUnitsOrPortalMinimum": 153684
+  },
+  {
+    "catalog": "ALINE",
+    "products": 703,
+    "file": "ALINE.json.gz",
+    "sha256": "b60af496fcf525a021d0a70b3b9c71755f1088b7db47d3e5122b1446905d67d9",
+    "snapshotId": "2fdf5437-16e1-40b5-8450-5c3a84684cf9",
+    "verifiedAt": "2026-09-10T09:52:18.947Z",
+    "capturedFrom": "2026-09-10T07:32:30.808Z",
+    "capturedUntil": "2026-09-10T07:33:35.582Z",
+    "zeroStockProducts": 0,
+    "stockUnitsOrPortalMinimum": 23258
+  },
+  {
+    "catalog": "TUBESTONE",
+    "products": 2146,
+    "file": "TUBESTONE.json.gz",
+    "sha256": "2c2b618edbabe3c7532d03c46c710d04242a7c09b62c504341d1e66c20ab497f",
+    "snapshotId": "24cbb58f-647e-4834-a770-da7b3ec356e3",
+    "verifiedAt": "2026-09-10T09:52:21.646Z",
+    "capturedFrom": "2026-09-10T07:53:01.378Z",
+    "capturedUntil": "2026-09-10T09:03:19.252Z",
+    "zeroStockProducts": 1504,
+    "stockUnitsOrPortalMinimum": 6746
+  }
+]

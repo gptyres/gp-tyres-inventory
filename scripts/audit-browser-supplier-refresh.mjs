@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 const root=resolve(process.argv[2]);
-const expected={REVOLUTION_TYRES:626,TREADS_UNLIMITED:2224,SUMITOMO_DUNLOP:485,TYREWAREHOUSE:693,EXOTIC:1337,STAMFORD:790,ALINE:703};
+const expected={REVOLUTION_TYRES:626,TREADS_UNLIMITED:2224,SUMITOMO_DUNLOP:485,TYREWAREHOUSE:693,EXOTIC:1337,STAMFORD:790,ALINE:703,TUBESTONE:2146};
 const report=[];
 for(const [key,count] of Object.entries(expected)){
  const items=JSON.parse(await readFile(resolve(root,'normalized',`${key}.json`),'utf8'));
@@ -19,6 +19,7 @@ for(const [key,count] of Object.entries(expected)){
   assert.ok(!row.product_url || !/\/shop\//.test(row.product_url), 'Image URL must not be a product HTML page');
   if(key==='SUMITOMO_DUNLOP')assert.ok(!Object.keys(row.stock_by_location).some(l=>/inbound/i.test(l)),'Inbound is not stock on hand');
   if(key==='ALINE')assert.ok(row.source_stock_detail.includes('Pricing basis: set of 4'));
+  if(/"stock_display":\{[^}]*"\d+\+"/.test(row.source_stock_detail))assert.ok(row.stock_units_availability.includes('portal stock counts are capped'),'Merged counts retain their minimum-stock label');
  }
  report.push({catalog:key,products:count,stocked:items.filter(r=>r.stock_units>0).length,zeroStock:items.filter(r=>!r.stock_units).length,stockUnitsOrPortalMinimum:items.reduce((a,r)=>a+r.stock_units,0),warehouses:[...new Set(items.flatMap(r=>Object.keys(r.stock_by_location)))],missingBrand:items.filter(r=>!r.brand).length,missingSize:items.filter(r=>!r.size).length,firstCapture:items.map(r=>r.imported_at).sort()[0],lastCapture:items.map(r=>r.imported_at).sort().at(-1)});
 }
