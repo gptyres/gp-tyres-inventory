@@ -49,7 +49,7 @@ export function overdueBackorders(backorders: Backorder[], now = new Date()): Ba
 }
 
 export interface InventoryPreferences {
-  version: 1;
+  version: 2;
   viewMode: ViewMode;
   sort: { key: 'brand' | 'size' | 'quantity' | 'price' | 'location'; direction: 'asc' | 'desc' };
   groupBy: 'none' | 'location' | 'brand' | 'type';
@@ -59,19 +59,23 @@ export interface InventoryPreferences {
 export const preferenceKey = (user: string, catalogue: string) =>
   `gp-inventory-view:v1:${encodeURIComponent(user)}:${encodeURIComponent(catalogue)}`;
 
-export function parseInventoryPreferences(raw: string | null, mobile = false): InventoryPreferences {
+export function parseInventoryPreferences(raw: string | null): InventoryPreferences {
   const defaults: InventoryPreferences = {
-    version: 1, viewMode: mobile ? ViewMode.LIST : ViewMode.TABLE,
+    version: 2, viewMode: ViewMode.GRID,
     sort: { key: 'price', direction: 'asc' }, groupBy: 'none',
     columns: { specs: true, location: true, price: true, cost: false }
   };
   try {
     const saved = JSON.parse(raw || 'null');
-    if (saved?.version !== 1) return defaults;
-    if (Object.values(ViewMode).includes(saved.viewMode)) defaults.viewMode = saved.viewMode;
-    if (['brand', 'size', 'quantity', 'price', 'location'].includes(saved.sort?.key)
-      && ['asc', 'desc'].includes(saved.sort?.direction)) defaults.sort = saved.sort;
-    if (['none', 'location', 'brand', 'type'].includes(saved.groupBy)) defaults.groupBy = saved.groupBy;
+    if (saved?.version !== 1 && saved?.version !== 2) return defaults;
+    // Keep the storage key stable so existing column preferences survive migration.
+    // Older layouts adopt Card / lowest price once; subsequent choices remain saved.
+    if (saved.version === 2) {
+      if (Object.values(ViewMode).includes(saved.viewMode)) defaults.viewMode = saved.viewMode;
+      if (['brand', 'size', 'quantity', 'price', 'location'].includes(saved.sort?.key)
+        && ['asc', 'desc'].includes(saved.sort?.direction)) defaults.sort = saved.sort;
+      if (['none', 'location', 'brand', 'type'].includes(saved.groupBy)) defaults.groupBy = saved.groupBy;
+    }
     for (const key of Object.keys(defaults.columns) as (keyof InventoryPreferences['columns'])[]) {
       if (typeof saved.columns?.[key] === 'boolean') defaults.columns[key] = saved.columns[key];
     }
@@ -80,7 +84,6 @@ export function parseInventoryPreferences(raw: string | null, mobile = false): I
 }
 
 export function readInventoryPreferences(key: string): InventoryPreferences {
-  const mobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  try { return parseInventoryPreferences(localStorage.getItem(key), mobile); }
-  catch { return parseInventoryPreferences(null, mobile); }
+  try { return parseInventoryPreferences(localStorage.getItem(key)); }
+  catch { return parseInventoryPreferences(null); }
 }

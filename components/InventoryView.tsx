@@ -1821,7 +1821,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (incomingProps) => {
   const visibleColumns = { ...columnPreferences, cost: props.isAdmin && columnPreferences.cost };
   useEffect(() => {
     try {
-      localStorage.setItem(storageKey, JSON.stringify({ version: 1, viewMode: preferredViewMode,
+      localStorage.setItem(storageKey, JSON.stringify({ version: 2, viewMode: preferredViewMode,
         sort: sortConfig, groupBy, columns: columnPreferences }));
     } catch { /* Storage can be disabled or full; browsing must still work. */ }
   }, [storageKey, preferredViewMode, sortConfig, groupBy, columnPreferences]);

@@ -36,15 +36,25 @@ describe('delivery priorities', () => {
 describe('saved inventory views', () => {
   it('recovers from corrupt, outdated and malformed preferences', () => {
     expect(parseInventoryPreferences('{')).toEqual(parseInventoryPreferences(null));
-    expect(parseInventoryPreferences('{"version":2,"viewMode":"GRID"}').viewMode).toBe(ViewMode.TABLE);
-    const result = parseInventoryPreferences(JSON.stringify({ version: 1, viewMode: 'invalid', sort: { key: 'bad', direction: 'asc' }, columns: { cost: 'true', specs: false } }));
-    expect(result.viewMode).toBe(ViewMode.TABLE);
+    expect(parseInventoryPreferences('{"version":99,"viewMode":"TABLE"}').viewMode).toBe(ViewMode.GRID);
+    const result = parseInventoryPreferences(JSON.stringify({ version: 2, viewMode: 'invalid', sort: { key: 'bad', direction: 'asc' }, columns: { cost: 'true', specs: false } }));
+    expect(result.viewMode).toBe(ViewMode.GRID);
     expect(result.sort.key).toBe('price');
     expect(result.columns).toEqual({ specs: false, location: true, price: true, cost: false });
   });
-  it('uses list on mobile by default and restores explicit choices', () => {
-    expect(parseInventoryPreferences(null, true).viewMode).toBe(ViewMode.LIST);
-    expect(parseInventoryPreferences('{"version":1,"viewMode":"TABLE","groupBy":"location"}', true).viewMode).toBe(ViewMode.TABLE);
+  it('defaults to cards and ascending price on every screen and migrates old layouts once', () => {
+    const defaults = parseInventoryPreferences(null);
+    expect(defaults.viewMode).toBe(ViewMode.GRID);
+    expect(defaults.sort).toEqual({ key: 'price', direction: 'asc' });
+    const migrated = parseInventoryPreferences(JSON.stringify({ version: 1, viewMode: 'TABLE', sort: { key: 'price', direction: 'desc' }, groupBy: 'brand', columns: { specs: false } }));
+    expect(migrated.viewMode).toBe(ViewMode.GRID);
+    expect(migrated.sort).toEqual({ key: 'price', direction: 'asc' });
+    expect(migrated.groupBy).toBe('none');
+    expect(migrated.columns.specs).toBe(false);
+    const saved = parseInventoryPreferences('{"version":2,"viewMode":"TABLE","groupBy":"location","sort":{"key":"quantity","direction":"desc"}}');
+    expect(saved.viewMode).toBe(ViewMode.TABLE);
+    expect(saved.sort).toEqual({ key: 'quantity', direction: 'desc' });
+    expect(saved.groupBy).toBe('location');
   });
   it('isolates preferences by user and catalogue', () => {
     expect(preferenceKey('GP1', 'OWNED')).not.toBe(preferenceKey('GP2', 'OWNED'));
