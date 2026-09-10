@@ -5,8 +5,12 @@ import { createClient } from '@supabase/supabase-js';
 const out = resolve(process.argv[2] || 'outputs/supplier-refresh-2026-09-10/backup');
 if (!process.env.SUPABASE_SECRET_KEY) throw new Error('SUPABASE_SECRET_KEY is required');
 const db = createClient('https://moiybakshvuvppesbnpt.supabase.co', process.env.SUPABASE_SECRET_KEY, { auth: { persistSession: false } });
-const { data: snapshots, error } = await db.from('supplier_catalog_snapshots').select('*').eq('status', 'active');
+const keys = process.argv.slice(3);
+let query = db.from('supplier_catalog_snapshots').select('*').eq('status', 'active');
+if (keys.length) query = query.in('catalog_key', keys);
+const { data: snapshots, error } = await query;
 if (error) throw error;
+if (keys.length && snapshots.length !== new Set(keys).size) throw new Error('Every requested catalogue must have one active snapshot');
 await mkdir(out, { recursive: true });
 await writeFile(resolve(out, 'snapshots.json'), JSON.stringify(snapshots, null, 2));
 for (const snapshot of snapshots) {
