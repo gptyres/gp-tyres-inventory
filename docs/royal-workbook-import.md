@@ -13,7 +13,9 @@ price-confirmation note. The bundled snapshot date is read from the workbook.
 
 The 8 September source contains 1,120 tyre and 49 rim-sheet listings (including
 one wheel pressure-sensor accessory). It totals 44,676 available units:
-RVTRK 4,071; RTCPHX 29,378; RTCJHB 6,236; RTC_CT 4,991.
+RIVER TRUCK (RVTRK) 4,071; KZN (RTCPHX) 29,378; JHB (RTCJHB) 6,236;
+CPT (RTC_CT) 4,991. Raw workbook headers are retained for repeat imports;
+catalogue locations use these readable names.
 43 Yellow prices are zero; two available warehouse balances are negative.
 Tubes/flaps and oils/lubricants have no Yellow tier and are excluded.
 The historical Cape Town supplement is not merged into this full snapshot.

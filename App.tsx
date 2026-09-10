@@ -419,7 +419,7 @@ const App: React.FC = () => {
     },
     ROYAL_TYRES: {
       label: 'ROYAL TYRES',
-      note: 'Yellow-column pricing. VAT-inclusive selling prices add 15% VAT once. Available units after reservations are shown for RVTRK, RTCPHX, RTCJHB and RTC_CT. Stock snapshot: 8 September 2026.'
+      note: 'Yellow-column pricing. VAT-inclusive selling prices add 15% VAT once. Available units after reservations are shown for RIVER TRUCK, KZN, JHB and CPT. Stock snapshot: 8 September 2026.'
     },
     DIXON_BATTERIES: {
       label: 'DIXON BATTERIES',

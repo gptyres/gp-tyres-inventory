@@ -29,18 +29,18 @@ describe('supplier pricing refresh', () => {
     expect(items.reduce((total, item) => total + item.quantity, 0)).toBe(44676);
     expect(items.find((item) => item.supplierStockCode === '3001010040')).toMatchObject({
       brand: 'ASCENSO', size: '11.00-16', costPrice: 2795, sellingPrice: 3214,
-      quantity: 3, stockByLocation: { RVTRK: 0, RTCPHX: 3, RTCJHB: 0, RTC_CT: 0 }, lastUpdated: '2026-09-08'
+      quantity: 3, stockByLocation: { 'RIVER TRUCK': 0, KZN: 3, JHB: 0, CPT: 0 }, lastUpdated: '2026-09-08'
     });
     expect(items.find((item) => item.supplierStockCode === '81U527')).toMatchObject({
       type: 'WHEEL', size: '22.50X11.75', pcd: '10/335', centerBore: '281', offset: '120',
-      quantity: 8, costPrice: 0, stockByLocation: { RVTRK: 0, RTCPHX: 7, RTCJHB: 1, RTC_CT: 0 }
+      quantity: 8, costPrice: 0, stockByLocation: { 'RIVER TRUCK': 0, KZN: 7, JHB: 1, CPT: 0 }
     });
     expect(items.find((item) => item.supplierStockCode === '3ESN514F')).toMatchObject({
-      quantity: 1, stockByLocation: { RVTRK: 0, RTCPHX: 0, RTCJHB: 1, RTC_CT: 0 }
+      quantity: 1, stockByLocation: { 'RIVER TRUCK': 0, KZN: 0, JHB: 1, CPT: 0 }
     });
     expect(items.find((item) => item.supplierStockCode === '229101')).toMatchObject({ size: '365/85R20' });
     expect(items.filter((item) => item.type === 'WHEEL')).toHaveLength(49);
-    for (const [warehouse, total] of Object.entries({ RVTRK: 4071, RTCPHX: 29378, RTCJHB: 6236, RTC_CT: 4991 })) {
+    for (const [warehouse, total] of Object.entries({ 'RIVER TRUCK': 4071, KZN: 29378, JHB: 6236, CPT: 4991 })) {
       expect(items.reduce((sum, item) => sum + (item.stockByLocation?.[warehouse] || 0), 0)).toBe(total);
     }
     expect(items.filter((item) => item.costPrice > 0).every((item) => (
