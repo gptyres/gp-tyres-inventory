@@ -37,6 +37,7 @@ export const SIDEBAR_SUPPLIER_CATALOGS: Array<{
   { catalog: 'EXCLUSIVE_TYRES_NEW', label: 'EXCLUSIVE TYRES NEW — CURRENT' },
   { catalog: 'EXOTIC', label: 'EXOTIC' },
   { catalog: 'HOOSIER_TYRES', label: 'HOOSIER TYRES' },
+  { catalog: 'JOM', label: 'JOM' },
   { catalog: 'MAXXIS', label: 'MAXXIS' },
   { catalog: 'NDT', label: 'NDT' },
   { catalog: 'REVOLUTION_TYRES', label: 'REVOLUTION TYRES' },

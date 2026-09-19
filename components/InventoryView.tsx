@@ -142,6 +142,10 @@ const uniqueDisplayParts = (parts: Array<string | undefined>) => {
   });
 };
 
+export const getItemTypeLabel = (item: InventoryItem): string => (
+  item.type === ProductType.COILOVER ? (item as CoiloverProduct).productLabel || item.type : item.type
+);
+
 export const getItemDisplayName = (item: InventoryItem): string => {
   if (item.type === ProductType.TYRE) {
     const tyre = item as TyreProduct;
@@ -1420,7 +1424,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               )}
 
               <td className="p-3 border-r border-gp-border text-center">
-                <span className="text-[9px] font-bold bg-gp-overlay px-1.5 py-0.5 rounded text-gp-text-muted">{item.type.charAt(0)}</span>
+                <span title={getItemTypeLabel(item)} className="text-[9px] font-bold bg-gp-overlay px-1.5 py-0.5 rounded text-gp-text-muted">{getItemTypeLabel(item).charAt(0)}</span>
               </td>
 
               {showSupplierName && (
@@ -1540,7 +1544,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
               <div className="flex items-start justify-between gap-3">
                 <div className="flex max-w-full flex-wrap items-center gap-2">
                   <span className="text-[9px] bg-gp-black text-gp-text-muted px-2 py-0.5 rounded font-bold uppercase tracking-wide border border-gp-border">
-                    {item.type}
+                    {getItemTypeLabel(item)}
                   </span>
                   {isSpecialItem(item) && (
                     <span className="rounded border border-gp-red bg-gp-red/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-gp-red">
@@ -1598,8 +1602,8 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 )}
                 {visibleColumns.specs && item.type === ProductType.COILOVER && (
                     <>
-                    <SpecBadge label="Kit" value={(item as CoiloverProduct).series} />
-                    <SpecBadge label="Vehicle" value={(item as CoiloverProduct).vehicleBrand || 'Multiple'} />
+                    <SpecBadge label={(item as CoiloverProduct).productLabel ? 'Type' : 'Kit'} value={(item as CoiloverProduct).series} />
+                    {(!(item as CoiloverProduct).productLabel || (item as CoiloverProduct).vehicleBrand) && <SpecBadge label="Vehicle" value={(item as CoiloverProduct).vehicleBrand || 'Multiple'} />}
                     {(item as CoiloverProduct).vehicleModel && <SpecBadge label="Model" value={(item as CoiloverProduct).vehicleModel || ''} />}
                     {(item as CoiloverProduct).yearRange && <SpecBadge label="Years" value={(item as CoiloverProduct).yearRange || ''} />}
                     {(item as CoiloverProduct).frontLowering && <SpecBadge label="Front" value={(item as CoiloverProduct).frontLowering || ''} />}

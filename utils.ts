@@ -197,8 +197,18 @@ const searchInventoryStandard = (items: InventoryItem[], query: string): Invento
   });
 };
 
+export const searchExactSupplierStockCode = (items: InventoryItem[], query: string): InventoryItem[] => {
+  const code = query.trim().replace(/\s+/g, '').toUpperCase();
+  if (!code) return [];
+  return items.filter(item => item.type !== ProductType.TYRE
+    && item.supplierStockCode?.replace(/\s+/g, '').toUpperCase() === code);
+};
+
 export const searchInventory = (items: InventoryItem[], query: string): InventoryItem[] => {
   if (!query) return items;
+  // Numeric suspension/accessory SKUs must not be interpreted as tyre sizes.
+  const exactStockCodes = searchExactSupplierStockCode(items, query);
+  if (exactStockCodes.length) return exactStockCodes;
 
   const staggered = extractStaggeredTyreQuery(query);
   if (staggered) {

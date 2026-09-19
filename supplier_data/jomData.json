@@ -1,0 +1,795 @@
+{
+  "sourceFile": "Stock Levels and Availability JOM UNITS & PRICES 18.09.2026 (1).pdf",
+  "sourceSha256": "9ba9d3eeae0182318434d939d55350dd3c15319b61534db3001682637440e0b4",
+  "sourceReportedAt": "2026-09-18T08:27:56+02:00",
+  "importedAt": "2026-09-18T14:34:30.273128+00:00",
+  "warehouse": "Main Warehouse",
+  "priceTaxBasis": "INCLUDES_VAT",
+  "totalStockUnits": 2581,
+  "rows": [
+    {
+      "supplierSku": "127095",
+      "description": "WHITE PALSTIC DIP",
+      "stockUnits": 40,
+      "priceIncludingVat": 180.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "127126",
+      "description": "RED PLASTIC DIP",
+      "stockUnits": 3,
+      "priceIncludingVat": 180.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "127127",
+      "description": "GREEN PLASTIC DIP",
+      "stockUnits": 2,
+      "priceIncludingVat": 180.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "127128",
+      "description": "YELLOW PLASTIC DIP",
+      "stockUnits": 4,
+      "priceIncludingVat": 180.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "127141",
+      "description": "ORANGE PALSTIC DIP",
+      "stockUnits": 4,
+      "priceIncludingVat": 180.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "40000",
+      "description": "HOODLIFT GOLF 1",
+      "stockUnits": 107,
+      "priceIncludingVat": 350.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "40002",
+      "description": "HOODLIFT GOLF 2",
+      "stockUnits": 5,
+      "priceIncludingVat": 360.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "740227",
+      "description": "LINKS AUDI A3",
+      "stockUnits": 12,
+      "priceIncludingVat": 450.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "740229",
+      "description": "LINKS ASTRA G",
+      "stockUnits": 5,
+      "priceIncludingVat": 450.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "740412",
+      "description": "LINKS UNIVERSAL",
+      "stockUnits": 978,
+      "priceIncludingVat": 470.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741000",
+      "description": "VW GOLF 3 1991-1997 (7)",
+      "stockUnits": 29,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741001",
+      "description": "VW GOLF 4 1997 - 2006 (2)",
+      "stockUnits": 29,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741002",
+      "description": "CORSA A/B 1993 - 2000",
+      "stockUnits": 53,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741004",
+      "description": "BMW E36 1992 - 1998",
+      "stockUnits": 13,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741005",
+      "description": "VW GOLF 2 1983 - 1991 (7)",
+      "stockUnits": 23,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741007",
+      "description": "POLO 6N 1996 - 2001",
+      "stockUnits": 22,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741012",
+      "description": "AUDI TT 8N, A3 8L - 1.6, 1.8 1996-2002",
+      "stockUnits": 14,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741015",
+      "description": "BMW E46 1998 - 2005",
+      "stockUnits": 16,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741017",
+      "description": "OPEL ASTRA G / ZAFIRA 1998 - 2004",
+      "stockUnits": 5,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741018",
+      "description": "AUDI A4 (B5) 1994-2001",
+      "stockUnits": 4,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741021",
+      "description": "FORD FOCUS 1 DAW DBW DFW,RS/Comp excl 1998-2004",
+      "stockUnits": 14,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741024",
+      "description": "OPEL ASTRA H 2005/ ZAFIRA B TWINTOP 2004-2010",
+      "stockUnits": 13,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741025",
+      "description": "BMW E39 NO EDC 1995 - 2003",
+      "stockUnits": 10,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741026",
+      "description": "BMW 1 SERIES E81/82/E87 2004 - 2011 (5)",
+      "stockUnits": 9,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741027",
+      "description": "BMW E90 2005-2013 (5)",
+      "stockUnits": 13,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741028",
+      "description": "BMW E60 2003-2010",
+      "stockUnits": 6,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741029",
+      "description": "OPEL CORSA D 2006 - 2014",
+      "stockUnits": 11,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741030",
+      "description": "FORD FOCUS 2 DA3 2004-2011",
+      "stockUnits": 26,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741031",
+      "description": "BMW E30 1982 - 1995",
+      "stockUnits": 49,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741036",
+      "description": "AUDI TT 8J , A3 8P 2003-2012",
+      "stockUnits": 25,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741037",
+      "description": "AUDI A3 8P TDI 2003-2012",
+      "stockUnits": 9,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741038",
+      "description": "AUDI A3 8P QUATTRO 2.0 DSG TDI 2003-2012",
+      "stockUnits": 4,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741041",
+      "description": "AUDI A3 8P SP QUATTRO 2003 - 2012",
+      "stockUnits": 6,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741051",
+      "description": "VW GOLF 5/6 GTI incl 2003 - 2013",
+      "stockUnits": 5,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741053",
+      "description": "VW GOLF 5 - 4 MOTION 2003 - 2013",
+      "stockUnits": 1,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741063",
+      "description": "VW TOURAN 1.2,1.4,1.6,2.0/FSI/DSG 2004-2012 (3)",
+      "stockUnits": 4,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741064",
+      "description": "VW TOURAN 1.6,1.9,2.0TDI/DSG 2002-2012",
+      "stockUnits": 4,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741067",
+      "description": "VW GOLF 6 4 MOTION 2009-2013",
+      "stockUnits": 4,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741070",
+      "description": "VW SCIROCCO 2008 -",
+      "stockUnits": 2,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741072",
+      "description": "VW POLO 9N 2002 - 2009",
+      "stockUnits": 87,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741073",
+      "description": "AUDI A4 B6/7 2000-2007",
+      "stockUnits": 10,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741088",
+      "description": "BMW E39 TOURING 1995 - 2003",
+      "stockUnits": 9,
+      "priceIncludingVat": 3500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741093",
+      "description": "VW POLO VIVO/6R 2009 - 2022 (1)",
+      "stockUnits": 79,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741094",
+      "description": "VW T5 CARAVELLE/TRANSPORTER 2003 -8",
+      "stockUnits": 9,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741108",
+      "description": "FORD FIESTA JH/JD - FIGO 1ST GEN2001-2008",
+      "stockUnits": 11,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741113",
+      "description": "BMW E34 525i/540i/524i/td/S530D 1990-1996",
+      "stockUnits": 5,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741116",
+      "description": "OPEL CORSA C 2001 - 2006",
+      "stockUnits": 39,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 1
+    },
+    {
+      "supplierSku": "741119",
+      "description": "AUDI A1 1.2TFSI,1.4 TFSI, 1.6 Tdi, 2.0 Tdi - 2010 (1)",
+      "stockUnits": 1,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741120",
+      "description": "AUDI A4/A5 B8 2007-2015",
+      "stockUnits": 12,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741125",
+      "description": "OPEL ASTRA J & CHEV CRUZE 2009 -",
+      "stockUnits": 9,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741130",
+      "description": "VW CADDY M1  1979 - 1996",
+      "stockUnits": 14,
+      "priceIncludingVat": 3100.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741134",
+      "description": "FORD FIESTA JA8/JR8 2008-2017 (Incl ST)",
+      "stockUnits": 46,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741138",
+      "description": "MERC C CLASS W203 2000-2007",
+      "stockUnits": 7,
+      "priceIncludingVat": 5500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741139",
+      "description": "VW CADDY 3 2009 - 2022",
+      "stockUnits": 6,
+      "priceIncludingVat": 6500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741140",
+      "description": "VW CADDY 3 / 4 2009 -",
+      "stockUnits": 6,
+      "priceIncludingVat": 6500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741144",
+      "description": "VW UP 2011 -",
+      "stockUnits": 11,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741145",
+      "description": "MERC W202 1993 - 2000",
+      "stockUnits": 7,
+      "priceIncludingVat": 5500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741148",
+      "description": "GOLF 7 TORSION BEAM (50mm) 1.2, 1.6TDi, 1.0 2012 -",
+      "stockUnits": 20,
+      "priceIncludingVat": 4700.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741150",
+      "description": "AUDI A3 8V 1.4/1.8 TFSI,1.6/2.0 TDI 2012 - 2020",
+      "stockUnits": 6,
+      "priceIncludingVat": 4700.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741154",
+      "description": "FORD FOCUS 3 (DYB) ST excluded 2014 -",
+      "stockUnits": 7,
+      "priceIncludingVat": 4700.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741155",
+      "description": "MERC C KLAS",
+      "stockUnits": 9,
+      "priceIncludingVat": 5500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741162",
+      "description": "AUDI S3 8L/TT 8N QUATTRO  1993 - 2003",
+      "stockUnits": 9,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741168",
+      "description": "VW MK7  (55mm) 1.4, 2.0, GTI, GTD, R MULTILINK 2012-2022",
+      "stockUnits": 10,
+      "priceIncludingVat": 4800.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741172",
+      "description": "BMW 1 SER F20/F21 2011-2019 (6)",
+      "stockUnits": 3,
+      "priceIncludingVat": 4700.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741174",
+      "description": "BMW F30/F31 2012/2019 (6)",
+      "stockUnits": 5,
+      "priceIncludingVat": 4800.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741175",
+      "description": "BMW 4 SER F32 2013-2019 (6)",
+      "stockUnits": 2,
+      "priceIncludingVat": 4800.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741176",
+      "description": "MINI COOPER R50/R53 2000-2007",
+      "stockUnits": 18,
+      "priceIncludingVat": 4700.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741178",
+      "description": "BMW 5 SER F10 NO XDRIVE 2010 - 2017",
+      "stockUnits": 3,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741181",
+      "description": "CORSA/CHEV UTILITY 2002 -",
+      "stockUnits": 82,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741184",
+      "description": "VW T6 TRANSPORTER 2015 - (8)",
+      "stockUnits": 2,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741185",
+      "description": "AUDI A3 8V SPORTBACK - 1.6 TDI, 2.0TDI 2012-2020",
+      "stockUnits": 18,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741191",
+      "description": "VW Golf 7 Limousine and Sportsvan 1.6/2.0 TDI, 1.8 TSI 2012",
+      "stockUnits": 47,
+      "priceIncludingVat": 4800.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741194",
+      "description": "TOYOTA E8/9/E10  RXI / TAZZ / CONQUEST 1988 - 2006",
+      "stockUnits": 197,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741202",
+      "description": "MERC A CLASS W176 2012 -",
+      "stockUnits": 2,
+      "priceIncludingVat": 5500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741206",
+      "description": "FORD FIESTA JHH 2017 -",
+      "stockUnits": 23,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741207",
+      "description": "MERC C CLASS W204  2007 -",
+      "stockUnits": 1,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741212",
+      "description": "VW POLO 2G AW 2017 -",
+      "stockUnits": 33,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741216",
+      "description": "TOYOTA RUN X 2001 - 2004",
+      "stockUnits": 43,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741228",
+      "description": "MERC C CLASS W205  2014 - 2021",
+      "stockUnits": 4,
+      "priceIncludingVat": 6500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741245",
+      "description": "VW Golf 8 1.4/1.5/2.0 TSI/ GTI/ GTI Clubsport/ 2.0 TDI/ R, 2",
+      "stockUnits": 1,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741249",
+      "description": "AUDI TT/ TTS/TTRS Fv 2014-2023",
+      "stockUnits": 5,
+      "priceIncludingVat": 5500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741254",
+      "description": "VW Golf 7 R 4Motion,Clubsport,GTI TCR, 2.0 R,GTD 2012-2019 m",
+      "stockUnits": 1,
+      "priceIncludingVat": 4800.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "741259",
+      "description": "AUDI A3  (8V) S3, RS3, 2012-2020 multilink rear suspension",
+      "stockUnits": 1,
+      "priceIncludingVat": 5200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "FK01510",
+      "description": "AUDI 10MM SPACER",
+      "stockUnits": 9,
+      "priceIncludingVat": 750.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "FK01515BZP",
+      "description": "AUDI 15MM SPACER",
+      "stockUnits": 7,
+      "priceIncludingVat": 1450.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "FK01520BZP",
+      "description": "AUDI 20MM SPACER",
+      "stockUnits": 1,
+      "priceIncludingVat": 2000.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "FK02110",
+      "description": "BMW 10MM SPACER",
+      "stockUnits": 3,
+      "priceIncludingVat": 750.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "FK09510",
+      "description": "MERC 10MM SPACER",
+      "stockUnits": 8,
+      "priceIncludingVat": 750.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "GF 200107",
+      "description": "BMW E46 1998 - 2005",
+      "stockUnits": 9,
+      "priceIncludingVat": 4000.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "GF 200226",
+      "description": "HONDA CIVIC/BALLADE EK 1995-2000",
+      "stockUnits": 9,
+      "priceIncludingVat": 4200.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "SMAI9005",
+      "description": "AUDI A4 B5 1994 - 2000",
+      "stockUnits": 7,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "SMBM9001",
+      "description": "BMW E46 1998 - 2005",
+      "stockUnits": 13,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "SMBM9007",
+      "description": "BMW 5ER E60 2003-2010",
+      "stockUnits": 2,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "SMFO9031",
+      "description": "FORD FOCUS 3 (DYB) ST excluded 2014 -",
+      "stockUnits": 1,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "SMNI1501",
+      "description": "NISSAN 350Z 2002 - 2008",
+      "stockUnits": 2,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "SMVW1701",
+      "description": "GOLF 7 TORSION BEAM (50mm) 1.2, 1.6TDi, 1.0 2012 -",
+      "stockUnits": 1,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "SMVW9008",
+      "description": "VW SCIROCCO 2008 -",
+      "stockUnits": 4,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    },
+    {
+      "supplierSku": "SMVW9025",
+      "description": "VW BUS T4 1991 - 2003",
+      "stockUnits": 2,
+      "priceIncludingVat": 4500.0,
+      "warehouse": "Main Warehouse",
+      "sourcePage": 2
+    }
+  ]
+}

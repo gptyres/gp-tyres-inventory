@@ -13,7 +13,7 @@ export enum ViewMode {
 }
 
 export type AppView = 'DASHBOARD' | 'STOCK_MOVEMENT' | 'TRAINING_PORTAL' | 'CUSTOMER_HUB' | 'PHOTO_LIBRARY' | 'WORKSHOP_TRACKER' | 'RADAR_RED' | 'AI_AGENT_ADMIN' | 'INVENTORY' | 'ORDERS' | 'BACKORDERS' | 'SYSTEM_LOGS' | 'SUPPLIER_PORTAL' | 'SHIPPING_PORTAL' | 'PAYMENT_PORTAL' | 'TOOLS_PORTAL' | 'SUPPLIER_INVENTORY' | 'WHEEL_CATALOG' | 'WHATSAPP_PORTAL' | 'QUOTE_MODULE' | 'COURIER_LOGISTICS_ASSISTANT';
-export type SupplierCatalog = 'ALL_SUPPLIERS' | 'SAILUN' | 'MAXXIS' | 'EXCLUSIVE_TYRES' | 'EXCLUSIVE_TYRES_NEW' | 'TYREWAREHOUSE' | 'ATT' | 'BRIDGESTONE' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'DIXON_BATTERIES' | 'REVOLUTION_TYRES' | 'ALINE' | 'STAMFORD' | 'TREAD_ZONE' | 'SUMITOMO_DUNLOP' | 'TYRE_LIFE_WHEELS' | 'TREADS_UNLIMITED' | 'TYRE_LIFE' | 'APEX' | 'TUBESTONE' | 'EXOTIC' | 'ARC' | 'EIBACH' | 'HOOSIER_TYRES' | 'NDT' | 'WHEEL_TECH';
+export type SupplierCatalog = 'ALL_SUPPLIERS' | 'SAILUN' | 'MAXXIS' | 'EXCLUSIVE_TYRES' | 'EXCLUSIVE_TYRES_NEW' | 'TYREWAREHOUSE' | 'ATT' | 'BRIDGESTONE' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'DIXON_BATTERIES' | 'REVOLUTION_TYRES' | 'ALINE' | 'STAMFORD' | 'TREAD_ZONE' | 'SUMITOMO_DUNLOP' | 'TYRE_LIFE_WHEELS' | 'TREADS_UNLIMITED' | 'TYRE_LIFE' | 'APEX' | 'TUBESTONE' | 'EXOTIC' | 'ARC' | 'EIBACH' | 'HOOSIER_TYRES' | 'JOM' | 'NDT' | 'WHEEL_TECH';
 export type SupplierOrderStatus = 'AVAILABLE' | 'PREORDER';
 
 // Changed to string to support dynamic config updates without type conflicts
@@ -74,6 +74,9 @@ export interface WheelProduct extends BaseProduct {
 
 export interface CoiloverProduct extends BaseProduct {
   type: ProductType.COILOVER;
+  // Supplier accessory catalogues reuse the suspension/application layout.
+  // This label avoids calling spacers, links or coatings coilovers.
+  productLabel?: string;
   brand: string; // e.g. ARC
   series: string; // e.g., Yellow, Blue
   vehicleCompatibility: string; // e.g., VW Golf 7

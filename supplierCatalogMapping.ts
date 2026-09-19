@@ -12,6 +12,7 @@ export type RegistryBackedSupplierCatalog = Exclude<
   | 'ARC'
   | 'EIBACH'
   | 'HOOSIER_TYRES'
+  | 'JOM'
   | 'EXCLUSIVE_TYRES'
   | 'EXCLUSIVE_TYRES_NEW'
   | 'NDT'
