@@ -13,6 +13,7 @@ export type SupplierCostTaxBasis = 'EXCLUDES_VAT' | 'INCLUDES_VAT' | 'NO_VAT';
 
 const BUNDLED_EX_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
   'SAILUN',
+  'VITOUR',
   'MAXXIS',
   'EXCLUSIVE_TYRES_NEW',
   'TYREWAREHOUSE',
@@ -39,6 +40,7 @@ const NO_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
 
 const SUPPLIER_NAME_CATALOGS: Record<string, SupplierCatalog> = {
   SAILUN: 'SAILUN',
+  VITOUR: 'VITOUR',
   MAXXIS: 'MAXXIS',
   EXCLUSIVETYRES: 'EXCLUSIVE_TYRES',
   EXCLUSIVETYRESNEW: 'EXCLUSIVE_TYRES_NEW',

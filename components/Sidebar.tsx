@@ -52,6 +52,7 @@ export const SIDEBAR_SUPPLIER_CATALOGS: Array<{
   { catalog: 'TYRE_LIFE', label: 'TYRE LIFE' },
   { catalog: 'TYRE_LIFE_WHEELS', label: 'TYRE LIFE WHEELS' },
   { catalog: 'TYREWAREHOUSE', label: 'TYREWAREHOUSE' },
+  { catalog: 'VITOUR', label: 'VITOUR' },
   { catalog: 'WHEEL_TECH', label: 'WHEEL TECH' }
 ];
 

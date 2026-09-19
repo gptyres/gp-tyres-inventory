@@ -54,6 +54,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'TYRE_LIFE',
   'TYRE_LIFE_WHEELS',
   'NDT',
+  'VITOUR',
   'WHEEL_TECH'
 ];
 
@@ -84,6 +85,7 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   TYRE_LIFE: 'TYRE LIFE',
   TYRE_LIFE_WHEELS: 'TYRE LIFE WHEELS',
   NDT: 'NDT',
+  VITOUR: 'VITOUR',
   WHEEL_TECH: 'WHEEL TECH'
 };
 
@@ -119,6 +121,7 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   TYRE_LIFE: 'tyrelife',
   TYRE_LIFE_WHEELS: 'tyrelifewheels',
   NDT: 'ndt',
+  VITOUR: 'vitour',
   WHEEL_TECH: 'wheel-tech'
 };
 
@@ -362,6 +365,10 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     case 'EIBACH': {
       const { EIBACH_CATALOG_SYNCED_AT, EIBACH_ROWS } = await import('./supplier_data/eibachData');
       return parseEibachData(EIBACH_ROWS, EIBACH_CATALOG_SYNCED_AT);
+    }
+    case 'VITOUR': {
+      const { loadVitourCatalog } = await import('./vitourCatalog');
+      return loadVitourCatalog();
     }
     case 'HOOSIER_TYRES': {
       const { HOOSIER_CATALOG_SYNCED_AT, HOOSIER_ROWS } = await import('./supplier_data/hoosierData');

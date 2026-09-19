@@ -1,0 +1,6637 @@
+{
+  "sourceFile": "VITOUR  JAN 2025.PRICELIST .xlsx",
+  "sourceSha256": "62202c25a30e2ab91e70461c0a26f40726c16119ed605b92c4686b50db0ff6b8",
+  "priceListPeriod": "January 2025",
+  "importedAt": "2026-09-19T08:19:39.285Z",
+  "stockQuantitiesSupplied": false,
+  "sourceRows": 553,
+  "duplicatesRemoved": 1,
+  "unpricedRows": 109,
+  "rows": [
+    {
+      "catalogKey": "0286617536018dcb",
+      "size": "155R12C",
+      "description": "Vitour Thunderlion",
+      "brand": "VITOUR",
+      "pattern": "Thunderlion",
+      "priceIncludingVat": 750,
+      "priceExcludingVat": 652.17,
+      "sourceRows": [
+        10
+      ]
+    },
+    {
+      "catalogKey": "f18a36bd8496ddbf",
+      "size": "500R12LT",
+      "description": "Vitour V888 BSW",
+      "brand": "VITOUR",
+      "pattern": "V888 BSW",
+      "priceIncludingVat": 799,
+      "priceExcludingVat": 694.78,
+      "sourceRows": [
+        11
+      ]
+    },
+    {
+      "catalogKey": "4e3a3fed81b206f2",
+      "size": "500R12LT",
+      "description": "Vitour V9000 WSW",
+      "brand": "VITOUR",
+      "pattern": "V9000 WSW",
+      "priceIncludingVat": 899,
+      "priceExcludingVat": 781.74,
+      "sourceRows": [
+        12
+      ]
+    },
+    {
+      "catalogKey": "f5def29aa7d04a24",
+      "size": "155/65R13",
+      "description": "Vitour Formula X (Engineered in Germany)",
+      "brand": "VITOUR",
+      "pattern": "Formula X (Engineered in Germany)",
+      "priceIncludingVat": 650,
+      "priceExcludingVat": 565.22,
+      "sourceRows": [
+        14
+      ]
+    },
+    {
+      "catalogKey": "41a6f81cc7871c67",
+      "size": "155/65R13",
+      "description": "Joyroad Tour RX1",
+      "brand": "JOYROAD",
+      "pattern": "Tour RX1",
+      "priceIncludingVat": 575,
+      "priceExcludingVat": 500,
+      "sourceRows": [
+        15
+      ]
+    },
+    {
+      "catalogKey": "5b46d84af9cbcef1",
+      "size": "155/70R13",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 575,
+      "priceExcludingVat": 500,
+      "sourceRows": [
+        16
+      ]
+    },
+    {
+      "catalogKey": "612769f433cd6e81",
+      "size": "155/70R13",
+      "description": "Joyroad Tour RX1",
+      "brand": "JOYROAD",
+      "pattern": "Tour RX1",
+      "priceIncludingVat": 550,
+      "priceExcludingVat": 478.26,
+      "sourceRows": [
+        17
+      ]
+    },
+    {
+      "catalogKey": "c2a4f33425416d5f",
+      "size": "155/80R13",
+      "description": "Vitour Galaxy F1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy F1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        18
+      ]
+    },
+    {
+      "catalogKey": "3293e0f3ddacc422",
+      "size": "155/80R13",
+      "description": "Vitour Galaxy F1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy F1 WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        19
+      ]
+    },
+    {
+      "catalogKey": "6b09b689a6170ff0",
+      "size": "155/80R13",
+      "description": "Joyroad Tour RX1",
+      "brand": "JOYROAD",
+      "pattern": "Tour RX1",
+      "priceIncludingVat": 650,
+      "priceExcludingVat": 565.22,
+      "sourceRows": [
+        20
+      ]
+    },
+    {
+      "catalogKey": "0b56831316f3aff7",
+      "size": "155R13C",
+      "description": "Vitour Vanmaster V6000",
+      "brand": "VITOUR",
+      "pattern": "Vanmaster V6000",
+      "priceIncludingVat": 850,
+      "priceExcludingVat": 739.13,
+      "sourceRows": [
+        21
+      ]
+    },
+    {
+      "catalogKey": "b9676836b0be50d7",
+      "size": "165/65R13",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        22
+      ]
+    },
+    {
+      "catalogKey": "c45e4d77ccf369b6",
+      "size": "165/65R13",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 699,
+      "priceExcludingVat": 607.83,
+      "sourceRows": [
+        23
+      ]
+    },
+    {
+      "catalogKey": "85fa9edea8f96277",
+      "size": "165/65R13",
+      "description": "Vitour Galaxy R1 RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 RWL",
+      "priceIncludingVat": 725,
+      "priceExcludingVat": 630.43,
+      "sourceRows": [
+        24
+      ]
+    },
+    {
+      "catalogKey": "8d9fe3b256247d90",
+      "size": "165/65R13",
+      "description": "Joyroad Tour RX1",
+      "brand": "JOYROAD",
+      "pattern": "Tour RX1",
+      "priceIncludingVat": 675,
+      "priceExcludingVat": 586.96,
+      "sourceRows": [
+        25
+      ]
+    },
+    {
+      "catalogKey": "3fd8187f354b7670",
+      "size": "165/70R13",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        26
+      ]
+    },
+    {
+      "catalogKey": "a173ffb1a73dfcb2",
+      "size": "165/70R13",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 695,
+      "priceExcludingVat": 604.35,
+      "sourceRows": [
+        27
+      ]
+    },
+    {
+      "catalogKey": "cda486f225b466dd",
+      "size": "165/70R13",
+      "description": "Vitour Formula X WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        28
+      ]
+    },
+    {
+      "catalogKey": "e3ba5352037357ee",
+      "size": "165/80R13",
+      "description": "Saferich FRC16",
+      "brand": "SAFERICH",
+      "pattern": "FRC16",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        29
+      ]
+    },
+    {
+      "catalogKey": "9a18cb9b438dcae8",
+      "size": "165/80R13",
+      "description": "Farroad FRD16",
+      "brand": "FARROAD",
+      "pattern": "FRD16",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        30
+      ]
+    },
+    {
+      "catalogKey": "009afe93e4b0d48a",
+      "size": "6.00R13C",
+      "description": "Vitour Voyager S500",
+      "brand": "VITOUR",
+      "pattern": "Voyager S500",
+      "priceIncludingVat": 799,
+      "priceExcludingVat": 694.78,
+      "sourceRows": [
+        31
+      ]
+    },
+    {
+      "catalogKey": "c128f02ad5fb0506",
+      "size": "165R13C",
+      "description": "Vitour Vanmaster V6000",
+      "brand": "VITOUR",
+      "pattern": "Vanmaster V6000",
+      "priceIncludingVat": 850,
+      "priceExcludingVat": 739.13,
+      "sourceRows": [
+        32
+      ]
+    },
+    {
+      "catalogKey": "75727114083b43be",
+      "size": "175R13C",
+      "description": "Vitour Vanmaster V6000",
+      "brand": "VITOUR",
+      "pattern": "Vanmaster V6000",
+      "priceIncludingVat": 895,
+      "priceExcludingVat": 778.26,
+      "sourceRows": [
+        33
+      ]
+    },
+    {
+      "catalogKey": "bb90d6c304806d1e",
+      "size": "175/50R13",
+      "description": "Vitour Formula",
+      "brand": "VITOUR",
+      "pattern": "Formula",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        34
+      ]
+    },
+    {
+      "catalogKey": "d0eff3d45e8c2197",
+      "size": "175/50R13",
+      "description": "Vitour Formula RWL",
+      "brand": "VITOUR",
+      "pattern": "Formula RWL",
+      "priceIncludingVat": 895,
+      "priceExcludingVat": 778.26,
+      "sourceRows": [
+        35
+      ]
+    },
+    {
+      "catalogKey": "ec9fcde7f39e67f4",
+      "size": "175/60R13",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 650,
+      "priceExcludingVat": 565.22,
+      "sourceRows": [
+        36
+      ]
+    },
+    {
+      "catalogKey": "ee699f6c078e19b5",
+      "size": "175/70R13",
+      "description": "Delmax Ultimatour",
+      "brand": "DELMAX",
+      "pattern": "Ultimatour",
+      "priceIncludingVat": 675,
+      "priceExcludingVat": 586.96,
+      "sourceRows": [
+        37
+      ]
+    },
+    {
+      "catalogKey": "026e7071f7a61eeb",
+      "size": "175/70R13",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        38
+      ]
+    },
+    {
+      "catalogKey": "3b6bea605aa2374a",
+      "size": "175/70R13",
+      "description": "Joyroad Tour RX1",
+      "brand": "JOYROAD",
+      "pattern": "Tour RX1",
+      "priceIncludingVat": 695,
+      "priceExcludingVat": 604.35,
+      "sourceRows": [
+        39
+      ]
+    },
+    {
+      "catalogKey": "096e8e4f0e90e085",
+      "size": "175/70R13",
+      "description": "Vitour Galaxy F1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy F1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        40
+      ]
+    },
+    {
+      "catalogKey": "4c71726da3b0c726",
+      "size": "175/70R13",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        41
+      ]
+    },
+    {
+      "catalogKey": "80acc413e4e5d187",
+      "size": "175/70R13",
+      "description": "Vitour Galaxy R1 RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        42
+      ]
+    },
+    {
+      "catalogKey": "c15c376d1411a464",
+      "size": "185/60R13",
+      "description": "Vitour Galaxy F1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy F1",
+      "priceIncludingVat": 795,
+      "priceExcludingVat": 691.3,
+      "sourceRows": [
+        43
+      ]
+    },
+    {
+      "catalogKey": "4ba3f31ababe3275",
+      "size": "185/60R13",
+      "description": "Vitour Galaxy F1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy F1 WSW",
+      "priceIncludingVat": 895,
+      "priceExcludingVat": 778.26,
+      "sourceRows": [
+        44
+      ]
+    },
+    {
+      "catalogKey": "50468f0d2825d71d",
+      "size": "185/60R13",
+      "description": "Vitour Galaxy F1 RWL -WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy F1 RWL -WSW",
+      "priceIncludingVat": 975,
+      "priceExcludingVat": 847.83,
+      "sourceRows": [
+        45
+      ]
+    },
+    {
+      "catalogKey": "45ab3cf5aa427891",
+      "size": "185/70R13",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 850,
+      "priceExcludingVat": 739.13,
+      "sourceRows": [
+        46
+      ]
+    },
+    {
+      "catalogKey": "3add3d9f1c7c198b",
+      "size": "185/70R13",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        47
+      ]
+    },
+    {
+      "catalogKey": "dbc9f1f74c9eabe2",
+      "size": "185/70R13",
+      "description": "Vitour Galaxy R1 RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 RWL",
+      "priceIncludingVat": 995,
+      "priceExcludingVat": 865.22,
+      "sourceRows": [
+        48
+      ]
+    },
+    {
+      "catalogKey": "751bc0422f639d02",
+      "size": "195/55R13",
+      "description": "Vitour Formula X RWL",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        49
+      ]
+    },
+    {
+      "catalogKey": "47131d5d96783517",
+      "size": "215/50R13",
+      "description": "Vitour Formula X RWL",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        50
+      ]
+    },
+    {
+      "catalogKey": "b54f7d192adb93a3",
+      "size": "235/50R13",
+      "description": "Vitour Formula X RWL",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL",
+      "priceIncludingVat": 1599,
+      "priceExcludingVat": 1390.43,
+      "sourceRows": [
+        51
+      ]
+    },
+    {
+      "catalogKey": "7015b58431ca4d1a",
+      "size": "155/65R14",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        53
+      ]
+    },
+    {
+      "catalogKey": "3b3c590377d84968",
+      "size": "155/65R14",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": 795,
+      "priceExcludingVat": 691.3,
+      "sourceRows": [
+        54
+      ]
+    },
+    {
+      "catalogKey": "84acc55c9d2ac97f",
+      "size": "165/55R14",
+      "description": "Vitour MaxSport 72V",
+      "brand": "VITOUR",
+      "pattern": "MaxSport 72V",
+      "priceIncludingVat": 750,
+      "priceExcludingVat": 652.17,
+      "sourceRows": [
+        55
+      ]
+    },
+    {
+      "catalogKey": "b9b32ddd56453147",
+      "size": "165/60R14",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        56
+      ]
+    },
+    {
+      "catalogKey": "4d9e8dada60f8448",
+      "size": "165/60R14",
+      "description": "Delmax Ultimatour",
+      "brand": "DELMAX",
+      "pattern": "Ultimatour",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        57
+      ]
+    },
+    {
+      "catalogKey": "b1183387ed1e1622",
+      "size": "165/60R14",
+      "description": "Joyroad Tour RX1",
+      "brand": "JOYROAD",
+      "pattern": "Tour RX1",
+      "priceIncludingVat": 699,
+      "priceExcludingVat": 607.83,
+      "sourceRows": [
+        58
+      ]
+    },
+    {
+      "catalogKey": "4aa7a9e420e6cb71",
+      "size": "165/65R14",
+      "description": "Delmax /Saferich FRC16",
+      "brand": "DELMAX / SAFERICH",
+      "pattern": "FRC16",
+      "priceIncludingVat": 750,
+      "priceExcludingVat": 652.17,
+      "sourceRows": [
+        59
+      ]
+    },
+    {
+      "catalogKey": "87e3a8fa09483279",
+      "size": "165/70R14",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        60
+      ]
+    },
+    {
+      "catalogKey": "762608971956d549",
+      "size": "165/70R14",
+      "description": "Joyroad Tour RX1",
+      "brand": "JOYROAD",
+      "pattern": "Tour RX1",
+      "priceIncludingVat": 699,
+      "priceExcludingVat": 607.83,
+      "sourceRows": [
+        61
+      ]
+    },
+    {
+      "catalogKey": "9ec93b5c125b95e7",
+      "size": "175/65R14",
+      "description": "Mazzini Eco603",
+      "brand": "MAZZINI",
+      "pattern": "Eco603",
+      "priceIncludingVat": 699,
+      "priceExcludingVat": 607.83,
+      "sourceRows": [
+        62
+      ]
+    },
+    {
+      "catalogKey": "e2b6d4687516ff67",
+      "size": "175/65R14",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        63
+      ]
+    },
+    {
+      "catalogKey": "36e8b311111cdffe",
+      "size": "175/65R14",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        64
+      ]
+    },
+    {
+      "catalogKey": "174155f452f82fa9",
+      "size": "175/65R14",
+      "description": "Delmax Ultimatour",
+      "brand": "DELMAX",
+      "pattern": "Ultimatour",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        65
+      ]
+    },
+    {
+      "catalogKey": "af2d967d4dcc2dc6",
+      "size": "175/65R14",
+      "description": "Vitour Formula X WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        66
+      ]
+    },
+    {
+      "catalogKey": "2a05e00f7af3be51",
+      "size": "175/65R14",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": 875,
+      "priceExcludingVat": 760.87,
+      "sourceRows": [
+        67
+      ]
+    },
+    {
+      "catalogKey": "3271fde8bca0828a",
+      "size": "175/70R14",
+      "description": "Delmax Ultimatour",
+      "brand": "DELMAX",
+      "pattern": "Ultimatour",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        68
+      ]
+    },
+    {
+      "catalogKey": "d994eaf2a83807ef",
+      "size": "175/70R14",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 725,
+      "priceExcludingVat": 630.43,
+      "sourceRows": [
+        69
+      ]
+    },
+    {
+      "catalogKey": "d8c8973a4488580c",
+      "size": "175/70R14",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 775,
+      "priceExcludingVat": 673.91,
+      "sourceRows": [
+        70
+      ]
+    },
+    {
+      "catalogKey": "3e4af68576a6bd53",
+      "size": "175/70R14",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 795,
+      "priceExcludingVat": 691.3,
+      "sourceRows": [
+        71
+      ]
+    },
+    {
+      "catalogKey": "378b0f2e16939185",
+      "size": "175/70R14",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": 895,
+      "priceExcludingVat": 778.26,
+      "sourceRows": [
+        72
+      ]
+    },
+    {
+      "catalogKey": "f95a6a9dbb503892",
+      "size": "185/60R14",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        73
+      ]
+    },
+    {
+      "catalogKey": "94a0c1acb11fd0ef",
+      "size": "185/60R14",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 825,
+      "priceExcludingVat": 717.39,
+      "sourceRows": [
+        74
+      ]
+    },
+    {
+      "catalogKey": "c5b49e686641ae67",
+      "size": "185/60R14",
+      "description": "Vitour Formula X RWL -WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL -WSW",
+      "priceIncludingVat": 895,
+      "priceExcludingVat": 778.26,
+      "sourceRows": [
+        75
+      ]
+    },
+    {
+      "catalogKey": "5c8cb4974a038b3f",
+      "size": "185/60R14",
+      "description": "Delmax Ultimatour",
+      "brand": "DELMAX",
+      "pattern": "Ultimatour",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        76
+      ]
+    },
+    {
+      "catalogKey": "dd7a8c7eaab8a3fd",
+      "size": "185/60R14",
+      "description": "Joyroad HP RX307",
+      "brand": "JOYROAD",
+      "pattern": "HP RX307",
+      "priceIncludingVat": 775,
+      "priceExcludingVat": 673.91,
+      "sourceRows": [
+        77
+      ]
+    },
+    {
+      "catalogKey": "8b8c27f6863b7e7a",
+      "size": "185/65R14",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 750,
+      "priceExcludingVat": 652.17,
+      "sourceRows": [
+        78
+      ]
+    },
+    {
+      "catalogKey": "c920bb6ba6b6ed0f",
+      "size": "185/65R14",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 825,
+      "priceExcludingVat": 717.39,
+      "sourceRows": [
+        79
+      ]
+    },
+    {
+      "catalogKey": "dab6049bc17d1a36",
+      "size": "185/65R14",
+      "description": "Delmax Ultimatour",
+      "brand": "DELMAX",
+      "pattern": "Ultimatour",
+      "priceIncludingVat": 735,
+      "priceExcludingVat": 639.13,
+      "sourceRows": [
+        80
+      ]
+    },
+    {
+      "catalogKey": "674d44b54b9a3100",
+      "size": "185/65R14",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        81
+      ]
+    },
+    {
+      "catalogKey": "cb25c511f8b7c6d1",
+      "size": "185/70R14",
+      "description": "Mazzini Eco603",
+      "brand": "MAZZINI",
+      "pattern": "Eco603",
+      "priceIncludingVat": 845,
+      "priceExcludingVat": 734.78,
+      "sourceRows": [
+        82
+      ]
+    },
+    {
+      "catalogKey": "bdfab9b696885057",
+      "size": "185/70R14",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 825,
+      "priceExcludingVat": 717.39,
+      "sourceRows": [
+        83
+      ]
+    },
+    {
+      "catalogKey": "2a71f405580e4852",
+      "size": "185/70R14",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 845,
+      "priceExcludingVat": 734.78,
+      "sourceRows": [
+        84
+      ]
+    },
+    {
+      "catalogKey": "47f844de7a5bd921",
+      "size": "185/70R14",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1100,
+      "priceExcludingVat": 956.52,
+      "sourceRows": [
+        85
+      ]
+    },
+    {
+      "catalogKey": "e12415f5c8ce4eae",
+      "size": "185/80R14",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        86
+      ]
+    },
+    {
+      "catalogKey": "43138545ca15e456",
+      "size": "195/60R14",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        87
+      ]
+    },
+    {
+      "catalogKey": "8c8acdd1777d2e8e",
+      "size": "195/60R14",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 995,
+      "priceExcludingVat": 865.22,
+      "sourceRows": [
+        88
+      ]
+    },
+    {
+      "catalogKey": "839b9f31c145bc84",
+      "size": "195/60R14",
+      "description": "Vitour Formula X WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X WSW",
+      "priceIncludingVat": 1050,
+      "priceExcludingVat": 913.04,
+      "sourceRows": [
+        89
+      ]
+    },
+    {
+      "catalogKey": "c0b36b6dad0ea4d6",
+      "size": "195/60R14",
+      "description": "Vitour Formula X RWL -WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL -WSW",
+      "priceIncludingVat": 1100,
+      "priceExcludingVat": 956.52,
+      "sourceRows": [
+        90
+      ]
+    },
+    {
+      "catalogKey": "26d5f8e9f1b8f74e",
+      "size": "195/70R14",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 875,
+      "priceExcludingVat": 760.87,
+      "sourceRows": [
+        91
+      ]
+    },
+    {
+      "catalogKey": "daff36b325fc3af3",
+      "size": "195/70R14",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        92
+      ]
+    },
+    {
+      "catalogKey": "bd5d1fb421cfdfc5",
+      "size": "195/70R14",
+      "description": "Vitour Galaxy R1 RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 RWL",
+      "priceIncludingVat": 995,
+      "priceExcludingVat": 865.22,
+      "sourceRows": [
+        93
+      ]
+    },
+    {
+      "catalogKey": "d962c469d80fbd95",
+      "size": "205/60R14",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1100,
+      "priceExcludingVat": 956.52,
+      "sourceRows": [
+        94
+      ]
+    },
+    {
+      "catalogKey": "4737d0768166fc97",
+      "size": "205/60R14",
+      "description": "Vitour MaxSport",
+      "brand": "VITOUR",
+      "pattern": "MaxSport",
+      "priceIncludingVat": 995,
+      "priceExcludingVat": 865.22,
+      "sourceRows": [
+        95
+      ]
+    },
+    {
+      "catalogKey": "f064a0365f84c9ba",
+      "size": "205/70R14",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        96
+      ]
+    },
+    {
+      "catalogKey": "9021f9b5ffa99830",
+      "size": "205/70R14",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        97
+      ]
+    },
+    {
+      "catalogKey": "ffe241f7747cf679",
+      "size": "205/70R14",
+      "description": "Vitour Galaxy R1 RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        98
+      ]
+    },
+    {
+      "catalogKey": "00dd6f3523a0c279",
+      "size": "205/70R14",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        99
+      ]
+    },
+    {
+      "catalogKey": "245d6b4df587219f",
+      "size": "205/75R14",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1395,
+      "priceExcludingVat": 1213.04,
+      "sourceRows": [
+        100
+      ]
+    },
+    {
+      "catalogKey": "7c30bde1ad4629c4",
+      "size": "215/70R14",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": 1425,
+      "priceExcludingVat": 1239.13,
+      "sourceRows": [
+        101
+      ]
+    },
+    {
+      "catalogKey": "a2a855f35b2c952c",
+      "size": "225/70R14",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": 1550,
+      "priceExcludingVat": 1347.83,
+      "sourceRows": [
+        102
+      ]
+    },
+    {
+      "catalogKey": "0a7d63833260b846",
+      "size": "235/60R14",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": 1695,
+      "priceExcludingVat": 1473.91,
+      "sourceRows": [
+        103
+      ]
+    },
+    {
+      "catalogKey": "495a22e9bc62206a",
+      "size": "165/40R15",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        105
+      ]
+    },
+    {
+      "catalogKey": "1ac1f292472b393e",
+      "size": "165/45R15",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        106
+      ]
+    },
+    {
+      "catalogKey": "532df264e3fb0dc6",
+      "size": "165/50R15",
+      "description": "Vitour MaxSport 72V",
+      "brand": "VITOUR",
+      "pattern": "MaxSport 72V",
+      "priceIncludingVat": 850,
+      "priceExcludingVat": 739.13,
+      "sourceRows": [
+        107
+      ]
+    },
+    {
+      "catalogKey": "cb46cbd03e10091b",
+      "size": "165/55R15",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 775,
+      "priceExcludingVat": 673.91,
+      "sourceRows": [
+        108
+      ]
+    },
+    {
+      "catalogKey": "46f071ed928415f7",
+      "size": "165/55R15",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": 875,
+      "priceExcludingVat": 760.87,
+      "sourceRows": [
+        109
+      ]
+    },
+    {
+      "catalogKey": "f99a6bf2fa43f6c8",
+      "size": "155R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 995,
+      "priceExcludingVat": 865.22,
+      "sourceRows": [
+        110
+      ]
+    },
+    {
+      "catalogKey": "bd47890db57e2731",
+      "size": "165R15",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 1050,
+      "priceExcludingVat": 913.04,
+      "sourceRows": [
+        111
+      ]
+    },
+    {
+      "catalogKey": "83b9f941fcd97278",
+      "size": "165R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        112
+      ]
+    },
+    {
+      "catalogKey": "b3965387c49d0730",
+      "size": "175/50R15",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 850,
+      "priceExcludingVat": 739.13,
+      "sourceRows": [
+        113
+      ]
+    },
+    {
+      "catalogKey": "5489041f93c0d96a",
+      "size": "175/65R15",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        114
+      ]
+    },
+    {
+      "catalogKey": "3355559df011c7f2",
+      "size": "175/65R15",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        115
+      ]
+    },
+    {
+      "catalogKey": "6ddc913f3efdeaf6",
+      "size": "185/45R15",
+      "description": "Vitour Formula X RWL",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        116
+      ]
+    },
+    {
+      "catalogKey": "c8b437629c24752f",
+      "size": "185/55R15",
+      "description": "Delmax UltimaTour 82V",
+      "brand": "DELMAX",
+      "pattern": "UltimaTour 82V",
+      "priceIncludingVat": 850,
+      "priceExcludingVat": 739.13,
+      "sourceRows": [
+        117
+      ]
+    },
+    {
+      "catalogKey": "0dc4734e867c81c3",
+      "size": "185/55R15",
+      "description": "Joyroad HP RX307",
+      "brand": "JOYROAD",
+      "pattern": "HP RX307",
+      "priceIncludingVat": 850,
+      "priceExcludingVat": 739.13,
+      "sourceRows": [
+        118
+      ]
+    },
+    {
+      "catalogKey": "f9d7d0f4045d2b39",
+      "size": "185/60R15",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        119
+      ]
+    },
+    {
+      "catalogKey": "1ed7d91a97ab55ba",
+      "size": "185/60R15",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 995,
+      "priceExcludingVat": 865.22,
+      "sourceRows": [
+        120
+      ]
+    },
+    {
+      "catalogKey": "05e6888ccc2b82a2",
+      "size": "185/60R15",
+      "description": "Delmax UltimaTour",
+      "brand": "DELMAX",
+      "pattern": "UltimaTour",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        121
+      ]
+    },
+    {
+      "catalogKey": "9b14c7e9b75f8399",
+      "size": "185/60R15",
+      "description": "Joyroad HP RX307",
+      "brand": "JOYROAD",
+      "pattern": "HP RX307",
+      "priceIncludingVat": 875,
+      "priceExcludingVat": 760.87,
+      "sourceRows": [
+        122
+      ]
+    },
+    {
+      "catalogKey": "164f060277ff53ed",
+      "size": "185/65R15",
+      "description": "Delmax UltimaTour",
+      "brand": "DELMAX",
+      "pattern": "UltimaTour",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        123
+      ]
+    },
+    {
+      "catalogKey": "fd6250d175e7f226",
+      "size": "185/65R15",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 895,
+      "priceExcludingVat": 778.26,
+      "sourceRows": [
+        124
+      ]
+    },
+    {
+      "catalogKey": "1a400a2c97e664b8",
+      "size": "185/65R15",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        125
+      ]
+    },
+    {
+      "catalogKey": "f659d4622eea5bcb",
+      "size": "185/65R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        126
+      ]
+    },
+    {
+      "catalogKey": "db8059195bc5dccc",
+      "size": "185/65R15",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        127
+      ]
+    },
+    {
+      "catalogKey": "6e53055478dab612",
+      "size": "195/45R15",
+      "description": "Vitour Formula X RWL",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        128
+      ]
+    },
+    {
+      "catalogKey": "7f868bd18e882401",
+      "size": "195/50R15",
+      "description": "Joyroad HP RX307",
+      "brand": "JOYROAD",
+      "pattern": "HP RX307",
+      "priceIncludingVat": 825,
+      "priceExcludingVat": 717.39,
+      "sourceRows": [
+        129
+      ]
+    },
+    {
+      "catalogKey": "f9accfc10df0ede7",
+      "size": "195/50R15",
+      "description": "MAZZINI",
+      "brand": "MAZZINI",
+      "pattern": "",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        130
+      ]
+    },
+    {
+      "catalogKey": "4f7af7058dac788d",
+      "size": "195/50R15",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        131
+      ]
+    },
+    {
+      "catalogKey": "70a40c8a74a73989",
+      "size": "195/50R15",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        132
+      ]
+    },
+    {
+      "catalogKey": "056d3ffeadbcea1a",
+      "size": "195/50R15",
+      "description": "Vitour Formula X RWL",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL",
+      "priceIncludingVat": 1195,
+      "priceExcludingVat": 1039.13,
+      "sourceRows": [
+        133
+      ]
+    },
+    {
+      "catalogKey": "737ddc5bcb5c9f91",
+      "size": "195/55R15",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        134
+      ]
+    },
+    {
+      "catalogKey": "59e2f82de8fe07b4",
+      "size": "195/55R15",
+      "description": "Vitour MaxSport 85V",
+      "brand": "VITOUR",
+      "pattern": "MaxSport 85V",
+      "priceIncludingVat": 1050,
+      "priceExcludingVat": 913.04,
+      "sourceRows": [
+        135
+      ]
+    },
+    {
+      "catalogKey": "dcd3864f1b06360c",
+      "size": "195/55R15",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        136
+      ]
+    },
+    {
+      "catalogKey": "3e6c3e3820a70443",
+      "size": "195/55R15",
+      "description": "Vitour Formula Omega",
+      "brand": "VITOUR",
+      "pattern": "Formula Omega",
+      "priceIncludingVat": 1050,
+      "priceExcludingVat": 913.04,
+      "sourceRows": [
+        137
+      ]
+    },
+    {
+      "catalogKey": "207c240caa68db7d",
+      "size": "195/55R15",
+      "description": "Vitour Formula X WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        138
+      ]
+    },
+    {
+      "catalogKey": "9e732ce4e04bc34c",
+      "size": "195/55R15",
+      "description": "Joyroad HP RX307",
+      "brand": "JOYROAD",
+      "pattern": "HP RX307",
+      "priceIncludingVat": 899,
+      "priceExcludingVat": 781.74,
+      "sourceRows": [
+        139
+      ]
+    },
+    {
+      "catalogKey": "a36b1fbb361ae30b",
+      "size": "195/60R15",
+      "description": "Delmax UltimaTour",
+      "brand": "DELMAX",
+      "pattern": "UltimaTour",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        140
+      ]
+    },
+    {
+      "catalogKey": "080457ef52f4f918",
+      "size": "195/60R15",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 925,
+      "priceExcludingVat": 804.35,
+      "sourceRows": [
+        141
+      ]
+    },
+    {
+      "catalogKey": "8168720e9cdaf9ca",
+      "size": "195/60R15",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        142
+      ]
+    },
+    {
+      "catalogKey": "ca08cbf8e5f58347",
+      "size": "195/60R15",
+      "description": "Vitour Formula Omega",
+      "brand": "VITOUR",
+      "pattern": "Formula Omega",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        143
+      ]
+    },
+    {
+      "catalogKey": "bd1980b09d5da15a",
+      "size": "195/60R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 995,
+      "priceExcludingVat": 865.22,
+      "sourceRows": [
+        144
+      ]
+    },
+    {
+      "catalogKey": "8820d2b0d8f0ab08",
+      "size": "195/60R15",
+      "description": "Vitour Formula X WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        145
+      ]
+    },
+    {
+      "catalogKey": "fae913a6527d2adf",
+      "size": "195/60R15",
+      "description": "Joyroad HP RX307",
+      "brand": "JOYROAD",
+      "pattern": "HP RX307",
+      "priceIncludingVat": 895,
+      "priceExcludingVat": 778.26,
+      "sourceRows": [
+        146
+      ]
+    },
+    {
+      "catalogKey": "3896c8491b2555a0",
+      "size": "195/65R15",
+      "description": "Delmax UltimaTour",
+      "brand": "DELMAX",
+      "pattern": "UltimaTour",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        147
+      ]
+    },
+    {
+      "catalogKey": "d38a76a0a680690c",
+      "size": "195/65R15",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        148
+      ]
+    },
+    {
+      "catalogKey": "d3c2ac50b92ba1ad",
+      "size": "195/65R15",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 875,
+      "priceExcludingVat": 760.87,
+      "sourceRows": [
+        149
+      ]
+    },
+    {
+      "catalogKey": "d7ab4e18edab9290",
+      "size": "195/65R15",
+      "description": "Vitour Formula Omega",
+      "brand": "VITOUR",
+      "pattern": "Formula Omega",
+      "priceIncludingVat": 1050,
+      "priceExcludingVat": 913.04,
+      "sourceRows": [
+        150
+      ]
+    },
+    {
+      "catalogKey": "c51da83c75118aad",
+      "size": "195/65R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1100,
+      "priceExcludingVat": 956.52,
+      "sourceRows": [
+        151
+      ]
+    },
+    {
+      "catalogKey": "c759ffaf04f21258",
+      "size": "195/65R15",
+      "description": "Vitour Galaxy R1 RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 RWL",
+      "priceIncludingVat": 1150,
+      "priceExcludingVat": 1000,
+      "sourceRows": [
+        152
+      ]
+    },
+    {
+      "catalogKey": "3d721aee53652f19",
+      "size": "195/65R15",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        153
+      ]
+    },
+    {
+      "catalogKey": "d8dcfcbb0a5943d3",
+      "size": "205/50R15",
+      "description": "Vitour MaxSport",
+      "brand": "VITOUR",
+      "pattern": "MaxSport",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        154
+      ]
+    },
+    {
+      "catalogKey": "85f03a60f22867df",
+      "size": "205/55R15",
+      "description": "Vitour MaxSport",
+      "brand": "VITOUR",
+      "pattern": "MaxSport",
+      "priceIncludingVat": 1100,
+      "priceExcludingVat": 956.52,
+      "sourceRows": [
+        155
+      ]
+    },
+    {
+      "catalogKey": "4c06c0cc4eb3dc81",
+      "size": "205/60R15",
+      "description": "Vitour Galaxy F1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy F1",
+      "priceIncludingVat": 990,
+      "priceExcludingVat": 860.87,
+      "sourceRows": [
+        156
+      ]
+    },
+    {
+      "catalogKey": "e24a622ff4126f4a",
+      "size": "205/65R15",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        157
+      ]
+    },
+    {
+      "catalogKey": "7ead4b1259e1c216",
+      "size": "205/65R15",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 995,
+      "priceExcludingVat": 865.22,
+      "sourceRows": [
+        158
+      ]
+    },
+    {
+      "catalogKey": "6e0aa2c1d4bd5247",
+      "size": "205/65R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1150,
+      "priceExcludingVat": 1000,
+      "sourceRows": [
+        159
+      ]
+    },
+    {
+      "catalogKey": "405b4184c43fabed",
+      "size": "205/65R15",
+      "description": "Vitour Galaxy R1 RWL- WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 RWL- WSW",
+      "priceIncludingVat": 1299,
+      "priceExcludingVat": 1129.57,
+      "sourceRows": [
+        160
+      ]
+    },
+    {
+      "catalogKey": "a4b61cfe107a7c80",
+      "size": "205/70R15",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        161
+      ]
+    },
+    {
+      "catalogKey": "f60f52317b2aa475",
+      "size": "205/70R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1050,
+      "priceExcludingVat": 913.04,
+      "sourceRows": [
+        162
+      ]
+    },
+    {
+      "catalogKey": "8fcc9e1ee19008eb",
+      "size": "205/75R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        163
+      ]
+    },
+    {
+      "catalogKey": "f5a10d5e5936118f",
+      "size": "205/75R15",
+      "description": "Vitour R360 Steel",
+      "brand": "VITOUR",
+      "pattern": "R360 Steel",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        164
+      ]
+    },
+    {
+      "catalogKey": "4de354e311d3f26d",
+      "size": "215/60R15",
+      "description": "Vitour Galaxy G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy G/T RWL",
+      "priceIncludingVat": 1799,
+      "priceExcludingVat": 1564.35,
+      "sourceRows": [
+        165
+      ]
+    },
+    {
+      "catalogKey": "676a4169d4542399",
+      "size": "215/65R15",
+      "description": "Saferich FRC16",
+      "brand": "SAFERICH",
+      "pattern": "FRC16",
+      "priceIncludingVat": 1100,
+      "priceExcludingVat": 956.52,
+      "sourceRows": [
+        166
+      ]
+    },
+    {
+      "catalogKey": "326a296658346275",
+      "size": "215/70R15",
+      "description": "Vitour Galaxy G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy G/T RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        167
+      ]
+    },
+    {
+      "catalogKey": "4b6d08703f3c8d02",
+      "size": "215/75R15",
+      "description": "Joyroad HP RX3",
+      "brand": "JOYROAD",
+      "pattern": "HP RX3",
+      "priceIncludingVat": 1295,
+      "priceExcludingVat": 1126.09,
+      "sourceRows": [
+        168
+      ]
+    },
+    {
+      "catalogKey": "ebda9fba6e49c1bf",
+      "size": "225/70R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1450,
+      "priceExcludingVat": 1260.87,
+      "sourceRows": [
+        169,
+        553
+      ]
+    },
+    {
+      "catalogKey": "4e58d471a59a3220",
+      "size": "225/70R15",
+      "description": "Vitour Galaxy G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy G/T RWL",
+      "priceIncludingVat": 1425,
+      "priceExcludingVat": 1239.13,
+      "sourceRows": [
+        170
+      ]
+    },
+    {
+      "catalogKey": "fc4a9ee4c71d53aa",
+      "size": "225/75R15",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        171
+      ]
+    },
+    {
+      "catalogKey": "8c6fbba3627523d0",
+      "size": "235/70R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1750,
+      "priceExcludingVat": 1521.74,
+      "sourceRows": [
+        172
+      ]
+    },
+    {
+      "catalogKey": "90178c018a8ff69c",
+      "size": "235/75R15",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1750,
+      "priceExcludingVat": 1521.74,
+      "sourceRows": [
+        173
+      ]
+    },
+    {
+      "catalogKey": "3d91df17665fcce1",
+      "size": "225/50R15",
+      "description": "Vitour Neo Dajo Sport RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Neo Dajo Sport RWL-WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        174
+      ]
+    },
+    {
+      "catalogKey": "6b45904e80cb54fa",
+      "size": "235/60R15",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        175
+      ]
+    },
+    {
+      "catalogKey": "909e46d64d2c212d",
+      "size": "235/60R15",
+      "description": "Vitour ALL TERRAIN RWL",
+      "brand": "VITOUR",
+      "pattern": "ALL TERRAIN RWL",
+      "priceIncludingVat": 2650,
+      "priceExcludingVat": 2304.35,
+      "sourceRows": [
+        176
+      ]
+    },
+    {
+      "catalogKey": "7d16ce206a20b994",
+      "size": "245/60R15",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": 2599,
+      "priceExcludingVat": 2260,
+      "sourceRows": [
+        177
+      ]
+    },
+    {
+      "catalogKey": "1b7b1138364e5b5d",
+      "size": "255/60R15",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": 2799,
+      "priceExcludingVat": 2433.91,
+      "sourceRows": [
+        178
+      ]
+    },
+    {
+      "catalogKey": "38f089a6fdcf8646",
+      "size": "255/70R15",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        179
+      ]
+    },
+    {
+      "catalogKey": "a829837da00a7a53",
+      "size": "265/50R15",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        180
+      ]
+    },
+    {
+      "catalogKey": "ae23201f3ab8ab6a",
+      "size": "275/60R15",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": 2899,
+      "priceExcludingVat": 2520.87,
+      "sourceRows": [
+        181
+      ]
+    },
+    {
+      "catalogKey": "d8b96cb910598b2b",
+      "size": "285/70R15",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        182
+      ]
+    },
+    {
+      "catalogKey": "4c3e5be4d7a30bb8",
+      "size": "295/50R15",
+      "description": "Vitour Galaxy Radial G/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy Radial G/T RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        183
+      ]
+    },
+    {
+      "catalogKey": "3b4dba9ae9934cfb",
+      "size": "235/75R15",
+      "description": "Vitour Explorer A/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer A/T",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        184
+      ]
+    },
+    {
+      "catalogKey": "2331aeff1ddf9443",
+      "size": "235/75R15",
+      "description": "Delmax Grippro A/T",
+      "brand": "DELMAX",
+      "pattern": "Grippro A/T",
+      "priceIncludingVat": 1750,
+      "priceExcludingVat": 1521.74,
+      "sourceRows": [
+        185
+      ]
+    },
+    {
+      "catalogKey": "4e379cbe03a78632",
+      "size": "255/70R15",
+      "description": "Vitour Explorer H/T840",
+      "brand": "VITOUR",
+      "pattern": "Explorer H/T840",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        186
+      ]
+    },
+    {
+      "catalogKey": "fb091b62ed2da472",
+      "size": "31X10.5R15LT",
+      "description": "Joyroad Adventure A/T OWL",
+      "brand": "JOYROAD",
+      "pattern": "Adventure A/T OWL",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        187
+      ]
+    },
+    {
+      "catalogKey": "a7c7f8e19abb7f25",
+      "size": "31X10.5R15LT",
+      "description": "Vitour Explorer A/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer A/T",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        188
+      ]
+    },
+    {
+      "catalogKey": "5f34df28462ebd6b",
+      "size": "31X10.5R15",
+      "description": "Vitour Explorer M/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer M/T",
+      "priceIncludingVat": 2585,
+      "priceExcludingVat": 2247.83,
+      "sourceRows": [
+        189
+      ]
+    },
+    {
+      "catalogKey": "8f1c557199441fc4",
+      "size": "33X12.5R15",
+      "description": "Vitour Explorer M/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer M/T",
+      "priceIncludingVat": 2995,
+      "priceExcludingVat": 2604.35,
+      "sourceRows": [
+        190
+      ]
+    },
+    {
+      "catalogKey": "e46b7bccb83b4c85",
+      "size": "165/45R16",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        192
+      ]
+    },
+    {
+      "catalogKey": "846af720b09fb0ce",
+      "size": "195/45R16",
+      "description": "Delmax PerformPro 84V",
+      "brand": "DELMAX",
+      "pattern": "PerformPro 84V",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        193
+      ]
+    },
+    {
+      "catalogKey": "b01d6caa924abbd1",
+      "size": "195/50R16",
+      "description": "Delmax UltimaTour",
+      "brand": "DELMAX",
+      "pattern": "UltimaTour",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        194
+      ]
+    },
+    {
+      "catalogKey": "6bff7478ff2f8de7",
+      "size": "195/50R16",
+      "description": "Joyroad Sport RX6",
+      "brand": "JOYROAD",
+      "pattern": "Sport RX6",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        195
+      ]
+    },
+    {
+      "catalogKey": "f18f7a05789070b4",
+      "size": "195/55R16",
+      "description": "Delmax UltimaTour",
+      "brand": "DELMAX",
+      "pattern": "UltimaTour",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        196
+      ]
+    },
+    {
+      "catalogKey": "1baa4e466c3e832a",
+      "size": "195/55R16",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 999,
+      "priceExcludingVat": 868.7,
+      "sourceRows": [
+        197
+      ]
+    },
+    {
+      "catalogKey": "18a343f25dd6979f",
+      "size": "195/60R16",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        198
+      ]
+    },
+    {
+      "catalogKey": "fa9a31fffc34f316",
+      "size": "205/45R16",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 925,
+      "priceExcludingVat": 804.35,
+      "sourceRows": [
+        199
+      ]
+    },
+    {
+      "catalogKey": "ab518aeeb43abc56",
+      "size": "205/50R16",
+      "description": "Saferich FRC26",
+      "brand": "SAFERICH",
+      "pattern": "FRC26",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        200
+      ]
+    },
+    {
+      "catalogKey": "fc59037724fd5d89",
+      "size": "205/55R16",
+      "description": "Delmax UltimaTour",
+      "brand": "DELMAX",
+      "pattern": "UltimaTour",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        201
+      ]
+    },
+    {
+      "catalogKey": "5ca8847835c94cf6",
+      "size": "205/55R16",
+      "description": "Delmax Ultima Plus",
+      "brand": "DELMAX",
+      "pattern": "Ultima Plus",
+      "priceIncludingVat": 850,
+      "priceExcludingVat": 739.13,
+      "sourceRows": [
+        202
+      ]
+    },
+    {
+      "catalogKey": "0d9c6b309187cbf4",
+      "size": "205/55R16",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": 975,
+      "priceExcludingVat": 847.83,
+      "sourceRows": [
+        203
+      ]
+    },
+    {
+      "catalogKey": "943307128e5a3314",
+      "size": "205/55R16",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 950,
+      "priceExcludingVat": 826.09,
+      "sourceRows": [
+        204
+      ]
+    },
+    {
+      "catalogKey": "2cbd2f39a4a32ac9",
+      "size": "205/55R16",
+      "description": "Vitour Formula Omega",
+      "brand": "VITOUR",
+      "pattern": "Formula Omega",
+      "priceIncludingVat": 1100,
+      "priceExcludingVat": 956.52,
+      "sourceRows": [
+        205
+      ]
+    },
+    {
+      "catalogKey": "e2bed9835b7a6fc7",
+      "size": "205/55R16",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 995,
+      "priceExcludingVat": 865.22,
+      "sourceRows": [
+        206
+      ]
+    },
+    {
+      "catalogKey": "4a27e1951179cf7a",
+      "size": "205/55R16",
+      "description": "Vitour Formula X RWL- WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL- WSW",
+      "priceIncludingVat": 1100,
+      "priceExcludingVat": 956.52,
+      "sourceRows": [
+        207
+      ]
+    },
+    {
+      "catalogKey": "9212128128e7a8dd",
+      "size": "205/55R16",
+      "description": "Mazzini Supersport Chaser RFT",
+      "brand": "MAZZINI",
+      "pattern": "Supersport Chaser RFT",
+      "priceIncludingVat": 1695,
+      "priceExcludingVat": 1473.91,
+      "sourceRows": [
+        208
+      ]
+    },
+    {
+      "catalogKey": "ae8335b365192738",
+      "size": "205/60R16",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        209
+      ]
+    },
+    {
+      "catalogKey": "139a1f0665660bd3",
+      "size": "205/60R16",
+      "description": "Vitour Formula Omega",
+      "brand": "VITOUR",
+      "pattern": "Formula Omega",
+      "priceIncludingVat": 1195,
+      "priceExcludingVat": 1039.13,
+      "sourceRows": [
+        210
+      ]
+    },
+    {
+      "catalogKey": "98c367ab17515eed",
+      "size": "205/65R16",
+      "description": "Delmax UltimaTour",
+      "brand": "DELMAX",
+      "pattern": "UltimaTour",
+      "priceIncludingVat": 1095,
+      "priceExcludingVat": 952.17,
+      "sourceRows": [
+        211
+      ]
+    },
+    {
+      "catalogKey": "77e027959936a3cc",
+      "size": "205/65R16",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 999,
+      "priceExcludingVat": 868.7,
+      "sourceRows": [
+        212
+      ]
+    },
+    {
+      "catalogKey": "8d23ffdac81e9040",
+      "size": "215/40R16",
+      "description": "Saferich FRC26",
+      "brand": "SAFERICH",
+      "pattern": "FRC26",
+      "priceIncludingVat": 1050,
+      "priceExcludingVat": 913.04,
+      "sourceRows": [
+        213
+      ]
+    },
+    {
+      "catalogKey": "cfc3b86c18345b0c",
+      "size": "215/45R16",
+      "description": "Saferich FRC26",
+      "brand": "SAFERICH",
+      "pattern": "FRC26",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        214
+      ]
+    },
+    {
+      "catalogKey": "efee344afdc67253",
+      "size": "215/55R16",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1195,
+      "priceExcludingVat": 1039.13,
+      "sourceRows": [
+        215
+      ]
+    },
+    {
+      "catalogKey": "9e4b9843b38fd5c4",
+      "size": "215/60R16",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 1150,
+      "priceExcludingVat": 1000,
+      "sourceRows": [
+        216
+      ]
+    },
+    {
+      "catalogKey": "f6bed0af362c1c4b",
+      "size": "215/60R16",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        217
+      ]
+    },
+    {
+      "catalogKey": "72b68a1b04402f45",
+      "size": "215/60R16",
+      "description": "Vitour Galaxy R1 WSW",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 WSW",
+      "priceIncludingVat": 1299,
+      "priceExcludingVat": 1129.57,
+      "sourceRows": [
+        218
+      ]
+    },
+    {
+      "catalogKey": "5460e1570520fac3",
+      "size": "215/60R16",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        219
+      ]
+    },
+    {
+      "catalogKey": "0d046adf2638f4f7",
+      "size": "215/60R16",
+      "description": "Vitour Formula Omega",
+      "brand": "VITOUR",
+      "pattern": "Formula Omega",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        220
+      ]
+    },
+    {
+      "catalogKey": "76c3cb1aafbd3ee0",
+      "size": "215/60R16",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": 1399,
+      "priceExcludingVat": 1216.52,
+      "sourceRows": [
+        221
+      ]
+    },
+    {
+      "catalogKey": "ce846f3e8151a36d",
+      "size": "215/65R16",
+      "description": "Vitour Galaxy R1",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        222
+      ]
+    },
+    {
+      "catalogKey": "4ce3c2619c9ec468",
+      "size": "215/65R16",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        223
+      ]
+    },
+    {
+      "catalogKey": "1e7b040dd75d9844",
+      "size": "215/65R16",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1595,
+      "priceExcludingVat": 1386.96,
+      "sourceRows": [
+        224
+      ]
+    },
+    {
+      "catalogKey": "a146d69a3e72b5f4",
+      "size": "215/65R16",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": 1550,
+      "priceExcludingVat": 1347.83,
+      "sourceRows": [
+        225
+      ]
+    },
+    {
+      "catalogKey": "78289f4826392b66",
+      "size": "215/70R16",
+      "description": "Vitour V8000",
+      "brand": "VITOUR",
+      "pattern": "V8000",
+      "priceIncludingVat": 1295,
+      "priceExcludingVat": 1126.09,
+      "sourceRows": [
+        226
+      ]
+    },
+    {
+      "catalogKey": "5cda761e5b950311",
+      "size": "215/70R16",
+      "description": "Saferich FRC16",
+      "brand": "SAFERICH",
+      "pattern": "FRC16",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        227
+      ]
+    },
+    {
+      "catalogKey": "56c2f0715bcb01ea",
+      "size": "225/50R16",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        228
+      ]
+    },
+    {
+      "catalogKey": "7ffa3d594a879470",
+      "size": "225/55ZR16",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1295,
+      "priceExcludingVat": 1126.09,
+      "sourceRows": [
+        229
+      ]
+    },
+    {
+      "catalogKey": "b63706477b84483e",
+      "size": "225/60R16",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        230
+      ]
+    },
+    {
+      "catalogKey": "87cc274fecb404b1",
+      "size": "225/60R16",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1295,
+      "priceExcludingVat": 1126.09,
+      "sourceRows": [
+        231
+      ]
+    },
+    {
+      "catalogKey": "25e9251626f6e86d",
+      "size": "235/60R16",
+      "description": "Delmax Utility",
+      "brand": "DELMAX",
+      "pattern": "Utility",
+      "priceIncludingVat": 1550,
+      "priceExcludingVat": 1347.83,
+      "sourceRows": [
+        232
+      ]
+    },
+    {
+      "catalogKey": "397ba1c1034b8acb",
+      "size": "235/70R16",
+      "description": "Vitour Safari A/T",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T",
+      "priceIncludingVat": 1650,
+      "priceExcludingVat": 1434.78,
+      "sourceRows": [
+        233
+      ]
+    },
+    {
+      "catalogKey": "9c58d674b1b1dcb8",
+      "size": "235/85R16",
+      "description": "Vitour Explorer A/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer A/T",
+      "priceIncludingVat": 1795,
+      "priceExcludingVat": 1560.87,
+      "sourceRows": [
+        234
+      ]
+    },
+    {
+      "catalogKey": "cd257ed344e04c8c",
+      "size": "235/85R16",
+      "description": "Vitour Explorer M/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer M/T",
+      "priceIncludingVat": 2699,
+      "priceExcludingVat": 2346.96,
+      "sourceRows": [
+        235
+      ]
+    },
+    {
+      "catalogKey": "bbdaba9bd724b022",
+      "size": "245/70R16",
+      "description": "Vitour Safari A/T",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        236
+      ]
+    },
+    {
+      "catalogKey": "f0ad157d643e3ac2",
+      "size": "245/70R16",
+      "description": "Vitour Safari A/T OWL",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T OWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        237
+      ]
+    },
+    {
+      "catalogKey": "d975bc8b2b861b27",
+      "size": "245/70R16",
+      "description": "Vitour Safari ALL TERRAIN RWL",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        238
+      ]
+    },
+    {
+      "catalogKey": "65ba1a4417ec8f74",
+      "size": "255/70R16",
+      "description": "Delmax Grippro A/T",
+      "brand": "DELMAX",
+      "pattern": "Grippro A/T",
+      "priceIncludingVat": 2050,
+      "priceExcludingVat": 1782.61,
+      "sourceRows": [
+        239
+      ]
+    },
+    {
+      "catalogKey": "6c201b82059b0a94",
+      "size": "265/70R16",
+      "description": "Vitour Safari A/T",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T",
+      "priceIncludingVat": 1799,
+      "priceExcludingVat": 1564.35,
+      "sourceRows": [
+        240
+      ]
+    },
+    {
+      "catalogKey": "ea77cd86bc5e09c0",
+      "size": "265/70R16",
+      "description": "Vitour Safari A/T OWL",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T OWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        241
+      ]
+    },
+    {
+      "catalogKey": "f3fd7474c62e1fd6",
+      "size": "265/70R16",
+      "description": "Vitour Safari ALL TERRAIN RWL",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL",
+      "priceIncludingVat": 2799,
+      "priceExcludingVat": 2433.91,
+      "sourceRows": [
+        242
+      ]
+    },
+    {
+      "catalogKey": "e99ab166c0805ce8",
+      "size": "265/70R16",
+      "description": "Delmax Grippro A/T",
+      "brand": "DELMAX",
+      "pattern": "Grippro A/T",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        243
+      ]
+    },
+    {
+      "catalogKey": "4ece0be534866f39",
+      "size": "265/75R16",
+      "description": "Vitour Explorer A/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer A/T",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        244
+      ]
+    },
+    {
+      "catalogKey": "dd9dd355cd4acacd",
+      "size": "265/75R16",
+      "description": "Vitour Explorer M/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer M/T",
+      "priceIncludingVat": 2950,
+      "priceExcludingVat": 2565.22,
+      "sourceRows": [
+        245
+      ]
+    },
+    {
+      "catalogKey": "97da0980d27c03b0",
+      "size": "275/70R16",
+      "description": "Vitour Safari A/T",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        246
+      ]
+    },
+    {
+      "catalogKey": "9652dab311f892e0",
+      "size": "275/70R16",
+      "description": "Vitour Safari A/T OWL",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T OWL",
+      "priceIncludingVat": 2350,
+      "priceExcludingVat": 2043.48,
+      "sourceRows": [
+        247
+      ]
+    },
+    {
+      "catalogKey": "930f34d4cfd4a96d",
+      "size": "285/75R16",
+      "description": "Vitour Explorer M/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer M/T",
+      "priceIncludingVat": 2895,
+      "priceExcludingVat": 2517.39,
+      "sourceRows": [
+        248
+      ]
+    },
+    {
+      "catalogKey": "22b92fd5090f3914",
+      "size": "185/35R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1150,
+      "priceExcludingVat": 1000,
+      "sourceRows": [
+        250
+      ]
+    },
+    {
+      "catalogKey": "60f70c4a777b2fc5",
+      "size": "195/40R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1050,
+      "priceExcludingVat": 913.04,
+      "sourceRows": [
+        251
+      ]
+    },
+    {
+      "catalogKey": "82952a7ce17a42ae",
+      "size": "205/40R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1150,
+      "priceExcludingVat": 1000,
+      "sourceRows": [
+        252
+      ]
+    },
+    {
+      "catalogKey": "532b31466f9d2e23",
+      "size": "205/40ZR17",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        253
+      ]
+    },
+    {
+      "catalogKey": "47866fb45479db15",
+      "size": "205/45R17",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1075,
+      "priceExcludingVat": 934.78,
+      "sourceRows": [
+        254
+      ]
+    },
+    {
+      "catalogKey": "2d442d4597af52e2",
+      "size": "205/45R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1150,
+      "priceExcludingVat": 1000,
+      "sourceRows": [
+        255
+      ]
+    },
+    {
+      "catalogKey": "75d27bcce28b0575",
+      "size": "205/45R17",
+      "description": "Vitour Formula X RFT",
+      "brand": "VITOUR",
+      "pattern": "Formula X RFT",
+      "priceIncludingVat": 1895,
+      "priceExcludingVat": 1647.83,
+      "sourceRows": [
+        256
+      ]
+    },
+    {
+      "catalogKey": "fcc0f75c38dbe3a9",
+      "size": "205/50ZR17",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1050,
+      "priceExcludingVat": 913.04,
+      "sourceRows": [
+        257
+      ]
+    },
+    {
+      "catalogKey": "8b4e02b1ee71a664",
+      "size": "205/55R17",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        258
+      ]
+    },
+    {
+      "catalogKey": "6e32d555c27c4a86",
+      "size": "205/55R17",
+      "description": "Saferich FRC26",
+      "brand": "SAFERICH",
+      "pattern": "FRC26",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        259
+      ]
+    },
+    {
+      "catalogKey": "b5a5986d6ebf8214",
+      "size": "215/40R17",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1075,
+      "priceExcludingVat": 934.78,
+      "sourceRows": [
+        260
+      ]
+    },
+    {
+      "catalogKey": "11442eab91455b48",
+      "size": "215/45R17",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1075,
+      "priceExcludingVat": 934.78,
+      "sourceRows": [
+        261
+      ]
+    },
+    {
+      "catalogKey": "4ca5bedbc80984d3",
+      "size": "215/45R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1195,
+      "priceExcludingVat": 1039.13,
+      "sourceRows": [
+        262
+      ]
+    },
+    {
+      "catalogKey": "5be618212a553742",
+      "size": "215/45R17",
+      "description": "Vitour Formula X RWL 91W",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL 91W",
+      "priceIncludingVat": 1399,
+      "priceExcludingVat": 1216.52,
+      "sourceRows": [
+        263
+      ]
+    },
+    {
+      "catalogKey": "cbf61d199a43b268",
+      "size": "215/50R17",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1195,
+      "priceExcludingVat": 1039.13,
+      "sourceRows": [
+        264
+      ]
+    },
+    {
+      "catalogKey": "dceb8836c865d625",
+      "size": "215/50R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        265
+      ]
+    },
+    {
+      "catalogKey": "f9c5b9a07d065f1f",
+      "size": "215/55R17",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        266
+      ]
+    },
+    {
+      "catalogKey": "892129c821cce6c5",
+      "size": "215/55R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1295,
+      "priceExcludingVat": 1126.09,
+      "sourceRows": [
+        267
+      ]
+    },
+    {
+      "catalogKey": "72423a3c82ce2758",
+      "size": "215/55R17",
+      "description": "Vitour Formula Omega",
+      "brand": "VITOUR",
+      "pattern": "Formula Omega",
+      "priceIncludingVat": 1450,
+      "priceExcludingVat": 1260.87,
+      "sourceRows": [
+        268
+      ]
+    },
+    {
+      "catalogKey": "a9f6943f2285ba24",
+      "size": "215/55R17",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": 1599,
+      "priceExcludingVat": 1390.43,
+      "sourceRows": [
+        269
+      ]
+    },
+    {
+      "catalogKey": "90c71083eb959841",
+      "size": "215/60R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1395,
+      "priceExcludingVat": 1213.04,
+      "sourceRows": [
+        270
+      ]
+    },
+    {
+      "catalogKey": "2270d7ac5f6148ea",
+      "size": "215/60R17",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        271
+      ]
+    },
+    {
+      "catalogKey": "d0fbe634d9ab5a2d",
+      "size": "215/60R17",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1750,
+      "priceExcludingVat": 1521.74,
+      "sourceRows": [
+        272
+      ]
+    },
+    {
+      "catalogKey": "5d48ddec280cd1cf",
+      "size": "215/65R17",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1975,
+      "priceExcludingVat": 1717.39,
+      "sourceRows": [
+        273
+      ]
+    },
+    {
+      "catalogKey": "44663cabed3be2a7",
+      "size": "225/45R17",
+      "description": "Delmax UltimaPlus",
+      "brand": "DELMAX",
+      "pattern": "UltimaPlus",
+      "priceIncludingVat": 995,
+      "priceExcludingVat": 865.22,
+      "sourceRows": [
+        274
+      ]
+    },
+    {
+      "catalogKey": "072df7202bdb3880",
+      "size": "225/45R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        275
+      ]
+    },
+    {
+      "catalogKey": "c5a9bb4376882f27",
+      "size": "225/45R17",
+      "description": "Joyroad Sport RX6",
+      "brand": "JOYROAD",
+      "pattern": "Sport RX6",
+      "priceIncludingVat": 1195,
+      "priceExcludingVat": 1039.13,
+      "sourceRows": [
+        276
+      ]
+    },
+    {
+      "catalogKey": "cb79eb2f65165102",
+      "size": "225/45R17",
+      "description": "Mazzini Supersport Chaser RFT",
+      "brand": "MAZZINI",
+      "pattern": "Supersport Chaser RFT",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        277
+      ]
+    },
+    {
+      "catalogKey": "3e2095fc5763a121",
+      "size": "225/50R17",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 1295,
+      "priceExcludingVat": 1126.09,
+      "sourceRows": [
+        278
+      ]
+    },
+    {
+      "catalogKey": "9ed1288b9c8992d9",
+      "size": "225/50R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1395,
+      "priceExcludingVat": 1213.04,
+      "sourceRows": [
+        279
+      ]
+    },
+    {
+      "catalogKey": "adf7d6150dad607e",
+      "size": "225/55R17",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1295,
+      "priceExcludingVat": 1126.09,
+      "sourceRows": [
+        280
+      ]
+    },
+    {
+      "catalogKey": "83c07b5a3835fbf4",
+      "size": "225/55R17",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 1295,
+      "priceExcludingVat": 1126.09,
+      "sourceRows": [
+        281
+      ]
+    },
+    {
+      "catalogKey": "105f451d6688acbb",
+      "size": "225/55R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        282
+      ]
+    },
+    {
+      "catalogKey": "cad31a34eb86ba54",
+      "size": "225/60R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1499,
+      "priceExcludingVat": 1303.48,
+      "sourceRows": [
+        283
+      ]
+    },
+    {
+      "catalogKey": "b29a23697ecc759c",
+      "size": "225/60R17",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        284
+      ]
+    },
+    {
+      "catalogKey": "e206b703361bb735",
+      "size": "225/65R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        285
+      ]
+    },
+    {
+      "catalogKey": "08bf2a16364e2bdd",
+      "size": "225/65R17",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2195,
+      "priceExcludingVat": 1908.7,
+      "sourceRows": [
+        286
+      ]
+    },
+    {
+      "catalogKey": "290bc5a5b3bd66a1",
+      "size": "225/65R17",
+      "description": "Vitour Formula X RWL-WSW",
+      "brand": "VITOUR",
+      "pattern": "Formula X RWL-WSW",
+      "priceIncludingVat": 1895,
+      "priceExcludingVat": 1647.83,
+      "sourceRows": [
+        287
+      ]
+    },
+    {
+      "catalogKey": "f039b408059d1624",
+      "size": "235/45R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1395,
+      "priceExcludingVat": 1213.04,
+      "sourceRows": [
+        288
+      ]
+    },
+    {
+      "catalogKey": "fa169748f6ac69c8",
+      "size": "235/50R17",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1595,
+      "priceExcludingVat": 1386.96,
+      "sourceRows": [
+        289
+      ]
+    },
+    {
+      "catalogKey": "3accc3f337515295",
+      "size": "235/55R17",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 1499,
+      "priceExcludingVat": 1303.48,
+      "sourceRows": [
+        290
+      ]
+    },
+    {
+      "catalogKey": "274f9868948f9cbf",
+      "size": "235/55R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1595,
+      "priceExcludingVat": 1386.96,
+      "sourceRows": [
+        291
+      ]
+    },
+    {
+      "catalogKey": "c4923edd4733ba34",
+      "size": "235/60R17",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1875,
+      "priceExcludingVat": 1630.43,
+      "sourceRows": [
+        292
+      ]
+    },
+    {
+      "catalogKey": "056e97ab783bf3f9",
+      "size": "235/65R17",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1895,
+      "priceExcludingVat": 1647.83,
+      "sourceRows": [
+        293
+      ]
+    },
+    {
+      "catalogKey": "b69110e35b092156",
+      "size": "235/65R17",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        294
+      ]
+    },
+    {
+      "catalogKey": "c320f733217c21a0",
+      "size": "225/45ZR17",
+      "description": "Joyroad Sport RX6",
+      "brand": "JOYROAD",
+      "pattern": "Sport RX6",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        295
+      ]
+    },
+    {
+      "catalogKey": "510782c80d24e037",
+      "size": "245/40ZR17",
+      "description": "Joyroad Sport RX7",
+      "brand": "JOYROAD",
+      "pattern": "Sport RX7",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        296
+      ]
+    },
+    {
+      "catalogKey": "b158d23c1db0b266",
+      "size": "245/45ZR17",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1650,
+      "priceExcludingVat": 1434.78,
+      "sourceRows": [
+        297
+      ]
+    },
+    {
+      "catalogKey": "952e5c0a530caee7",
+      "size": "245/65R17",
+      "description": "Vitour Safari A/T",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T",
+      "priceIncludingVat": 1799,
+      "priceExcludingVat": 1564.35,
+      "sourceRows": [
+        298
+      ]
+    },
+    {
+      "catalogKey": "d9e11d6b74fd4eb2",
+      "size": "245/65R17",
+      "description": "Vitour Safari A/T OWL",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T OWL",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        299
+      ]
+    },
+    {
+      "catalogKey": "6efa5c38e15324fd",
+      "size": "255/45ZR17",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1599,
+      "priceExcludingVat": 1390.43,
+      "sourceRows": [
+        300
+      ]
+    },
+    {
+      "catalogKey": "7d630897d2c88c3f",
+      "size": "265/65R17",
+      "description": "Vitour Safari A/T",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        302
+      ]
+    },
+    {
+      "catalogKey": "7ba02774a62b1776",
+      "size": "265/65R17",
+      "description": "Vitour Safari A/TX",
+      "brand": "VITOUR",
+      "pattern": "Safari A/TX",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        303
+      ]
+    },
+    {
+      "catalogKey": "0c5373d2bccbd999",
+      "size": "265/65R17",
+      "description": "Vitour Safari A/T OWL",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T OWL",
+      "priceIncludingVat": 2250,
+      "priceExcludingVat": 1956.52,
+      "sourceRows": [
+        304
+      ]
+    },
+    {
+      "catalogKey": "7b6125490180024c",
+      "size": "265/65R17",
+      "description": "Vitour Safari ALL TERRAIN RWL",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL",
+      "priceIncludingVat": 2999,
+      "priceExcludingVat": 2607.83,
+      "sourceRows": [
+        305
+      ]
+    },
+    {
+      "catalogKey": "a104b9b1857861b3",
+      "size": "265/65R17",
+      "description": "Vitour BZ Xtreme X20 A/T",
+      "brand": "VITOUR",
+      "pattern": "BZ Xtreme X20 A/T",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        306
+      ]
+    },
+    {
+      "catalogKey": "4ae2dca3126614b1",
+      "size": "265/65R17",
+      "description": "Vitour BZ Xtreme X10 R/T",
+      "brand": "VITOUR",
+      "pattern": "BZ Xtreme X10 R/T",
+      "priceIncludingVat": 3650,
+      "priceExcludingVat": 3173.91,
+      "sourceRows": [
+        307
+      ]
+    },
+    {
+      "catalogKey": "93b80237e91cb909",
+      "size": "265/70R17",
+      "description": "Vitour Explorer M/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer M/T",
+      "priceIncludingVat": 2950,
+      "priceExcludingVat": 2565.22,
+      "sourceRows": [
+        308
+      ]
+    },
+    {
+      "catalogKey": "22a4e21d87b33474",
+      "size": "265/70R17",
+      "description": "Vitour BZ Xtreme X20 A/T",
+      "brand": "VITOUR",
+      "pattern": "BZ Xtreme X20 A/T",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        309
+      ]
+    },
+    {
+      "catalogKey": "3f55a0f06dd3ee98",
+      "size": "265/70R17",
+      "description": "Vitour Xtreme X20 A/T RWL",
+      "brand": "VITOUR",
+      "pattern": "Xtreme X20 A/T RWL",
+      "priceIncludingVat": 3495,
+      "priceExcludingVat": 3039.13,
+      "sourceRows": [
+        310
+      ]
+    },
+    {
+      "catalogKey": "3c6e182be28ba90c",
+      "size": "265/70R17",
+      "description": "Vitour Xtreme R/T X20 RWL",
+      "brand": "VITOUR",
+      "pattern": "Xtreme R/T X20 RWL",
+      "priceIncludingVat": 3695,
+      "priceExcludingVat": 3213.04,
+      "sourceRows": [
+        311
+      ]
+    },
+    {
+      "catalogKey": "593b497dcde50da5",
+      "size": "275/55R17",
+      "description": "Vitour Explorer H/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer H/T",
+      "priceIncludingVat": 1495,
+      "priceExcludingVat": 1300,
+      "sourceRows": [
+        312
+      ]
+    },
+    {
+      "catalogKey": "a2dc87aca71eaa13",
+      "size": "275/65R17",
+      "description": "Vitour BZ Xtreme X20 A/T",
+      "brand": "VITOUR",
+      "pattern": "BZ Xtreme X20 A/T",
+      "priceIncludingVat": 3395,
+      "priceExcludingVat": 2952.17,
+      "sourceRows": [
+        313
+      ]
+    },
+    {
+      "catalogKey": "954ae2e75578ef7d",
+      "size": "275/65R17",
+      "description": "Vitour Safari A/T OWL",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T OWL",
+      "priceIncludingVat": 1995,
+      "priceExcludingVat": 1734.78,
+      "sourceRows": [
+        314
+      ]
+    },
+    {
+      "catalogKey": "2f5c08e80548d881",
+      "size": "275/70R17",
+      "description": "Vitour BZ Xtreme X20 A/T",
+      "brand": "VITOUR",
+      "pattern": "BZ Xtreme X20 A/T",
+      "priceIncludingVat": 3595,
+      "priceExcludingVat": 3126.09,
+      "sourceRows": [
+        315
+      ]
+    },
+    {
+      "catalogKey": "ddd34439fdacea31",
+      "size": "285/65R17",
+      "description": "Vitour Safari A/T",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T",
+      "priceIncludingVat": 2095,
+      "priceExcludingVat": 1821.74,
+      "sourceRows": [
+        316
+      ]
+    },
+    {
+      "catalogKey": "e012e9d769a79a53",
+      "size": "285/65R17",
+      "description": "Vitour Cruiser ATX",
+      "brand": "VITOUR",
+      "pattern": "Cruiser ATX",
+      "priceIncludingVat": 2095,
+      "priceExcludingVat": 1821.74,
+      "sourceRows": [
+        317
+      ]
+    },
+    {
+      "catalogKey": "5e16747385e50599",
+      "size": "285/65R17",
+      "description": "Vitour Safari A/T OWL",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T OWL",
+      "priceIncludingVat": 2350,
+      "priceExcludingVat": 2043.48,
+      "sourceRows": [
+        318
+      ]
+    },
+    {
+      "catalogKey": "9ce285a28b4391e2",
+      "size": "285/70R17",
+      "description": "Vitour Explorer M/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer M/T",
+      "priceIncludingVat": 3250,
+      "priceExcludingVat": 2826.09,
+      "sourceRows": [
+        319
+      ]
+    },
+    {
+      "catalogKey": "639524f4fa9b801d",
+      "size": "285/70R17",
+      "description": "Vitour Xtreme A/T X20 RWL",
+      "brand": "VITOUR",
+      "pattern": "Xtreme A/T X20 RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        320
+      ]
+    },
+    {
+      "catalogKey": "082209ff93085479",
+      "size": "285/70R17",
+      "description": "Vitour Xtreme R/T X20 RWL",
+      "brand": "VITOUR",
+      "pattern": "Xtreme R/T X20 RWL",
+      "priceIncludingVat": 4399,
+      "priceExcludingVat": 3825.22,
+      "sourceRows": [
+        321
+      ]
+    },
+    {
+      "catalogKey": "1a7386b2adea1eb0",
+      "size": "295/70R17",
+      "description": "Vitour Xtreme R/T X20 RWL",
+      "brand": "VITOUR",
+      "pattern": "Xtreme R/T X20 RWL",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        322
+      ]
+    },
+    {
+      "catalogKey": "aae34b4e39275fd7",
+      "size": "305/65R17",
+      "description": "Vitour Xtreme R/T X20 RWL",
+      "brand": "VITOUR",
+      "pattern": "Xtreme R/T X20 RWL",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        323
+      ]
+    },
+    {
+      "catalogKey": "39a7a9c108acdc41",
+      "size": "315/70R17",
+      "description": "Vitour Xtreme A/T X20 RWL",
+      "brand": "VITOUR",
+      "pattern": "Xtreme A/T X20 RWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        324
+      ]
+    },
+    {
+      "catalogKey": "cc3d39ae7a3da8de",
+      "size": "35X12.50R17",
+      "description": "Vitour Xtreme R/T X20 RWL",
+      "brand": "VITOUR",
+      "pattern": "Xtreme R/T X20 RWL",
+      "priceIncludingVat": 4495,
+      "priceExcludingVat": 3908.7,
+      "sourceRows": [
+        325
+      ]
+    },
+    {
+      "catalogKey": "7ada9285bde3dd60",
+      "size": "35X12.50R17",
+      "description": "Vitour Explorer M/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer M/T",
+      "priceIncludingVat": 3495,
+      "priceExcludingVat": 3039.13,
+      "sourceRows": [
+        326
+      ]
+    },
+    {
+      "catalogKey": "8e73693dc83dcea5",
+      "size": "37X13.50R17",
+      "description": "Vitour Xtreme R/T X20",
+      "brand": "VITOUR",
+      "pattern": "Xtreme R/T X20",
+      "priceIncludingVat": 4550,
+      "priceExcludingVat": 3956.52,
+      "sourceRows": [
+        327
+      ]
+    },
+    {
+      "catalogKey": "dbe41ce27a69fe89",
+      "size": "215/35ZR18",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1100,
+      "priceExcludingVat": 956.52,
+      "sourceRows": [
+        328
+      ]
+    },
+    {
+      "catalogKey": "67eb1bd255a3bfc3",
+      "size": "215/40ZR18",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        329
+      ]
+    },
+    {
+      "catalogKey": "2f393a265defb059",
+      "size": "215/45R18",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        330
+      ]
+    },
+    {
+      "catalogKey": "230e59ff442fc159",
+      "size": "215/45R18",
+      "description": "Joyroad Sport RX6",
+      "brand": "JOYROAD",
+      "pattern": "Sport RX6",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        331
+      ]
+    },
+    {
+      "catalogKey": "1f028803152b656f",
+      "size": "215/50R18",
+      "description": "Joyroad Sport RX6",
+      "brand": "JOYROAD",
+      "pattern": "Sport RX6",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        332
+      ]
+    },
+    {
+      "catalogKey": "adab71990e1dcd84",
+      "size": "215/55ZR18",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1599,
+      "priceExcludingVat": 1390.43,
+      "sourceRows": [
+        333
+      ]
+    },
+    {
+      "catalogKey": "e2af9f5823e49a78",
+      "size": "225/40ZR18",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1150,
+      "priceExcludingVat": 1000,
+      "sourceRows": [
+        334
+      ]
+    },
+    {
+      "catalogKey": "92727d23102c65b8",
+      "size": "225/40ZR18",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1450,
+      "priceExcludingVat": 1260.87,
+      "sourceRows": [
+        335
+      ]
+    },
+    {
+      "catalogKey": "b781650259f2148c",
+      "size": "225/45R18",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        336
+      ]
+    },
+    {
+      "catalogKey": "9ef0b30e079925c7",
+      "size": "225/45R18",
+      "description": "Joyroad Sport RX6",
+      "brand": "JOYROAD",
+      "pattern": "Sport RX6",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        337
+      ]
+    },
+    {
+      "catalogKey": "8f72c3ed9845e38d",
+      "size": "225/45R18",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 1495,
+      "priceExcludingVat": 1300,
+      "sourceRows": [
+        338
+      ]
+    },
+    {
+      "catalogKey": "4aa46ff9925d393c",
+      "size": "225/45R18",
+      "description": "Vitour Formula Z RFT",
+      "brand": "VITOUR",
+      "pattern": "Formula Z RFT",
+      "priceIncludingVat": 2599,
+      "priceExcludingVat": 2260,
+      "sourceRows": [
+        339
+      ]
+    },
+    {
+      "catalogKey": "82fce2086f4ec854",
+      "size": "225/50R18",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        340
+      ]
+    },
+    {
+      "catalogKey": "61aa00515f939e81",
+      "size": "225/50R18",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1595,
+      "priceExcludingVat": 1386.96,
+      "sourceRows": [
+        341
+      ]
+    },
+    {
+      "catalogKey": "c3b0d245e9fb86f4",
+      "size": "225/55R18",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1995,
+      "priceExcludingVat": 1734.78,
+      "sourceRows": [
+        342
+      ]
+    },
+    {
+      "catalogKey": "3c905f44a09da105",
+      "size": "225/60R18",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1895,
+      "priceExcludingVat": 1647.83,
+      "sourceRows": [
+        343
+      ]
+    },
+    {
+      "catalogKey": "e33e3a911d64a448",
+      "size": "235/40ZR18",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        344
+      ]
+    },
+    {
+      "catalogKey": "f341072640e6a779",
+      "size": "235/40ZR18",
+      "description": "Mazzini Eco603",
+      "brand": "MAZZINI",
+      "pattern": "Eco603",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        345
+      ]
+    },
+    {
+      "catalogKey": "fab39bd89c237d30",
+      "size": "235/40ZR18",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1750,
+      "priceExcludingVat": 1521.74,
+      "sourceRows": [
+        346
+      ]
+    },
+    {
+      "catalogKey": "ccd0b1763a53f648",
+      "size": "235/45R18",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 1325,
+      "priceExcludingVat": 1152.17,
+      "sourceRows": [
+        347
+      ]
+    },
+    {
+      "catalogKey": "3ff7da9af7309701",
+      "size": "235/45R18",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 1425,
+      "priceExcludingVat": 1239.13,
+      "sourceRows": [
+        348
+      ]
+    },
+    {
+      "catalogKey": "0d1a4eac3af5d2d9",
+      "size": "235/50R18",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        349
+      ]
+    },
+    {
+      "catalogKey": "439ad6eabb28807b",
+      "size": "235/50R18",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 1595,
+      "priceExcludingVat": 1386.96,
+      "sourceRows": [
+        350
+      ]
+    },
+    {
+      "catalogKey": "91edda8c47296818",
+      "size": "235/50R18",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1795,
+      "priceExcludingVat": 1560.87,
+      "sourceRows": [
+        351
+      ]
+    },
+    {
+      "catalogKey": "e6e5318456afdb4d",
+      "size": "235/55R18",
+      "description": "Vitour Tempesta X",
+      "brand": "VITOUR",
+      "pattern": "Tempesta X",
+      "priceIncludingVat": 1550,
+      "priceExcludingVat": 1347.83,
+      "sourceRows": [
+        352
+      ]
+    },
+    {
+      "catalogKey": "737ec81e2793afd4",
+      "size": "235/55R18",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        353
+      ]
+    },
+    {
+      "catalogKey": "dadfac6d79b5cca7",
+      "size": "235/55R18",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 1695,
+      "priceExcludingVat": 1473.91,
+      "sourceRows": [
+        354
+      ]
+    },
+    {
+      "catalogKey": "d2d1e55ca4ffa01b",
+      "size": "235/55R18",
+      "description": "Vitour Formula Z RFT",
+      "brand": "VITOUR",
+      "pattern": "Formula Z RFT",
+      "priceIncludingVat": 3395,
+      "priceExcludingVat": 2952.17,
+      "sourceRows": [
+        355
+      ]
+    },
+    {
+      "catalogKey": "82c35fd0ac532f6a",
+      "size": "235/60R18",
+      "description": "Saferich FRC26",
+      "brand": "SAFERICH",
+      "pattern": "FRC26",
+      "priceIncludingVat": 1595,
+      "priceExcludingVat": 1386.96,
+      "sourceRows": [
+        356
+      ]
+    },
+    {
+      "catalogKey": "a9740d6bb44fa9fa",
+      "size": "235/60R18",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 1695,
+      "priceExcludingVat": 1473.91,
+      "sourceRows": [
+        357
+      ]
+    },
+    {
+      "catalogKey": "e348c9f0065ba71c",
+      "size": "235/60R18",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1975,
+      "priceExcludingVat": 1717.39,
+      "sourceRows": [
+        358
+      ]
+    },
+    {
+      "catalogKey": "2306cbaf645634cb",
+      "size": "235/65R18",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1975,
+      "priceExcludingVat": 1717.39,
+      "sourceRows": [
+        359
+      ]
+    },
+    {
+      "catalogKey": "9e8c8d2ba361feeb",
+      "size": "245/40R18",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        360
+      ]
+    },
+    {
+      "catalogKey": "abdee5f0e260f38f",
+      "size": "245/40R18",
+      "description": "Joyroad Sport RX6",
+      "brand": "JOYROAD",
+      "pattern": "Sport RX6",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        361
+      ]
+    },
+    {
+      "catalogKey": "cc7dff379cd59a97",
+      "size": "245/40R18",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 1599,
+      "priceExcludingVat": 1390.43,
+      "sourceRows": [
+        362
+      ]
+    },
+    {
+      "catalogKey": "2b311292a4c5dffa",
+      "size": "245/45R18",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        363
+      ]
+    },
+    {
+      "catalogKey": "8efe5e62eb7e5336",
+      "size": "245/45R18",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1699,
+      "priceExcludingVat": 1477.39,
+      "sourceRows": [
+        364
+      ]
+    },
+    {
+      "catalogKey": "338299434728e42c",
+      "size": "245/45R18",
+      "description": "Vitour Formula X RFT",
+      "brand": "VITOUR",
+      "pattern": "Formula X RFT",
+      "priceIncludingVat": 3450,
+      "priceExcludingVat": 3000,
+      "sourceRows": [
+        365
+      ]
+    },
+    {
+      "catalogKey": "458f40cec560278b",
+      "size": "245/50R18",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        366
+      ]
+    },
+    {
+      "catalogKey": "a582549accfcb980",
+      "size": "245/50R18",
+      "description": "Vitour Formula X RFT",
+      "brand": "VITOUR",
+      "pattern": "Formula X RFT",
+      "priceIncludingVat": 3699,
+      "priceExcludingVat": 3216.52,
+      "sourceRows": [
+        367
+      ]
+    },
+    {
+      "catalogKey": "800e7a9f3832395c",
+      "size": "245/60R18",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1550,
+      "priceExcludingVat": 1347.83,
+      "sourceRows": [
+        368
+      ]
+    },
+    {
+      "catalogKey": "20897979f4e7487a",
+      "size": "255/35R18",
+      "description": "Delmax PerformPro",
+      "brand": "DELMAX",
+      "pattern": "PerformPro",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        369
+      ]
+    },
+    {
+      "catalogKey": "0538cf993c94e6ca",
+      "size": "255/35R18",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1699,
+      "priceExcludingVat": 1477.39,
+      "sourceRows": [
+        370
+      ]
+    },
+    {
+      "catalogKey": "0369946f70598538",
+      "size": "255/40R18",
+      "description": "Joyroad Sport RX6",
+      "brand": "JOYROAD",
+      "pattern": "Sport RX6",
+      "priceIncludingVat": 1450,
+      "priceExcludingVat": 1260.87,
+      "sourceRows": [
+        371
+      ]
+    },
+    {
+      "catalogKey": "86509f79f696a463",
+      "size": "255/40R18",
+      "description": "Vitour Formula X",
+      "brand": "VITOUR",
+      "pattern": "Formula X",
+      "priceIncludingVat": 1650,
+      "priceExcludingVat": 1434.78,
+      "sourceRows": [
+        372
+      ]
+    },
+    {
+      "catalogKey": "6b2be1dffbef23cf",
+      "size": "255/50R18",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1795,
+      "priceExcludingVat": 1560.87,
+      "sourceRows": [
+        373
+      ]
+    },
+    {
+      "catalogKey": "abfc41263ac4e60f",
+      "size": "255/55R18",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 1895,
+      "priceExcludingVat": 1647.83,
+      "sourceRows": [
+        374
+      ]
+    },
+    {
+      "catalogKey": "6478ad58fae57847",
+      "size": "255/60R18",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2199,
+      "priceExcludingVat": 1912.17,
+      "sourceRows": [
+        375
+      ]
+    },
+    {
+      "catalogKey": "a85f538520896991",
+      "size": "265/35ZR18",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 1650,
+      "priceExcludingVat": 1434.78,
+      "sourceRows": [
+        376
+      ]
+    },
+    {
+      "catalogKey": "4361195500861536",
+      "size": "265/35ZR18",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        377
+      ]
+    },
+    {
+      "catalogKey": "767cd4942e8e55f4",
+      "size": "265/60R18",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1875,
+      "priceExcludingVat": 1630.43,
+      "sourceRows": [
+        378
+      ]
+    },
+    {
+      "catalogKey": "153d1164ffc10b49",
+      "size": "265/60R18",
+      "description": "Vitour Safari A/T",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T",
+      "priceIncludingVat": 2350,
+      "priceExcludingVat": 2043.48,
+      "sourceRows": [
+        379
+      ]
+    },
+    {
+      "catalogKey": "fce8fe22ff91a2e6",
+      "size": "265/60R18",
+      "description": "Delmax Grippro A/T",
+      "brand": "DELMAX",
+      "pattern": "Grippro A/T",
+      "priceIncludingVat": 2350,
+      "priceExcludingVat": 2043.48,
+      "sourceRows": [
+        380
+      ]
+    },
+    {
+      "catalogKey": "49087c0c94ed28d1",
+      "size": "265/60R18",
+      "description": "Vitour Safari ALL TERRAIN RWL",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL",
+      "priceIncludingVat": 3250,
+      "priceExcludingVat": 2826.09,
+      "sourceRows": [
+        381
+      ]
+    },
+    {
+      "catalogKey": "f2d95785b2d9bfc2",
+      "size": "265/65R18",
+      "description": "Vitour Safari ALL TERRAIN RWL 2ply",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL 2ply",
+      "priceIncludingVat": 3450,
+      "priceExcludingVat": 3000,
+      "sourceRows": [
+        382
+      ]
+    },
+    {
+      "catalogKey": "d80016377d30a19d",
+      "size": "LT265/65R18",
+      "description": "Vitour Safari ALL TERRAIN RWL 3PLY",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL 3PLY",
+      "priceIncludingVat": 3895,
+      "priceExcludingVat": 3386.96,
+      "sourceRows": [
+        383
+      ]
+    },
+    {
+      "catalogKey": "151e21a7717ad105",
+      "size": "275/40ZR18",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1799,
+      "priceExcludingVat": 1564.35,
+      "sourceRows": [
+        384
+      ]
+    },
+    {
+      "catalogKey": "61d80e5163b02ed1",
+      "size": "285/60R18",
+      "description": "Vitour Safari A/T",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        385
+      ]
+    },
+    {
+      "catalogKey": "bf1fa74a9d2452fd",
+      "size": "285/60R18",
+      "description": "Vitour Safari A/T OWL",
+      "brand": "VITOUR",
+      "pattern": "Safari A/T OWL",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        386
+      ]
+    },
+    {
+      "catalogKey": "1d7cdfcdbbf7e647",
+      "size": "285/60R18",
+      "description": "Vitour Safari ALL TERRAIN RWL",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL",
+      "priceIncludingVat": 3750,
+      "priceExcludingVat": 3260.87,
+      "sourceRows": [
+        387
+      ]
+    },
+    {
+      "catalogKey": "5b0b31e30743e2e7",
+      "size": "LT285/60R18",
+      "description": "Vitour Safari ALL TERRAIN RWL 3PLY",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL 3PLY",
+      "priceIncludingVat": 4100,
+      "priceExcludingVat": 3565.22,
+      "sourceRows": [
+        388
+      ]
+    },
+    {
+      "catalogKey": "d400fdecde83426b",
+      "size": "275/70R18",
+      "description": "Vitour Xtreme R/T X20 RWL",
+      "brand": "VITOUR",
+      "pattern": "Xtreme R/T X20 RWL",
+      "priceIncludingVat": 4150,
+      "priceExcludingVat": 3608.7,
+      "sourceRows": [
+        389
+      ]
+    },
+    {
+      "catalogKey": "3af66115f512e8ad",
+      "size": "285/65R18",
+      "description": "Vitour ALL TERRAIN RWL",
+      "brand": "VITOUR",
+      "pattern": "ALL TERRAIN RWL",
+      "priceIncludingVat": 3850,
+      "priceExcludingVat": 3347.83,
+      "sourceRows": [
+        390
+      ]
+    },
+    {
+      "catalogKey": "1350f37888eac7cb",
+      "size": "285/65R18",
+      "description": "Vitour BZ Xtreme X20 A/T",
+      "brand": "VITOUR",
+      "pattern": "BZ Xtreme X20 A/T",
+      "priceIncludingVat": 4350,
+      "priceExcludingVat": 3782.61,
+      "sourceRows": [
+        391
+      ]
+    },
+    {
+      "catalogKey": "8df269a705367125",
+      "size": "35X12.50R18",
+      "description": "Vitour Explorer M/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer M/T",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        392
+      ]
+    },
+    {
+      "catalogKey": "8f0da1fa211b6fe9",
+      "size": "215/35ZR19",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 1395,
+      "priceExcludingVat": 1213.04,
+      "sourceRows": [
+        394
+      ]
+    },
+    {
+      "catalogKey": "6e2c3b36727d9393",
+      "size": "225/35ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1499,
+      "priceExcludingVat": 1303.48,
+      "sourceRows": [
+        395
+      ]
+    },
+    {
+      "catalogKey": "43e631eb184f97b9",
+      "size": "225/40ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1699,
+      "priceExcludingVat": 1477.39,
+      "sourceRows": [
+        396
+      ]
+    },
+    {
+      "catalogKey": "fff128e7fa860ab0",
+      "size": "225/45ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1750,
+      "priceExcludingVat": 1521.74,
+      "sourceRows": [
+        397
+      ]
+    },
+    {
+      "catalogKey": "d2e44b847d8353f0",
+      "size": "225/55ZR19",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1850,
+      "priceExcludingVat": 1608.7,
+      "sourceRows": [
+        398
+      ]
+    },
+    {
+      "catalogKey": "499e3729ae4a20fe",
+      "size": "235/35ZR19",
+      "description": "Delmax Perform Pro",
+      "brand": "DELMAX",
+      "pattern": "Perform Pro",
+      "priceIncludingVat": 1295,
+      "priceExcludingVat": 1126.09,
+      "sourceRows": [
+        399
+      ]
+    },
+    {
+      "catalogKey": "fc238f3922160a14",
+      "size": "235/35ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1599,
+      "priceExcludingVat": 1390.43,
+      "sourceRows": [
+        400
+      ]
+    },
+    {
+      "catalogKey": "137cf8edc3e3523d",
+      "size": "235/40ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1699,
+      "priceExcludingVat": 1477.39,
+      "sourceRows": [
+        401
+      ]
+    },
+    {
+      "catalogKey": "e5951bcf7fa7d049",
+      "size": "235/45ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        402
+      ]
+    },
+    {
+      "catalogKey": "555146dd265edea1",
+      "size": "235/50ZR19",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2195,
+      "priceExcludingVat": 1908.7,
+      "sourceRows": [
+        403
+      ]
+    },
+    {
+      "catalogKey": "562baf52315bed63",
+      "size": "235/55ZR19",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2195,
+      "priceExcludingVat": 1908.7,
+      "sourceRows": [
+        404
+      ]
+    },
+    {
+      "catalogKey": "ce7c00d4cf54ecb8",
+      "size": "245/35ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1795,
+      "priceExcludingVat": 1560.87,
+      "sourceRows": [
+        405
+      ]
+    },
+    {
+      "catalogKey": "a430bc1bc62fba97",
+      "size": "245/40ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        406
+      ]
+    },
+    {
+      "catalogKey": "ffe4ef11eae4d0b3",
+      "size": "245/45ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1950,
+      "priceExcludingVat": 1695.65,
+      "sourceRows": [
+        407
+      ]
+    },
+    {
+      "catalogKey": "ed9fe85b81e64543",
+      "size": "245/55R19",
+      "description": "Vitour Explorer H/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer H/T",
+      "priceIncludingVat": 1195,
+      "priceExcludingVat": 1039.13,
+      "sourceRows": [
+        408
+      ]
+    },
+    {
+      "catalogKey": "660fa326db72f09a",
+      "size": "245/55R19",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1450,
+      "priceExcludingVat": 1260.87,
+      "sourceRows": [
+        409
+      ]
+    },
+    {
+      "catalogKey": "ebae0c4bbaad21a0",
+      "size": "255/30R19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1650,
+      "priceExcludingVat": 1434.78,
+      "sourceRows": [
+        410
+      ]
+    },
+    {
+      "catalogKey": "7d3c7181a43ef5c6",
+      "size": "255/35ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        411
+      ]
+    },
+    {
+      "catalogKey": "0c9c5245f7de55e1",
+      "size": "255/40R19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        412
+      ]
+    },
+    {
+      "catalogKey": "3d83179ed619d2f3",
+      "size": "255/45R19",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        413
+      ]
+    },
+    {
+      "catalogKey": "808310840a6cb0ee",
+      "size": "255/50R19",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 1799,
+      "priceExcludingVat": 1564.35,
+      "sourceRows": [
+        414
+      ]
+    },
+    {
+      "catalogKey": "822ebfb32a5abe8e",
+      "size": "255/50R19",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2250,
+      "priceExcludingVat": 1956.52,
+      "sourceRows": [
+        415
+      ]
+    },
+    {
+      "catalogKey": "e9bee51808b88b09",
+      "size": "255/55R19",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2450,
+      "priceExcludingVat": 2130.43,
+      "sourceRows": [
+        416
+      ]
+    },
+    {
+      "catalogKey": "3a69876f49a5b589",
+      "size": "265/30ZR19",
+      "description": "Mazzini Eco607",
+      "brand": "MAZZINI",
+      "pattern": "Eco607",
+      "priceIncludingVat": 1499,
+      "priceExcludingVat": 1303.48,
+      "sourceRows": [
+        417
+      ]
+    },
+    {
+      "catalogKey": "041b37a57aed4260",
+      "size": "265/30ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1895,
+      "priceExcludingVat": 1647.83,
+      "sourceRows": [
+        418
+      ]
+    },
+    {
+      "catalogKey": "80fb281ff9dce3bc",
+      "size": "265/35ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        419
+      ]
+    },
+    {
+      "catalogKey": "ef3c3205573a5989",
+      "size": "265/50ZR19",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        420
+      ]
+    },
+    {
+      "catalogKey": "b5229ed49c7f975e",
+      "size": "275/30ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        421
+      ]
+    },
+    {
+      "catalogKey": "e38a77e6871aa523",
+      "size": "275/35ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        422
+      ]
+    },
+    {
+      "catalogKey": "4b5be3f8d2efc2c1",
+      "size": "275/40ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2250,
+      "priceExcludingVat": 1956.52,
+      "sourceRows": [
+        423
+      ]
+    },
+    {
+      "catalogKey": "47e97c7758323868",
+      "size": "275/55ZR19",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 2950,
+      "priceExcludingVat": 2565.22,
+      "sourceRows": [
+        424
+      ]
+    },
+    {
+      "catalogKey": "94fdcdf49b42265c",
+      "size": "285/30ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2550,
+      "priceExcludingVat": 2217.39,
+      "sourceRows": [
+        425
+      ]
+    },
+    {
+      "catalogKey": "e0b94ebb3b06ecf4",
+      "size": "285/35ZR19",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        426
+      ]
+    },
+    {
+      "catalogKey": "f61b458910fce01f",
+      "size": "285/45ZR19",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        427
+      ]
+    },
+    {
+      "catalogKey": "6fb81bfb13409a20",
+      "size": "295/30ZR19",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2750,
+      "priceExcludingVat": 2391.3,
+      "sourceRows": [
+        428
+      ]
+    },
+    {
+      "catalogKey": "fb4748b4612b1313",
+      "size": "225/30ZR20",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 1499,
+      "priceExcludingVat": 1303.48,
+      "sourceRows": [
+        429
+      ]
+    },
+    {
+      "catalogKey": "b7e68b384921cd14",
+      "size": "225/35ZR20",
+      "description": "Delmax Perform Pro",
+      "brand": "DELMAX",
+      "pattern": "Perform Pro",
+      "priceIncludingVat": 1499,
+      "priceExcludingVat": 1303.48,
+      "sourceRows": [
+        430
+      ]
+    },
+    {
+      "catalogKey": "70354d6d293bc978",
+      "size": "235/30ZR20",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 1595,
+      "priceExcludingVat": 1386.96,
+      "sourceRows": [
+        431
+      ]
+    },
+    {
+      "catalogKey": "489aad20c3cd583c",
+      "size": "235/35ZR20",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 1599,
+      "priceExcludingVat": 1390.43,
+      "sourceRows": [
+        432
+      ]
+    },
+    {
+      "catalogKey": "edd1398b9a5a74c2",
+      "size": "245/30ZR20",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 1650,
+      "priceExcludingVat": 1434.78,
+      "sourceRows": [
+        433
+      ]
+    },
+    {
+      "catalogKey": "488efe7214c59681",
+      "size": "245/35ZR20",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        434
+      ]
+    },
+    {
+      "catalogKey": "63ef1a568a908525",
+      "size": "245/40ZR20",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 1899,
+      "priceExcludingVat": 1651.3,
+      "sourceRows": [
+        435
+      ]
+    },
+    {
+      "catalogKey": "0883a1de916a7355",
+      "size": "245/45ZR20",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        436
+      ]
+    },
+    {
+      "catalogKey": "40a131c6980a0e89",
+      "size": "245/50ZR20",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2295,
+      "priceExcludingVat": 1995.65,
+      "sourceRows": [
+        437
+      ]
+    },
+    {
+      "catalogKey": "60e57df84f483e3b",
+      "size": "255/35ZR20",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 2100,
+      "priceExcludingVat": 1826.09,
+      "sourceRows": [
+        438
+      ]
+    },
+    {
+      "catalogKey": "df8ffb1474b72c62",
+      "size": "255/35ZR20",
+      "description": "Delmax Perform Pro",
+      "brand": "DELMAX",
+      "pattern": "Perform Pro",
+      "priceIncludingVat": 1650,
+      "priceExcludingVat": 1434.78,
+      "sourceRows": [
+        439
+      ]
+    },
+    {
+      "catalogKey": "43e679fbb8edb5bc",
+      "size": "255/40ZR20",
+      "description": "Joyroad Sport RX6",
+      "brand": "JOYROAD",
+      "pattern": "Sport RX6",
+      "priceIncludingVat": 1995,
+      "priceExcludingVat": 1734.78,
+      "sourceRows": [
+        440
+      ]
+    },
+    {
+      "catalogKey": "8e51a8da1a27de23",
+      "size": "255/40ZR20",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        441
+      ]
+    },
+    {
+      "catalogKey": "05c067c99819efde",
+      "size": "255/40ZR20",
+      "description": "Vitour Tempesta Ghost",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Ghost",
+      "priceIncludingVat": 2450,
+      "priceExcludingVat": 2130.43,
+      "sourceRows": [
+        442
+      ]
+    },
+    {
+      "catalogKey": "4da506779672ad77",
+      "size": "255/45ZR20",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2050,
+      "priceExcludingVat": 1782.61,
+      "sourceRows": [
+        443
+      ]
+    },
+    {
+      "catalogKey": "a0d99f4a8a70d372",
+      "size": "255/50ZR20",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2650,
+      "priceExcludingVat": 2304.35,
+      "sourceRows": [
+        444
+      ]
+    },
+    {
+      "catalogKey": "c6fc8fe8c49ae9fa",
+      "size": "255/55ZR20",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2195,
+      "priceExcludingVat": 1908.7,
+      "sourceRows": [
+        445
+      ]
+    },
+    {
+      "catalogKey": "3f4a4590538d6b99",
+      "size": "265/35ZR20",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        446
+      ]
+    },
+    {
+      "catalogKey": "c1a539d66c4cf834",
+      "size": "265/35ZR20",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2350,
+      "priceExcludingVat": 2043.48,
+      "sourceRows": [
+        447
+      ]
+    },
+    {
+      "catalogKey": "b9c57e6aa4555271",
+      "size": "265/45ZR20",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        448
+      ]
+    },
+    {
+      "catalogKey": "8d2b17e00fd4c989",
+      "size": "265/50ZR20",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2250,
+      "priceExcludingVat": 1956.52,
+      "sourceRows": [
+        449
+      ]
+    },
+    {
+      "catalogKey": "b4d8708971e08f20",
+      "size": "265/50ZR20",
+      "description": "Vitour Safari ALL TERRAIN RWL",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL",
+      "priceIncludingVat": 4050,
+      "priceExcludingVat": 3521.74,
+      "sourceRows": [
+        450
+      ]
+    },
+    {
+      "catalogKey": "ac82bbd7a131931c",
+      "size": "275/30ZR20",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 2100,
+      "priceExcludingVat": 1826.09,
+      "sourceRows": [
+        451
+      ]
+    },
+    {
+      "catalogKey": "f40d22a861dacdaf",
+      "size": "275/30ZR20",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        452
+      ]
+    },
+    {
+      "catalogKey": "392134e6478a3c84",
+      "size": "275/35ZR20",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2350,
+      "priceExcludingVat": 2043.48,
+      "sourceRows": [
+        453
+      ]
+    },
+    {
+      "catalogKey": "e6a2181ed4f7e9b5",
+      "size": "275/40R20",
+      "description": "Vitour Formula Z",
+      "brand": "VITOUR",
+      "pattern": "Formula Z",
+      "priceIncludingVat": 1995,
+      "priceExcludingVat": 1734.78,
+      "sourceRows": [
+        454
+      ]
+    },
+    {
+      "catalogKey": "90dab7ac3bac5023",
+      "size": "275/40ZR20",
+      "description": "Saferich FRC866",
+      "brand": "SAFERICH",
+      "pattern": "FRC866",
+      "priceIncludingVat": 1750,
+      "priceExcludingVat": 1521.74,
+      "sourceRows": [
+        455
+      ]
+    },
+    {
+      "catalogKey": "a3d0b8459fd87faf",
+      "size": "275/45ZR20",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        456
+      ]
+    },
+    {
+      "catalogKey": "073ae7e25bda9976",
+      "size": "275/50ZR20",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2995,
+      "priceExcludingVat": 2604.35,
+      "sourceRows": [
+        457
+      ]
+    },
+    {
+      "catalogKey": "ebb1e48ea7ff1883",
+      "size": "275/55R20",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 2425,
+      "priceExcludingVat": 2108.7,
+      "sourceRows": [
+        458
+      ]
+    },
+    {
+      "catalogKey": "f5b40e26508c4b94",
+      "size": "275/55R20",
+      "description": "Vitour BZ Xtreme X20 A/T RWL",
+      "brand": "VITOUR",
+      "pattern": "BZ Xtreme X20 A/T RWL",
+      "priceIncludingVat": 4500,
+      "priceExcludingVat": 3913.04,
+      "sourceRows": [
+        459
+      ]
+    },
+    {
+      "catalogKey": "f82d2551db19af4b",
+      "size": "275/60ZR20",
+      "description": "Vitour Safari ATX",
+      "brand": "VITOUR",
+      "pattern": "Safari ATX",
+      "priceIncludingVat": 2365,
+      "priceExcludingVat": 2056.52,
+      "sourceRows": [
+        460
+      ]
+    },
+    {
+      "catalogKey": "ffea28e5962e36d7",
+      "size": "285/30R20",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 2350,
+      "priceExcludingVat": 2043.48,
+      "sourceRows": [
+        461
+      ]
+    },
+    {
+      "catalogKey": "2c13984a77bdb3ca",
+      "size": "285/30R20",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2995,
+      "priceExcludingVat": 2604.35,
+      "sourceRows": [
+        462
+      ]
+    },
+    {
+      "catalogKey": "13c4109e67ae1528",
+      "size": "285/50ZR20",
+      "description": "Vitour Safari ATX",
+      "brand": "VITOUR",
+      "pattern": "Safari ATX",
+      "priceIncludingVat": 2475,
+      "priceExcludingVat": 2152.17,
+      "sourceRows": [
+        463
+      ]
+    },
+    {
+      "catalogKey": "fc0bed3678dae00b",
+      "size": "285/50ZR20",
+      "description": "Vitour Safari ALL TERRAIN RWL",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL",
+      "priceIncludingVat": 4500,
+      "priceExcludingVat": 3913.04,
+      "sourceRows": [
+        464
+      ]
+    },
+    {
+      "catalogKey": "c79d81635eeabdff",
+      "size": "285/55ZR20",
+      "description": "Vitour Safari ALL TERRAIN RWL",
+      "brand": "VITOUR",
+      "pattern": "Safari ALL TERRAIN RWL",
+      "priceIncludingVat": 4650,
+      "priceExcludingVat": 4043.48,
+      "sourceRows": [
+        465
+      ]
+    },
+    {
+      "catalogKey": "17c1dc04e5fce852",
+      "size": "295/40ZR20",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 2650,
+      "priceExcludingVat": 2304.35,
+      "sourceRows": [
+        466
+      ]
+    },
+    {
+      "catalogKey": "43e8ab2baa147501",
+      "size": "315/35R20",
+      "description": "Vitour Formula SPEC - Z",
+      "brand": "VITOUR",
+      "pattern": "Formula SPEC - Z",
+      "priceIncludingVat": 2495,
+      "priceExcludingVat": 2169.57,
+      "sourceRows": [
+        467
+      ]
+    },
+    {
+      "catalogKey": "d4779afa61f05d31",
+      "size": "35X12.50R20",
+      "description": "Vitour Xtreme R/T X20",
+      "brand": "VITOUR",
+      "pattern": "Xtreme R/T X20",
+      "priceIncludingVat": 5200,
+      "priceExcludingVat": 4521.74,
+      "sourceRows": [
+        468
+      ]
+    },
+    {
+      "catalogKey": "1c5d95817b7058a5",
+      "size": "35X12.50R20",
+      "description": "Vitour Explorer M/T",
+      "brand": "VITOUR",
+      "pattern": "Explorer M/T",
+      "priceIncludingVat": 4350,
+      "priceExcludingVat": 3782.61,
+      "sourceRows": [
+        469
+      ]
+    },
+    {
+      "catalogKey": "aef2c098a09edb54",
+      "size": "245/35R21",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        470
+      ]
+    },
+    {
+      "catalogKey": "db3df691e3f79cab",
+      "size": "255/35R21",
+      "description": "Vitour Tempesta Ghost",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Ghost",
+      "priceIncludingVat": 2995,
+      "priceExcludingVat": 2604.35,
+      "sourceRows": [
+        471
+      ]
+    },
+    {
+      "catalogKey": "8f702b71b08f880a",
+      "size": "265/40ZR21",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 3250,
+      "priceExcludingVat": 2826.09,
+      "sourceRows": [
+        472
+      ]
+    },
+    {
+      "catalogKey": "922ff773b3d8935d",
+      "size": "265/45ZR21",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 2995,
+      "priceExcludingVat": 2604.35,
+      "sourceRows": [
+        473
+      ]
+    },
+    {
+      "catalogKey": "db5c8908e9e3572c",
+      "size": "275/35R21",
+      "description": "Vitour Tempesta Ghost",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Ghost",
+      "priceIncludingVat": 4350,
+      "priceExcludingVat": 3782.61,
+      "sourceRows": [
+        474
+      ]
+    },
+    {
+      "catalogKey": "4fb092416885f320",
+      "size": "275/40ZR21",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        475
+      ]
+    },
+    {
+      "catalogKey": "de98c1978579684b",
+      "size": "275/40ZR21",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        476
+      ]
+    },
+    {
+      "catalogKey": "808e4740a6cff975",
+      "size": "275/45ZR21",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3250,
+      "priceExcludingVat": 2826.09,
+      "sourceRows": [
+        477
+      ]
+    },
+    {
+      "catalogKey": "9a9a98549e376442",
+      "size": "275/50ZR21",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3550,
+      "priceExcludingVat": 3086.96,
+      "sourceRows": [
+        478
+      ]
+    },
+    {
+      "catalogKey": "58b7cad0e20dffd7",
+      "size": "285/30ZR21",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 3500,
+      "priceExcludingVat": 3043.48,
+      "sourceRows": [
+        479
+      ]
+    },
+    {
+      "catalogKey": "7b5192631e17c8e0",
+      "size": "285/35ZR21",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 3550,
+      "priceExcludingVat": 3086.96,
+      "sourceRows": [
+        480
+      ]
+    },
+    {
+      "catalogKey": "6b5278e42bb7e7d9",
+      "size": "295/35ZR21",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 3850,
+      "priceExcludingVat": 3347.83,
+      "sourceRows": [
+        481
+      ]
+    },
+    {
+      "catalogKey": "3ecb5e0650778577",
+      "size": "295/35ZR21",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        482
+      ]
+    },
+    {
+      "catalogKey": "16dd549310459deb",
+      "size": "295/40R21",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        483
+      ]
+    },
+    {
+      "catalogKey": "68c38f50a41f69e2",
+      "size": "315/30R21",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        484
+      ]
+    },
+    {
+      "catalogKey": "e4ca18fde03a083c",
+      "size": "315/35R21",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 4095,
+      "priceExcludingVat": 3560.87,
+      "sourceRows": [
+        485
+      ]
+    },
+    {
+      "catalogKey": "252bc9fc5652b059",
+      "size": "315/45R21",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        486
+      ]
+    },
+    {
+      "catalogKey": "8b5d1a8326ff20bd",
+      "size": "325/30ZR21",
+      "description": "Mazzini Eco602",
+      "brand": "MAZZINI",
+      "pattern": "Eco602",
+      "priceIncludingVat": 4250,
+      "priceExcludingVat": 3695.65,
+      "sourceRows": [
+        487
+      ]
+    },
+    {
+      "catalogKey": "f6dd39263d4aef2a",
+      "size": "265/35ZR22",
+      "description": "Delmax Ultima Sport",
+      "brand": "DELMAX",
+      "pattern": "Ultima Sport",
+      "priceIncludingVat": 2795,
+      "priceExcludingVat": 2430.43,
+      "sourceRows": [
+        488
+      ]
+    },
+    {
+      "catalogKey": "751e153dbe87098a",
+      "size": "275/35ZR22",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3495,
+      "priceExcludingVat": 3039.13,
+      "sourceRows": [
+        489
+      ]
+    },
+    {
+      "catalogKey": "0212f20a6fc1ef00",
+      "size": "285/35ZR22",
+      "description": "Delmax Ultima Sport",
+      "brand": "DELMAX",
+      "pattern": "Ultima Sport",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        490
+      ]
+    },
+    {
+      "catalogKey": "c9fa6d52c3f1c87b",
+      "size": "275/40ZR22",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3250,
+      "priceExcludingVat": 2826.09,
+      "sourceRows": [
+        491
+      ]
+    },
+    {
+      "catalogKey": "ba926a0e4917c83e",
+      "size": "285/40ZR22",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        492
+      ]
+    },
+    {
+      "catalogKey": "340b89b2d0d5fcc3",
+      "size": "285/45ZR22",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3850,
+      "priceExcludingVat": 3347.83,
+      "sourceRows": [
+        493
+      ]
+    },
+    {
+      "catalogKey": "ad041b742d51dcd9",
+      "size": "295/30ZR22",
+      "description": "Delmax Ultima Sport",
+      "brand": "DELMAX",
+      "pattern": "Ultima Sport",
+      "priceIncludingVat": 3150,
+      "priceExcludingVat": 2739.13,
+      "sourceRows": [
+        494
+      ]
+    },
+    {
+      "catalogKey": "47d5c2255aedbf04",
+      "size": "295/40ZR22",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3350,
+      "priceExcludingVat": 2913.04,
+      "sourceRows": [
+        495
+      ]
+    },
+    {
+      "catalogKey": "e9b6c04c7c8c2be4",
+      "size": "315/30ZR22",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3550,
+      "priceExcludingVat": 3086.96,
+      "sourceRows": [
+        496
+      ]
+    },
+    {
+      "catalogKey": "7be376991c7f4d1c",
+      "size": "325/35ZR22",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        497
+      ]
+    },
+    {
+      "catalogKey": "16aa3b6070fdf405",
+      "size": "325/40ZR22",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        498
+      ]
+    },
+    {
+      "catalogKey": "da551b2e6281601e",
+      "size": "305/35ZR23",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 4750,
+      "priceExcludingVat": 4130.43,
+      "sourceRows": [
+        499
+      ]
+    },
+    {
+      "catalogKey": "a709a0d0f54ae0af",
+      "size": "315/30ZR23",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        500
+      ]
+    },
+    {
+      "catalogKey": "a199a89f31733334",
+      "size": "285/40ZR23",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 3995,
+      "priceExcludingVat": 3473.91,
+      "sourceRows": [
+        501
+      ]
+    },
+    {
+      "catalogKey": "1719f571628cae1a",
+      "size": "325/35ZR23",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 4550,
+      "priceExcludingVat": 3956.52,
+      "sourceRows": [
+        502
+      ]
+    },
+    {
+      "catalogKey": "85ce4e2ae4af08fa",
+      "size": "295/30ZR24",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 5995,
+      "priceExcludingVat": 5213.04,
+      "sourceRows": [
+        503
+      ]
+    },
+    {
+      "catalogKey": "054498e2e5a4dc2f",
+      "size": "355/25ZR24",
+      "description": "Vitour Tempesta Quattro",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Quattro",
+      "priceIncludingVat": 7495,
+      "priceExcludingVat": 6517.39,
+      "sourceRows": [
+        504
+      ]
+    },
+    {
+      "catalogKey": "e20c3d20d6c470d9",
+      "size": "195/50R15",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2095,
+      "priceExcludingVat": 1821.74,
+      "sourceRows": [
+        505
+      ]
+    },
+    {
+      "catalogKey": "edda569903595c06",
+      "size": "205/50R15",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2365,
+      "priceExcludingVat": 2056.52,
+      "sourceRows": [
+        506
+      ]
+    },
+    {
+      "catalogKey": "0ecbaf129256f257",
+      "size": "205/45R16",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2365,
+      "priceExcludingVat": 2056.52,
+      "sourceRows": [
+        507
+      ]
+    },
+    {
+      "catalogKey": "247e9764d406c35f",
+      "size": "205/55R16",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2475,
+      "priceExcludingVat": 2152.17,
+      "sourceRows": [
+        508
+      ]
+    },
+    {
+      "catalogKey": "7e6d7ee818b4d67c",
+      "size": "205/45R17",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2425,
+      "priceExcludingVat": 2108.7,
+      "sourceRows": [
+        509
+      ]
+    },
+    {
+      "catalogKey": "a407ae519b485ee2",
+      "size": "215/40R17",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2550,
+      "priceExcludingVat": 2217.39,
+      "sourceRows": [
+        510
+      ]
+    },
+    {
+      "catalogKey": "be54041ea820ede2",
+      "size": "215/45R17",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2695,
+      "priceExcludingVat": 2343.48,
+      "sourceRows": [
+        511
+      ]
+    },
+    {
+      "catalogKey": "fe3812b1d3b79c71",
+      "size": "225/45R17",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2650,
+      "priceExcludingVat": 2304.35,
+      "sourceRows": [
+        512
+      ]
+    },
+    {
+      "catalogKey": "04d5a5e89d5d4b8a",
+      "size": "235/40R17",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2795,
+      "priceExcludingVat": 2430.43,
+      "sourceRows": [
+        513
+      ]
+    },
+    {
+      "catalogKey": "d16c22d164fd1e7e",
+      "size": "235/45R17",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2799,
+      "priceExcludingVat": 2433.91,
+      "sourceRows": [
+        514
+      ]
+    },
+    {
+      "catalogKey": "d882a313c07e2da0",
+      "size": "245/40ZR17",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2895,
+      "priceExcludingVat": 2517.39,
+      "sourceRows": [
+        515
+      ]
+    },
+    {
+      "catalogKey": "991aacc72996c713",
+      "size": "225/40ZR18",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2895,
+      "priceExcludingVat": 2517.39,
+      "sourceRows": [
+        516
+      ]
+    },
+    {
+      "catalogKey": "ac30708044d3974a",
+      "size": "235/40ZR18",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2895,
+      "priceExcludingVat": 2517.39,
+      "sourceRows": [
+        517
+      ]
+    },
+    {
+      "catalogKey": "fc34760286386e41",
+      "size": "245/40R18",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2895,
+      "priceExcludingVat": 2517.39,
+      "sourceRows": [
+        518
+      ]
+    },
+    {
+      "catalogKey": "28998ebae6e9542d",
+      "size": "255/35R18",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2795,
+      "priceExcludingVat": 2430.43,
+      "sourceRows": [
+        519
+      ]
+    },
+    {
+      "catalogKey": "ea3763dfbe08073b",
+      "size": "265/35ZR18",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2895,
+      "priceExcludingVat": 2517.39,
+      "sourceRows": [
+        520
+      ]
+    },
+    {
+      "catalogKey": "72c8ad52a13fa8c5",
+      "size": "265/40ZR18",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 3135,
+      "priceExcludingVat": 2726.09,
+      "sourceRows": [
+        521
+      ]
+    },
+    {
+      "catalogKey": "d68e741ce05310ce",
+      "size": "275/35ZR18",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 2895,
+      "priceExcludingVat": 2517.39,
+      "sourceRows": [
+        522
+      ]
+    },
+    {
+      "catalogKey": "f3b51c3cb4745691",
+      "size": "295/30ZR18",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 3200,
+      "priceExcludingVat": 2782.61,
+      "sourceRows": [
+        523
+      ]
+    },
+    {
+      "catalogKey": "5b8f68e6a789720b",
+      "size": "305/35ZR18",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 4500,
+      "priceExcludingVat": 3913.04,
+      "sourceRows": [
+        524
+      ]
+    },
+    {
+      "catalogKey": "e481f59a4e788f06",
+      "size": "235/35ZR19",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 3250,
+      "priceExcludingVat": 2826.09,
+      "sourceRows": [
+        525
+      ]
+    },
+    {
+      "catalogKey": "13e405db4595e978",
+      "size": "255/35ZR19",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 4250,
+      "priceExcludingVat": 3695.65,
+      "sourceRows": [
+        526
+      ]
+    },
+    {
+      "catalogKey": "f6dddc53738166eb",
+      "size": "275/35ZR19",
+      "description": "Vitour Tempesta Enzo",
+      "brand": "VITOUR",
+      "pattern": "Tempesta Enzo",
+      "priceIncludingVat": 4500,
+      "priceExcludingVat": 3913.04,
+      "sourceRows": [
+        527
+      ]
+    },
+    {
+      "catalogKey": "530908d7127911ea",
+      "size": "185R14C",
+      "description": "Vitour V3000",
+      "brand": "VITOUR",
+      "pattern": "V3000",
+      "priceIncludingVat": 1150,
+      "priceExcludingVat": 1000,
+      "sourceRows": [
+        529
+      ]
+    },
+    {
+      "catalogKey": "27a38fae25be2002",
+      "size": "185R14C",
+      "description": "Vitour V2000 WSW",
+      "brand": "VITOUR",
+      "pattern": "V2000 WSW",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        530
+      ]
+    },
+    {
+      "catalogKey": "8adfb3342ecdd815",
+      "size": "195R14C",
+      "description": "Joyroad Van RX5",
+      "brand": "JOYROAD",
+      "pattern": "Van RX5",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        531
+      ]
+    },
+    {
+      "catalogKey": "fe2b04b889bb95f9",
+      "size": "195R14C",
+      "description": "Joyroad Van RX516 WSW",
+      "brand": "JOYROAD",
+      "pattern": "Van RX516 WSW",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        532
+      ]
+    },
+    {
+      "catalogKey": "99f7753538614b0e",
+      "size": "195R14C",
+      "description": "Vitour V2000 WSW",
+      "brand": "VITOUR",
+      "pattern": "V2000 WSW",
+      "priceIncludingVat": 1450,
+      "priceExcludingVat": 1260.87,
+      "sourceRows": [
+        533
+      ]
+    },
+    {
+      "catalogKey": "4ed883c6f5564659",
+      "size": "195R14C",
+      "description": "Vitour Birdstone WSW",
+      "brand": "VITOUR",
+      "pattern": "Birdstone WSW",
+      "priceIncludingVat": 1599,
+      "priceExcludingVat": 1390.43,
+      "sourceRows": [
+        534
+      ]
+    },
+    {
+      "catalogKey": "1888f882c70cfe20",
+      "size": "195R14C",
+      "description": "Vitour Cargo Van WSW",
+      "brand": "VITOUR",
+      "pattern": "Cargo Van WSW",
+      "priceIncludingVat": 1499,
+      "priceExcludingVat": 1303.48,
+      "sourceRows": [
+        535
+      ]
+    },
+    {
+      "catalogKey": "b978175b85fc889d",
+      "size": "195/70R15C",
+      "description": "Vitour V2000",
+      "brand": "VITOUR",
+      "pattern": "V2000",
+      "priceIncludingVat": 1295,
+      "priceExcludingVat": 1126.09,
+      "sourceRows": [
+        536
+      ]
+    },
+    {
+      "catalogKey": "f8b1bc0a8bf4eb15",
+      "size": "195/70R15C",
+      "description": "Vitour V2000 WSW",
+      "brand": "VITOUR",
+      "pattern": "V2000 WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        537
+      ]
+    },
+    {
+      "catalogKey": "75a61927eabba4f1",
+      "size": "205/70R15C",
+      "description": "Vitour V2000",
+      "brand": "VITOUR",
+      "pattern": "V2000",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        538
+      ]
+    },
+    {
+      "catalogKey": "7b87337b4638678d",
+      "size": "205/70R15C",
+      "description": "Vitour V2000 WSW",
+      "brand": "VITOUR",
+      "pattern": "V2000 WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        539
+      ]
+    },
+    {
+      "catalogKey": "55bb6360e1fb4928",
+      "size": "205/70R15C",
+      "description": "Joyroad Van RX5",
+      "brand": "JOYROAD",
+      "pattern": "Van RX5",
+      "priceIncludingVat": 1250,
+      "priceExcludingVat": 1086.96,
+      "sourceRows": [
+        540
+      ]
+    },
+    {
+      "catalogKey": "02a6f4980a07f508",
+      "size": "205/70R15C",
+      "description": "Vitour V5000",
+      "brand": "VITOUR",
+      "pattern": "V5000",
+      "priceIncludingVat": 1450,
+      "priceExcludingVat": 1260.87,
+      "sourceRows": [
+        541
+      ]
+    },
+    {
+      "catalogKey": "362590c985c6d483",
+      "size": "205/75R15",
+      "description": "Vitour R360 Steel WSW",
+      "brand": "VITOUR",
+      "pattern": "R360 Steel WSW",
+      "priceIncludingVat": 1350,
+      "priceExcludingVat": 1173.91,
+      "sourceRows": [
+        542
+      ]
+    },
+    {
+      "catalogKey": "940444aa77c8ab9e",
+      "size": "195R15C",
+      "description": "Vitour V5000",
+      "brand": "VITOUR",
+      "pattern": "V5000",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        543
+      ]
+    },
+    {
+      "catalogKey": "7ea6792cd39e95d0",
+      "size": "195R15C",
+      "description": "Vitour V2000 WSW",
+      "brand": "VITOUR",
+      "pattern": "V2000 WSW",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        544
+      ]
+    },
+    {
+      "catalogKey": "22b59c7c944f6624",
+      "size": "195R15C",
+      "description": "Joyroad Van RX5",
+      "brand": "JOYROAD",
+      "pattern": "Van RX5",
+      "priceIncludingVat": 1325,
+      "priceExcludingVat": 1152.17,
+      "sourceRows": [
+        545
+      ]
+    },
+    {
+      "catalogKey": "9179df98ad7f75e0",
+      "size": "195R15C",
+      "description": "Joyroad Van RX516 WSW",
+      "brand": "JOYROAD",
+      "pattern": "Van RX516 WSW",
+      "priceIncludingVat": 1450,
+      "priceExcludingVat": 1260.87,
+      "sourceRows": [
+        546
+      ]
+    },
+    {
+      "catalogKey": "af9eac7d7e21c32a",
+      "size": "215/70R15C",
+      "description": "Vitour Cargo Van WSW",
+      "brand": "VITOUR",
+      "pattern": "Cargo Van WSW",
+      "priceIncludingVat": 1695,
+      "priceExcludingVat": 1473.91,
+      "sourceRows": [
+        547
+      ]
+    },
+    {
+      "catalogKey": "d830ef1ec256aa29",
+      "size": "215/70R15C",
+      "description": "Vitour Birdstone WSW",
+      "brand": "VITOUR",
+      "pattern": "Birdstone WSW",
+      "priceIncludingVat": 1795,
+      "priceExcludingVat": 1560.87,
+      "sourceRows": [
+        548
+      ]
+    },
+    {
+      "catalogKey": "6a3796c46f22a9a6",
+      "size": "215/75R15C",
+      "description": "Joyroad Van RX5",
+      "brand": "JOYROAD",
+      "pattern": "Van RX5",
+      "priceIncludingVat": 1425,
+      "priceExcludingVat": 1239.13,
+      "sourceRows": [
+        549
+      ]
+    },
+    {
+      "catalogKey": "559dd2fd4ac5cd42",
+      "size": "215/75R15C",
+      "description": "Joyroad Adventure A/T RWL",
+      "brand": "JOYROAD",
+      "pattern": "Adventure A/T RWL",
+      "priceIncludingVat": 1795,
+      "priceExcludingVat": 1560.87,
+      "sourceRows": [
+        550
+      ]
+    },
+    {
+      "catalogKey": "42657ccbf6a8381c",
+      "size": "225/70R15C",
+      "description": "Joyroad Van RX5",
+      "brand": "JOYROAD",
+      "pattern": "Van RX5",
+      "priceIncludingVat": 1395,
+      "priceExcludingVat": 1213.04,
+      "sourceRows": [
+        551
+      ]
+    },
+    {
+      "catalogKey": "626d7fe985f21aad",
+      "size": "225/70R15C",
+      "description": "Vitour V2000",
+      "brand": "VITOUR",
+      "pattern": "V2000",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        552
+      ]
+    },
+    {
+      "catalogKey": "a13b613917c10ea0",
+      "size": "225/70R15",
+      "description": "Vitour Galaxy R1 RWL",
+      "brand": "VITOUR",
+      "pattern": "Galaxy R1 RWL",
+      "priceIncludingVat": 1450,
+      "priceExcludingVat": 1260.87,
+      "sourceRows": [
+        554
+      ]
+    },
+    {
+      "catalogKey": "077ae9e06dabaecf",
+      "size": "225/70R15",
+      "description": "Vitour R360 Steel WSW",
+      "brand": "VITOUR",
+      "pattern": "R360 Steel WSW",
+      "priceIncludingVat": 1550,
+      "priceExcludingVat": 1347.83,
+      "sourceRows": [
+        555
+      ]
+    },
+    {
+      "catalogKey": "06f7b3c12b634e60",
+      "size": "225/70R15C",
+      "description": "Vitour V2000 WSW",
+      "brand": "VITOUR",
+      "pattern": "V2000 WSW",
+      "priceIncludingVat": 1699,
+      "priceExcludingVat": 1477.39,
+      "sourceRows": [
+        556
+      ]
+    },
+    {
+      "catalogKey": "6616f4cd2fb8c346",
+      "size": "225/70R15C",
+      "description": "Vitour Cargo Van WSW",
+      "brand": "VITOUR",
+      "pattern": "Cargo Van WSW",
+      "priceIncludingVat": 1799,
+      "priceExcludingVat": 1564.35,
+      "sourceRows": [
+        557
+      ]
+    },
+    {
+      "catalogKey": "25feb703549fc71d",
+      "size": "195/75R16C",
+      "description": "Vitour V3000",
+      "brand": "VITOUR",
+      "pattern": "V3000",
+      "priceIncludingVat": 1395,
+      "priceExcludingVat": 1213.04,
+      "sourceRows": [
+        558
+      ]
+    },
+    {
+      "catalogKey": "2184c5e9a88015f2",
+      "size": "205R16C",
+      "description": "Vitour V4000",
+      "brand": "VITOUR",
+      "pattern": "V4000",
+      "priceIncludingVat": 1595,
+      "priceExcludingVat": 1386.96,
+      "sourceRows": [
+        559
+      ]
+    },
+    {
+      "catalogKey": "23420ced442fac49",
+      "size": "205R16C",
+      "description": "Vitour Explorer HT840",
+      "brand": "VITOUR",
+      "pattern": "Explorer HT840",
+      "priceIncludingVat": 1575,
+      "priceExcludingVat": 1369.57,
+      "sourceRows": [
+        560
+      ]
+    },
+    {
+      "catalogKey": "756289a612751ff0",
+      "size": "650R16LT",
+      "description": "Vitour S600 Voyager 10PR",
+      "brand": "VITOUR",
+      "pattern": "S600 Voyager 10PR",
+      "priceIncludingVat": 1895,
+      "priceExcludingVat": 1647.83,
+      "sourceRows": [
+        561
+      ]
+    },
+    {
+      "catalogKey": "49987491f599dee9",
+      "size": "750R16LT",
+      "description": "Vitour S600 Voyager 14PR",
+      "brand": "VITOUR",
+      "pattern": "S600 Voyager 14PR",
+      "priceIncludingVat": 2150,
+      "priceExcludingVat": 1869.57,
+      "sourceRows": [
+        562
+      ]
+    },
+    {
+      "catalogKey": "a7fd64695ff33dbf",
+      "size": "205/65R16C",
+      "description": "Vitour V3000",
+      "brand": "VITOUR",
+      "pattern": "V3000",
+      "priceIncludingVat": null,
+      "priceExcludingVat": null,
+      "sourceRows": [
+        563
+      ]
+    },
+    {
+      "catalogKey": "65730462e08d0271",
+      "size": "215/65R16C",
+      "description": "Vitour V3000",
+      "brand": "VITOUR",
+      "pattern": "V3000",
+      "priceIncludingVat": 1399,
+      "priceExcludingVat": 1216.52,
+      "sourceRows": [
+        564
+      ]
+    },
+    {
+      "catalogKey": "8832aad62a1e80df",
+      "size": "215/70R16LT",
+      "description": "Joyroad Van RX5",
+      "brand": "JOYROAD",
+      "pattern": "Van RX5",
+      "priceIncludingVat": 1399,
+      "priceExcludingVat": 1216.52,
+      "sourceRows": [
+        565
+      ]
+    },
+    {
+      "catalogKey": "e66d8a460ef6f6d5",
+      "size": "215/75R16C",
+      "description": "Vitour V3000",
+      "brand": "VITOUR",
+      "pattern": "V3000",
+      "priceIncludingVat": 1699,
+      "priceExcludingVat": 1477.39,
+      "sourceRows": [
+        566
+      ]
+    },
+    {
+      "catalogKey": "05b4c27b8aa34201",
+      "size": "215/75R16C",
+      "description": "Vitour Cargo Van WSW",
+      "brand": "VITOUR",
+      "pattern": "Cargo Van WSW",
+      "priceIncludingVat": 1865,
+      "priceExcludingVat": 1621.74,
+      "sourceRows": [
+        567
+      ]
+    },
+    {
+      "catalogKey": "861872032c771f41",
+      "size": "225/65R16C",
+      "description": "Vitour V3000",
+      "brand": "VITOUR",
+      "pattern": "V3000",
+      "priceIncludingVat": 1550,
+      "priceExcludingVat": 1347.83,
+      "sourceRows": [
+        568
+      ]
+    },
+    {
+      "catalogKey": "79a637e04725ee9e",
+      "size": "235/65R16C",
+      "description": "Joyroad Van RX5",
+      "brand": "JOYROAD",
+      "pattern": "Van RX5",
+      "priceIncludingVat": 1650,
+      "priceExcludingVat": 1434.78,
+      "sourceRows": [
+        569
+      ]
+    },
+    {
+      "catalogKey": "687e9c4f1ff3df4d",
+      "size": "235/65R16C",
+      "description": "Vitour Cargo Van WSW",
+      "brand": "VITOUR",
+      "pattern": "Cargo Van WSW",
+      "priceIncludingVat": 1975,
+      "priceExcludingVat": 1717.39,
+      "sourceRows": [
+        570
+      ]
+    }
+  ]
+}
