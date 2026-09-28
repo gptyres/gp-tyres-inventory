@@ -1802,12 +1802,15 @@ export interface HoosierSupplierRow {
   size: string;
   category: string;
   productName: string;
-  stockUnits: number;
-  orderStatus: 'AVAILABLE' | 'PREORDER';
+  productLabel?: 'TYRE' | 'TUBE';
+  stockUnits: number | null;
+  orderStatus: 'AVAILABLE' | 'PREORDER' | 'UNKNOWN' | 'OUT_OF_STOCK';
   websiteStockDetail: string;
   sellingPrice: number;
   imageUrl: string;
   sourceUrl: string;
+  sourceSpecifications?: string;
+  sourceRestrictions?: string;
 }
 
 export const parseHoosierData = (
@@ -1832,22 +1835,27 @@ export const parseHoosierData = (
     return {
       id: `hoosier-${row.websiteProductId}`,
       type: ProductType.TYRE,
+      productLabel: row.productLabel || 'TYRE',
+      supplierCategory: row.category,
       ...supplierTyreImageMetadata('HOOSIER TYRES', parsed.brand, parsed.pattern, row.supplierSku),
       brand: parsed.brand || 'HOOSIER',
       pattern: parsed.pattern || row.pattern,
-      size: parsed.size || row.size,
+      // Motorsport and tube sizes are authoritative; generic road-tyre parsing
+      // can otherwise discard prefixes, flotation sizes or compound suffixes.
+      size: row.size || parsed.size,
       loadSpeedIndex: buildTyreIndexDisplay(parsed.rating, parsed.index),
       tyreRating: parsed.rating,
       tyreIndex: parsed.index,
-      tyreSpecs: parsed.specs || row.category,
+      tyreSpecs: [row.category, row.sourceSpecifications, row.sourceRestrictions].filter(Boolean).join(' / '),
       location: 'Hoosier South Africa',
-      stockByLocation: { 'Hoosier South Africa': quantity },
+      stockByLocation: row.orderStatus === 'UNKNOWN' ? undefined : { 'Hoosier South Africa': quantity },
       quantity,
       costPrice: listedPrice,
       sellingPrice: listedPrice,
       supplierCostTaxBasis: 'INCLUDES_VAT',
       supplierOrderStatus: row.orderStatus,
       lastUpdated,
+      sheetSyncedAt: syncedAt,
       imageUrl: row.imageUrl || undefined,
       sourceUrl: row.sourceUrl || undefined
     };

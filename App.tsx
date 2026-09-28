@@ -470,7 +470,7 @@ const App: React.FC = () => {
     },
     HOOSIER_TYRES: {
       label: 'HOOSIER TYRES',
-      note: 'Viewing the official Hoosier South Africa tyre catalogue, including karting and motorcycle tyres. Website prices are VAT inclusive. Available products show exact units; preorder products remain visible with a clear order status.',
+      note: 'Official Hoosier South Africa catalogue: tyres, karting, motorcycle and tubes. Listed website prices are retained on the existing VAT-inclusive basis; no extra VAT added. Dealer costs are not published. Exact units, preorders and unconfirmed quantities are shown separately. Confirm tax and availability before ordering.',
       portalUrl: 'https://hoosiertyres.co.za/shop/'
     },
     VITOUR: {

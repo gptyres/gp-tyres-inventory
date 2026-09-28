@@ -68,6 +68,10 @@ export const formatStockQuantity = (value: number, isMinimum = false): string =>
   `${value}${isMinimum && value > 0 ? '+' : ''}`
 );
 
+export const formatItemStockQuantity = (item: InventoryItem): string => (
+  item.supplierOrderStatus === 'UNKNOWN' ? '—' : formatStockQuantity(item.quantity, item.stockQuantityIsMinimum)
+);
+
 interface VisibleColumns {
   specs: boolean;
   location: boolean;
@@ -143,7 +147,7 @@ const uniqueDisplayParts = (parts: Array<string | undefined>) => {
 };
 
 export const getItemTypeLabel = (item: InventoryItem): string => (
-  item.type === ProductType.COILOVER ? (item as CoiloverProduct).productLabel || item.type : item.type
+  item.type === ProductType.COILOVER || item.type === ProductType.TYRE ? item.productLabel || item.type : item.type
 );
 
 export const getItemDisplayName = (item: InventoryItem): string => {
@@ -299,6 +303,7 @@ export const getWarehouseStockSummary = (items: InventoryItem[]): Array<[string,
 };
 
 const formatItemStockSummary = (item: InventoryItem): string => {
+  if (item.supplierOrderStatus === 'UNKNOWN') return 'Quantity not published — confirm with supplier';
   const availableEntries = getStockEntries(item).filter(([, quantity]) => quantity > 0);
   if (availableEntries.length === 0) return getItemLocation(item);
   const total = availableEntries.reduce((sum, [, quantity]) => sum + quantity, 0);
@@ -306,6 +311,9 @@ const formatItemStockSummary = (item: InventoryItem): string => {
 };
 
 const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
+  if (item.supplierOrderStatus === 'UNKNOWN') {
+    return <div className="col-span-full mt-2 border-t border-gp-border/70 pt-3 text-xs text-gp-text-muted">Quantity not published — confirm with supplier</div>;
+  }
   const structuredEntries = getStockEntries(item);
   const availableEntries = structuredEntries.filter(([, quantity]) => quantity > 0);
   const fallbackLocation = getItemLocation(item);
@@ -757,8 +765,9 @@ const SupplierBadge = ({ item, className = '' }: { item: InventoryItem; classNam
   );
 };
 
-export const getSupplierOrderStatus = (item: InventoryItem): 'AVAILABLE' | 'PREORDER' | null => (
+export const getSupplierOrderStatus = (item: InventoryItem): InventoryItem['supplierOrderStatus'] | null => (
   item.supplierOrderStatus === 'AVAILABLE' || item.supplierOrderStatus === 'PREORDER'
+    || item.supplierOrderStatus === 'UNKNOWN' || item.supplierOrderStatus === 'OUT_OF_STOCK'
     ? item.supplierOrderStatus
     : null
 );
@@ -767,14 +776,15 @@ const SupplierOrderStatusBadge = ({ item, className = '' }: { item: InventoryIte
   const status = getSupplierOrderStatus(item);
   if (!status) return null;
   const isAvailable = status === 'AVAILABLE';
+  const label = status === 'UNKNOWN' ? 'Confirm stock' : status.replaceAll('_', ' ');
 
   return (
     <span
       className={`inline-flex min-h-6 items-center gap-1.5 rounded border px-2 py-1 text-[9px] font-black uppercase tracking-wider ${isAvailable ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400' : 'border-gp-red/50 bg-gp-red/10 text-gp-red'} ${className}`}
-      title={isAvailable ? 'Available from supplier' : 'Preorder required'}
+      title={status === 'UNKNOWN' ? 'Supplier has not published an exact quantity' : isAvailable ? 'Available from supplier' : label}
     >
       <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${isAvailable ? 'bg-emerald-400' : 'bg-gp-red'}`} aria-hidden="true" />
-      {status}
+      {label}
     </span>
   );
 };
@@ -1467,7 +1477,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
               )}
 
               <td className={`p-3 border-r border-gp-border text-center font-mono font-bold ${getStatusColor(item.quantity)}`}>
-                {formatStockQuantity(item.quantity, item.stockQuantityIsMinimum)}
+                {formatItemStockQuantity(item)}
               </td>
 
               {showOrderStatus && (
@@ -1556,7 +1566,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 </div>
                 <div className="flex shrink-0 flex-col items-end">
                   <div className={`text-right ${getStatusColor(item.quantity)}`}>
-                    <span className="text-3xl font-display font-bold leading-none">{formatStockQuantity(item.quantity, item.stockQuantityIsMinimum)}</span>
+                    <span className="text-3xl font-display font-bold leading-none">{formatItemStockQuantity(item)}</span>
                     <div className="text-[9px] uppercase opacity-70">Qty</div>
                   </div>
                 </div>
@@ -1588,7 +1598,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                       label="Index"
                       value={(item as TyreProduct).loadSpeedIndex || (isSupplierTyre(item) ? '' : '-')}
                     />
-                    <SpecBadge label="Cat" value="PCR" />
+                    <SpecBadge label="Cat" value={(item as TyreProduct).supplierCategory || 'PCR'} />
                     </>
                 )}
                 {visibleColumns.specs && item.type === ProductType.WHEEL && (
@@ -1766,7 +1776,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
            
            <div className="flex flex-col items-end gap-2 w-full sm:w-auto mt-4 sm:mt-0">
               <div className={`px-3 py-1 rounded text-xs font-bold ${getStatusColor(item.quantity)} bg-gp-black border border-gp-border`}>
-                {formatStockQuantity(item.quantity, item.stockQuantityIsMinimum)} Left
+                {item.supplierOrderStatus === 'UNKNOWN' ? 'Quantity unknown' : `${formatItemStockQuantity(item)} Left`}
               </div>
               
               {/* Added Cost Price */}

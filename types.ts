@@ -14,7 +14,7 @@ export enum ViewMode {
 
 export type AppView = 'DASHBOARD' | 'STOCK_MOVEMENT' | 'TRAINING_PORTAL' | 'CUSTOMER_HUB' | 'PHOTO_LIBRARY' | 'WORKSHOP_TRACKER' | 'RADAR_RED' | 'AI_AGENT_ADMIN' | 'INVENTORY' | 'ORDERS' | 'BACKORDERS' | 'SYSTEM_LOGS' | 'SUPPLIER_PORTAL' | 'SHIPPING_PORTAL' | 'PAYMENT_PORTAL' | 'TOOLS_PORTAL' | 'SUPPLIER_INVENTORY' | 'WHEEL_CATALOG' | 'WHATSAPP_PORTAL' | 'QUOTE_MODULE' | 'COURIER_LOGISTICS_ASSISTANT';
 export type SupplierCatalog = 'ALL_SUPPLIERS' | 'SAILUN' | 'MAXXIS' | 'EXCLUSIVE_TYRES' | 'EXCLUSIVE_TYRES_NEW' | 'TYREWAREHOUSE' | 'ATT' | 'BRIDGESTONE' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'DIXON_BATTERIES' | 'REVOLUTION_TYRES' | 'ALINE' | 'STAMFORD' | 'TREAD_ZONE' | 'SUMITOMO_DUNLOP' | 'TYRE_LIFE_WHEELS' | 'TREADS_UNLIMITED' | 'TYRE_LIFE' | 'APEX' | 'TUBESTONE' | 'EXOTIC' | 'ARC' | 'EIBACH' | 'HOOSIER_TYRES' | 'JOM' | 'NDT' | 'VITOUR' | 'WHEEL_TECH';
-export type SupplierOrderStatus = 'AVAILABLE' | 'PREORDER';
+export type SupplierOrderStatus = 'AVAILABLE' | 'PREORDER' | 'UNKNOWN' | 'OUT_OF_STOCK';
 
 // Changed to string to support dynamic config updates without type conflicts
 export type StaffName = string;
@@ -30,6 +30,7 @@ export interface BaseProduct {
   lastUpdated: string;
   supplierName?: string;
   supplierStockCode?: string;
+  supplierCostTaxBasis?: 'INCLUDES_VAT' | 'EXCLUDES_VAT' | 'NO_VAT';
   supplierOrderStatus?: SupplierOrderStatus;
   stockByLocation?: Record<string, number>;
   stockQuantityIsMinimum?: boolean;
@@ -47,6 +48,8 @@ export interface BaseProduct {
 
 export interface TyreProduct extends BaseProduct {
   type: ProductType.TYRE;
+  productLabel?: 'TYRE' | 'TUBE';
+  supplierCategory?: string;
   brand: string;
   pattern: string; // e.g., AT3G
   size: string; // e.g., 265/65/17

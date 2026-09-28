@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { extractDroppedVisualUrl, formatBulkClipboardText, formatDisplayedPrice, formatCustomerPrice, getCoiloverDetails, getItemDisplayName, getItemSecondaryLine, getItemSupplierName, getSupplierOrderStatus, getSupportedStaffImageMimeType, getWarehouseStockSummary, isSpecialItem } from './InventoryView';
 import { ProductType, type CoiloverProduct, type TyreProduct, type WheelProduct } from '../types';
-import { formatStockQuantity } from './InventoryView';
+import { formatStockQuantity, formatItemStockQuantity, getItemTypeLabel } from './InventoryView';
 
 const supplierTyre: TyreProduct = {
   id: 'live-apex-cps60',
@@ -23,6 +23,13 @@ const supplierTyre: TyreProduct = {
 };
 
 describe('supplier tyre card formatting', () => {
+  it('does not display an unreported Hoosier quantity as confirmed zero', () => {
+    const unknown = { ...supplierTyre, quantity: 0, supplierOrderStatus: 'UNKNOWN' as const };
+    expect(formatItemStockQuantity(unknown)).toBe('—');
+    expect(getSupplierOrderStatus(unknown)).toBe('UNKNOWN');
+    expect(formatItemStockQuantity({ ...unknown, supplierOrderStatus: 'PREORDER' })).toBe('0');
+    expect(getItemTypeLabel({ ...supplierTyre, productLabel: 'TUBE' })).toBe('TUBE');
+  });
   it('distinguishes stock minimums from exact quantities', () => {
     expect(formatStockQuantity(10, true)).toBe('10+');
     expect(formatStockQuantity(10, false)).toBe('10');
