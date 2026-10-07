@@ -51,7 +51,7 @@ describe('Hoosier supplier catalogue', () => {
     const item = items.find(i => i.supplierStockCode === '35112D12')!;
     expect(row).toMatchObject({ stockUnits: null, websitePurchasable: false });
     expect(item).toMatchObject({ size: '68.0/7.0-13', supplierOrderStatus: 'UNKNOWN', quantity: 0,
-      sellingPrice: 5606.25, lastUpdated: '2026-09-28', sheetSyncedAt: '2026-09-28T15:09:55.033Z' });
+      sellingPrice: 5606.25, lastUpdated: HOOSIER_CATALOG_SYNCED_AT.slice(0, 10), sheetSyncedAt: HOOSIER_CATALOG_SYNCED_AT });
     expect(item.stockByLocation).toBeUndefined();
     expect(getSupplierCostIncludingVat(item, 'HOOSIER_TYRES')).toBe(5606.25);
     expect(calculateSupplierSellingPrice(item, { mode: 'BASE', value: 0 }, 'HOOSIER_TYRES')).toBe(5606.25);

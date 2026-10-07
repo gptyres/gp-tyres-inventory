@@ -2,7 +2,7 @@
 // Exact listed website prices. Existing VAT-inclusive basis retained; no additional VAT.
 // Dealer costs and undisclosed stock quantities must not be inferred.
 export const HOOSIER_CATALOG_SOURCE_URL = "https://hoosiertyres.co.za/shop/";
-export const HOOSIER_CATALOG_SYNCED_AT = "2026-09-28T15:09:55.033Z";
+export const HOOSIER_CATALOG_SYNCED_AT = "2026-10-07T16:07:51.312Z";
 export const HOOSIER_ROWS = [
   {
     "websiteProductId": 356,
@@ -23,7 +23,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "The Hoosier 35112D12 is a premium Dirt Oval racing tyre developed specifically for Midget Dirt and Mini Sprint competition. Featuring Hoosier’s proven D12 compound and Midget Front tread design, this tyre delivers excellent front-end grip, responsive steering feedback, and consistent performance throughout demanding race conditions. Engineered for maximum control and durability, it is a trusted choice for racers competing on dirt oval tracks. 7″ | compound. Designed for Midget Dirt and Mini Sprint racing, offering exceptional grip, steering response, and durability on dirt tracks.",
     "websitePurchasable": false,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 308,
@@ -44,7 +44,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "0-13 Compound: H10SA Application: Dirt oval racing ⚠ Track use only — not road legal.",
     "sourceDescription": "Description The Hoosier Dirt Oval Tyre H10SA — 20.0×9.0-13 is engineered for soft-compound sprint car / dirt sprint use, with the H10SA compound calibrated for slick-track grip. Hoosier is the dominant tyre brand in dirt oval racing across sprint cars, late models, modifieds and stock cars, with compound options to suit every track condition from tacky to dry-slick. Key Features Hoosier dirt-oval compound technology Purpose-built tread pattern for dirt traction Reinforced construction for the demands of oval racing Trusted by professional dirt teams worldwide Specifications Size: 20.0×9.0-13 Compound: H10SA Application: Dirt oval racing ⚠ Track use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 309,
@@ -65,7 +65,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "0R16 Compound: MS Application: Dirt oval racing ⚠ Track use only — not road legal.",
     "sourceDescription": "Description The Hoosier Dirt Oval Tyre MS — 23.5×11.0R16 is engineered for late model and dirt modified racing, with the MS (Modified Stock) compound balancing grip and durability for feature races. Hoosier is the dominant tyre brand in dirt oval racing across sprint cars, late models, modifieds and stock cars, with compound options to suit every track condition from tacky to dry-slick. Key Features Hoosier dirt-oval compound technology Purpose-built tread pattern for dirt traction Reinforced construction for the demands of oval racing Trusted by professional dirt teams worldwide Specifications Size: 23.5×11.0R16 Compound: MS Application: Dirt oval racing ⚠ Track use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 310,
@@ -86,7 +86,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "0R16 Compound: MS Application: Dirt oval racing ⚠ Track use only — not road legal.",
     "sourceDescription": "Description The Hoosier Dirt Oval Tyre MS — 25.5×12.0R16 is engineered for late model and dirt modified racing, with the MS (Modified Stock) compound balancing grip and durability for feature races. Hoosier is the dominant tyre brand in dirt oval racing across sprint cars, late models, modifieds and stock cars, with compound options to suit every track condition from tacky to dry-slick. Key Features Hoosier dirt-oval compound technology Purpose-built tread pattern for dirt traction Reinforced construction for the demands of oval racing Trusted by professional dirt teams worldwide Specifications Size: 25.5×12.0R16 Compound: MS Application: Dirt oval racing ⚠ Track use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 306,
@@ -107,7 +107,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "0-13 Compound: R20 Application: Dirt oval racing ⚠ Track use only — not road legal.",
     "sourceDescription": "Description The Hoosier Dirt Oval Tyre R20 — 20.5×7.0-13 is engineered for sprint car right-rear / dirt sprint applications, with the harder R20 compound for longer life on faster tracks. Hoosier is the dominant tyre brand in dirt oval racing across sprint cars, late models, modifieds and stock cars, with compound options to suit every track condition from tacky to dry-slick. Key Features Hoosier dirt-oval compound technology Purpose-built tread pattern for dirt traction Reinforced construction for the demands of oval racing Trusted by professional dirt teams worldwide Specifications Size: 20.5×7.0-13 Compound: R20 Application: Dirt oval racing ⚠ Track use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 307,
@@ -128,7 +128,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "5-13 Compound: R35B Application: Dirt oval racing ⚠ Track use only — not road legal.",
     "sourceDescription": "Description The Hoosier Dirt Oval Tyre R35B — 20.0×7.5-13 is engineered for sprint car / dirt-modified applications, with the softer R35B compound for tackier track conditions. Hoosier is the dominant tyre brand in dirt oval racing across sprint cars, late models, modifieds and stock cars, with compound options to suit every track condition from tacky to dry-slick. Key Features Hoosier dirt-oval compound technology Purpose-built tread pattern for dirt traction Reinforced construction for the demands of oval racing Trusted by professional dirt teams worldwide Specifications Size: 20.0×7.5-13 Compound: R35B Application: Dirt oval racing ⚠ Track use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 312,
@@ -149,7 +149,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "5-15 Construction: Bias-ply Application: Hot Rod Dirt Modified racing ⚠ Track use only — not road legal.",
     "sourceDescription": "Description The Hoosier Hot Rod Dirt Modified — 25.5×8.5-15 is engineered for the hot-rod dirt modified class. Built around a competition compound and reinforced bias-ply carcass, it delivers strong cornering grip and consistent lap times across feature distances. Key Features Bias-ply construction for predictable, progressive grip Hoosier dirt modified compound Optimised tread for dirt oval traction Class-spec sized for modified racing Specifications Size: 25.5×8.5-15 Construction: Bias-ply Application: Hot Rod Dirt Modified racing ⚠ Track use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 314,
@@ -170,7 +170,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "5-15 Construction: Bias-ply Application: Hot Rod Dirt Modified racing ⚠ Track use only — not road legal.",
     "sourceDescription": "Description The Hoosier Hot Rod Dirt Modified — 26.5×9.5-15 is engineered for the hot-rod dirt modified class. Built around a competition compound and reinforced bias-ply carcass, it delivers strong cornering grip and consistent lap times across feature distances. Key Features Bias-ply construction for predictable, progressive grip Hoosier dirt modified compound Optimised tread for dirt oval traction Class-spec sized for modified racing Specifications Size: 26.5×9.5-15 Construction: Bias-ply Application: Hot Rod Dirt Modified racing ⚠ Track use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 315,
@@ -191,7 +191,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "0-15 Construction: Bias-ply Application: Hot Rod Dirt Modified racing ⚠ Track use only — not road legal.",
     "sourceDescription": "Description The Hoosier Hot Rod Dirt Modified — 26.5×11.0-15 is engineered for the hot-rod dirt modified class. Built around a competition compound and reinforced bias-ply carcass, it delivers strong cornering grip and consistent lap times across feature distances. Key Features Bias-ply construction for predictable, progressive grip Hoosier dirt modified compound Optimised tread for dirt oval traction Class-spec sized for modified racing Specifications Size: 26.5×11.0-15 Construction: Bias-ply Application: Hot Rod Dirt Modified racing ⚠ Track use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 311,
@@ -212,7 +212,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction — stable at speed, consistent contact patch S100 compound calibrated for late model dirt classes Reinforced sidewall for cornering loads Ideal for variable dirt conditions (tacky to slick) Specifications Size: 280/680R18 Compound: S100 Application: Late model dirt racing ⚠ Track use only — not road legal.",
     "sourceDescription": "Description The Hoosier Late Model Dirt S100 — 280/680R18 is purpose-built for late model dirt racing. The radial construction delivers a more consistent contact patch and predictable handling at high speeds compared to bias-ply alternatives, making it a strong choice for both feature races and qualifying. Key Features Radial construction — stable at speed, consistent contact patch S100 compound calibrated for late model dirt classes Reinforced sidewall for cornering loads Ideal for variable dirt conditions (tacky to slick) Specifications Size: 280/680R18 Compound: S100 Application: Late model dirt racing ⚠ Track use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 313,
@@ -233,7 +233,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction RX compound — purpose-built for outlaw / open dirt classes Reinforced sidewall for high cornering loads Designed for sustained competitive use Specifications Size: 200/530R13DH Compound: RX Application: Outlaw / open dirt oval racing ⚠ Track use only — not road legal.",
     "sourceDescription": "Description The Hoosier Outlaw Dirt RX — 200/530R13DH is a radial dirt oval tyre engineered for outlaw and open-modified classes where peak grip and consistency matter. The radial carcass holds a stable contact patch through fast corners and over uneven surfaces. Key Features Radial construction RX compound — purpose-built for outlaw / open dirt classes Reinforced sidewall for high cornering loads Designed for sustained competitive use Specifications Size: 200/530R13DH Compound: RX Application: Outlaw / open dirt oval racing ⚠ Track use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 17,
@@ -254,7 +254,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17310DR2 Size: P225/50R15 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17310DR2 Size: P225/50R15 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 15,
@@ -275,7 +275,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17327DR2 Size: P225/50R17 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17327DR2 Size: P225/50R17 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 19,
@@ -296,7 +296,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17314DR2 Size: P235/60R15 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17314DR2 Size: P235/60R15 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 29,
@@ -317,7 +317,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17340DR2 Size: P245/40R18 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17340DR2 Size: P245/40R18 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 23,
@@ -338,7 +338,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17328DR2 Size: P245/45R17 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17328DR2 Size: P245/45R17 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 25,
@@ -359,7 +359,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17330DR2 Size: P275/40R17 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17330DR2 Size: P275/40R17 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 111,
@@ -380,7 +380,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17315DR2 Size: P275/50R15 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17315DR2 Size: P275/50R15 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 31,
@@ -401,7 +401,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17342DR2 Size: P315/30R18 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17342DR2 Size: P315/30R18 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 27,
@@ -422,7 +422,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17332DR2 Size: P315/35R17 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17332DR2 Size: P315/35R17 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 284,
@@ -443,7 +443,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17343DR2 Size: P325/45R18 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17343DR2 Size: P325/45R18 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 283,
@@ -464,7 +464,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17318DR2 Size: P325/50R15 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier DR2 is a drag radial tyre engineered for maximum straight-line traction. Built around an extremely soft compound and a strong sidewall, the DR2 hooks under hard acceleration and stays stable through high-speed straight-line runs on prepped drag surfaces. DOT-labelled but race-focused, the DR2 is built for the drag strip and high-horsepower street/strip builds — not for circuit use, not for the wet, not for daily driving. Key Features Radial construction with strong sidewall — stability under acceleration Extremely soft DR2 compound — high traction, optimised for launch grip Semi-slick tread, optimised for dry drag strip conditions Maintains contact patch under high torque and power DOT-labelled for transport (not for daily driving) Best For Drag racing Roll racing High horsepower street/strip builds Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17318DR2 Size: P325/50R15 Construction: Radial Compound: DR2 (drag radial — high traction) Tread: Semi-slick with minimal grooves Application: Drag racing / dry strip use DR2 Compound: Extremely soft compound — maximum traction for drag racing Optimised for launch grip and straight-line stability Requires heat for optimal grip — performs best on prepped drag surfaces Not designed for cornering — limited lifespan under aggressive use Limitations Designed for drag racing use Not suitable for wet conditions Not intended for normal daily driving Performance decreases significantly in cold temperatures ⚠ Drag racing use only — not road legal. DOT-labelled for transport, not for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 292,
@@ -485,7 +485,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Designed with lightweight construction and minimal rolling resistance, these tyres provide precise control and stability during high-speed runs. Perfect for front-end applications in drag racing, they help reduce ETs and improve overall vehicle balance.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 293,
@@ -506,7 +506,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Designed with lightweight construction and minimal rolling resistance, these tyres provide precise control and stability during high-speed runs. Perfect for front-end applications in drag racing, they help reduce ETs and improve overall vehicle balance.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 294,
@@ -527,7 +527,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Designed with lightweight construction and minimal rolling resistance, these tyres provide precise control and stability during high-speed runs. Perfect for front-end applications in drag racing, they help reduce ETs and improve overall vehicle balance.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 296,
@@ -548,7 +548,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Designed exclusively for the drag strip — these tyres are not road legal and not intended for general driving. 5-15 Construction: Bias-ply Application: Drag racing front (steer) tyre ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier Drag Front Tyre 26.0/4.5-15 is a lightweight bias-ply front tyre purpose-built for drag racing. Low rolling resistance and a narrow footprint reduce front-end weight transfer drag, helping to lower ETs and improve straight-line stability at high speeds. Designed exclusively for the drag strip — these tyres are not road legal and not intended for general driving. Key Features Lightweight bias-ply construction Narrow tread pattern for minimal rolling resistance Solid white “Hoosier” sidewall lettering Optimised for high-speed straight-line stability Specifications Size: 26.0/4.5-15 Construction: Bias-ply Application: Drag racing front (steer) tyre ⚠ Drag racing use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 295,
@@ -569,7 +569,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Designed exclusively for the drag strip — these tyres are not road legal and not intended for general driving. 5-17 Construction: Bias-ply Application: Drag racing front (steer) tyre ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier Drag Front Tyre 26.0/4.5-17 is a lightweight bias-ply front tyre purpose-built for drag racing. Low rolling resistance and a narrow footprint reduce front-end weight transfer drag, helping to lower ETs and improve straight-line stability at high speeds. Designed exclusively for the drag strip — these tyres are not road legal and not intended for general driving. Key Features Lightweight bias-ply construction Narrow tread pattern for minimal rolling resistance Solid white “Hoosier” sidewall lettering Optimised for high-speed straight-line stability Specifications Size: 26.0/4.5-17 Construction: Bias-ply Application: Drag racing front (steer) tyre ⚠ Drag racing use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 33,
@@ -590,7 +590,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Hoosier Drag Front Tyres Tire, Drag Front, 28.0 x 4.5 -18, Bias-Ply, Solid White Letters, Each Hoosier drag front tyres are available in a variety of sizes and tread specs for your competition car. These bias-ply tyres are well-built with top-quality materials, and feature solid “Hoosier” white lettering on the sidewalls. Order the fitment needed to give you an edge at the track!",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 41,
@@ -611,7 +611,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "The Hoosier 24.5-9-13 Drag Racing Slick is designed for unbeatable traction and durability on the track. Known for delivering consistent performance, these bias-ply slicks feature solid white lettering and are built to handle the demands of competitive drag racing. With their extended lifespan, you’ll get more passes than most other drag slicks. Available in various sizes and compounds to match your driving style or track conditions, the Hoosier 24.5-9-13 is the go-to choice for racers seeking superior grip and long-lasting performance on 13-inch wheels.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 290,
@@ -632,7 +632,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Hoosier Racing Tire is the Industry leader in manufacturing the highest quality Drag Racing Slicks in the market. Hoosier Drag Tyres are proudly used in all divisions of racing from Jr. Dragster to the Top Alcohol categories. Hoosier is a leader in producing tyres for use in NHRA, IHRA and other drag racing sanctions in the USA and internationally. Racers across the globe trust Hoosier Racing Tire to get them across the finish line first! **Hoosier drag racing slicks are NOT legal for street use”",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 291,
@@ -653,7 +653,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Hoosier Racing Tire is the Industry leader in manufacturing the highest quality Drag Racing Slicks in the market. Hoosier Drag Tyres are proudly used in all divisions of racing from Jr. Dragster to the Top Alcohol categories. Hoosier is a leader in producing tyres for use in NHRA, IHRA and other drag racing sanctions in the USA and internationally. Racers across the globe trust Hoosier Racing Tire to get them across the finish line first! **Hoosier drag racing slicks are NOT legal for street use”",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 35,
@@ -674,7 +674,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Hoosier Drag Racing Slicks Tire, Drag Racing, 26/8.0-15, Bias-Ply, Solid White Letters, Each Not only are Hoosier drag racing slicks fast, but they also last longer than most other tyres, so you get more passes out of them. What more can you ask for from a drag slick? Hoosier drag racing slicks are available for front and rear applications in a variety of sizes and in your choice of compounds to suit your driving style or track condition.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 297,
@@ -695,7 +695,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Not only are Hoosier drag racing slicks fast, but they also last longer than most other tyres, so you get more passes out of them. What more can you ask for from a drag slick? Hoosier drag racing slicks are available for front and rear applications in a variety of sizes and in your choice of compounds to suit your driving style or track condition.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 45,
@@ -716,7 +716,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Hoosier Racing Tire is the Industry leader in manufacturing the highest quality Drag Racing Slicks in the market. Hoosier Drag Tyres are proudly used in all divisions of racing from Jr. Dragster to the Top Alcohol categories. Hoosier is a leader in producing tyres for use in NHRA, IHRA and other drag racing sanctions in the USA and internationally. Racers across the globe trust Hoosier Racing Tire to get them across the finish line first! **Hoosier drag racing slicks are NOT legal for street use”",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 298,
@@ -737,7 +737,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Hoosier Racing Tire is the Industry leader in manufacturing the highest quality Drag Racing Slicks in the market. Hoosier Drag Tyres are proudly used in all divisions of racing from Jr. Dragster to the Top Alcohol categories. Hoosier is a leader in producing tyres for use in NHRA, IHRA and other drag racing sanctions in the USA and internationally. Racers across the globe trust Hoosier Racing Tire to get them across the finish line first! **Hoosier drag racing slicks are NOT legal for street use”",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 300,
@@ -758,7 +758,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "0-17 Construction: Bias-ply Application: Drag racing slick (rear application) ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier Drag Slick 28.0/10.0-17 is a bias-ply drag racing tyre engineered for unbeatable straight-line traction. Built around Hoosier’s proven drag-race compound and reinforced bias-ply construction, it delivers consistent launch grip and predictable behaviour across multiple passes. Hoosier drag slicks are NOT legal for street use — they are competition-only tyres designed for prepped drag surfaces. Key Features Bias-ply construction with strong sidewall Drag-race compound — high traction, optimised for launch grip Slick tread pattern for maximum contact patch Trusted in NHRA, IHRA and international drag racing sanctions Long lifespan relative to other competition slicks Best For Drag racing Bracket racing Junior dragster to Top Alcohol classes (size-dependent) Specifications Size: 28.0/10.0-17 Construction: Bias-ply Application: Drag racing slick (rear application) ⚠ Drag racing use only — not road legal. Not intended for daily driving or wet conditions.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 299,
@@ -779,7 +779,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "5-15W Construction: Bias-ply Application: High horsepower drag racing ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier Drag Slick 28.0/10.5-15W is a wide bias-ply drag racing tyre built for high-horsepower applications. The wider footprint delivers maximum contact patch under hard launches, stabilising the car under torque and minimising wheel-spin off the line. Key Features Bias-ply construction, wider section for big-tyre cars Drag-race compound — high traction, optimised for launch grip Reinforced sidewall for high-torque applications Built for prepped drag strip use Specifications Size: 28.0/10.5-15W Construction: Bias-ply Application: High horsepower drag racing ⚠ Drag racing use only — not road legal.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 37,
@@ -800,7 +800,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Hoosier Drag Racing Slicks Tire, Drag Racing, 29/12-15, Bias-Ply, Solid White Letters, Each Not only are Hoosier drag racing slicks fast, but they also last longer than most other tyres, so you get more passes out of them. What more can you ask for from a drag slick? Hoosier drag racing slicks are available for front and rear applications in a variety of sizes and in your choice of compounds to suit your driving style or track condition.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 301,
@@ -821,7 +821,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "0-15 Construction: Bias-ply Application: Drag racing slick (rear application) ⚠ Drag racing use only — not road legal.",
     "sourceDescription": "Description The Hoosier Drag Slick 31.0/14.0-15 is a bias-ply drag racing tyre engineered for unbeatable straight-line traction. Built around Hoosier’s proven drag-race compound and reinforced bias-ply construction, it delivers consistent launch grip and predictable behaviour across multiple passes. Hoosier drag slicks are NOT legal for street use — they are competition-only tyres designed for prepped drag surfaces. Key Features Bias-ply construction with strong sidewall Drag-race compound — high traction, optimised for launch grip Slick tread pattern for maximum contact patch Trusted in NHRA, IHRA and international drag racing sanctions Long lifespan relative to other competition slicks Best For Drag racing Bracket racing Junior dragster to Top Alcohol classes (size-dependent) Specifications Size: 31.0/14.0-15 Construction: Bias-ply Application: Drag racing slick (rear application) ⚠ Drag racing use only — not road legal. Not intended for daily driving or wet conditions.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 302,
@@ -842,7 +842,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Hoosier Racing Tire is the Industry leader in manufacturing the highest quality Drag Racing Slicks in the market. Hoosier Drag Tyres are proudly used in all divisions of racing from Jr. Dragster to the Top Alcohol categories. Hoosier is a leader in producing tyres for use in NHRA, IHRA and other drag racing sanctions in the USA and internationally. Racers across the globe trust Hoosier Racing Tire to get them across the finish line first! **Hoosier drag racing slicks are NOT legal for street use”",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 43,
@@ -863,7 +863,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Hoosier Racing Tire is the Industry leader in manufacturing the highest quality Drag Racing Slicks in the market. Hoosier Drag Tyres are proudly used in all divisions of racing from Jr. Dragster to the Top Alcohol categories. Hoosier is a leader in producing tyres for use in NHRA, IHRA and other drag racing sanctions in the USA and internationally. Racers across the globe trust Hoosier Racing Tire to get them across the finish line first! **Hoosier drag racing slicks are NOT legal for street use”",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 49,
@@ -884,7 +884,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Description The Hoosier Quick Time Pro (QT Pro) is a bias-ply, DOT-labelled drag tyre engineered for street/strip and weekend drag racing. The flexible “wrinkle wall” sidewall absorbs launch shock and the soft drag compound delivers near-slick launch traction while still meeting DOT requirements for limited road use. QT Pro sits between drag radials and full drag slicks: more traction than a radial, more usability than a full slick. It hooks harder than a DR2 and is more forgiving on imperfect track surfaces, while remaining less stable at high speed than a radial. Key Features Bias-ply construction with flexible “wrinkle wall” sidewall Soft drag compound — high traction under acceleration DOT-labelled tread (minimal grooves, slick-style) Absorbs launch shock for stronger traction off the line More forgiving on imperfect track surfaces than radial tyres Best For Drag racing Street/strip builds Weekend drag cars Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17415QTPRO Size: 26.0×9.5-15LT Construction: Bias-ply Compound: Soft drag (Quick Time Pro) Tread: DOT-labelled, slick-style with minimal grooves Application: Drag racing / dry strip use, limited street/strip Where QT Pro Sits: More traction than drag radials (DR2 / Pro Street) More usability than full drag slicks Bias-ply wrinkle-wall absorbs launch shock DOT-labelled — limited street/strip capability Limitations Designed primarily for drag racing Not suitable for wet conditions Not intended for normal daily driving Performance decreases in cold temperatures ⚠ Drag racing focused — DOT-labelled but not intended for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 39,
@@ -905,7 +905,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Description The Hoosier Quick Time Pro (QT Pro) is a bias-ply, DOT-labelled drag tyre engineered for street/strip and weekend drag racing. The flexible “wrinkle wall” sidewall absorbs launch shock and the soft drag compound delivers near-slick launch traction while still meeting DOT requirements for limited road use. QT Pro sits between drag radials and full drag slicks: more traction than a radial, more usability than a full slick. It hooks harder than a DR2 and is more forgiving on imperfect track surfaces, while remaining less stable at high speed than a radial. Key Features Bias-ply construction with flexible “wrinkle wall” sidewall Soft drag compound — high traction under acceleration DOT-labelled tread (minimal grooves, slick-style) Absorbs launch shock for stronger traction off the line More forgiving on imperfect track surfaces than radial tyres Best For Drag racing Street/strip builds Weekend drag cars Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17421QTPRO Size: 26.0×11.5-15LT Construction: Bias-ply Compound: Soft drag (Quick Time Pro) Tread: DOT-labelled, slick-style with minimal grooves Application: Drag racing / dry strip use, limited street/strip Where QT Pro Sits: More traction than drag radials (DR2 / Pro Street) More usability than full drag slicks Bias-ply wrinkle-wall absorbs launch shock DOT-labelled — limited street/strip capability Limitations Designed primarily for drag racing Not suitable for wet conditions Not intended for normal daily driving Performance decreases in cold temperatures ⚠ Drag racing focused — DOT-labelled but not intended for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 285,
@@ -926,7 +926,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Description The Hoosier Quick Time Pro (QT Pro) is a bias-ply, DOT-labelled drag tyre engineered for street/strip and weekend drag racing. The flexible “wrinkle wall” sidewall absorbs launch shock and the soft drag compound delivers near-slick launch traction while still meeting DOT requirements for limited road use. QT Pro sits between drag radials and full drag slicks: more traction than a radial, more usability than a full slick. It hooks harder than a DR2 and is more forgiving on imperfect track surfaces, while remaining less stable at high speed than a radial. Key Features Bias-ply construction with flexible “wrinkle wall” sidewall Soft drag compound — high traction under acceleration DOT-labelled tread (minimal grooves, slick-style) Absorbs launch shock for stronger traction off the line More forgiving on imperfect track surfaces than radial tyres Best For Drag racing Street/strip builds Weekend drag cars Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17510QTPRO Size: 27.0×11.5-15LT Construction: Bias-ply Compound: Soft drag (Quick Time Pro) Tread: DOT-labelled, slick-style with minimal grooves Application: Drag racing / dry strip use, limited street/strip Where QT Pro Sits: More traction than drag radials (DR2 / Pro Street) More usability than full drag slicks Bias-ply wrinkle-wall absorbs launch shock DOT-labelled — limited street/strip capability Limitations Designed primarily for drag racing Not suitable for wet conditions Not intended for normal daily driving Performance decreases in cold temperatures ⚠ Drag racing focused — DOT-labelled but not intended for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 286,
@@ -947,7 +947,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Description The Hoosier Quick Time Pro (QT Pro) is a bias-ply, DOT-labelled drag tyre engineered for street/strip and weekend drag racing. The flexible “wrinkle wall” sidewall absorbs launch shock and the soft drag compound delivers near-slick launch traction while still meeting DOT requirements for limited road use. QT Pro sits between drag radials and full drag slicks: more traction than a radial, more usability than a full slick. It hooks harder than a DR2 and is more forgiving on imperfect track surfaces, while remaining less stable at high speed than a radial. Key Features Bias-ply construction with flexible “wrinkle wall” sidewall Soft drag compound — high traction under acceleration DOT-labelled tread (minimal grooves, slick-style) Absorbs launch shock for stronger traction off the line More forgiving on imperfect track surfaces than radial tyres Best For Drag racing Street/strip builds Weekend drag cars Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17601QTPRO Size: 28.0×11.5-15LT Construction: Bias-ply Compound: Soft drag (Quick Time Pro) Tread: DOT-labelled, slick-style with minimal grooves Application: Drag racing / dry strip use, limited street/strip Where QT Pro Sits: More traction than drag radials (DR2 / Pro Street) More usability than full drag slicks Bias-ply wrinkle-wall absorbs launch shock DOT-labelled — limited street/strip capability Limitations Designed primarily for drag racing Not suitable for wet conditions Not intended for normal daily driving Performance decreases in cold temperatures ⚠ Drag racing focused — DOT-labelled but not intended for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 287,
@@ -968,7 +968,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Description The Hoosier Quick Time Pro (QT Pro) is a bias-ply, DOT-labelled drag tyre engineered for street/strip and weekend drag racing. The flexible “wrinkle wall” sidewall absorbs launch shock and the soft drag compound delivers near-slick launch traction while still meeting DOT requirements for limited road use. QT Pro sits between drag radials and full drag slicks: more traction than a radial, more usability than a full slick. It hooks harder than a DR2 and is more forgiving on imperfect track surfaces, while remaining less stable at high speed than a radial. Key Features Bias-ply construction with flexible “wrinkle wall” sidewall Soft drag compound — high traction under acceleration DOT-labelled tread (minimal grooves, slick-style) Absorbs launch shock for stronger traction off the line More forgiving on imperfect track surfaces than radial tyres Best For Drag racing Street/strip builds Weekend drag cars Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17606QTPRO Size: 28.0×13.5-15LT Construction: Bias-ply Compound: Soft drag (Quick Time Pro) Tread: DOT-labelled, slick-style with minimal grooves Application: Drag racing / dry strip use, limited street/strip Where QT Pro Sits: More traction than drag radials (DR2 / Pro Street) More usability than full drag slicks Bias-ply wrinkle-wall absorbs launch shock DOT-labelled — limited street/strip capability Limitations Designed primarily for drag racing Not suitable for wet conditions Not intended for normal daily driving Performance decreases in cold temperatures ⚠ Drag racing focused — DOT-labelled but not intended for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 288,
@@ -989,7 +989,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Description The Hoosier Quick Time Pro (QT Pro) is a bias-ply, DOT-labelled drag tyre engineered for street/strip and weekend drag racing. The flexible “wrinkle wall” sidewall absorbs launch shock and the soft drag compound delivers near-slick launch traction while still meeting DOT requirements for limited road use. QT Pro sits between drag radials and full drag slicks: more traction than a radial, more usability than a full slick. It hooks harder than a DR2 and is more forgiving on imperfect track surfaces, while remaining less stable at high speed than a radial. Key Features Bias-ply construction with flexible “wrinkle wall” sidewall Soft drag compound — high traction under acceleration DOT-labelled tread (minimal grooves, slick-style) Absorbs launch shock for stronger traction off the line More forgiving on imperfect track surfaces than radial tyres Best For Drag racing Street/strip builds Weekend drag cars Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17611QTPRO Size: 28.0×14.5-15LT Construction: Bias-ply Compound: Soft drag (Quick Time Pro) Tread: DOT-labelled, slick-style with minimal grooves Application: Drag racing / dry strip use, limited street/strip Where QT Pro Sits: More traction than drag radials (DR2 / Pro Street) More usability than full drag slicks Bias-ply wrinkle-wall absorbs launch shock DOT-labelled — limited street/strip capability Limitations Designed primarily for drag racing Not suitable for wet conditions Not intended for normal daily driving Performance decreases in cold temperatures ⚠ Drag racing focused — DOT-labelled but not intended for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 289,
@@ -1010,7 +1010,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Description The Hoosier Quick Time Pro (QT Pro) is a bias-ply, DOT-labelled drag tyre engineered for street/strip and weekend drag racing. The flexible “wrinkle wall” sidewall absorbs launch shock and the soft drag compound delivers near-slick launch traction while still meeting DOT requirements for limited road use. QT Pro sits between drag radials and full drag slicks: more traction than a radial, more usability than a full slick. It hooks harder than a DR2 and is more forgiving on imperfect track surfaces, while remaining less stable at high speed than a radial. Key Features Bias-ply construction with flexible “wrinkle wall” sidewall Soft drag compound — high traction under acceleration DOT-labelled tread (minimal grooves, slick-style) Absorbs launch shock for stronger traction off the line More forgiving on imperfect track surfaces than radial tyres Best For Drag racing Street/strip builds Weekend drag cars Not Suitable For Circuit racing Track days Wet conditions Specifications Item Code: 17652QTPRO Size: 28.0×14.5-17LT Construction: Bias-ply Compound: Soft drag (Quick Time Pro) Tread: DOT-labelled, slick-style with minimal grooves Application: Drag racing / dry strip use, limited street/strip Where QT Pro Sits: More traction than drag radials (DR2 / Pro Street) More usability than full drag slicks Bias-ply wrinkle-wall absorbs launch shock DOT-labelled — limited street/strip capability Limitations Designed primarily for drag racing Not suitable for wet conditions Not intended for normal daily driving Performance decreases in cold temperatures ⚠ Drag racing focused — DOT-labelled but not intended for daily driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 252,
@@ -1031,7 +1031,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Description The Hoosier R55 Shifter Kart Tyre — 7.1/11.0-5 is the rear tyre developed specifically for 125cc shifter and gearbox kart classes. Built around a soft compound and reinforced kart-spec carcass, it delivers maximum mechanical grip to handle the extreme torque and cornering forces of shifter karts. What’s Included 1 × Hoosier Kart Tyre Key Features Soft R55 compound — maximum grip for shifter / gearbox karts Reinforced carcass for high-torque applications Consistent grip lap after lap Designed for the higher speeds of 125cc gearbox karting Specifications Size: 7.1/11.0-5 Compound: R55 (Soft, shifter-spec) Application: 125cc shifter / gearbox kart racing ⚠ Designed for kart racing only — not intended for road use.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 303,
@@ -1052,7 +1052,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "0-5 Compound: Medium (R70) Application: Kart Racing Compound Quick Guide: T10 (Soft) — Maximum grip, short races / qualifying R70 (Medium) — Balanced performance T20 (Hard) — Long life, endurance ⚠ Designed for kart racing use only.",
     "sourceDescription": "Description High-performance kart racing tyre engineered for consistent grip and predictable handling across a wide range of track conditions. The medium compound provides an excellent balance between durability and performance, making it ideal for club and competitive karting. What’s Included 1 × Hoosier Kart Tyre Key Features Medium compound for balanced grip and longevity Consistent performance across heat cycles Stable under braking and cornering loads Suitable for sprint and circuit karting Proven in competitive kart racing environments Application Sprint kart racing Club racing Practice and race use Specifications Item Code: 22380R70 Size: 7.1/11.0-5 Compound: Medium (R70) Application: Kart Racing Compound Quick Guide: T10 (Soft) — Maximum grip, short races / qualifying R70 (Medium) — Balanced performance T20 (Hard) — Long life, endurance ⚠ Designed for kart racing use only. Not intended for road use.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 282,
@@ -1073,7 +1073,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "0-10 Compound: Soft (T10) Application: Kart Racing Compound Quick Guide: T10 (Soft) — Maximum grip, short races / qualifying R70 (Medium) — Balanced performance T20 (Hard) — Long life, endurance ⚠ Designed for kart racing use only.",
     "sourceDescription": "Description High-grip kart racing tyre designed for maximum traction and peak performance. The soft compound delivers rapid heat-up and exceptional grip, making it ideal for qualifying and short sprint races. What’s Included 1 × Hoosier Kart Tyre Key Features Soft compound for maximum grip Fast heat-up for immediate performance Ideal for qualifying and short races Enhanced cornering traction Application Sprint racing Qualifying laps Low-temperature conditions Specifications Item Code: 16130T10 Size: 18.5×6.0-10 Compound: Soft (T10) Application: Kart Racing Compound Quick Guide: T10 (Soft) — Maximum grip, short races / qualifying R70 (Medium) — Balanced performance T20 (Hard) — Long life, endurance ⚠ Designed for kart racing use only. Not intended for road use.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 281,
@@ -1094,7 +1094,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "0-10 Compound: Hard (T20) Application: Kart Racing Compound Quick Guide: T10 (Soft) — Maximum grip, short races / qualifying R70 (Medium) — Balanced performance T20 (Hard) — Long life, endurance ⚠ Designed for kart racing use only.",
     "sourceDescription": "Description Durable kart racing tyre designed for extended life and consistent lap times. The hard compound is ideal for longer sessions, endurance karting, and abrasive track surfaces where tyre wear is a concern. What’s Included 1 × Hoosier Kart Tyre Key Features Hard compound for maximum lifespan Resistant to wear on high-grip surfaces Consistent performance over long runs Lower degradation under heat Application Endurance karting Practice sessions High-wear track conditions Specifications Item Code: 16110T20 Size: 18.0×11.0-10 Compound: Hard (T20) Application: Kart Racing Compound Quick Guide: T10 (Soft) — Maximum grip, short races / qualifying R70 (Medium) — Balanced performance T20 (Hard) — Long life, endurance ⚠ Designed for kart racing use only. Not intended for road use.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 279,
@@ -1115,7 +1115,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Designed for track use only , these tyres deliver exceptional performance under high-speed and high-load conditions.",
     "sourceDescription": "Hoosier motorcycle race tyres are built for competitive environments where maximum grip and consistency are critical. Designed for track use only , these tyres deliver exceptional performance under high-speed and high-load conditions. Description High-performance competition motorcycle tyre designed for track and race environments. Built using Hoosier’s proven racing compound technology, this tyre delivers maximum grip, rapid heat-up, and consistent performance under aggressive riding conditions. Key Features Race compound for maximum traction Fast heat cycle activation (ideal for sprint racing) Designed for high lean-angle stability Consistent grip across heat cycles Used in professional and club-level racing Application Circuit racing / track use Sprint racing High-performance track bikes Construction Bias or radial race construction (varies by batch/spec) Slick or minimal tread (depending on version) Specifications Item Code: 17191 Size: 110/90-19 Application: Motorcycle Race / Track ⚠ Hoosier motorcycle race tyres are sold by compound + application. Contact us before ordering to confirm the correct compound for your discipline (sprint, endurance, flat track, etc.).",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 280,
@@ -1136,7 +1136,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Designed for track use only , these tyres deliver exceptional performance under high-speed and high-load conditions.",
     "sourceDescription": "Hoosier motorcycle race tyres are built for competitive environments where maximum grip and consistency are critical. Designed for track use only , these tyres deliver exceptional performance under high-speed and high-load conditions. Description Competition-grade motorcycle tyre engineered for aggressive race conditions. Focused on durability under high load and high-speed stability, making it suitable for heavier or more powerful race bikes. Key Features Durable race compound for longer sessions Stable under high-speed cornering Designed for consistent lap performance Strong carcass construction for load handling Application Circuit racing Endurance racing High horsepower motorcycles Specifications Item Code: 7200 Size: 120/80-19 Application: Motorcycle Race / Track ⚠ Hoosier motorcycle race tyres are sold by compound + application. Contact us before ordering to confirm the correct compound for your discipline (sprint, endurance, flat track, etc.).",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 13,
@@ -1157,7 +1157,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "IMPORT ONLY – On request",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 322,
@@ -1178,7 +1178,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction — stable at high speeds, consistent contact patch under load A7 racing compound — very soft, maximum peak grip Fast warm-up — immediate performance from the first lap Semi-slick with minimal grooves, optimised for dry conditions DOT-labelled for transport (not for road driving) Best For Autocross Hillclimb Short sprint races Qualifying laps Specifications Item Code: 46935A7 Size: P295/30ZR19 Construction: Radial Compound: A7 (maximum peak grip, short lifespan) Tread: Semi-slick with minimal grooves Application: Competition / dry track use A7 Compound: Maximum peak grip — autocross, hillclimb, sprint, qualifying Very soft, fast warm-up, high peak grip Wears quickly — not suitable for long sessions More sensitive to overheating than R7 Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal.  DOT-labelled for transport, not for road driving.",
     "sourceDescription": "Description The Hoosier A7 is a DOT-labelled competition racing radial built for short, high-intensity sessions where peak grip is everything. The A7 compound is Hoosier’s softest competition rubber — fast to warm up, high peak grip, but with a shorter lifespan than R7. Designed for autocross, hillclimb, sprint races and qualifying laps where every tenth counts. Not built for long track sessions or endurance use. Key Features Radial construction — stable at high speeds, consistent contact patch under load A7 racing compound — very soft, maximum peak grip Fast warm-up — immediate performance from the first lap Semi-slick with minimal grooves, optimised for dry conditions DOT-labelled for transport (not for road driving) Best For Autocross Hillclimb Short sprint races Qualifying laps Specifications Item Code: 46935A7 Size: P295/30ZR19 Construction: Radial Compound: A7 (maximum peak grip, short lifespan) Tread: Semi-slick with minimal grooves Application: Competition / dry track use A7 Compound: Maximum peak grip — autocross, hillclimb, sprint, qualifying Very soft, fast warm-up, high peak grip Wears quickly — not suitable for long sessions More sensitive to overheating than R7 Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal. DOT-labelled for transport, not for road driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 320,
@@ -1199,7 +1199,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46601R7 Size: P205/45ZR16 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal.  DOT-labelled for transport, not for road driving.",
     "sourceDescription": "Description The Hoosier R7 is a DOT-labelled competition racing radial designed for dry track use. Built around an R-compound semi-slick construction with minimal tread, the R7 delivers consistent grip and predictable behaviour across long track sessions. R7 is the track-focused compound — engineered to handle repeated heat cycles, hold a consistent contact patch under load, and stay stable at high speed across an entire session. Slightly less peak grip than the A7, but longer lifespan and better thermal tolerance. Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46601R7 Size: P205/45ZR16 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal. DOT-labelled for transport, not for road driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 316,
@@ -1220,7 +1220,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46304R7 Size: P205/60ZR13 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal.  DOT-labelled for transport, not for road driving.",
     "sourceDescription": "Description The Hoosier R7 is a DOT-labelled competition racing radial designed for dry track use. Built around an R-compound semi-slick construction with minimal tread, the R7 delivers consistent grip and predictable behaviour across long track sessions. R7 is the track-focused compound — engineered to handle repeated heat cycles, hold a consistent contact patch under load, and stay stable at high speed across an entire session. Slightly less peak grip than the A7, but longer lifespan and better thermal tolerance. Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46304R7 Size: P205/60ZR13 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal. DOT-labelled for transport, not for road driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 317,
@@ -1241,7 +1241,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46511R7 Size: P225/45ZR15 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal.  DOT-labelled for transport, not for road driving.",
     "sourceDescription": "Description The Hoosier R7 is a DOT-labelled competition racing radial designed for dry track use. Built around an R-compound semi-slick construction with minimal tread, the R7 delivers consistent grip and predictable behaviour across long track sessions. R7 is the track-focused compound — engineered to handle repeated heat cycles, hold a consistent contact patch under load, and stay stable at high speed across an entire session. Slightly less peak grip than the A7, but longer lifespan and better thermal tolerance. Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46511R7 Size: P225/45ZR15 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal. DOT-labelled for transport, not for road driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 321,
@@ -1262,7 +1262,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46611R7 Size: P225/45ZR16 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal.  DOT-labelled for transport, not for road driving.",
     "sourceDescription": "Description The Hoosier R7 is a DOT-labelled competition racing radial designed for dry track use. Built around an R-compound semi-slick construction with minimal tread, the R7 delivers consistent grip and predictable behaviour across long track sessions. R7 is the track-focused compound — engineered to handle repeated heat cycles, hold a consistent contact patch under load, and stay stable at high speed across an entire session. Slightly less peak grip than the A7, but longer lifespan and better thermal tolerance. Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46611R7 Size: P225/45ZR16 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal. DOT-labelled for transport, not for road driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 318,
@@ -1283,7 +1283,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46522R7 Size: P245/40ZR15 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal.  DOT-labelled for transport, not for road driving.",
     "sourceDescription": "Description The Hoosier R7 is a DOT-labelled competition racing radial designed for dry track use. Built around an R-compound semi-slick construction with minimal tread, the R7 delivers consistent grip and predictable behaviour across long track sessions. R7 is the track-focused compound — engineered to handle repeated heat cycles, hold a consistent contact patch under load, and stay stable at high speed across an entire session. Slightly less peak grip than the A7, but longer lifespan and better thermal tolerance. Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46522R7 Size: P245/40ZR15 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal. DOT-labelled for transport, not for road driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 319,
@@ -1304,7 +1304,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46536R7 Size: P275/35ZR15 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal.  DOT-labelled for transport, not for road driving.",
     "sourceDescription": "Description The Hoosier R7 is a DOT-labelled competition racing radial designed for dry track use. Built around an R-compound semi-slick construction with minimal tread, the R7 delivers consistent grip and predictable behaviour across long track sessions. R7 is the track-focused compound — engineered to handle repeated heat cycles, hold a consistent contact patch under load, and stay stable at high speed across an entire session. Slightly less peak grip than the A7, but longer lifespan and better thermal tolerance. Key Features Radial construction — stable at high speeds, consistent contact patch under load R7 racing compound — balanced grip and longevity Semi-slick design with minimal grooves, optimised for dry conditions Medium warm-up, high heat tolerance, consistent over long runs DOT-labelled for transport (not for road driving) Best For Track days Circuit racing Time attack (long sessions) Specifications Item Code: 46536R7 Size: P275/35ZR15 Construction: Radial Compound: R7 (track-focused) Tread: Semi-slick with minimal grooves Application: Competition / dry track use R7 Compound: Track-focused — circuit racing, track days, time attack Balanced grip and longevity, consistent across heat cycles Medium warm-up, high heat tolerance, stable over long runs Slightly less peak grip than A7 but longer lifespan Limitations Track use only Not suitable for wet conditions Not suitable for cold temperatures Not intended for normal road use ⚠ Track use only — not road legal. DOT-labelled for transport, not for road driving.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 75,
@@ -1325,7 +1325,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Designed for drivers who live life on the edge, demanding the ultimate track day weapon, the TrackAttack Pro masters both street and track. Harnessing Hoosier’s unparalleled racing DNA, taking track dominance to the street, the TrackAttack Pro drives highly addictive performance. This revolutionary extreme performance summer tyre awakens mundane commutes, empowers epic track days, and ignites legendary journeys in between. Pushing boundaries and defying limits. H-DNA was forged from a legacy of unrivalled racing excellence and relentless performance. Ignite your passion, empower your pride and drive your success as you conquer life on and off the track.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 105,
@@ -1346,7 +1346,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Designed for drivers who live life on the edge, demanding the ultimate track day weapon, the TrackAttack Pro masters both street and track. Harnessing Hoosier’s unparalleled racing DNA, taking track dominance to the street, the TrackAttack Pro drives highly addictive performance. This revolutionary extreme performance summer tyre awakens mundane commutes, empowers epic track days, and ignites legendary journeys in between. Pushing boundaries and defying limits. H-DNA was forged from a legacy of unrivalled racing excellence and relentless performance. Ignite your passion, empower your pride and drive your success as you conquer life on and off the track.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 91,
@@ -1367,7 +1367,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "",
     "sourceDescription": "Designed for drivers who live life on the edge, demanding the ultimate track day weapon, the TrackAttack Pro masters both street and track. Harnessing Hoosier’s unparalleled racing DNA, taking track dominance to the street, the TrackAttack Pro drives highly addictive performance. This revolutionary extreme performance summer tyre awakens mundane commutes, empowers epic track days, and ignites legendary journeys in between. Pushing boundaries and defying limits. H-DNA was forged from a legacy of unrivalled racing excellence and relentless performance. Ignite your passion, empower your pride and drive your success as you conquer life on and off the track.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 304,
@@ -1388,7 +1388,7 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": "5″ – 32″ diameter range (typical) Medium-width drag slick setups ⚠ Designed for drag racing use only.",
     "sourceDescription": "Description High-performance natural rubber drag racing inner tube designed for Hoosier slick and DOT drag tyres. Built for extreme launch loads, this tube ensures consistent pressure stability and durability under high torque applications. Ideal for competitive drag racing environments where reliability is critical. What’s Included 1 × Hoosier Drag Racing Inner Tube Key Features Natural rubber construction for flexibility and durability Designed for drag racing applications (not road use) Optimised for high load and high heat conditions Precise fitment for wide drag slicks Industry-proven in NHRA / IHRA racing environments Specifications Size: 86/100-15 Circumference Fit: 86″ – 100″ Recommended Tread Width: 11″ – 13″ Tube ID: B Material: Natural Rubber Application: Drag Racing Tubes & Liners Fitment Designed for drag tyres within: 27.5″ – 32″ diameter range (typical) Medium-width drag slick setups ⚠ Designed for drag racing use only. Not intended for street use.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   },
   {
     "websiteProductId": 305,
@@ -1409,6 +1409,6 @@ export const HOOSIER_ROWS = [
     "sourceRestrictions": " What’s Included 1 × Hoosier Drag Racing Inner Tube Key Features Reinforced natural rubber construction Designed for wide, high-power drag slicks Maintains stability under extreme acceleration Used in professional drag racing environments Compatible with large footprint tyres Specifications Size: 94/106-15 Circumference Fit: 94″ – 106″ Recommended Tread Width: 15″ – 19″ Tube ID: C Material: Natural Rubber Application: Drag Racing Tubes & Liners Fitment Designed for: Large drag slicks (big tyre cars) High horsepower / wide rear setups Maximum traction applications ⚠ Designed for drag racing use only.",
     "sourceDescription": "Description Heavy-duty drag racing inner tube engineered for larger, wider slick applications. Built to handle extreme torque loads and high-speed deformation, making it ideal for high-horsepower drag cars and serious race builds. What’s Included 1 × Hoosier Drag Racing Inner Tube Key Features Reinforced natural rubber construction Designed for wide, high-power drag slicks Maintains stability under extreme acceleration Used in professional drag racing environments Compatible with large footprint tyres Specifications Size: 94/106-15 Circumference Fit: 94″ – 106″ Recommended Tread Width: 15″ – 19″ Tube ID: C Material: Natural Rubber Application: Drag Racing Tubes & Liners Fitment Designed for: Large drag slicks (big tyre cars) High horsepower / wide rear setups Maximum traction applications ⚠ Designed for drag racing use only. Not intended for street use.",
     "websitePurchasable": true,
-    "capturedAt": "2026-09-28T15:09:55.033Z"
+    "capturedAt": "2026-10-07T16:07:51.312Z"
   }
 ] as const;
