@@ -1,6 +1,7 @@
 import { InventoryItem, ProductType, TyreProduct, WheelProduct } from './types';
 import { searchInventory, searchExactSupplierStockCode } from './utils';
 import { extractSingleMetricTyreQuery, extractStaggeredTyreQuery } from './staggeredTyreSearch';
+import { extractCommercialTyreSizeQuery } from './commercialTyreSearch';
 import {
   extractFlotationTyreSizeQuery,
   flotationTyreSizesEqual,
@@ -147,8 +148,10 @@ const compareSupplierResults = (preferredIds: Set<string>) => (left: InventoryIt
 
 export const searchSupplierInventory = (items: InventoryItem[], query: string): InventoryItem[] => {
   const exactStockCodes = searchExactSupplierStockCode(items, query);
-  if (exactStockCodes.length) return exactStockCodes;
+  if (exactStockCodes.length && !extractSingleMetricTyreQuery(query) && !extractStaggeredTyreQuery(query)
+    && (exactStockCodes.some(item => item.type !== ProductType.TYRE) || !extractSupplierTyreSizeQuery(query))) return exactStockCodes;
   if (extractStaggeredTyreQuery(query) || extractSingleMetricTyreQuery(query)) return searchInventory(items, query);
+  if (extractCommercialTyreSizeQuery(query)) return searchInventory(items, query);
   const hasWheels = items.some((item) => item.type === ProductType.WHEEL);
   const hasNonWheels = items.some((item) => item.type !== ProductType.WHEEL);
   const wheelSizeQuery = hasWheels

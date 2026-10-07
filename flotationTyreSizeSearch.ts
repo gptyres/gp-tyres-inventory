@@ -19,8 +19,8 @@ const MIN_RIM = 8;
 const MAX_RIM = 30;
 const MIN_COMPACT_DIAMETER = 29;
 const MIN_COMPACT_WIDTH_HUNDREDTHS = 700;
-const EXPLICIT_FLOTATION_PATTERN = /\b(\d{2})\s*(?:X|×|\*|\/|-|\s)\s*(\d{1,2}(?:\.\d{1,2})?)\s*(?:R|X|×|\*|\/|-|\s)\s*(\d{2})(?:LT)?\b/i;
-const COMPACT_FLOTATION_PATTERN = /\b\d{5,8}\b/g;
+const EXPLICIT_FLOTATION_PATTERN = /(?<![\d./])\b(?:LT\s*)?(\d{2})\s*(?:X|×|\*|\/|-|\s)\s*(\d{1,2}(?:\.\d{1,2})?)\s*(?:R|X|×|\*|\/|-|\s)\s*(\d{2})(?:\s*LT)?\b(?![.\d/])/i;
+const COMPACT_FLOTATION_PATTERN = /\b(?:LT\s*)?(\d{5,8})(?:\s*LT)?\b/gi;
 
 const isValidComponents = ({ diameter, widthHundredths, rim }: FlotationTyreSizeComponents) => (
   Number.isInteger(diameter)
@@ -122,7 +122,7 @@ export const extractFlotationTyreSizeQuery = (query: string): FlotationTyreSizeQ
   }
 
   for (const compactMatch of query.matchAll(COMPACT_FLOTATION_PATTERN)) {
-    const components = parseCompactToken(compactMatch[0]);
+    const components = parseCompactToken(compactMatch[1]);
     if (components) {
       return buildQuery(query, compactMatch[0], compactMatch.index ?? 0, components);
     }

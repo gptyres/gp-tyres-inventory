@@ -2,7 +2,9 @@ import { InventoryItem, ProductType, TyreProduct } from './types';
 
 export interface MetricTyreSize { width: number; profile: number; rim: number; display: string }
 // Require a full metric size, avoiding partial widths, load indices and wheel sizes.
-const sizePattern = () => /\b(\d{3})[\s/\-]*(\d{2})\s*(?:ZR|R|[\/\-])?\s*(\d{2}(?:\.\d)?)(?:C|LT)?\b(?!\.\d)/gi;
+// LT is a construction marker, not a dimension: match it on either side of
+// the size without requiring staff to include it in their search.
+const sizePattern = () => /(?<![\d./])\b(?:(?:LT|P)\s*)?(\d{3})[\s/\-]*(\d{2})\s*(?:ZR|RF|R|[\/\-])?\s*(\d{2}(?:\.\d)?)(?:\s*(?:CP|C|LT))?\b(?![.\d/])/gi;
 const fromMatch = (match: RegExpMatchArray): MetricTyreSize | null => {
   const [width, profile, rim] = match.slice(1, 4).map(Number);
   if (width < 100 || width > 455 || profile < 20 || profile > 95 || rim < 10 || rim > 30) return null;

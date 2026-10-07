@@ -40,6 +40,9 @@ const normalizeSize = (value: string) => clean(value)
 const preferCompleteSize = (explicitSize: string, embeddedSize: string) => {
   if (!explicitSize) return embeddedSize;
   if (!embeddedSize) return explicitSize;
+  // Malformed feeds sometimes concatenate the size, model and duplicate digits.
+  // Prefer the verified description size over that unparseable explicit field.
+  if (explicitSize.startsWith(embeddedSize) && explicitSize.match(TYRE_SIZE_PATTERN)?.[0] !== explicitSize) return embeddedSize;
 
   // Some supplier feeds truncate the size column to values such as 60R18,
   // while the product description still contains the complete LT265/60R18 size.

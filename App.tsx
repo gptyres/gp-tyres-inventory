@@ -64,6 +64,7 @@ import {
 } from './supplierCatalogLoader';
 import { authenticateAdminSession, clearAdminSession } from './supplierSync';
 import { isRegistryBackedSupplierCatalog, isLiveSupplierCatalog } from './supplierCatalogMapping';
+import { restoreSupplierSearchSelection, serializeSupplierSearchSelection } from './supplierSearchSelection';
 import { syncPortalInventoryItemsToSheet } from './sheetInventoryStatus';
 
 import {
@@ -141,12 +142,7 @@ const App: React.FC = () => {
   const [selectedSupplierCatalogs, setSelectedSupplierCatalogs] = useState<ConcreteSupplierCatalog[]>(() => {
     const allCatalogs = SUPPLIER_CATALOG_OPTIONS.map((option) => option.catalog);
     try {
-      const storedValue = localStorage.getItem('gp-supplier-search-selection');
-      if (!storedValue) return allCatalogs;
-      const stored = JSON.parse(storedValue);
-      if (!Array.isArray(stored)) return allCatalogs;
-      const selected = allCatalogs.filter((catalog) => stored.includes(catalog));
-      return selected;
+      return restoreSupplierSearchSelection(localStorage.getItem('gp-supplier-search-selection'), allCatalogs);
     } catch {
       return allCatalogs;
     }
@@ -293,7 +289,7 @@ const App: React.FC = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    localStorage.setItem('gp-supplier-search-selection', JSON.stringify(selectedSupplierCatalogs));
+    localStorage.setItem('gp-supplier-search-selection', serializeSupplierSearchSelection(selectedSupplierCatalogs, SUPPLIER_CATALOG_OPTIONS.map(option => option.catalog)));
   }, [selectedSupplierCatalogs]);
 
   const selectedSupplierCatalogKey = selectedSupplierCatalogs.join('|');

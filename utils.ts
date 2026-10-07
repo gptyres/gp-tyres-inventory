@@ -14,6 +14,7 @@ import {
 } from './supplierPricing';
 import { expandWheelFitmentSearchText, getAlineVehicleFitments } from './alineFitment';
 import { extractSingleMetricTyreQuery, extractStaggeredTyreQuery, matchesMetricTyreSize } from './staggeredTyreSearch';
+import { extractCommercialTyreSizeQuery, matchesCommercialTyreSize } from './commercialTyreSearch';
 import {
   extractFlotationTyreSizeQuery,
   flotationTyreSizesEqual,
@@ -46,7 +47,6 @@ export const getStatusColor = (qty: number) => {
 const normalizeSearchTerm = (str: string) => {
   if (!str) return '';
   return str
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
     .toLowerCase()
     .replace(/(\d)[xX*](\d)/g, '$1 $2') // standardized separator for dimensions
     .replace(/[^a-z0-9\s]/g, ' '); // remove special chars to create clean tokens
@@ -77,6 +77,8 @@ const getInventorySearchIndex = (item: InventoryItem): InventorySearchIndex => {
       tyre.tyreIndex,
       tyre.tyreSpecs,
       tyre.location,
+      tyre.supplierName,
+      tyre.supplierStockCode,
       'Tyre'
     ];
 
@@ -151,10 +153,13 @@ const getInventorySearchIndex = (item: InventoryItem): InventorySearchIndex => {
     variants.push(battery.batteryType.replace(/[^a-zA-Z0-9]/g, ''));
   }
 
+  searchableParts.push(item.supplierName, item.supplierStockCode, ...Object.keys(item.stockByLocation || {}));
   const mainText = normalizeSearchTerm(searchableParts.join(' '));
+  // Index punctuation-free aliases per field, without joining unrelated fields.
+  const aliases = searchableParts.filter(Boolean).map(part => normalizeSearchTerm(String(part)).replace(/\s+/g, '')).join(' ');
   const variantText = variants.join(' ').toLowerCase();
   const index = {
-    fullBlob: `${mainText} ${variantText}`,
+    fullBlob: `${mainText} ${variantText} ${aliases}`,
     variantText
   };
 
@@ -189,7 +194,7 @@ const searchInventoryStandard = (items: InventoryItem[], query: string): Invento
 
     // Strategy B: Numeric Fallback (e.g. User typed "2054017")
     // If the query is mostly numbers (len > 3) and that sequence exists in our variant text
-    if (numericQuery.length > 3 && variantText.includes(numericQuery)) {
+    if (/^[\d\s./-]+$/.test(query) && numericQuery.length > 3 && variantText.includes(numericQuery)) {
         return true;
     }
 
@@ -200,15 +205,16 @@ const searchInventoryStandard = (items: InventoryItem[], query: string): Invento
 export const searchExactSupplierStockCode = (items: InventoryItem[], query: string): InventoryItem[] => {
   const code = query.trim().replace(/\s+/g, '').toUpperCase();
   if (!code) return [];
-  return items.filter(item => item.type !== ProductType.TYRE
-    && item.supplierStockCode?.replace(/\s+/g, '').toUpperCase() === code);
+  return items.filter(item => item.supplierStockCode?.replace(/\s+/g, '').toUpperCase() === code);
 };
 
 export const searchInventory = (items: InventoryItem[], query: string): InventoryItem[] => {
   if (!query) return items;
   // Numeric suspension/accessory SKUs must not be interpreted as tyre sizes.
   const exactStockCodes = searchExactSupplierStockCode(items, query);
-  if (exactStockCodes.length) return exactStockCodes;
+  if (exactStockCodes.length && !extractSingleMetricTyreQuery(query) && !extractStaggeredTyreQuery(query)
+    && (exactStockCodes.some(item => item.type !== ProductType.TYRE)
+      || (!extractFlotationTyreSizeQuery(query) && !extractCommercialTyreSizeQuery(query)))) return exactStockCodes;
 
   const staggered = extractStaggeredTyreQuery(query);
   if (staggered) {
@@ -219,11 +225,26 @@ export const searchInventory = (items: InventoryItem[], query: string): Inventor
   const singleSize = extractSingleMetricTyreQuery(query);
   if (singleSize) {
     const matching = items.filter(item => matchesMetricTyreSize(item, singleSize));
-    return singleSize.remainingQuery ? searchInventoryStandard(matching, singleSize.remainingQuery) : matching;
+    if (!singleSize.remainingQuery) return matching;
+    const matchedIds = new Set(searchInventoryStandard(matching, singleSize.remainingQuery).map(item => item.id));
+    return items.filter(item => matchedIds.has(item.id) || (item.type === ProductType.TYRE
+      && normalizeSearchTerm(item.pattern).trim() === normalizeSearchTerm(query).trim()));
   }
 
   const flotationQuery = extractFlotationTyreSizeQuery(query);
-  if (!flotationQuery) return searchInventoryStandard(items, query);
+  if (!flotationQuery) {
+    const commercial = extractCommercialTyreSizeQuery(query);
+    if (commercial) {
+      const matching = items.filter(item => matchesCommercialTyreSize(item, commercial));
+      if (!commercial.remainingQuery) return matching;
+      const matchedIds = new Set(searchInventoryStandard(matching, commercial.remainingQuery).map(item => item.id));
+      // Full model names can contain a supplier-provided alternate size. Preserve
+      // exact model searches without treating that alternate as a size conversion.
+      return items.filter(item => matchedIds.has(item.id) || (item.type === ProductType.TYRE
+        && normalizeSearchTerm(item.pattern).trim() === normalizeSearchTerm(query).trim()));
+    }
+    return searchInventoryStandard(items, query);
+  }
 
   const exactSizeMatches = items.filter((item) => {
     if (item.type !== ProductType.TYRE) return false;

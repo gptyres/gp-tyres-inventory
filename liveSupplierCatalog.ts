@@ -276,9 +276,12 @@ export const loadLiveSupplierCatalogItems = async (
 
     if (error) throw new Error(error.message);
     const page = (data || []) as LiveSupplierCatalogRow[];
+    if (!page.length) break;
+    const nextId = page[page.length - 1].id;
+    if (!(nextId > lastId)) throw new Error('Supplier catalogue pagination did not advance.');
     rows.push(...page);
-    if (page.length < PAGE_SIZE) break;
-    lastId = page[page.length - 1].id;
+    // The database can cap responses below our requested limit.
+    lastId = nextId;
   }
 
   return rows.length > 0
