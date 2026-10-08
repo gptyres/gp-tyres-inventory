@@ -149,8 +149,8 @@ describe('customer stock clipboard formatting', () => {
     };
 
     expect(formatBulkClipboardText([supplierTyre, secondTyre])).toBe([
-      '10.00R20 COMPASAL CPS60 @ R4500',
-      '31X10.50R15 BF GOODRICH LT MUD TERRAIN T/A KM3 LRC GO @ R5999'
+      '10.00R20 COMPASAL CPS60 149/146K @ R4500',
+      '31X10.50R15 BF GOODRICH LT MUD TERRAIN T/A KM3 LRC GO 149/146K @ R5999'
     ].join('\n'));
   });
 
@@ -180,7 +180,13 @@ describe('customer stock clipboard formatting', () => {
       }
     ];
 
-    expect(formatBulkClipboardText(duplicateTyres)).toBe('195/50R15 APOLLO ALNAC 4G @ R1375');
+    expect(formatBulkClipboardText(duplicateTyres)).toBe('195/50R15 APOLLO ALNAC 4G 149/146K @ R1375');
+  });
+
+  it('retains different load/speed variants and avoids duplicate rating text', () => {
+    const tyre = { ...supplierTyre, size: '265/65R17', brand: 'DUNLOP', pattern: 'GRANDTREK AT3G 112S', tyreIndex: '112S' };
+    expect(formatBulkClipboardText([tyre, { ...tyre, id: 'other', pattern: 'GRANDTREK AT3G', tyreIndex: '121/118S' }])).toBe(
+      '265/65R17 DUNLOP GRANDTREK AT3G 112S @ R4500\n265/65R17 DUNLOP GRANDTREK AT3G 121/118S @ R4500');
   });
 
   it('capitalizes every letter in bulk clipboard output', () => {

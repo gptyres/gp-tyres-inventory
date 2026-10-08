@@ -1,3 +1,5 @@
+import { supplierSourceServiceDescription, TYRE_SERVICE_DESCRIPTION_PATTERN } from './tyreServiceDescription';
+
 export interface SupplierTyreFieldInput {
   description?: string | null;
   explicitSize?: string | null;
@@ -7,6 +9,7 @@ export interface SupplierTyreFieldInput {
   explicitIndex?: string | null;
   explicitSpecs?: string | null;
   inferBrandFromDescription?: boolean;
+  sourceDetail?: string | null;
 }
 
 export interface SupplierTyreFields {
@@ -29,7 +32,7 @@ const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\
 // Covers passenger, 4x4, light-truck, and commercial sizes, including LT265/60R18 and 10.00R20.
 const TYRE_SIZE_PATTERN = /\b(?:(?:LT)?\d{2,3}\/\d{2,3}(?:ZR|RF|R)\d{2}(?:\.\d)?(?:CP|C|LT)?|\d{2,3}R\d{2}(?:\.\d)?(?:CP|C|LT)?|\d{2,3}X\d{1,2}(?:\.\d+)?(?:R|-)\d{2}(?:\.\d)?(?:LT)?|\d{1,3}(?:\.\d{1,2})?\/\d{2,3}-\d{2}(?:\.\d)?|\d{1,3}(?:\.\d{1,2})?(?:R|-)\d{2}(?:\.\d)?|\d{3}-\d{2}(?:\.\d)?)\b/i;
 const TYRE_RATING_PATTERN = /\b\d{1,2}\s*(?:PR|PLY)\b/gi;
-const TYRE_INDEX_PATTERN = /\b\d{2,3}(?:\s*\/\s*\d{2,3})?\s*(?:A[1-8]|[A-Z])\b/gi;
+const TYRE_INDEX_PATTERN = TYRE_SERVICE_DESCRIPTION_PATTERN;
 const TYRE_SPEC_PATTERN = /(?:^|\s)(M\+S|M\/S|R\/B|A\/T|M\/T|H\/T|R\/T|TLR|TL|TT|RFT|RUN\s*FLAT|RUNFLAT|XL|RF|OWL|RWL|BSW|WSW)(?=\s|$)/gi;
 
 const normalizeSize = (value: string) => clean(value)
@@ -141,7 +144,7 @@ export const parseSupplierTyreFields = (input: SupplierTyreFieldInput): Supplier
 
   const explicit = classifyExplicitRatingAndIndex(
     cleanOptional(input.explicitRating),
-    cleanOptional(input.explicitIndex)
+    cleanOptional(input.explicitIndex) || supplierSourceServiceDescription(input.sourceDetail)
   );
   const parsedRating = collectAndRemove(
     working,

@@ -25,6 +25,7 @@ import { InventoryReportModal } from './InventoryReportModal';
 import { ProductHistoryModal } from './ProductHistoryModal';
 import { SupplierMarkupAdjuster } from './SupplierMarkupAdjuster';
 import { preferenceKey, readInventoryPreferences } from '../stockWorkspace';
+import { extractTyreServiceDescription, getTyreServiceDescription, TYRE_SERVICE_DESCRIPTION_PATTERN } from '../tyreServiceDescription';
 
 interface InventoryViewProps {
   items: InventoryItem[];
@@ -232,6 +233,10 @@ const getCleanTyreClipboardParts = (tyre: TyreProduct) => {
     .replace(/^(?:UNKNOWN|STANDARD|N\/?A|-)$/i, '')
     .replace(/\s+/g, ' ')
     .trim();
+  const service = getTyreServiceDescription(tyre);
+  if (service.index) pattern = pattern.replace(TYRE_SERVICE_DESCRIPTION_PATTERN,
+    match => extractTyreServiceDescription(match).index === service.index ? ' ' : match)
+    .replace(/\(\s*\)/g, ' ').replace(/\s+/g, ' ').trim();
   return { size, brand, pattern };
 };
 
@@ -239,7 +244,7 @@ const getTyreClipboardText = (item: InventoryItem): string => {
   if (item.type !== ProductType.TYRE) return '';
   const tyre = item as TyreProduct;
   const { size, brand, pattern } = getCleanTyreClipboardParts(tyre);
-  return [size, brand, pattern, formatCustomerPrice(item.sellingPrice)]
+  return [size, brand, pattern, getTyreServiceDescription(tyre).index, formatCustomerPrice(item.sellingPrice)]
     .filter(Boolean)
     .join(' ');
 };
@@ -389,7 +394,7 @@ const isCustomerCopyItem = (item: InventoryItem): boolean => (
 const getCustomerCopyIdentity = (item: InventoryItem): string => {
   if (item.type === ProductType.TYRE) {
     const { size, brand, pattern } = getCleanTyreClipboardParts(item as TyreProduct);
-    return [size, brand, pattern].join('|');
+    return [size, brand, pattern, getTyreServiceDescription(item as TyreProduct).index].join('|');
   }
   return getWheelClipboardText(item)
     .replace(/\n@ R\d+(?:\.\d+)?$/i, '')
@@ -448,8 +453,8 @@ const CopyItemButton = ({ item, onCopyItem, className = '' }: { item: InventoryI
         onCopyItem(item);
       }}
       className={`inline-flex items-center justify-center gap-2 rounded border border-gp-red/50 bg-gp-red text-white px-3 py-2 text-[10px] font-black uppercase tracking-wider shadow-[0_0_14px_rgba(255,0,0,0.18)] transition-all hover:bg-red-700 hover:border-red-500 active:scale-95 ${className}`}
-      title={item.type === ProductType.WHEEL ? 'Copy wheel details' : 'Copy tyre size, brand and pattern'}
-      aria-label={item.type === ProductType.WHEEL ? 'Copy wheel details' : 'Copy tyre size, brand and pattern'}
+      title={item.type === ProductType.WHEEL ? 'Copy wheel details' : 'Copy tyre details, load/speed rating and selling price'}
+      aria-label={item.type === ProductType.WHEEL ? 'Copy wheel details' : 'Copy tyre details, load/speed rating and selling price'}
     >
       <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M8 8h10v12H8z" />
@@ -1574,6 +1579,14 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
               <h3 className="mt-3 max-w-full whitespace-normal break-words font-display text-xl font-black leading-tight tracking-wide text-gp-text-main">
                 {getItemDisplayName(item)}
               </h3>
+              {item.type === ProductType.TYRE && (
+                <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-gp-text-main" aria-label="Tyre load and speed rating">
+                  {getTyreServiceDescription(item as TyreProduct).index ? <>
+                    <span>Load: {getTyreServiceDescription(item as TyreProduct).load}</span>
+                    <span>Speed: {getTyreServiceDescription(item as TyreProduct).speed}</span>
+                  </> : <span className="text-gp-text-muted">Load/speed rating not supplied</span>}
+                </p>
+              )}
               {item.type === ProductType.WHEEL && getWheelBrand(item as WheelProduct) && (
                 <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-gp-red">
                   {getWheelBrand(item as WheelProduct)}
@@ -1583,7 +1596,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                 <p className="mt-1 max-w-full whitespace-normal break-words text-xs font-semibold uppercase leading-relaxed text-gp-silver">
                     {item.type === ProductType.WHEEL
                       ? getWheelFinish(item as WheelProduct) || 'Finish not supplied'
-                      : getItemSecondaryLine(item)}
+                      : isSupplierTyre(item) ? uniqueDisplayParts([item.tyreRating, item.tyreSpecs]).join(' / ') : getItemSecondaryLine(item)}
                 </p>
               )}
             </div>
@@ -1594,10 +1607,10 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
             <div className={`p-3 grid gap-2 flex-grow content-start bg-gradient-to-b from-gp-panel to-gp-overlay ${item.type === ProductType.WHEEL ? 'grid-cols-2 lg:grid-cols-4' : item.type === ProductType.COILOVER ? 'grid-cols-2' : 'grid-cols-3'}`}>
                 {visibleColumns.specs && item.type === ProductType.TYRE && (
                     <>
-                    <SpecBadge
-                      label="Index"
-                      value={(item as TyreProduct).loadSpeedIndex || (isSupplierTyre(item) ? '' : '-')}
-                    />
+                    {(item as TyreProduct).tyreRating && <SpecBadge
+                      label="Ply"
+                      value={(item as TyreProduct).tyreRating || ''}
+                    />}
                     <SpecBadge label="Cat" value={(item as TyreProduct).supplierCategory || 'PCR'} />
                     </>
                 )}

@@ -31,6 +31,13 @@ const baseRow: LiveSupplierCatalogRow = {
 };
 
 describe('live supplier catalogue conversion', () => {
+  it('recovers the exact ATT portal rating before combining branches', () => {
+    const row = { ...baseRow, catalog_key: 'ATT', size: '265/50R20', product_name: 'AUTOGRIP GRIP6000',
+      source_stock_detail: JSON.stringify({ product: { ucIILoadRading: '111', ucIISpeedRating: 'T' } }) };
+    const grouped = groupLiveSupplierCatalogRows([row, { ...row, id: 2, stock_location: 'JHB' }]);
+    expect(grouped).toHaveLength(1);
+    expect(liveSupplierRowToInventoryItem(grouped[0])).toMatchObject({ tyreIndex: '111T', loadSpeedIndex: '111T', quantity: 16 });
+  });
   it('keeps capped warehouse quantities as minimums after grouping', () => {
     const grouped = groupLiveSupplierCatalogRows([
       { ...baseRow, stock_by_location: { CPT: 10 }, stock_units: 10,

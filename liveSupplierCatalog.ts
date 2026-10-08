@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { supplierSourceServiceDescription } from './tyreServiceDescription';
 import { InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
@@ -102,7 +103,10 @@ export const groupLiveSupplierCatalogRows = (
 ): LiveSupplierCatalogRow[] => {
   const grouped = new Map<string, LiveSupplierCatalogRow>();
 
-  rows.forEach((row) => {
+  rows.forEach((sourceRow) => {
+    const row = sourceRow.product_type === 'TYRE' && !sourceRow.tyre_index
+      ? { ...sourceRow, tyre_index: supplierSourceServiceDescription(sourceRow.source_stock_detail) }
+      : sourceRow;
     const supplierIdentity = row.supplier_sku?.trim() || '';
     const key = [
       row.catalog_key,
@@ -229,7 +233,8 @@ export const liveSupplierRowToInventoryItem = (
     explicitPattern: row.tyre_pattern,
     explicitRating: row.tyre_rating,
     explicitIndex: row.tyre_index,
-    explicitSpecs: row.tyre_specs
+    explicitSpecs: row.tyre_specs,
+    sourceDetail: row.source_stock_detail
   });
   const tyre: TyreProduct = {
     ...common,
@@ -241,6 +246,7 @@ export const liveSupplierRowToInventoryItem = (
     tyreRating: parsedTyre.rating,
     tyreIndex: parsedTyre.index,
     tyreSpecs: parsedTyre.specs,
+    supplierCategory: row.category || undefined,
     location: buildLocation(row)
   };
   return tyre;

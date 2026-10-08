@@ -1,0 +1,36 @@
+--- a/stamford_sync.py
++++ b/stamford_sync.py
+@@ -47,4 +47,6 @@
+ OUTPUT_COLUMNS = [
+     "SKU",
++    "Load Index",
++    "Speed Index",
+     "Brand",
+     "Pattern",
+@@ -161,4 +163,6 @@
+                 rows_by_sku[sku] = {
+                     "SKU": sku,
++                    "Load Index": clean_field(size.get("Load Index")),
++                    "Speed Index": clean_field(size.get("Speed Index")),
+                     "Brand": brand,
+                     "Pattern": pattern_name,
+@@ -209,4 +213,6 @@
+                 {
+                     "SKU": sku["SKU"],
++                    "Load Index": sku.get("Load Index", ""),
++                    "Speed Index": sku.get("Speed Index", ""),
+                     "Brand": sku["Brand"],
+                     "Pattern": sku["Pattern"],
+--- a/tyrewarehouse_discounted_sync.py
++++ b/tyrewarehouse_discounted_sync.py
+@@ -57,3 +57,4 @@
+ OUTPUT_COLUMNS = [
++    "Product Description",
+     "SKU",
+     "Brand",
+@@ -256,4 +257,5 @@
+             {
+                 "SKU": sku,
++                "Product Description": f"{product_name} {specifications}".strip(),
+                 "Brand": clean_for_export(brand),
+                 "Pattern": clean_for_export(pattern),
