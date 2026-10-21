@@ -5,6 +5,8 @@ import { Navbar } from './components/Navbar';
 import { InventoryView } from './components/InventoryView';
 import { StockFilterBar } from './components/StockFilterBar';
 import { StaggeredTyreSearch } from './components/StaggeredTyreSearch';
+import { WheelSearchPanel } from './components/WheelSearchPanel';
+import { filterWheelInventory, getWheelFilterOptions, isWheelSearchQuery, type WheelFilters } from './wheelInventoryFilters';
 import { matchesStockFilter, stockCounts, StockFilter, WorkspaceNavigate } from './stockWorkspace';
 import { StatsDashboard } from './components/StatsDashboard';
 import { SheetInventorySyncStatus } from './components/SheetInventorySyncStatus';
@@ -82,6 +84,7 @@ import {
 } from './flotationTyreSizeSearch';
 import {
   applySupplierMarkup,
+  calculateSupplierSellingPrice,
   BASE_SUPPLIER_MARKUP,
   type SupplierMarkupAdjustment
 } from './supplierMarkup';
@@ -159,6 +162,7 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>('DASHBOARD');
   const [activeFilter, setActiveFilter] = useState<ProductType | 'ALL'>('ALL');
   const [stockFilter, setStockFilter] = useState<StockFilter>('ALL');
+  const [wheelFilters, setWheelFilters] = useState<WheelFilters>({});
   
   // Mobile Sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -294,10 +298,24 @@ const App: React.FC = () => {
 
   const selectedSupplierCatalogKey = selectedSupplierCatalogs.join('|');
 
+  const wheelSourceItems = currentView === 'SUPPLIER_INVENTORY' ? supplierItems : items;
+  const isWheelInventory = activeFilter === ProductType.WHEEL || (activeFilter === 'ALL' && (
+    isWheelSearchQuery(debouncedSearchQuery)
+    || (currentView === 'SUPPLIER_INVENTORY' && (
+      ['ALINE', 'TYRE_LIFE_WHEELS', 'WHEEL_TECH'].includes(activeSupplierCatalog)
+      || (activeSupplierCatalog !== 'ALL_SUPPLIERS' && supplierItems.length > 0 && supplierItems.every(item => item.type === ProductType.WHEEL))
+    ))
+  ));
+  const wheelFilterOptions = useMemo(() => getWheelFilterOptions(wheelSourceItems), [wheelSourceItems]);
+
+  useEffect(() => { setWheelFilters({}); }, [currentView, activeSupplierCatalog]);
+
   const handleSupplierCatalogChange = useCallback((catalog: SupplierCatalog) => {
     // A catalogue-specific search should never hide the next supplier's stock.
     setSearchQuery('');
     setDebouncedSearchQuery('');
+    setWheelFilters({});
+    setActiveFilter('ALL');
     setActiveSupplierCatalog(catalog);
   }, []);
 
@@ -305,7 +323,7 @@ const App: React.FC = () => {
     currentView === 'SUPPLIER_INVENTORY'
     && (
       activeSupplierCatalog !== 'ALL_SUPPLIERS'
-      || (selectedSupplierCatalogs.length > 0 && debouncedSearchQuery.trim().length >= 2)
+      || (selectedSupplierCatalogs.length > 0 && (isWheelInventory || debouncedSearchQuery.trim().length >= 2))
     )
   );
 
@@ -816,6 +834,7 @@ const App: React.FC = () => {
   }, [isDarkMode]);
 
   // --- FILTERING ---
+  const activeSupplierMarkup = supplierMarkupByCatalog[activeSupplierCatalog] || BASE_SUPPLIER_MARKUP;
   const searchMatchedItems = useMemo(() => {
     // If viewing supplier inventory, filter that list instead of main inventory
     let sourceList = currentView === 'SUPPLIER_INVENTORY' ? supplierItems : items;
@@ -824,18 +843,23 @@ const App: React.FC = () => {
     if (
       currentView === 'SUPPLIER_INVENTORY' &&
       activeSupplierCatalog === 'ALL_SUPPLIERS' &&
+      !isWheelInventory &&
       debouncedSearchQuery.trim().length < 2
     ) {
       return [];
     }
-    if (activeFilter !== 'ALL' && currentView !== 'SUPPLIER_INVENTORY') {
+    if (isWheelInventory) return filterWheelInventory(result, debouncedSearchQuery, wheelFilters,
+      currentView === 'SUPPLIER_INVENTORY'
+        ? item => calculateSupplierSellingPrice(item, activeSupplierMarkup, activeSupplierCatalog)
+        : undefined);
+    if (activeFilter !== 'ALL') {
       result = result.filter(item => item.type === activeFilter);
     }
     result = currentView === 'SUPPLIER_INVENTORY'
       ? searchSupplierInventory(result, debouncedSearchQuery)
       : searchInventory(result, debouncedSearchQuery);
     return result;
-  }, [items, supplierItems, activeFilter, debouncedSearchQuery, currentView, activeSupplierCatalog]);
+  }, [items, supplierItems, activeFilter, debouncedSearchQuery, currentView, activeSupplierCatalog, isWheelInventory, wheelFilters, activeSupplierMarkup]);
 
   const availabilityCounts = useMemo(() => stockCounts(searchMatchedItems), [searchMatchedItems]);
   const filteredItems = useMemo(() => currentView === 'INVENTORY'
@@ -848,7 +872,6 @@ const App: React.FC = () => {
       : null
   ), [currentView, activeSupplierCatalog, filteredItems, debouncedSearchQuery]);
 
-  const activeSupplierMarkup = supplierMarkupByCatalog[activeSupplierCatalog] || BASE_SUPPLIER_MARKUP;
   const displayedInventoryItems = useMemo(() => (
     currentView === 'SUPPLIER_INVENTORY'
       ? applySupplierMarkup(filteredItems, activeSupplierMarkup, activeSupplierCatalog)
@@ -1694,6 +1717,7 @@ const App: React.FC = () => {
   };
 
   const handleDashboardNavigate: WorkspaceNavigate = (view, filter, options) => {
+    setWheelFilters({});
     setCurrentView(view);
     setSearchQuery(options?.query ?? '');
     setDebouncedSearchQuery(options?.query ?? '');
@@ -1709,6 +1733,7 @@ const App: React.FC = () => {
   };
 
   const resetInventoryFilters = () => {
+    setWheelFilters({});
     setSearchQuery('');
     setDebouncedSearchQuery('');
     setActiveFilter('ALL');
@@ -1716,6 +1741,14 @@ const App: React.FC = () => {
   };
 
   // SYNC HANDLERS (Manual Backup)
+  const clearWheelFilters = () => {
+    setWheelFilters({});
+    setSearchQuery('');
+    setDebouncedSearchQuery('');
+    setStockFilter('ALL');
+    setActiveFilter(ProductType.WHEEL);
+  };
+
   const handleExportData = () => {
     const data = {
         sourceTerminal: currentUser,
@@ -1864,8 +1897,8 @@ const App: React.FC = () => {
       <Sidebar 
         currentView={currentView}
         activeFilter={activeFilter}
-        onChangeView={(view) => { setCurrentView(view); setStockFilter('ALL'); }}
-        onFilterChange={(filter) => { setActiveFilter(filter); setStockFilter('ALL'); }}
+        onChangeView={(view) => { setCurrentView(view); setStockFilter('ALL'); setWheelFilters({}); }}
+        onFilterChange={(filter) => { setActiveFilter(filter); setStockFilter('ALL'); setWheelFilters({}); }}
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
         currentUser={currentUser}
@@ -1953,7 +1986,24 @@ const App: React.FC = () => {
                 )}
               </div>
               <div className="max-w-7xl mx-auto mt-4 px-2 md:px-4">
-                {currentView !== 'WHEEL_CATALOG' && <StaggeredTyreSearch
+                {currentView !== 'WHEEL_CATALOG' && (isWheelInventory ? (
+                  <WheelSearchPanel
+                    query={searchQuery} filters={wheelFilters} options={wheelFilterOptions}
+                    count={filteredItems.length} loading={isSupplierCatalogLoading && currentView === 'SUPPLIER_INVENTORY'}
+                    setOfFour={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALINE'}
+                    onQueryChange={value => { setSearchQuery(value); setActiveFilter(ProductType.WHEEL); }}
+                    onFiltersChange={value => { setWheelFilters(value); setActiveFilter(ProductType.WHEEL); }}
+                    onCategoryChange={value => { resetInventoryFilters(); setActiveFilter(value); }}
+                    onClear={clearWheelFilters}
+                  />
+                ) : (
+                  <div className="mb-3 flex justify-end">
+                    <button type="button" className="workspace-text-button" onClick={() => {
+                      setActiveFilter(ProductType.WHEEL); setStockFilter('ALL'); setWheelFilters({});
+                    }}>Wheel filters</button>
+                  </div>
+                ))}
+                {currentView !== 'WHEEL_CATALOG' && !isWheelInventory && <StaggeredTyreSearch
                   key={`${currentView}:${activeSupplierCatalog}`}
                   query={debouncedSearchQuery} items={filteredItems}
                   onSearch={query => {
@@ -2045,7 +2095,7 @@ const App: React.FC = () => {
                   <InventoryView
                     key={`${currentUser}:${currentView === 'SUPPLIER_INVENTORY' ? activeSupplierCatalog : 'OWNED'}`}
                     preferenceScope={currentView === 'SUPPLIER_INVENTORY' ? activeSupplierCatalog : 'OWNED'}
-                    onResetFilters={resetInventoryFilters}
+                    onResetFilters={isWheelInventory ? clearWheelFilters : resetInventoryFilters}
                     items={displayedInventoryItems}
                     isAdmin={isAdmin}
                     onEdit={openEditModal}
