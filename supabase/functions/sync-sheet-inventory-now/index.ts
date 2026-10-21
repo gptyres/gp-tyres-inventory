@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -59,7 +59,7 @@ const parseCsv = (csvText: string) => {
   return rows;
 };
 
-const getConfiguredToken = async (supabase: ReturnType<typeof createClient>) => {
+const getConfiguredToken = async (supabase: SupabaseClient) => {
   const envToken = Deno.env.get(SECRET_NAME);
   if (envToken) return envToken;
 

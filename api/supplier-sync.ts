@@ -1,5 +1,6 @@
 import { getClientIpHash, verifyAdminSession } from '../server/adminSession.js';
 import { readApiBody } from '../server/readApiBody.js';
+import { readApiQuery } from '../server/readApiQuery.js';
 import { verifyStaffSession } from '../server/staffSession.js';
 import { createSupabaseAdmin } from '../server/supabaseAdmin.js';
 import {
@@ -240,7 +241,7 @@ export default async function handler(request: any, response: any) {
   response.setHeader('Cache-Control', 'no-store');
 
   try {
-    const queryCatalog = normalizeStatusCatalog(request.query?.catalog);
+    const queryCatalog = normalizeStatusCatalog(readApiQuery(request).catalog);
 
     if (request.method === 'GET') {
       const staffSession = verifyStaffSession(request);

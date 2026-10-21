@@ -1,4 +1,4 @@
-import { createClient } from 'npm:@supabase/supabase-js@2.93.1';
+import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.93.1';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -40,7 +40,7 @@ const getRequiredEnv = (name: string) => {
   return value;
 };
 
-const getConfiguredImportToken = async (supabase: ReturnType<typeof createClient>) => {
+const getConfiguredImportToken = async (supabase: SupabaseClient) => {
   const envToken = Deno.env.get('SUPPLIER_IMAGE_IMPORT_TOKEN');
   if (envToken) return envToken;
 

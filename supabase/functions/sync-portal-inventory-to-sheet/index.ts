@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -40,7 +40,7 @@ const getRequiredEnv = (name: string) => {
   return value;
 };
 
-const getPrivateSecret = async (supabase: ReturnType<typeof createClient>, name: string) => {
+const getPrivateSecret = async (supabase: SupabaseClient, name: string) => {
   const envValue = Deno.env.get(name);
   if (envValue) return envValue;
 
@@ -55,7 +55,7 @@ const getPrivateSecret = async (supabase: ReturnType<typeof createClient>, name:
 };
 
 const createSyncRun = async (
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseClient,
   reason: string,
   rowsReceived: number
 ) => {

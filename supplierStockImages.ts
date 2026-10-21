@@ -62,6 +62,8 @@ export interface StaffSupplierTyreImageUploadPayload {
   mimeType: string;
   designKey: string;
   finishKey: string;
+  rimSize?: string | null;
+  pcd?: string | null;
   tags: string[];
   base64: string;
   uploadedBy?: string;

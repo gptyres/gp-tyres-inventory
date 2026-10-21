@@ -9,7 +9,7 @@ describe('Safety Grip catalogue pricing', () => {
 
     expect(items).toHaveLength(126);
     expect(new Set(items.map((item) => item.supplierStockCode)).size).toBe(126);
-    expect(items.every((item) => item.brand === 'ANNAITE')).toBe(true);
+    expect(items.every((item) => item.type === ProductType.TYRE && item.brand === 'ANNAITE')).toBe(true);
     expect(items.every((item) => item.promotionLabel === undefined)).toBe(true);
     expect(items.every((item) => item.normalSellingPrice === undefined)).toBe(true);
   });

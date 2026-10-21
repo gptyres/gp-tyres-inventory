@@ -905,7 +905,7 @@ export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
     return index === undefined ? '' : cols[index]?.trim() || '';
   };
 
-  const baseItems = lines.slice(1).flatMap((line): InventoryItem[] => {
+  const baseItems = lines.slice(1).flatMap((line): TyreProduct[] => {
     const cols = parseCSVLine(line.trim());
     const sku = readColumn(cols, 'Supplier SKU');
     const size = readColumn(cols, 'TYRE_SIZE');
@@ -950,7 +950,7 @@ export const parseRoyalTyresData = (rawText: string): InventoryItem[] => {
   const supplementLines = ROYAL_TYRES_CAPE_TOWN_RAW_DATA.split('\n').filter((line) => line.trim());
   const supplementHeaders = parseCSVLine(supplementLines[0]).map((header) => header.trim().toLowerCase());
   const supplementColumn = (name: string) => supplementHeaders.indexOf(name.toLowerCase());
-  const updatedItems = [...baseItems];
+  const updatedItems: (TyreProduct | WheelProduct)[] = [...baseItems];
   const itemIndexBySku = new Map(updatedItems.map((item, index) => [item.supplierStockCode || '', index]));
   const latestDate = '2026-08-11';
   const vatInclusive = calculateVatInclusiveSellingPrice;

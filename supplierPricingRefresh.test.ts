@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { ProductType } from './types';
 import { TYRE_LIFE_RAW_DATA } from './supplier_data/tyreLifeData';
 import { TYRE_LIFE_WHEELS_RAW_DATA } from './supplier_data/tyreLifeWheelsData';
 import { APEX_RAW_DATA } from './supplier_data/apexData';
@@ -112,10 +113,12 @@ describe('supplier pricing refresh', () => {
       stockByLocation: { BFN: 48, CPT: 6, DBN: 0, JHB: 2, NWH: 0 }
     });
     expect(special).toMatchObject({ costPrice: 1571, sellingPrice: 1807 });
-    expect(special?.tyreSpecs).toContain('SPECIAL');
+    if (special?.type !== ProductType.TYRE) throw new Error('Expected special tyre item');
+    expect(special.tyreSpecs).toContain('SPECIAL');
     expect(correctedCodeMatch).toMatchObject({ costPrice: 3250, sellingPrice: 3738 });
     expect(items.filter((item) => item.type === 'TYRE' && /\bSPECIAL\b/.test(item.tyreSpecs || ''))).toHaveLength(44);
-    expect(missingPriceLine?.tyreSpecs || '').not.toContain('SPECIAL');
+    if (missingPriceLine?.type !== ProductType.TYRE) throw new Error('Expected missing-price tyre item');
+    expect(missingPriceLine.tyreSpecs || '').not.toContain('SPECIAL');
     expect(TUBESTONE_SPECIALS_RAW_DATA.split('\n')).toHaveLength(45);
     expect(items.every((item) => item.sellingPrice === nearestVatInclusiveRand(item.costPrice))).toBe(true);
   });

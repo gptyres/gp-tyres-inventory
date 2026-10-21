@@ -1,4 +1,4 @@
-import { createClient } from 'npm:@supabase/supabase-js@2.93.1';
+import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.93.1';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -103,7 +103,7 @@ const getRequiredEnv = (name: string) => {
   return value;
 };
 
-const getConfiguredSyncToken = async (supabase: ReturnType<typeof createClient>) => {
+const getConfiguredSyncToken = async (supabase: SupabaseClient) => {
   const { data, error } = await supabase
     .from('app_private_import_secrets')
     .select('name, secret_value')
@@ -393,7 +393,7 @@ const chunk = <T>(items: T[], size: number) => {
 };
 
 const fetchActiveRowsForSources = async (
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseClient,
   sourceRootFolderIds: string[]
 ) => {
   const rows: { drive_file_id: string }[] = [];

@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "node ./node_modules/vite/bin/vite.js",
+    "prebuild": "npm run typecheck:app",
     "build": "node ./node_modules/vite/bin/vite.js build",
     "preview": "node ./node_modules/vite/bin/vite.js preview",
     "test": "node ./node_modules/vitest/vitest.mjs run",
+    "typecheck": "npm run typecheck:app && npm run typecheck:functions",
+    "typecheck:app": "node ./node_modules/typescript/bin/tsc --noEmit",
+    "typecheck:functions": "node scripts/typecheck-functions.mjs",
     "supplier:eibach:sync": "node scripts/sync-eibach-catalog.mjs",
     "supplier:hoosier:sync": "node scripts/sync-hoosier-catalog.mjs",
     "wheel:audit": "node scripts/audit-wheel-catalog-cleanup.mjs audit",
@@ -36,7 +40,13 @@
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "autoprefixer": "^10.6.1",
+    "deno": "^2.8.3",
+    "postcss": "^8.5.31",
+    "tailwindcss": "^3.4.17",
     "typescript": "~5.8.2",
     "vite": "^6.2.0",
     "vitest": "^4.1.9"

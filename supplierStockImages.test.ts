@@ -43,8 +43,13 @@ import {
   parseSupplierWheelImageKeys,
   supplierTyreMatchesUploadKeys
 } from './supplierStockImages';
-import { ProductType } from './types';
+import { InventoryItem, ProductType, TyreProduct } from './types';
 import { parseApexData, parseArcData, parseAttData, parseExoticData, parseExclusiveTyresData, parseStamfordData, parseSumitomoDunlopData, parseTreadZoneData, parseTyreLifeWheelsData, parseTyreWarehouseData } from './utils';
+
+const requireTyreItem = (item: InventoryItem): TyreProduct => {
+  if (item.type !== ProductType.TYRE) throw new Error(`Expected tyre item, received ${item.type}`);
+  return item;
+};
 
 beforeEach(() => {
   supabaseMockState.pages = [];
@@ -195,7 +200,7 @@ describe('STAMFORD supplier catalogue parsing', () => {
       'LRBH077,Blackhawk,Hiscend-H Ha01,LT235/75R15,SUV and 4x4 / All Terrain,Cape Town,Available,2 units',
       'LRBH077,Blackhawk,Hiscend-H Ha01,LT235/75R15,SUV and 4x4 / All Terrain,Durban,Out of stock,0 units',
       'LRBH077,Blackhawk,Hiscend-H Ha01,LT235/75R15,SUV and 4x4 / All Terrain,Johannesburg,Available,3 units'
-    ].join('\n'), { LRBH077: 1450 });
+    ].join('\n'), { LRBH077: 1450 }).map(requireTyreItem);
 
     expect(item).toMatchObject({
       type: ProductType.TYRE,
@@ -225,7 +230,7 @@ describe('TYREWAREHOUSE supplier catalogue parsing', () => {
       '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,GLK,Available,4 units,R1100',
       '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,CPT,Out of stock,0 units,R1100',
       '303426560181w,265/60R18,Continental,ContiCrossContact AT,Passenger / SUV Tyres,DBN,Out of stock,0 units,R1100'
-    ].join('\n'));
+    ].join('\n')).map(requireTyreItem);
 
     expect(item).toMatchObject({
       type: ProductType.TYRE,
@@ -259,7 +264,7 @@ describe('EXCLUSIVE TYRES supplier catalogue parsing', () => {
       '165/50R15,TRACMAX - TYRES IMP 72V TRACMAX X privilo TX5,R550,20 units',
       '245/45R18,RADAR - TYRES IMP 100Y RADAR XL DMAX SPORT,R1500,20 units',
       '195/65R15,RADAR - TYRE IMP RADAR RADAR RPX800 TYRE,R900,3 units'
-    ].join('\n'));
+    ].join('\n')).map(requireTyreItem);
 
     expect(items.map((item) => item.pattern)).toEqual([
       'X Privilo TX3',
@@ -294,7 +299,7 @@ describe('TREAD ZONE supplier catalogue parsing', () => {
       '1.01.016.121,Agricultural > Bias,Farm Master,F2,6.00-16,Treadzone Durban,Available,15 units,R773.50',
       '1.01.016.121,Agricultural > Bias,Farm Master,F2,6.00-16,Treadzone Jet Park,Available,120 units,R773.50',
       '1.01.016.121,Agricultural > Bias,Farm Master,F2,6.00-16,Treadzone Port Elizabeth,Available,12 units,R773.50'
-    ].join('\n'));
+    ].join('\n')).map(requireTyreItem);
 
     expect(item).toMatchObject({
       type: ProductType.TYRE,
@@ -332,7 +337,7 @@ describe('SUMITOMO/DUNLOP supplier catalogue parsing', () => {
       'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Eastport,Available,40 units,R1870.62',
       'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Ladysmith,Available,17 units,R1870.62',
       'G10591287DJ,Car Steel,Dunlop,EC300+,185/60R16,Port Elizabeth,Available,10 units,R1870.62'
-    ].join('\n'));
+    ].join('\n')).map(requireTyreItem);
 
     expect(item).toMatchObject({
       type: ProductType.TYRE,
@@ -371,7 +376,7 @@ describe('EXOTIC supplier catalogue parsing', () => {
       'Exotic,Evolution Racing,"15"" Cairo 4/100 8.25J ET15 CH73.1 Evolution Racing GomlL Wheel",Alloy Wheels,Unknown Size,Cape Town,Available,Not shown,R1249,EWT1203,https://example.test/wheel',
       'Exotic,Accelera,155/65R14 Accelera Eco Plush 75H Tyre,Tyres,155/65R14,Cape Town,Available,Not shown,R585,A1556514ECOP75H,https://example.test/tyre',
       'Exotic,Accelera,155/65R14 Accelera Eco Plush 75H Tyre,Tyres,155/65R14,Johannesburg,Available,Not shown,R585,A1556514ECOP75H,https://example.test/tyre'
-    ].join('\n'));
+    ].join('\n')).map(requireTyreItem);
 
     expect(items).toHaveLength(1);
     expect(items[0]).toMatchObject({
@@ -430,7 +435,7 @@ describe('APEX supplier catalogue parsing', () => {
       'Supplier SKU,TYRE_SIZE,TYRE_BRAND,TYRE_PATTERN,TYRE_RATING,TYRE_INDEX,TYRE_SPECS,Category,Product Name,Lead Time,Cost Price,Selling Price,CPT Stock Units,Total Stock Units',
       '779303,60R18,BF GOODRICH,,,114/110S,,Tyres,LT265/60R18 114/110S TL ALL-TERRAIN T/A KO3 LRD GO,6 Hours,R4074,R4675,20 units,20 units',
       '779304,60R17,BF GOODRICH,,,112/109S,,Tyres,LT265/60R17 112/109S TL ALL-TERRAIN T/A KO3 LRC GO,6 Hours,R3950,R4550,3 units,3 units'
-    ].join('\n'));
+    ].join('\n')).map(requireTyreItem);
 
     expect(items.map((item) => item.size)).toEqual([
       'LT265/60R18',
@@ -449,7 +454,7 @@ describe('APEX supplier catalogue parsing', () => {
       '225/45R17,DUNLOP 97Y MAXX060+ XL,7 Days,R2300,20 units',
       '235/55R19,CONTINENTAL (97Y) XL FR SPORTCONTACT 7,7 Days,R3950,20 units',
       '245/45R20,BRIDGESTONE POTENZA SPORT 101Y STD,7 Days,R4550,20 units'
-    ].join('\n'));
+    ].join('\n')).map(requireTyreItem);
 
     expect(items.map((item) => item.pattern)).toEqual([
       'MAXX060+',

@@ -1,4 +1,5 @@
 import { readApiBody } from './readApiBody.js';
+import { readApiQuery } from './readApiQuery.js';
 import { verifyStaffSession } from './staffSession.js';
 import { verifyAdminSession } from './adminSession.js';
 import { createSupabaseAdmin } from './supabaseAdmin.js';
@@ -143,17 +144,18 @@ export const handleInventoryHistory = async (request: any, response: any) => {
     return response.status(405).json({ error: 'Unsupported method.' });
   }
   try {
-    const productId = String(one(request.query?.productId) || '').trim().slice(0, 120);
+    const query = readApiQuery(request);
+    const productId = String(one(query.productId) || '').trim().slice(0, 120);
     if (!productId) return response.status(400).json({ error: 'Product id is required.' });
-    const daysValue = String(one(request.query?.days) || '15');
+    const daysValue = String(one(query.days) || '15');
     const days = daysValue === 'all' ? null : Math.min(3650, Math.max(1, Number(daysValue) || 15));
     const result = await fetchInventoryHistory({
       productId,
       days,
-      eventType: String(one(request.query?.eventType) || '').toUpperCase() as any,
-      source: String(one(request.query?.source) || '').toUpperCase() as any,
-      cursor: String(one(request.query?.cursor) || ''),
-      limit: Number(one(request.query?.limit)) || 100
+      eventType: String(one(query.eventType) || '').toUpperCase() as any,
+      source: String(one(query.source) || '').toUpperCase() as any,
+      cursor: String(one(query.cursor) || ''),
+      limit: Number(one(query.limit)) || 100
     });
     return response.status(200).json({ ok: true, ...result });
   } catch (error) {
@@ -169,27 +171,28 @@ export const handleStockMovement = async (request: any, response: any) => {
     return response.status(405).json({ error: 'Unsupported method.' });
   }
   try {
-    const mode = String(one(request.query?.mode) || 'summary').toLowerCase();
+    const query = readApiQuery(request);
+    const mode = String(one(query.mode) || 'summary').toLowerCase();
     if (mode === 'report') {
-      const date = String(one(request.query?.date) || getJohannesburgDateKey());
+      const date = String(one(query.date) || getJohannesburgDateKey());
       return response.status(200).json({ ok: true, date, rows: await fetchDailySalesReport(date) });
     }
-    const fromDate = cleanText(one(request.query?.from), 10);
-    const toDate = cleanText(one(request.query?.to), 10);
+    const fromDate = cleanText(one(query.from), 10);
+    const toDate = cleanText(one(query.to), 10);
     if ((fromDate && !toDate) || (!fromDate && toDate)) {
       return response.status(400).json({ error: 'Both stock movement dates are required.' });
     }
-    const days = Math.min(366, Math.max(1, Number(one(request.query?.days)) || 1));
+    const days = Math.min(366, Math.max(1, Number(one(query.days)) || 1));
     if (mode === 'movements') {
-      const requestedType = cleanText(one(request.query?.eventType), 16).toUpperCase();
+      const requestedType = cleanText(one(query.eventType), 16).toUpperCase();
       const result = await fetchStockMovementLedgerPage({
         days,
         fromDate: fromDate || undefined,
         toDate: toDate || undefined,
         eventType: movementEventTypes.has(requestedType) ? requestedType as any : '',
-        search: cleanText(one(request.query?.search), 120),
-        page: Number(one(request.query?.page)) || 1,
-        pageSize: Number(one(request.query?.pageSize)) || 25
+        search: cleanText(one(query.search), 120),
+        page: Number(one(query.page)) || 1,
+        pageSize: Number(one(query.pageSize)) || 25
       });
       return response.status(200).json({ ok: true, ...result });
     }

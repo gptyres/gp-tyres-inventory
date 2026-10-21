@@ -1866,8 +1866,6 @@ const App: React.FC = () => {
       searchPlaceholder = "Search inside the photo library...";
   } else if (currentView === 'WORKSHOP_TRACKER') {
       searchPlaceholder = "Search workshop jobs inside the tracker...";
-  } else if (currentView === 'WORKSHOP_TRACKER') {
-      searchPlaceholder = "Search workshop jobs inside the tracker...";
   } else if (currentView === 'RADAR_RED') {
       searchPlaceholder = "RADAR RED resources are available inside the folder...";
   }

@@ -27,7 +27,6 @@ export interface WheelCatalogSyncResult {
   scanned?: number;
   imported?: number;
   skipped?: number;
-  deactivated?: number;
   totalImages?: number;
   processedImages?: number;
   nextImageOffset?: number;

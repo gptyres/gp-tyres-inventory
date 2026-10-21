@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -205,7 +205,7 @@ const parseSheetRow = (row: SheetRowPayload, syncedAt: string): ParsedSheetRow |
   };
 };
 
-const getConfiguredToken = async (supabase: ReturnType<typeof createClient>) => {
+const getConfiguredToken = async (supabase: SupabaseClient) => {
   const envToken = Deno.env.get(SECRET_NAME);
   if (envToken) return envToken;
 
@@ -332,7 +332,7 @@ const chunkValues = <T,>(values: T[], size: number) => {
   return chunks;
 };
 
-const fetchAllTyreInventoryRows = async (supabase: ReturnType<typeof createClient>) => {
+const fetchAllTyreInventoryRows = async (supabase: SupabaseClient) => {
   const inventoryRows: InventoryRow[] = [];
 
   for (let from = 0; ; from += INVENTORY_PAGE_SIZE) {

@@ -50,7 +50,7 @@ The interface is designed for fast counter-service work on desktop and mobile, w
 
 ### Requirements
 
-- Node.js 20+
+- Node.js 24 (matches the Vercel runtime)
 - npm 10+
 - Supabase project credentials
 
@@ -59,7 +59,7 @@ The interface is designed for fast counter-service work on desktop and mobile, w
 ```bash
 git clone https://github.com/gptyres/gp-tyres-inventory.git
 cd gp-tyres-inventory
-npm install
+npm ci
 ```
 
 Create your local environment file:
@@ -105,9 +105,12 @@ Only public browser configuration may use the `VITE_` prefix. Provider keys, ser
 | Command | Purpose |
 | --- | --- |
 | `npm run dev` | Start the Vite development server |
-| `npm run build` | Create a production build in `dist/` |
+| `npm run build` | Type-check the app, then create a production build in `dist/` |
 | `npm run preview` | Preview the production build locally |
 | `npm test` | Run the complete Vitest suite once |
+| `npm run typecheck` | Check app/API TypeScript and every Supabase Edge Function |
+| `npm run typecheck:app` | Check browser and Vercel API code with TypeScript |
+| `npm run typecheck:functions` | Check Edge Functions with the project-local Deno CLI |
 
 The repository also contains specialist wheel-catalogue import, audit, quarantine, OCR, and analysis commands. Review `package.json` and the relevant file in `scripts/` before running them. Prefer a dry run whenever one is available.
 
@@ -133,12 +136,29 @@ The repository also contains specialist wheel-catalogue import, audit, quarantin
 
 ## Development workflow
 
-Create a focused branch, keep operational exports out of commits, and run both checks before requesting review:
+Create a focused branch, keep operational exports out of commits, and run all checks before requesting review:
 
 ```bash
+npm run typecheck
 npm test
 npm run build
 ```
+
+The app/API checker excludes `supabase/functions` because those files run in Deno,
+not the browser or Node. The second half of `npm run typecheck` discovers every
+Edge Function entrypoint and checks it with the project-local Deno binary and
+`supabase/functions/deno.check.json`. No production credentials or writes are
+needed. Deno may download the pinned SDK dependencies on the first check.
+
+Tailwind is compiled at build time; keep utility classes literal or explicitly
+safelist constructed classes in `tailwind.config.cjs`. The production CSS test
+checks the built output, including theme values and responsive wheel filters.
+
+Known non-blocking tooling advisories: the bundled supplier snapshot and document
+libraries exceed Vite's default chunk-size guidance. Tailwind 3's build-only
+dependency tree also has npm audit advisories; a major Tailwind migration needs
+separate UI regression testing. Do not suppress these warnings or use
+`npm audit fix --force` without reviewing the resulting changes.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the pull-request checklist and [SECURITY.md](SECURITY.md) for responsible vulnerability reporting.
 

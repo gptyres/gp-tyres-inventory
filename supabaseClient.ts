@@ -1,7 +1,8 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-export interface InventoryItemRow {
+// Closed object types satisfy Supabase's Record<string, unknown> row contract.
+export type InventoryItemRow = {
   id: string;
   type: 'TYRE' | 'WHEEL' | 'COILOVER';
   item: Record<string, unknown>;
@@ -12,7 +13,7 @@ export interface InventoryItemRow {
   updated_at?: string;
 }
 
-export interface SalesLogRow {
+export type SalesLogRow = {
   id?: number | string;
   terminal_id: string;
   product_id: string;
@@ -28,7 +29,7 @@ export interface SalesLogRow {
 
 export type SalesLogInsert = Omit<SalesLogRow, 'id' | 'created_at'>;
 
-export interface SystemLogRow {
+export type SystemLogRow = {
   id?: number | string;
   terminal_id: string;
   event_type: string;
@@ -44,7 +45,7 @@ export type CRMDocumentType = 'QUOTE' | 'INVOICE';
 export type CRMDocumentStatus = 'DRAFT' | 'ISSUED' | 'SENT' | 'ACCEPTED' | 'CONVERTED' | 'PAID' | 'VOID';
 export type CRMCustomerEventType = 'CUSTOMER_CREATED' | 'CUSTOMER_UPDATED' | 'DOCUMENT_CREATED' | 'DOCUMENT_UPDATED' | 'IMPORT' | 'NOTE';
 
-export interface CRMCustomerRow {
+export type CRMCustomerRow = {
   id: string;
   display_name: string;
   display_name_key?: string;
@@ -71,7 +72,7 @@ export type CRMCustomerInsert = Omit<CRMCustomerRow, 'id' | 'display_name_key' |
 
 export type CRMCustomerUpdate = Partial<Omit<CRMCustomerRow, 'id' | 'display_name_key' | 'created_at' | 'updated_at'>>;
 
-export interface CRMDocumentRow {
+export type CRMDocumentRow = {
   id: string;
   reference_id: string;
   document_type: CRMDocumentType;
@@ -98,7 +99,7 @@ export type CRMDocumentInsert = Omit<CRMDocumentRow, 'id' | 'created_at' | 'upda
 
 export type CRMDocumentUpdate = Partial<Omit<CRMDocumentRow, 'id' | 'created_at' | 'updated_at'>>;
 
-export interface CRMDocumentItemRow {
+export type CRMDocumentItemRow = {
   id: string;
   document_id: string;
   line_index: number;
@@ -119,7 +120,7 @@ export type CRMDocumentItemInsert = Omit<CRMDocumentItemRow, 'id' | 'created_at'
   id?: string;
 };
 
-export interface CRMCustomerEventRow {
+export type CRMCustomerEventRow = {
   id: string;
   customer_id?: string | null;
   document_id?: string | null;
@@ -134,7 +135,7 @@ export type CRMCustomerEventInsert = Omit<CRMCustomerEventRow, 'id' | 'created_a
   id?: string;
 };
 
-export interface WheelCatalogItemRow {
+export type WheelCatalogItemRow = {
   id: string;
   source_root_folder_id: string;
   drive_file_id: string;
@@ -183,7 +184,7 @@ export type WheelCatalogItemInsert = Omit<WheelCatalogItemRow, 'id' | 'updated_a
   id?: string;
 };
 
-export interface WheelCatalogSyncRunRow {
+export type WheelCatalogSyncRunRow = {
   id: string;
   status: 'started' | 'completed' | 'failed';
   started_at: string;
@@ -202,7 +203,7 @@ export type WheelCatalogSyncRunInsert = Omit<WheelCatalogSyncRunRow, 'id' | 'sta
   started_at?: string;
 };
 
-interface Database {
+export interface Database {
   public: {
     Tables: {
       inventory_items: {

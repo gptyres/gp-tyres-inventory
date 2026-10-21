@@ -1,4 +1,4 @@
-import { createClient } from 'npm:@supabase/supabase-js@2.93.1';
+import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2.93.1';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -116,7 +116,7 @@ const chunk = <T>(items: T[], size: number) => {
 };
 
 const fetchAllRows = async <T>(
-  buildQuery: (from: number, to: number) => Promise<{ data: T[] | null; error: unknown }>
+  buildQuery: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: unknown }>
 ) => {
   const pageSize = 1000;
   const rows: T[] = [];
@@ -142,7 +142,7 @@ const normalizeRimSize = (value?: string | null) => {
   return normalized || null;
 };
 
-const getConfiguredImportToken = async (supabase: ReturnType<typeof createClient>) => {
+const getConfiguredImportToken = async (supabase: SupabaseClient) => {
   const { data, error } = await supabase
     .from('app_private_import_secrets')
     .select('name, secret_value')
@@ -202,7 +202,7 @@ const validateImportPayload = (payload: ImportPayload) => {
   return '';
 };
 
-const startImport = async (supabase: ReturnType<typeof createClient>, payload: StartPayload) => {
+const startImport = async (supabase: SupabaseClient, payload: StartPayload) => {
   if (!payload.sourceRootFolderId) {
     return jsonResponse({ ok: false, error: 'Missing source root folder ID.' }, 400);
   }
@@ -225,7 +225,7 @@ const startImport = async (supabase: ReturnType<typeof createClient>, payload: S
   });
 };
 
-const importOne = async (supabase: ReturnType<typeof createClient>, payload: ImportPayload) => {
+const importOne = async (supabase: SupabaseClient, payload: ImportPayload) => {
   const validationError = validateImportPayload(payload);
   if (validationError) return jsonResponse({ ok: false, error: validationError }, 400);
 
@@ -281,7 +281,7 @@ const importOne = async (supabase: ReturnType<typeof createClient>, payload: Imp
   });
 };
 
-const finalizeImport = async (supabase: ReturnType<typeof createClient>, payload: FinalizePayload) => {
+const finalizeImport = async (supabase: SupabaseClient, payload: FinalizePayload) => {
   if (!payload.importRunId || !payload.sourceRootFolderId || !Array.isArray(payload.seenDriveFileIds)) {
     return jsonResponse({ ok: false, error: 'Missing finalize fields.' }, 400);
   }
@@ -340,7 +340,7 @@ const finalizeImport = async (supabase: ReturnType<typeof createClient>, payload
   }, status === 'completed' ? 200 : 207);
 };
 
-const enrichImport = async (supabase: ReturnType<typeof createClient>, payload: EnrichPayload) => {
+const enrichImport = async (supabase: SupabaseClient, payload: EnrichPayload) => {
   if (!payload.driveFileId) {
     return jsonResponse({ ok: false, error: 'Missing wheel catalog row ID.' }, 400);
   }
@@ -396,7 +396,7 @@ const enrichImport = async (supabase: ReturnType<typeof createClient>, payload: 
   });
 };
 
-const enrichBatch = async (supabase: ReturnType<typeof createClient>, payload: EnrichBatchPayload) => {
+const enrichBatch = async (supabase: SupabaseClient, payload: EnrichBatchPayload) => {
   if (!Array.isArray(payload.items) || payload.items.length === 0 || payload.items.length > 50) {
     return jsonResponse({ ok: false, error: 'Enrichment batch must contain between 1 and 50 items.' }, 400);
   }
@@ -425,7 +425,7 @@ const enrichBatch = async (supabase: ReturnType<typeof createClient>, payload: E
   }, failed.length === 0 ? 200 : 207);
 };
 
-const replaceFolder = async (supabase: ReturnType<typeof createClient>, payload: ReplaceFolderPayload) => {
+const replaceFolder = async (supabase: SupabaseClient, payload: ReplaceFolderPayload) => {
   const folderPath = String(payload.folderPath ?? '').trim();
   if (!folderPath || !Array.isArray(payload.seenDriveFileIds)) {
     return jsonResponse({ ok: false, error: 'Missing replace folder fields.' }, 400);
