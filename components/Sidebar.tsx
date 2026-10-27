@@ -33,7 +33,6 @@ export const SIDEBAR_SUPPLIER_CATALOGS: Array<{
   { catalog: 'BRIDGESTONE', label: 'BRIDGESTONE' },
   { catalog: 'DIXON_BATTERIES', label: 'DIXON BATTERIES' },
   { catalog: 'EIBACH', label: 'EIBACH' },
-  { catalog: 'EXCLUSIVE_TYRES', label: 'EXCLUSIVE TYRES — LEGACY' },
   { catalog: 'EXCLUSIVE_TYRES_NEW', label: 'EXCLUSIVE TYRES NEW — CURRENT' },
   { catalog: 'EXOTIC', label: 'EXOTIC' },
   { catalog: 'HOOSIER_TYRES', label: 'HOOSIER TYRES' },
