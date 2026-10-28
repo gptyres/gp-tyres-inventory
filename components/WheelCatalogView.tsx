@@ -1,4 +1,5 @@
 import React, { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import { optimizeImageUpload } from '../imageUploadOptimization';
 import {
   fetchLatestWheelCatalogSyncRun,
   fetchWheelCatalogItems,
@@ -497,7 +498,8 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
           const metadata = parseCatalogMetadata(rawFolderPathParts, entry.file.name);
 
           try {
-            const buffer = await entry.file.arrayBuffer();
+            const uploadFile = await optimizeImageUpload(entry.file);
+            const buffer = await uploadFile.arrayBuffer();
             const contentSha256 = await sha256Hex(buffer);
             const pathSha256 = await sha256Hex(relativePath);
             const extension = extensionFor(entry.file.name) || 'jpg';
@@ -719,9 +721,11 @@ export const WheelCatalogView: React.FC<WheelCatalogViewProps> = ({ searchQuery 
           const file = uploadFiles[index];
 
           try {
-            const buffer = await file.arrayBuffer();
+            const uploadFile = await optimizeImageUpload(file);
+            const buffer = await uploadFile.arrayBuffer();
             const contentSha256 = await sha256Hex(buffer);
-            const idSha256 = await sha256Hex(`staff-upload/${folderPath}/${file.name}/${contentSha256}`);
+            const originalSha256 = uploadFile === file ? contentSha256 : await sha256Hex(await file.arrayBuffer());
+            const idSha256 = await sha256Hex(`staff-upload/${folderPath}/${file.name}/${originalSha256}`);
             const extension = extensionFor(file.name) || 'jpg';
             const relativePath = `staff-upload/${folderPath}/${file.name}`;
             const tags = Array.from(new Set([

@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { BatteryProduct, InventoryItem, ProductType, TyreProduct, WheelProduct, CoiloverProduct, ViewMode } from '../types';
 import { formatCurrency, getStatusColor } from '../utils';
+import { optimizeImageUpload } from '../imageUploadOptimization';
 import {
   buildStaffSupplierWheelImageUploadPayload,
   buildStaffSupplierTyreImageUploadPayload,
@@ -1092,8 +1093,9 @@ const SupplierTyreImageUploadModal: React.FC<SupplierTyreImageUploadModalProps> 
 
     try {
       const remoteFileName = remoteImageUrl ? getRemoteVisualFileName(remoteImageUrl, imageKind) : '';
-      const [base64, hash] = file
-        ? await Promise.all([fileToBase64(file), hashFile(file)])
+      const uploadFile = file ? await optimizeImageUpload(file) : null;
+      const [base64, hash] = uploadFile
+        ? await Promise.all([fileToBase64(uploadFile), hashFile(uploadFile)])
         : ['', await hashText(remoteImageUrl)];
       const fileName = file?.name || remoteFileName;
       const mimeType = file ? getSupportedStaffImageMimeType(file) : getSupportedStaffImageMimeType({ name: fileName, type: '' }) || 'image/jpeg';
