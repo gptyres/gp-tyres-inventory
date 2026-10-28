@@ -194,7 +194,8 @@ export const liveSupplierRowToInventoryItem = (
       : normalSellingPrice * listingPriceMultiplier,
     promotionLabel: /\bSPECIAL\b/i.test(row.tyre_specs || '') ? 'SPECIAL' : undefined,
     lastUpdated: row.imported_at.slice(0, 10),
-    supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS' : row.supplier,
+    supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS'
+      : row.catalog_key === 'EXCLUSIVE_TYRES_NEW' ? 'EXCLUSIVE TYRES' : row.supplier,
     supplierStockCode: row.supplier_sku || undefined,
     stockByLocation: row.stock_by_location || undefined,
     stockQuantityUnknown: row.stock_quantity_unknown || isUnverifiedWheelTechQuantity(row) || undefined,

@@ -62,8 +62,8 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
 const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   SAILUN: 'SAILUN',
   MAXXIS: 'MAXXIS',
-  EXCLUSIVE_TYRES: 'EXCLUSIVE TYRES',
-  EXCLUSIVE_TYRES_NEW: 'EXCLUSIVE TYRES NEW',
+  EXCLUSIVE_TYRES: 'EXCLUSIVE TYRES — LEGACY',
+  EXCLUSIVE_TYRES_NEW: 'EXCLUSIVE TYRES',
   TYREWAREHOUSE: 'TYREWAREHOUSE',
   ATT: 'ATT',
   BRIDGESTONE: 'BRIDGESTONE',

@@ -25,6 +25,10 @@ const tyre = (overrides: Partial<TyreProduct> = {}): TyreProduct => ({
 });
 
 describe('supplier markup pricing', () => {
+  it('keeps current Exclusive Tyres costs VAT-exclusive in all-supplier search after its display rename', () => {
+    const item = tyre({ id: 'EXCLUSIVE TYRES-live-exclusive_tyres_new-123', supplierName: 'EXCLUSIVE TYRES' });
+    expect(calculateSupplierSellingPrice(item, { mode: 'FIXED', value: 300 }, 'ALL_SUPPLIERS')).toBe(1495);
+  });
   it('adds VAT before applying a percentage to ex-VAT supplier cost', () => {
     expect(getSupplierCostIncludingVat(tyre(), 'APEX')).toBeCloseTo(1150);
     expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 20 }, 'APEX')).toBe(1380);

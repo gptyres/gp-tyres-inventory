@@ -422,11 +422,11 @@ const App: React.FC = () => {
     },
     EXCLUSIVE_TYRES: {
       label: 'EXCLUSIVE TYRES — LEGACY CATALOGUE',
-      note: 'RETIRED PORTAL / LEGACY DATA. Use Exclusive Tyres New for the current catalogue; this historical catalogue remains available for reference.'
+      note: 'RETIRED PORTAL / LEGACY DATA. Use Exclusive Tyres for the current catalogue; this historical catalogue remains available for reference.'
     },
     EXCLUSIVE_TYRES_NEW: {
-      label: 'EXCLUSIVE TYRES NEW — CURRENT CATALOGUE',
-      note: 'NEW PORTAL / CURRENT DATA. Listings use only tyre size, brand, cleaned pattern, stock on hand, SLA and cost excluding VAT. List price and GP are excluded; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1.',
+      label: 'EXCLUSIVE TYRES',
+      note: 'CURRENT PORTAL DATA. Listings use only tyre size, brand, cleaned pattern, stock on hand, SLA and cost excluding VAT. List price and GP are excluded; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1.',
       portalUrl: 'https://www.exclusivetyres.co.za/'
     },
     TYREWAREHOUSE: {

@@ -35,6 +35,10 @@ const baseRow: LiveSupplierCatalogRow = {
 };
 
 describe('live supplier catalogue conversion', () => {
+  it('shows the current Exclusive catalogue under its new display name without changing its data', () => {
+    const item = liveSupplierRowToInventoryItem({ ...baseRow, catalog_key: 'EXCLUSIVE_TYRES_NEW', supplier: 'EXCLUSIVE TYRES NEW' });
+    expect(item).toMatchObject({ supplierName: 'EXCLUSIVE TYRES', quantity: 8, costPrice: 1100, sellingPrice: 1265 });
+  });
   it('retains an unverified Wheel Tech quantity and displays confirm availability', () => {
     const [grouped] = groupLiveSupplierCatalogRows([{
       ...baseRow, catalog_key: 'WHEEL_TECH', supplier: 'WHEEL TECH', product_type: 'WHEEL',

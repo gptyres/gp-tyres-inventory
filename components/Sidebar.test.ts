@@ -27,7 +27,8 @@ describe('supplier catalogue sidebar order', () => {
     }));
 
     expect(markup).not.toContain('EXCLUSIVE TYRES — LEGACY');
-    expect(markup).toContain('EXCLUSIVE TYRES NEW — CURRENT');
+    expect(markup).toContain('>EXCLUSIVE TYRES</button>');
+    expect(markup).not.toContain('EXCLUSIVE TYRES NEW — CURRENT');
     expect(markup).toContain('BRIDGESTONE');
   });
 });
