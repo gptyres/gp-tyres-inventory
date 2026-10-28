@@ -14,6 +14,7 @@ export const STOCK_FILTERS: { value: StockFilter; label: string }[] = [
 
 export function matchesStockFilter(item: InventoryItem, filter: StockFilter): boolean {
   if (filter === 'ALL') return true;
+  if (item.stockQuantityUnknown) return false;
   if (!Number.isFinite(item.quantity)) return false;
   if (filter === 'IN_STOCK') return item.quantity > 0;
   if (filter === 'LOW_STOCK') return item.quantity > 0 && item.quantity < 4;
@@ -23,6 +24,7 @@ export function matchesStockFilter(item: InventoryItem, filter: StockFilter): bo
 export function stockCounts(items: InventoryItem[]): Record<StockFilter, number> {
   const counts = { ALL: items.length, IN_STOCK: 0, LOW_STOCK: 0, OUT_OF_STOCK: 0 };
   for (const item of items) {
+    if (item.stockQuantityUnknown) continue;
     if (!Number.isFinite(item.quantity)) continue;
     if (item.quantity <= 0) counts.OUT_OF_STOCK++;
     else {

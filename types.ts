@@ -33,6 +33,7 @@ export interface BaseProduct {
   supplierCostTaxBasis?: 'INCLUDES_VAT' | 'EXCLUDES_VAT' | 'NO_VAT';
   supplierOrderStatus?: SupplierOrderStatus;
   stockByLocation?: Record<string, number>;
+  stockQuantityUnknown?: boolean;
   stockQuantityIsMinimum?: boolean;
   stockMinimumLocations?: string[];
   supplierLeadTime?: string;

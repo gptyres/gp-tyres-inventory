@@ -47,6 +47,7 @@ export interface InventoryReportRow {
   details: string;
   location: string;
   quantity: number;
+  stockQuantityUnknown?: boolean;
   costPrice: number;
   sellingPrice: number;
 }
@@ -130,6 +131,7 @@ const getRawLocation = (item: InventoryItem): string => {
 };
 
 export const getInventoryReportLocation = (item: InventoryItem): string => {
+  if (item.stockQuantityUnknown) return 'Confirm availability';
   const stockByLocation = normalizeStockByLocation(item.stockByLocation);
   const entries = Object.keys(stockByLocation).length
     ? sortStockLocationEntries(stockByLocation)
@@ -160,6 +162,7 @@ export const mapInventoryItemToReportRow = (
     groupLabel: getGroupLabel(item, options.groupBy ?? 'none'),
     imageUrl: options.imageUrls?.[item.id],
     quantity: Math.max(0, Math.round(Number(item.quantity) || 0)),
+    stockQuantityUnknown: item.stockQuantityUnknown,
     costPrice: Number(item.costPrice) || 0,
     sellingPrice: Number(item.sellingPrice) || 0,
     supplier: supplierName(item) || '-'
@@ -258,7 +261,9 @@ export const formatInventoryReportCurrency = (amount: number): string => (
   `R ${Math.round(Number(amount) || 0).toLocaleString('en-ZA')}`.replace(/\u00a0/g, ' ')
 );
 
-export const isInventoryReportUnavailable = (row: Pick<InventoryReportRow, 'quantity'>): boolean => row.quantity <= 0;
+export const isInventoryReportUnavailable = (row: Pick<InventoryReportRow, 'quantity' | 'stockQuantityUnknown'>): boolean => (
+  !row.stockQuantityUnknown && row.quantity <= 0
+);
 
 const getImageFormat = (mimeType: string, source: string): string => {
   const normalized = mimeType.toLowerCase();
@@ -351,14 +356,14 @@ export const getInventoryReportColumns = (
     columns.push({ key: 'details', label: 'Details', weight: detailsWeight });
   }
   if (context.visibility.location) columns.push({ key: 'location', label: 'Location', weight: 1.65 });
-  if (context.visibility.quantity) columns.push({ key: 'quantity', label: 'Qty', weight: 0.5, align: 'right' });
+  if (context.visibility.quantity) columns.push({ key: 'quantity', label: 'Qty', weight: rows.some((row) => row.stockQuantityUnknown) ? 1.15 : 0.5, align: 'right' });
   if (context.visibility.cost) columns.push({ key: 'costPrice', label: 'Cost', weight: 0.95, align: 'right' });
   if (context.visibility.sellingPrice) columns.push({ key: 'sellingPrice', label: context.priceLabel || 'Selling Price', weight: 1.15, align: 'right' });
   return columns;
 };
 
 const getRowValue = (row: InventoryReportRow, key: ReportColumnKey): string => {
-  if (key === 'quantity') return String(row.quantity);
+  if (key === 'quantity') return row.stockQuantityUnknown ? 'Confirm availability' : String(row.quantity);
   if (key === 'costPrice') return formatInventoryReportCurrency(row.costPrice);
   if (key === 'sellingPrice') return formatInventoryReportCurrency(row.sellingPrice);
   if (key === 'visual') return '';

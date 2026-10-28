@@ -177,6 +177,19 @@ describe('inventory report row mapping', () => {
     expect(isInventoryReportUnavailable(mapInventoryItemToReportRow(tyre))).toBe(false);
   });
 
+  it('prints unverified Wheel Tech quantities as confirm availability, not out of stock', async () => {
+    const row = mapInventoryItemToReportRow({
+      ...wheel, supplierName: 'WHEEL TECH', quantity: 0,
+      stockQuantityUnknown: true, location: 'CPT — confirm availability'
+    });
+    expect(row.stockQuantityUnknown).toBe(true);
+    expect(row.location).toBe('Confirm availability');
+    expect(isInventoryReportUnavailable(row)).toBe(false);
+    const result = await createInventoryReport({ rows: [row], context: reportContext(), logoUrl: '' });
+    expect(result.doc.output()).toContain('Confirm');
+    expect(result.doc.output()).toContain('availability');
+  });
+
   it('includes an explicit supplier preorder status in report details', () => {
     const preorderRow = mapInventoryItemToReportRow({
       ...tyre,

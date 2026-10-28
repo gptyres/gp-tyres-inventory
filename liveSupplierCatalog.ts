@@ -38,6 +38,7 @@ export interface LiveSupplierCatalogRow {
   size?: string | null;
   stock_location?: string | null;
   stock_units_availability?: string | null;
+  stock_quantity_unknown?: boolean;
   supplier_lead_time?: string | null;
   stock_units: number;
   cost_price: number | string;
@@ -49,6 +50,12 @@ export interface LiveSupplierCatalogRow {
 }
 
 const PAGE_SIZE = 1_000;
+
+const isUnverifiedWheelTechQuantity = (row: LiveSupplierCatalogRow): boolean => (
+  row.catalog_key === 'WHEEL_TECH'
+  && Number(row.stock_units) === 0
+  && /quantity unverified/i.test(row.stock_units_availability || '')
+);
 
 const minimumStockLocations = (detail?: string | null): string[] => {
   const locations = new Set<string>();
@@ -127,8 +134,9 @@ export const groupLiveSupplierCatalogRows = (
       String(row.selling_price)
     ].map((value) => String(value).trim().toLowerCase()).join('\u001f');
     const existing = grouped.get(key);
+    const quantityUnknown = Boolean(existing?.stock_quantity_unknown || isUnverifiedWheelTechQuantity(row));
     const locations = normalizeStockByLocation(existing?.stock_by_location);
-    stockEntries(row).forEach(([location, quantity]) => {
+    (isUnverifiedWheelTechQuantity(row) ? [] : stockEntries(row)).forEach(([location, quantity]) => {
       locations[location] = (locations[location] || 0) + quantity;
     });
     const totalQuantity = Object.values(locations).reduce((total, quantity) => total + quantity, 0);
@@ -138,7 +146,9 @@ export const groupLiveSupplierCatalogRows = (
       imported_at: existing && existing.imported_at > row.imported_at ? existing.imported_at : row.imported_at,
       stock_by_location: Object.keys(locations).length > 0 ? locations : null,
       stock_location: Object.keys(locations).length > 0 ? formatStockByLocation(locations) : row.stock_location,
-      stock_units_availability: /portal stock counts are capped/.test(`${existing?.stock_units_availability || ''} ${row.stock_units_availability || ''}`)
+      stock_quantity_unknown: quantityUnknown || undefined,
+      stock_units_availability: quantityUnknown ? 'Listed available; quantity unverified'
+        : /portal stock counts are capped/.test(`${existing?.stock_units_availability || ''} ${row.stock_units_availability || ''}`)
         ? `At least ${totalQuantity}; portal stock counts are capped`
         : totalQuantity > 0 ? 'In stock' : 'Out of stock',
       source_stock_detail: existing
@@ -187,6 +197,7 @@ export const liveSupplierRowToInventoryItem = (
     supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS' : row.supplier,
     supplierStockCode: row.supplier_sku || undefined,
     stockByLocation: row.stock_by_location || undefined,
+    stockQuantityUnknown: row.stock_quantity_unknown || isUnverifiedWheelTechQuantity(row) || undefined,
     stockMinimumLocations,
     stockQuantityIsMinimum: stockMinimumLocations.length > 0 || /portal stock counts are capped/.test(row.stock_units_availability || ''),
     supplierLeadTime: row.supplier_lead_time?.trim() || undefined,

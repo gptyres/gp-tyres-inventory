@@ -70,7 +70,12 @@ export const formatStockQuantity = (value: number, isMinimum = false): string =>
 );
 
 export const formatItemStockQuantity = (item: InventoryItem): string => (
-  item.supplierOrderStatus === 'UNKNOWN' ? '—' : formatStockQuantity(item.quantity, item.stockQuantityIsMinimum)
+  item.stockQuantityUnknown ? 'Confirm availability'
+    : item.supplierOrderStatus === 'UNKNOWN' ? '—' : formatStockQuantity(item.quantity, item.stockQuantityIsMinimum)
+);
+
+const getItemStockColor = (item: InventoryItem): string => (
+  item.stockQuantityUnknown ? 'text-gp-text-muted' : getStatusColor(item.quantity)
 );
 
 interface VisibleColumns {
@@ -308,6 +313,7 @@ export const getWarehouseStockSummary = (items: InventoryItem[]): Array<[string,
 };
 
 const formatItemStockSummary = (item: InventoryItem): string => {
+  if (item.stockQuantityUnknown) return 'Confirm availability';
   if (item.supplierOrderStatus === 'UNKNOWN') return 'Quantity not published — confirm with supplier';
   const availableEntries = getStockEntries(item).filter(([, quantity]) => quantity > 0);
   if (availableEntries.length === 0) return getItemLocation(item);
@@ -316,6 +322,9 @@ const formatItemStockSummary = (item: InventoryItem): string => {
 };
 
 const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
+  if (item.stockQuantityUnknown) {
+    return <div className="col-span-full mt-2 border-t border-gp-border/70 pt-3 text-xs text-gp-text-muted">Confirm availability</div>;
+  }
   if (item.supplierOrderStatus === 'UNKNOWN') {
     return <div className="col-span-full mt-2 border-t border-gp-border/70 pt-3 text-xs text-gp-text-muted">Quantity not published — confirm with supplier</div>;
   }
@@ -1481,7 +1490,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                 </td>
               )}
 
-              <td className={`p-3 border-r border-gp-border text-center font-mono font-bold ${getStatusColor(item.quantity)}`}>
+              <td className={`p-3 border-r border-gp-border text-center font-mono font-bold ${getItemStockColor(item)}`}>
                 {formatItemStockQuantity(item)}
               </td>
 
@@ -1570,9 +1579,9 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                   <SupplierOrderStatusBadge item={item} />
                 </div>
                 <div className="flex shrink-0 flex-col items-end">
-                  <div className={`text-right ${getStatusColor(item.quantity)}`}>
-                    <span className="text-3xl font-display font-bold leading-none">{formatItemStockQuantity(item)}</span>
-                    <div className="text-[9px] uppercase opacity-70">Qty</div>
+                  <div className={`text-right ${getItemStockColor(item)}`}>
+                    <span className={item.stockQuantityUnknown ? 'block max-w-28 text-xs font-bold leading-tight' : 'text-3xl font-display font-bold leading-none'}>{formatItemStockQuantity(item)}</span>
+                    {!item.stockQuantityUnknown && <div className="text-[9px] uppercase opacity-70">Qty</div>}
                   </div>
                 </div>
               </div>
@@ -1788,8 +1797,8 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
            </div>
            
            <div className="flex flex-col items-end gap-2 w-full sm:w-auto mt-4 sm:mt-0">
-              <div className={`px-3 py-1 rounded text-xs font-bold ${getStatusColor(item.quantity)} bg-gp-black border border-gp-border`}>
-                {item.supplierOrderStatus === 'UNKNOWN' ? 'Quantity unknown' : `${formatItemStockQuantity(item)} Left`}
+              <div className={`px-3 py-1 rounded text-xs font-bold ${getItemStockColor(item)} bg-gp-black border border-gp-border`}>
+                {item.stockQuantityUnknown ? 'Confirm availability' : item.supplierOrderStatus === 'UNKNOWN' ? 'Quantity unknown' : `${formatItemStockQuantity(item)} Left`}
               </div>
               
               {/* Added Cost Price */}
@@ -2061,7 +2070,7 @@ export const InventoryView: React.FC<InventoryViewProps> = (incomingProps) => {
   const viewFilteredItems = useMemo(() => {
     if (props.isReadOnly && hideLowStock) {
         // Hide items with quantity 0 or 1
-        return props.items.filter(item => item.type === ProductType.BATTERY || item.quantity > 1);
+        return props.items.filter(item => item.type === ProductType.BATTERY || item.stockQuantityUnknown || item.quantity > 1);
     }
     return props.items;
   }, [props.items, props.isReadOnly, hideLowStock]);

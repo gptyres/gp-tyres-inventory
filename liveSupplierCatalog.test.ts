@@ -1,11 +1,15 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   groupLiveSupplierCatalogRows,
   liveSupplierRowToInventoryItem,
   LiveSupplierCatalogRow
 } from './liveSupplierCatalog';
-import { ProductType } from './types';
+import { ProductType, ViewMode } from './types';
 import { buildSupplierImageMap } from './supplierStockImages';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { InventoryView, formatItemStockQuantity } from './components/InventoryView';
+import { matchesStockFilter, stockCounts } from './stockWorkspace';
 
 const baseRow: LiveSupplierCatalogRow = {
   id: 1,
@@ -31,6 +35,82 @@ const baseRow: LiveSupplierCatalogRow = {
 };
 
 describe('live supplier catalogue conversion', () => {
+  it('retains an unverified Wheel Tech quantity and displays confirm availability', () => {
+    const [grouped] = groupLiveSupplierCatalogRows([{
+      ...baseRow, catalog_key: 'WHEEL_TECH', supplier: 'WHEEL TECH', product_type: 'WHEEL',
+      source_key: 'facebook-1', supplier_sku: '1', product_name: '15 inch wheel',
+      stock_units: 0, stock_by_location: {}, stock_location: 'CPT — confirm availability',
+      stock_units_availability: 'Listed available; quantity unverified'
+    }]);
+    const item = liveSupplierRowToInventoryItem(grouped);
+    expect(item).toMatchObject({ quantity: 0, stockQuantityUnknown: true });
+    expect(formatItemStockQuantity(item)).toBe('Confirm availability');
+    expect(matchesStockFilter(item, 'OUT_OF_STOCK')).toBe(false);
+    expect(stockCounts([item]).OUT_OF_STOCK).toBe(0);
+    const html = renderToStaticMarkup(React.createElement(InventoryView, {
+      items: [item], isAdmin: false, isReadOnly: true,
+      onEdit: () => {}, onDelete: () => {}, onSell: () => {},
+      onReserve: () => {}, onBulkDelete: () => {}
+    }));
+    expect(html).toContain('Confirm availability');
+    expect(html).not.toContain('No branch stock');
+    expect(html).not.toContain('Total stock');
+  });
+
+  it('keeps confirmed Wheel Tech and other suppliers’ stock quantities numeric', () => {
+    const wheel = { ...baseRow, catalog_key: 'WHEEL_TECH', supplier: 'WHEEL TECH',
+      product_type: 'WHEEL' as const, stock_units_availability: 'Out of stock', stock_units: 0 };
+    const knownZero = liveSupplierRowToInventoryItem(groupLiveSupplierCatalogRows([wheel])[0]);
+    expect(formatItemStockQuantity(knownZero)).toBe('0');
+    expect(matchesStockFilter(knownZero, 'OUT_OF_STOCK')).toBe(true);
+    const positive = liveSupplierRowToInventoryItem(groupLiveSupplierCatalogRows([{
+      ...wheel, stock_units: 4, stock_units_availability: 'In stock'
+    }])[0]);
+    expect(formatItemStockQuantity(positive)).toBe('4');
+    const other = liveSupplierRowToInventoryItem(groupLiveSupplierCatalogRows([{
+      ...baseRow, stock_units: 0, stock_units_availability: 'Out of stock'
+    }])[0]);
+    expect(formatItemStockQuantity(other)).toBe('0');
+  });
+
+  it('does not report an exact total when one grouped Wheel Tech listing has an unknown quantity', () => {
+    const wheel = { ...baseRow, catalog_key: 'WHEEL_TECH', supplier: 'WHEEL TECH',
+      product_type: 'WHEEL' as const, stock_location: 'CPT', stock_units: 4,
+      stock_units_availability: 'In stock' };
+    const [grouped] = groupLiveSupplierCatalogRows([
+      wheel,
+      { ...wheel, id: 2, stock_location: 'JHB', stock_units: 0, stock_units_availability: 'Listed available; quantity unverified' }
+    ]);
+    const item = liveSupplierRowToInventoryItem(grouped);
+    expect(item.stockQuantityUnknown).toBe(true);
+    expect(formatItemStockQuantity(item)).toBe('Confirm availability');
+  });
+
+  it.each([ViewMode.GRID, ViewMode.TABLE, ViewMode.LIST])(
+    'displays unverified Wheel Tech quantity correctly in %s view',
+    (viewMode) => {
+      vi.stubGlobal('localStorage', { getItem: () => JSON.stringify({ version: 2, viewMode }) });
+      try {
+        const [row] = groupLiveSupplierCatalogRows([{
+          ...baseRow, catalog_key: 'WHEEL_TECH', supplier: 'WHEEL TECH', product_type: 'WHEEL',
+          stock_units: 0, stock_location: 'CPT — confirm availability',
+          stock_units_availability: 'Listed available; quantity unverified'
+        }]);
+        const item = liveSupplierRowToInventoryItem(row);
+        const html = renderToStaticMarkup(React.createElement(InventoryView, {
+          items: [item], isAdmin: false, isReadOnly: true,
+          onEdit: () => {}, onDelete: () => {}, onSell: () => {},
+          onReserve: () => {}, onBulkDelete: () => {}
+        }));
+        expect(html).toContain('Confirm availability');
+        expect(html).not.toContain('No branch stock');
+        expect(html).not.toContain('0 Left');
+      } finally {
+        vi.unstubAllGlobals();
+      }
+    }
+  );
+
   it('recovers the exact ATT portal rating before combining branches', () => {
     const row = { ...baseRow, catalog_key: 'ATT', size: '265/50R20', product_name: 'AUTOGRIP GRIP6000',
       source_stock_detail: JSON.stringify({ product: { ucIILoadRading: '111', ucIISpeedRating: 'T' } }) };
