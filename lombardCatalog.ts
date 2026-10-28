@@ -4,7 +4,7 @@ import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyrePa
 
 export const loadLombardCatalog = (): TyreProduct[] => data.rows.map((row) => {
   const parsed = parseSupplierTyreFields({
-    description: `${row.brand} ${row.description}`,
+    description: `${row.brand} ${row.description.replace(/\[[^\]]*\]/g, '')}`,
     explicitSize: row.size,
     explicitBrand: row.brand,
     explicitPattern: row.pattern,
@@ -19,7 +19,8 @@ export const loadLombardCatalog = (): TyreProduct[] => data.rows.map((row) => {
     pattern: parsed.pattern,
     tyreRating: parsed.rating,
     tyreIndex: parsed.index,
-    tyreSpecs: parsed.specs,
+    tyreSpecs: parsed.specs.replace(/\(\s*\)/g, '').replace(/\s+/g, ' ').trim(),
+    supplierCategory: row.category,
     loadSpeedIndex: buildTyreIndexDisplay(parsed.rating, parsed.index),
     quantity: 0,
     stockQuantityUnknown: true,

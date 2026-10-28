@@ -10,11 +10,20 @@ import pdfplumber
 
 source, destination = map(Path, sys.argv[1:3])
 rows, rejected = [], []
+category = None
+categories = {'PASSENGER AND ULTRA HIGH PERFORMANCE': 'PCR', 'COMMERCIAL TYRES': 'COMMERCIAL',
+              'RECREATIONAL & SUV TYRES': 'SUV / 4X4', 'MUD TERRAIN TYRES': 'MUD TERRAIN',
+              'LIGHT TRUCK TYRES': 'LIGHT TRUCK'}
 with pdfplumber.open(source) as pdf:
     for page_number, page in enumerate(pdf.pages, 1):
         for cells in page.extract_tables()[0]:
+            if cells and str(cells[0] or '').strip() in categories:
+                category = categories[cells[0].strip()]
+                continue
             if len(cells) != 6 or not re.fullmatch(r'(?:RID|KUM)[A-Z0-9]+', str(cells[0] or '').strip()):
                 continue
+            if category is None:
+                raise ValueError('A tyre row appeared before its category heading')
             sku, size_text, rim, pattern, description, price = [(x or '').strip().replace('\n', ' ') for x in cells]
             brand_match = re.search(r'\b(GOODRIDE|KUMHO)\b', description, re.I)
             if not brand_match or not re.fullmatch(r'[\d,]+\.\d{2}', price):
@@ -46,7 +55,7 @@ with pdfplumber.open(source) as pdf:
                     size = description.split()[0].upper()
             clean_desc = description[brand_match.end():].strip()
             cost = Decimal(price.replace(',', ''))
-            rows.append({'sku': sku, 'size': size, 'brand': brand_match.group().upper(), 'pattern': pattern,
+            rows.append({'sku': sku, 'size': size, 'brand': brand_match.group().upper(), 'pattern': pattern, 'category': category,
                          'description': clean_desc, 'cost': float(cost),
                          'price': int((cost * Decimal('1.15')).quantize(Decimal('1'), rounding=ROUND_HALF_UP)),
                          'sourcePage': page_number})
