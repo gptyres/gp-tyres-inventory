@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import handler from './business-agent';
-import { verifyStaffSession } from '../server/staffSession';
+import handler from '../api/business-agent';
+import { verifyStaffSession } from './staffSession';
 
-vi.mock('../server/staffSession', () => ({ verifyStaffSession: vi.fn() }));
+vi.mock('./staffSession', () => ({ verifyStaffSession: vi.fn() }));
 
 afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); vi.resetAllMocks(); });
 
