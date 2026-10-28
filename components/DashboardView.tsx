@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowRight, ArrowUpRight, Search, Package, ReceiptText, Truck, Wrench, CircleAlert } from 'lucide-react';
 import { AppView, Backorder, InventoryItem, InventoryStats } from '../types';
-import { stockCounts, overdueBackorders, WorkspaceNavigate } from '../stockWorkspace';
+import { stockCounts, overdueBackorders, shouldSearchAllSuppliers, WorkspaceNavigate } from '../stockWorkspace';
 import { StatsDashboard } from './StatsDashboard';
 import { StockMovementDashboard } from './StockMovementDashboard';
 import { useWorkshopOverview } from './useWorkshopOverview';
@@ -90,7 +90,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     <section className="workspace-counter" aria-labelledby="counter-title">
       <div className="workspace-counter-heading"><div><p className="workspace-eyebrow">AT THE COUNTER</p>
         <h2 id="counter-title">Find the right stock. Keep things moving.</h2></div><Package size={28} aria-hidden="true" /></div>
-      <form className="workspace-search" onSubmit={event => { event.preventDefault(); onNavigate('INVENTORY', 'ALL', { query: query.trim(), stockFilter: 'ALL' }); }}>
+      <form className="workspace-search" onSubmit={event => {
+        event.preventDefault();
+        if (shouldSearchAllSuppliers('DASHBOARD', query)) onSearchSuppliers(query.trim());
+        else onNavigate('INVENTORY', 'ALL', { stockFilter: 'ALL' });
+      }}>
         <Search size={20} aria-hidden="true" />
         <input aria-label="Find stock from dashboard" placeholder="Try 205 55 16, a brand, or a wheel size…" value={query} onChange={event => setQuery(event.target.value)} />
         <button className="workspace-primary" type="submit">Find stock <ArrowRight size={16} aria-hidden="true" /></button>

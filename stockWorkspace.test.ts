@@ -1,10 +1,30 @@
 import { describe, expect, it } from 'vitest';
 import { ProductType, ViewMode, type Backorder, type TyreProduct } from './types';
 import { matchesStockFilter, stockCounts, overdueBackorders, parseInventoryPreferences, preferenceKey, johannesburgDay } from './stockWorkspace';
+import * as stockWorkspace from './stockWorkspace';
 import { overviewReducer, initialOverview } from './components/useWorkshopOverview';
 
 const tyre = (quantity: number): TyreProduct => ({ id: `sample-${quantity}`, type: ProductType.TYRE,
   quantity, sellingPrice: 975, costPrice: 700, lastUpdated: '2026-09-10', brand: 'Sample', pattern: 'Touring', size: '205/55R16', loadSpeedIndex: '91V', location: 'Store' });
+
+describe('general stock search routing', () => {
+  const shouldSearchSuppliers = (view: string, query: string) =>
+    (stockWorkspace as typeof stockWorkspace & { shouldSearchAllSuppliers?: (view: string, query: string) => boolean })
+      .shouldSearchAllSuppliers?.(view, query);
+
+  it('routes dashboard and owned-stock searches to supplier stock', () => {
+    expect(shouldSearchSuppliers('DASHBOARD', '265/60/18')).toBe(true);
+    expect(shouldSearchSuppliers('INVENTORY', 'Michelin')).toBe(true);
+  });
+
+  it('keeps an empty search and searches in other views scoped to their current screen', () => {
+    expect(shouldSearchSuppliers('DASHBOARD', '  ')).toBe(false);
+    expect(shouldSearchSuppliers('INVENTORY', '')).toBe(false);
+    expect(shouldSearchSuppliers('SUPPLIER_INVENTORY', 'Michelin')).toBe(false);
+    expect(shouldSearchSuppliers('ORDERS', 'Michelin')).toBe(false);
+    expect(shouldSearchSuppliers('WHEEL_CATALOG', '15')).toBe(false);
+  });
+});
 
 describe('owned stock availability', () => {
   it('separates unavailable, low and healthy stock at the boundaries', () => {

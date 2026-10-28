@@ -7,6 +7,10 @@ export interface WorkspaceNavigation {
 }
 export type WorkspaceNavigate = (view: AppView, type?: ProductType | 'ALL', options?: WorkspaceNavigation) => void;
 
+export const shouldSearchAllSuppliers = (view: AppView, query: string): boolean => (
+  (view === 'DASHBOARD' || view === 'INVENTORY') && query.trim().length > 0
+);
+
 export const STOCK_FILTERS: { value: StockFilter; label: string }[] = [
   { value: 'ALL', label: 'All' }, { value: 'IN_STOCK', label: 'In stock' },
   { value: 'LOW_STOCK', label: 'Low stock' }, { value: 'OUT_OF_STOCK', label: 'Out of stock' }

@@ -7,7 +7,7 @@ import { StockFilterBar } from './components/StockFilterBar';
 import { StaggeredTyreSearch } from './components/StaggeredTyreSearch';
 import { WheelSearchPanel } from './components/WheelSearchPanel';
 import { filterWheelInventory, getWheelFilterOptions, isWheelSearchQuery, type WheelFilters } from './wheelInventoryFilters';
-import { matchesStockFilter, stockCounts, StockFilter, WorkspaceNavigate } from './stockWorkspace';
+import { matchesStockFilter, shouldSearchAllSuppliers, stockCounts, StockFilter, WorkspaceNavigate } from './stockWorkspace';
 import { StatsDashboard } from './components/StatsDashboard';
 import { SheetInventorySyncStatus } from './components/SheetInventorySyncStatus';
 import { DashboardView } from './components/DashboardView';
@@ -1914,7 +1914,12 @@ const App: React.FC = () => {
           isAdmin={isAdmin}
           toggleAdmin={handleAdminToggle}
           searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
+          setSearchQuery={(query) => {
+            setSearchQuery(query);
+            if (currentView === 'INVENTORY' && query.trim().length >= 2 && shouldSearchAllSuppliers(currentView, query)) {
+              searchSuppliersForQuery(query);
+            }
+          }}
           onMenuClick={handleSidebarToggle}
           isDarkMode={isDarkMode}
           toggleTheme={toggleTheme}
@@ -1931,7 +1936,7 @@ const App: React.FC = () => {
             setIsSearchVisible(true);
           }}
           onSearchSubmit={() => {
-            if (currentView === 'DASHBOARD') handleDashboardNavigate('INVENTORY', 'ALL', { query: searchQuery });
+            if (shouldSearchAllSuppliers(currentView, searchQuery)) searchSuppliersForQuery(searchQuery);
           }}
           searchShortcutDisabled={isStockModalOpen || isSellModalOpen || isBackorderModalOpen || isDataSyncModalOpen || isReserveModalOpen || isCashUpModalOpen || isPOSOpen || isInvoiceModalOpen || showAuthModal}
         />
