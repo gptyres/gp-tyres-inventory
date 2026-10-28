@@ -95,7 +95,7 @@ export default async function handler(request: any, response: any) {
 
   if (!checkRateLimit(staffSession.terminalId)) return response.status(429).json({ error: 'Too many agent requests. Please wait one minute.' });
 
-  const apiKey = process.env.NVIDIA_API_KEY || process.env.NGC_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return response.status(503).json({ error: 'The GP Business Agent is not configured yet.' });
 
   try {

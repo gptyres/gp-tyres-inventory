@@ -4,7 +4,7 @@
 
 **Goal:** Connect the GP Business Agent to the approved OpenAI project with automatic, modest-cost task-based models.
 
-**Architecture:** Preserve the current authenticated server endpoint, deterministic stock paths, tool execution and database logging. Route clearly identified non-stock writing to `gpt-4.1-nano`, and all stock, price, fitment, quote or unknown requests to `gpt-4.1-mini`; use OpenAI's chat-completions tool protocol. The NVIDIA visual handler remains untouched.
+**Architecture:** Preserve the current authenticated server endpoint, deterministic stock paths, tool execution and database logging. Route clearly identified non-stock writing to user-approved `gpt-6-luna` (non-reasoning mode), and all stock, price, fitment, quote or unknown requests to `gpt-4.1-mini`; use OpenAI's chat-completions tool protocol. The NVIDIA visual handler remains untouched.
 
 **Tech Stack:** TypeScript, Vercel Functions, OpenAI Chat Completions, Supabase, Vitest.
 
@@ -30,7 +30,7 @@
 
 **Files:** `server/gpBusinessAgent.ts`, `server/gpBusinessAgentRouting.ts`, `server/gpBusinessAgentRouting.test.ts`, `api/business-agent.ts`, related tests.
 
-**Interfaces:** `selectAgentModel(message: string): 'gpt-4.1-nano' | 'gpt-4.1-mini'`; `runGpBusinessAgent(apiKey, context, messages)` remains the endpoint interface.
+**Interfaces:** `selectAgentModel(message: string): 'gpt-6-luna' | 'gpt-4.1-mini'`; `runGpBusinessAgent(apiKey, context, messages)` remains the endpoint interface.
 
 - [ ] Add routing tests for non-stock writing, stock/price/fitment/quotation terms, mixed intents, ambiguous and multilingual input, and malicious requested model IDs; watch them fail.
 - [ ] Implement the bounded selector and OpenAI chat-completions request with compatible tool calling, timeouts and sanitized errors; use `OPENAI_API_KEY` server-side.

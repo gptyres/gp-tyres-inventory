@@ -36,12 +36,12 @@ const formatVerifiedAt = (value?: string | null) => {
   });
 };
 
-const getAgentErrorMessage = (error: unknown) => {
+export const getAgentErrorMessage = (error: unknown) => {
   const message = error instanceof Error ? error.message : 'Business Agent request failed.';
   if (/valid staff login/i.test(message)) return 'Your secure staff session has expired. Please sign in again.';
-  if (/not configured/i.test(message)) return 'The GP Business Agent is not configured yet. Ask an administrator to add the server-side NVIDIA key.';
-  if (/rate-limited|too many requests/i.test(message)) return 'GLM-5.2 is temporarily rate-limited. Verified customer tyre stock searches will keep working; please retry conversational questions shortly.';
-  if (/DEGRADED|temporarily unavailable|overloaded|timeout/i.test(message)) return 'GLM-5.2 is temporarily unavailable. Your stock data has not been changed; please try again shortly.';
+  if (/not configured/i.test(message)) return 'The GP Business Agent is not configured yet. Ask an administrator to check the server-side OpenAI key.';
+  if (/rate-limited|too many requests/i.test(message)) return 'OpenAI is rate-limited or the project has no available credits. Please check billing or try again.';
+  if (/DEGRADED|temporarily unavailable|overloaded|timeout|timed out/i.test(message)) return 'The GP Business Agent is temporarily unavailable. Your stock data has not been changed; please try again shortly.';
   return message || 'The GP Business Agent request failed. Please try again.';
 };
 
@@ -163,7 +163,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose, onMinimize, c
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-sm font-black uppercase tracking-wide text-gp-text-main">GP Business Agent</h3>
-                <span className="rounded bg-green-500/15 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-green-400">GLM-5.2</span>
+                <span className="rounded bg-green-500/15 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-green-400">OpenAI · Auto</span>
                 <span className="rounded bg-blue-500/15 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-blue-300">Memory on</span>
               </div>
               <p className="truncate text-[10px] text-gp-text-muted">{currentUser} · {isAdmin ? 'Admin permissions' : 'Sales permissions'} · live tool verification</p>

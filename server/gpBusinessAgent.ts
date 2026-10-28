@@ -1,13 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { calculateDeterministicMargin, calculateDeterministicPrice } from './gpBusinessMath.js';
 import { saveStaffMemory, type StaffMemory } from './gpBusinessAgentMemory.js';
+import { requestOpenAICompletion, selectAgentModel } from './gpBusinessAgentRouting.js';
 
-const NVIDIA_CHAT_COMPLETIONS_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
-const DEFAULT_MODEL = 'z-ai/glm-5.2';
 const MAX_TOOL_ROUNDS = 4;
 const MAX_SEARCH_RESULTS = 20;
-const NVIDIA_REQUEST_TIMEOUT_MS = 35_000;
-const NVIDIA_MAX_ATTEMPTS = 1;
 
 export type AgentMode = 'INTERNAL' | 'CUSTOMER_READY';
 
@@ -674,92 +671,8 @@ const logToolRun = async (context: AgentContext, toolName: string, input: any, r
   });
 };
 
-const requestCompletion = async (apiKey: string, model: string, messages: any[], tools: any[]) => {
-  const endpoint = process.env.NVIDIA_CHAT_COMPLETIONS_URL || NVIDIA_CHAT_COMPLETIONS_URL;
-  let lastError: Error | null = null;
-
-  for (let attempt = 1; attempt <= NVIDIA_MAX_ATTEMPTS; attempt += 1) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), NVIDIA_REQUEST_TIMEOUT_MS);
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${apiKey}`, Accept: 'application/json', 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          model,
-          messages,
-          tools,
-          tool_choice: 'auto',
-          temperature: 0.15,
-          top_p: 0.9,
-          max_tokens: 1024,
-          seed: 42,
-          stream: false
-        })
-      });
-      const responseText = await response.text();
-      let payload: any = null;
-      try {
-        payload = responseText ? JSON.parse(responseText) : null;
-      } catch {
-        payload = null;
-      }
-      if (!response.ok) {
-        const providerMessage = cleanText(payload?.error?.message || payload?.detail || payload?.message, 300);
-        const safePreview = cleanText(responseText, 500).replace(/nvapi-[A-Za-z0-9_-]+/g, '[REDACTED]');
-        const retryAfterSeconds = Number(response.headers.get('retry-after'));
-        const retryAfterMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
-          ? Math.min(retryAfterSeconds * 1000, 15_000)
-          : 5_000;
-        console.error('[NVIDIA GLM UPSTREAM]', {
-          status: response.status,
-          attempt,
-          retryAfterMs: response.status === 429 ? retryAfterMs : null,
-          requestId: response.headers.get('x-request-id') || response.headers.get('nvidia-request-id') || null,
-          contentType: response.headers.get('content-type') || null,
-          body: safePreview || null
-        });
-        const error = new Error(
-          response.status === 401 || response.status === 403
-            ? 'NVIDIA authentication failed. An administrator must rotate the NVIDIA API key.'
-            : response.status === 429
-              ? 'NVIDIA GLM is rate-limited. Please retry in a moment.'
-              : providerMessage || `NVIDIA GLM is temporarily unavailable (provider status ${response.status}).`
-        );
-        (error as any).providerStatus = response.status;
-        (error as any).publicStatus = 503;
-        lastError = error;
-        if (attempt < NVIDIA_MAX_ATTEMPTS && (response.status === 429 || response.status >= 500)) {
-          await new Promise((resolve) => setTimeout(resolve, response.status === 429 ? retryAfterMs : 750 * attempt));
-          continue;
-        }
-        throw error;
-      }
-      const message = payload?.choices?.[0]?.message;
-      if (!message) throw new Error('NVIDIA GLM returned no message.');
-      return message;
-    } catch (error) {
-      if ((error as any)?.providerStatus) throw error;
-      const timedOut = error instanceof Error && error.name === 'AbortError';
-      const wrapped = new Error(timedOut ? 'NVIDIA GLM timed out. Please retry in a moment.' : 'NVIDIA GLM connection failed. Please retry in a moment.');
-      (wrapped as any).publicStatus = 503;
-      lastError = wrapped;
-      console.error('[NVIDIA GLM CONNECTION]', { attempt, timedOut, message: cleanText(error instanceof Error ? error.message : error, 200) });
-      if (attempt < NVIDIA_MAX_ATTEMPTS) {
-        await new Promise((resolve) => setTimeout(resolve, 750 * attempt));
-        continue;
-      }
-      throw wrapped;
-    } finally {
-      clearTimeout(timeout);
-    }
-  }
-  throw lastError || new Error('NVIDIA GLM request failed.');
-};
-
 export const runGpBusinessAgent = async (apiKey: string, context: AgentContext, inputMessages: AgentMessageInput[]) => {
-  const model = process.env.NVIDIA_AGENT_MODEL || DEFAULT_MODEL;
+  const model = selectAgentModel(context.latestUserMessage);
   const tools = context.isAdmin && context.mode === 'INTERNAL'
     ? [...TOOL_DEFINITIONS, ...ADMIN_TOOL_DEFINITIONS]
     : TOOL_DEFINITIONS;
@@ -802,7 +715,7 @@ export const runGpBusinessAgent = async (apiKey: string, context: AgentContext, 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round += 1) {
     let assistantMessage: any;
     try {
-      assistantMessage = await requestCompletion(apiKey, model, messages, tools);
+      assistantMessage = await requestOpenAICompletion(apiKey, model, messages, tools);
     } catch (error) {
       const fallbackQuery = context.mode === 'CUSTOMER_READY' ? extractTyreSizeForAgentFallback(context.latestUserMessage) : '';
       if (!fallbackQuery) throw error;

@@ -11,7 +11,7 @@ Connect the existing internal business agent to the user's OpenAI project, avoid
 
 ## Design and boundaries
 
-- Default to `gpt-4.1-mini` for stock/tool-dependent, fitment, price, quotation, ambiguous and general questions; use `gpt-4.1-nano` only for clearly identified, non-inventory writing tasks. The server chooses from an explicit allowlist; user input cannot request arbitrary model IDs.
+- Default to `gpt-4.1-mini` for stock/tool-dependent, fitment, price, quotation, ambiguous and general questions; use `gpt-6-luna` only for clearly identified, non-inventory writing tasks. The user approved Luna after GPT-4.1 nano returned model_not_found. The server chooses from an explicit allowlist; user input cannot request arbitrary model IDs.
 - Preserve deterministic verified stock answers, stock sources, permission checks, quote and financial logic, tool limits, audit logging, user-visible uncertainty and customer-ready formatting. No automatic stronger-model fallback, no unapproved writes and no secret in client code or logs.
 - Use the OpenAI chat-completions tool calling interface for the existing small server-side tool loop. The existing NVIDIA image-verification integration is unchanged; there is no NVIDIA fallback for text.
 - Store the new key as a server-side production secret, with explicit user confirmation of that destination. Preserve the previous deployment and environment configuration for rollback.
