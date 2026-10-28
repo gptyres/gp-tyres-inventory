@@ -48,6 +48,7 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'EIBACH',
   'HOOSIER_TYRES',
   'JOM',
+  'LOMBARD_TYRES',
   'TREAD_ZONE',
   'SUMITOMO_DUNLOP',
   'TREADS_UNLIMITED',
@@ -79,6 +80,7 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   EIBACH: 'EIBACH',
   HOOSIER_TYRES: 'HOOSIER TYRES',
   JOM: 'JOM',
+  LOMBARD_TYRES: 'LOMBARD TYRES',
   TREAD_ZONE: 'TREAD ZONE',
   SUMITOMO_DUNLOP: 'SUMITOMO/DUNLOP',
   TREADS_UNLIMITED: 'TREADS UNLIMITED',
@@ -115,6 +117,7 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   EIBACH: 'eibach',
   HOOSIER_TYRES: 'hoosier-tyres',
   JOM: 'jom',
+  LOMBARD_TYRES: 'lombard-tyres',
   TREAD_ZONE: 'treadzone',
   SUMITOMO_DUNLOP: 'sumitomo-dunlop',
   TREADS_UNLIMITED: 'treads',
@@ -377,6 +380,10 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
     case 'JOM': {
       const { loadJomCatalog } = await import('./jomCatalog');
       return loadJomCatalog();
+    }
+    case 'LOMBARD_TYRES': {
+      const { loadLombardCatalog } = await import('./lombardCatalog');
+      return loadLombardCatalog();
     }
     case 'TREAD_ZONE': {
       const { TREAD_ZONE_RAW_DATA } = await import('./supplier_data/treadZoneData');

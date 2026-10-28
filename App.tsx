@@ -500,6 +500,10 @@ const App: React.FC = () => {
       label: 'JOM',
       note: 'JOM stock report dated 18 September 2026. Prices already include 15% VAT; no additional VAT is added. Quantities are from Main Warehouse. Vehicle descriptions are supplied applications, not a fitment guarantee.'
     },
+    LOMBARD_TYRES: {
+      label: 'LOMBARD TYRES',
+      note: 'Wholesale price list dated 1 July 2026. Nett prices exclude VAT; displayed VAT-inclusive prices add 15% and round to R1. Stock was not supplied: confirm availability and current pricing.'
+    },
     HOOSIER_TYRES: {
       label: 'HOOSIER TYRES',
       note: 'Official Hoosier South Africa catalogue: tyres, karting, motorcycle and tubes. Listed website prices are retained on the existing VAT-inclusive basis; no extra VAT added. Dealer costs are not published. Exact units, preorders and unconfirmed quantities are shown separately. Confirm tax and availability before ordering.',

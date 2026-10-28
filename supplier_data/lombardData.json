@@ -1,0 +1,2864 @@
+{
+  "source": "Wholesale Pricelist Revised July 2026 1 (1).pdf",
+  "sourceDate": "2026-07-01",
+  "sha256": "1bc68985dc62d9c713a0d6367f4ec48b22a51701e4cd4523b8dfe2f92ba8e8a9",
+  "rows": [
+    {
+      "sku": "RID70048C",
+      "size": "155/65R13",
+      "brand": "GOODRIDE",
+      "pattern": "Z-107",
+      "description": "Z-107 (73T) [155 65 13]",
+      "cost": 660.0,
+      "price": 759,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2284793",
+      "size": "155/65R13",
+      "brand": "KUMHO",
+      "pattern": "TA21",
+      "description": "TA21 Solus (73H) [155 65 13]",
+      "cost": 710.0,
+      "price": 817,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70049C",
+      "size": "155/70R13",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (75T) [155 70 13]",
+      "cost": 600.0,
+      "price": 690,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2304463",
+      "size": "155/70R13",
+      "brand": "KUMHO",
+      "pattern": "TA21",
+      "description": "TA21 Solus (75H) [155 70 13]",
+      "cost": 640.0,
+      "price": 736,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70007C",
+      "size": "155/80R13",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (79T) [155 80 13]",
+      "cost": 625.0,
+      "price": 719,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70003C",
+      "size": "165/65R13",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (77T) [165 65 13]",
+      "cost": 635.0,
+      "price": 730,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70005C",
+      "size": "165/80R13",
+      "brand": "GOODRIDE",
+      "pattern": "Z-107",
+      "description": "Z-107 (83T) [165 80 13]",
+      "cost": 640.0,
+      "price": 736,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70006C",
+      "size": "175/70R13",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (82T) [175 70 13]",
+      "cost": 645.0,
+      "price": 742,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70030C",
+      "size": "155/65R14",
+      "brand": "GOODRIDE",
+      "pattern": "Z-107",
+      "description": "Z-107 (75T) [155 65 14]",
+      "cost": 615.0,
+      "price": 707,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70002C",
+      "size": "165/60R14",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (75H) [165 60 14]",
+      "cost": 635.0,
+      "price": 730,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2284863",
+      "size": "165/60R14",
+      "brand": "KUMHO",
+      "pattern": "TA21",
+      "description": "TA21 Solus (79H) [165 60 14]",
+      "cost": 795.0,
+      "price": 914,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2250023",
+      "size": "165/60R14",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (75H) [165 60 14]",
+      "cost": 795.0,
+      "price": 914,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70004C",
+      "size": "165/65R14",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (79H) [165 65 14]",
+      "cost": 650.0,
+      "price": 748,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2284853",
+      "size": "165/65R14",
+      "brand": "KUMHO",
+      "pattern": "TA21",
+      "description": "TA21 Solus (79T) [165 65 14]",
+      "cost": 770.0,
+      "price": 886,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2231963",
+      "size": "165/65R14",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (79T) [165 65 14]",
+      "cost": 770.0,
+      "price": 886,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70033C",
+      "size": "165/70R14",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (81T) [165 70 14]",
+      "cost": 805.0,
+      "price": 926,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70029C",
+      "size": "175/65R14",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (82H) [175 65 14]",
+      "cost": 640.0,
+      "price": 736,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2231993",
+      "size": "175/65R14",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (82T) [175 65 14]",
+      "cost": 700.0,
+      "price": 805,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70010C",
+      "size": "175/70R14",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (84T) [175 70 14]",
+      "cost": 690.0,
+      "price": 794,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2328983",
+      "size": "175/70R14",
+      "brand": "KUMHO",
+      "pattern": "TA21",
+      "description": "TA21 (84H) [175 70 14]",
+      "cost": 810.0,
+      "price": 932,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2232013",
+      "size": "175/70R14",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (84T) [175 70 14]",
+      "cost": 810.0,
+      "price": 932,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70034C",
+      "size": "185/60R14",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (82H) [185 60 14]",
+      "cost": 705.0,
+      "price": 811,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2232043",
+      "size": "185/60R14",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (82H) [185 60 14]",
+      "cost": 780.0,
+      "price": 897,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70035C",
+      "size": "185/65R14",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (86H) [185 65 14]",
+      "cost": 700.0,
+      "price": 805,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2250043",
+      "size": "185/65R14",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (86H) [185 65 14]",
+      "cost": 745.0,
+      "price": 857,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70027C",
+      "size": "185/70R14",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (88T) [185 70 14]",
+      "cost": 770.0,
+      "price": 886,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2270543",
+      "size": "185/70R14",
+      "brand": "KUMHO",
+      "pattern": "HS61",
+      "description": "HS61 SOLUS (92H) XL [185 70 14]",
+      "cost": 895.0,
+      "price": 1029,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2342393",
+      "size": "185/70R14",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 (88T) [185 70 14]",
+      "cost": 895.0,
+      "price": 1029,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70025C",
+      "size": "195/70R14",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (91T) [195 70 14]",
+      "cost": 840.0,
+      "price": 966,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2303663",
+      "size": "165/60R15",
+      "brand": "KUMHO",
+      "pattern": "TA21",
+      "description": "TA21 Solus (77H) [165 60 15]",
+      "cost": 1065.0,
+      "price": 1225,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2284963",
+      "size": "175/50R15",
+      "brand": "KUMHO",
+      "pattern": "TA21",
+      "description": "TA21 Solus (79H) [175 50 15]",
+      "cost": 950.0,
+      "price": 1093,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70028C",
+      "size": "175/65R15",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (84H) [175 65 15]",
+      "cost": 745.0,
+      "price": 857,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2250033",
+      "size": "175/65R15",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (84H) [175 65 15]",
+      "cost": 930.0,
+      "price": 1070,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70078C",
+      "size": "185/55R15",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (82V) [185 55 15]",
+      "cost": 750.0,
+      "price": 863,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2346473",
+      "size": "185/55R15",
+      "brand": "KUMHO",
+      "pattern": "HS52",
+      "description": "HS52 Ecsta (82V) [185 55 15]",
+      "cost": 995.0,
+      "price": 1144,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70011C",
+      "size": "185/60R15",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (84H) [185 60 15]",
+      "cost": 745.0,
+      "price": 857,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2232123",
+      "size": "185/60R15",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (84H) [185 60 15]",
+      "cost": 835.0,
+      "price": 960,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70001C",
+      "size": "185/65R15",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (88H) [185 65 15]",
+      "cost": 740.0,
+      "price": 851,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2232143",
+      "size": "185/65R15",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (88H) [185 65 15]",
+      "cost": 810.0,
+      "price": 932,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70008C",
+      "size": "195/50R15",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (82V) [195 50 15]",
+      "cost": 770.0,
+      "price": 886,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2303363",
+      "size": "195/50R15",
+      "brand": "KUMHO",
+      "pattern": "HS52",
+      "description": "HS52 (82V) [195 50 15]",
+      "cost": 815.0,
+      "price": 937,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70012C",
+      "size": "195/55R15",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (85V) [195 55 15]",
+      "cost": 860.0,
+      "price": 989,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2303353",
+      "size": "195/55R15",
+      "brand": "KUMHO",
+      "pattern": "HS52",
+      "description": "HS52 (85V) [195 55 15]",
+      "cost": 1020.0,
+      "price": 1173,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID50013C",
+      "size": "195/60R15",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (88V) [195 60 15]",
+      "cost": 790.0,
+      "price": 909,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2232173",
+      "size": "195/60R15",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (88H) [195 60 15]",
+      "cost": 905.0,
+      "price": 1041,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID700C9C",
+      "size": "195/65R15",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (91V) [195 65 15]",
+      "cost": 825.0,
+      "price": 949,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2232183",
+      "size": "195/65R15",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (91H) [195 65 15]",
+      "cost": 875.0,
+      "price": 1006,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2301593",
+      "size": "195/65R15",
+      "brand": "KUMHO",
+      "pattern": "HS63",
+      "description": "HS63 [195 65 15]",
+      "cost": 875.0,
+      "price": 1006,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70109C",
+      "size": "205/60R15",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (91H) [205 60 15]",
+      "cost": 895.0,
+      "price": 1029,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70024C",
+      "size": "205/65R15",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (94V) [205 65 15]",
+      "cost": 910.0,
+      "price": 1047,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2304643",
+      "size": "195/50R16",
+      "brand": "KUMHO",
+      "pattern": "HS52",
+      "description": "HS52 Ecsta (88V) XL [195 50 16]",
+      "cost": 1235.0,
+      "price": 1420,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2186833",
+      "size": "195/50R16",
+      "brand": "KUMHO",
+      "pattern": "HS51",
+      "description": "HS51 Ecsta (88V) XL [195 50 16]",
+      "cost": 1235.0,
+      "price": 1420,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70026C",
+      "size": "195/55R16",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (87V) [195 55 16]",
+      "cost": 875.0,
+      "price": 1006,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2305403",
+      "size": "195/55R16",
+      "brand": "KUMHO",
+      "pattern": "HS52",
+      "description": "HS52 Ecsta (87W) [195 55 16]",
+      "cost": 1190.0,
+      "price": 1369,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70114C",
+      "size": "195/60R16",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (89H) [195 60 16]",
+      "cost": 1095.0,
+      "price": 1259,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70051C",
+      "size": "205/55R16",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (94W) [205 55 16]",
+      "cost": 895.0,
+      "price": 1029,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2232243",
+      "size": "205/55R16",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (91V) [205 55 16]",
+      "cost": 925.0,
+      "price": 1064,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70031C",
+      "size": "205/60R16",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (92V) [205 60 16]",
+      "cost": 930.0,
+      "price": 1070,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2231613",
+      "size": "205/60R16",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (92H) [205 60 16]",
+      "cost": 1290.0,
+      "price": 1484,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2285003",
+      "size": "205/65R16",
+      "brand": "KUMHO",
+      "pattern": "TA21",
+      "description": "TA21 [205 65 16]",
+      "cost": 1505.0,
+      "price": 1731,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2337623",
+      "size": "215/45R16",
+      "brand": "KUMHO",
+      "pattern": "HS52",
+      "description": "HS52 Ecsta (90V) XL [215 45 16]",
+      "cost": 1295.0,
+      "price": 1489,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2337503",
+      "size": "215/55R16",
+      "brand": "KUMHO",
+      "pattern": "HS52",
+      "description": "HS52 (93V) [215 55 16]",
+      "cost": 1350.0,
+      "price": 1553,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70041C",
+      "size": "215/60R16",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (99V) XL [215 60 16]",
+      "cost": 1285.0,
+      "price": 1478,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2232263",
+      "size": "215/60R16",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing [215 60 16]",
+      "cost": 1375.0,
+      "price": 1581,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70019C",
+      "size": "215/65R16",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (98V) [215 65 16]",
+      "cost": 1140.0,
+      "price": 1311,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2261493",
+      "size": "215/65R16",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (98H) [215 65 16]",
+      "cost": 1450.0,
+      "price": 1668,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70098C",
+      "size": "225/55R16",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (95V) TL [225 55 16]",
+      "cost": 1095.0,
+      "price": 1259,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70058C",
+      "size": "235/60R16",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (100H) [235 60 16]",
+      "cost": 1290.0,
+      "price": 1484,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2285163",
+      "size": "235/60R16",
+      "brand": "KUMHO",
+      "pattern": "TA21",
+      "description": "TA21 (100V) [235 60 16]",
+      "cost": 1630.0,
+      "price": 1875,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70009C",
+      "size": "205/40R17",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (84W) [205 40 17]",
+      "cost": 880.0,
+      "price": 1012,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70036C",
+      "size": "205/45R17",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (88W) XL [205 45 17]",
+      "cost": 1025.0,
+      "price": 1179,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2188803",
+      "size": "205/45R17",
+      "brand": "KUMHO",
+      "pattern": "HS51",
+      "description": "HS51 ECSTA (88W) XL [205 45 17]",
+      "cost": 1295.0,
+      "price": 1489,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2206383",
+      "size": "205/45R17",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta XL (88Y) [205 45 17]",
+      "cost": 1295.0,
+      "price": 1489,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70068C",
+      "size": "205/50R17",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (93W) XL [205 50 17]",
+      "cost": 1095.0,
+      "price": 1259,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2206323",
+      "size": "205/50R17",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (93Y) XL [205 50 17]",
+      "cost": 1480.0,
+      "price": 1702,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2262803",
+      "size": "215/40R17",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (87Y) XL [215 40 17]",
+      "cost": 1395.0,
+      "price": 1604,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70075C",
+      "size": "215/45R17",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (91W) XL [215 45 17]",
+      "cost": 1095.0,
+      "price": 1259,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2206333",
+      "size": "215/45R17",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (91Y) XL [215 45 17]",
+      "cost": 1350.0,
+      "price": 1553,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70076C",
+      "size": "215/50R17",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (95W) XL [215 50 17]",
+      "cost": 1170.0,
+      "price": 1346,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2261613",
+      "size": "215/50R17",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (95W) XL [215 50 17]",
+      "cost": 1560.0,
+      "price": 1794,
+      "sourcePage": 1
+    },
+    {
+      "sku": "RID70037C",
+      "size": "215/55R17",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (98W) XL [215 55 17]",
+      "cost": 1140.0,
+      "price": 1311,
+      "sourcePage": 1
+    },
+    {
+      "sku": "KUM2261823",
+      "size": "215/55R17",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (94W) [215 55 17]",
+      "cost": 1595.0,
+      "price": 1834,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2278533",
+      "size": "215/60R17",
+      "brand": "KUMHO",
+      "pattern": "HS63",
+      "description": "HS63 Solus (96H) OE [215 60 17]",
+      "cost": 1930.0,
+      "price": 2220,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70032C",
+      "size": "225/45R17",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (94W) XL [225 45 17]",
+      "cost": 1050.0,
+      "price": 1208,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2232293",
+      "size": "225/45R17",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (91W) [225 45 17]",
+      "cost": 1285.0,
+      "price": 1478,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2337613",
+      "size": "225/45R17",
+      "brand": "KUMHO",
+      "pattern": "HS52",
+      "description": "HS52 Ecsta (91W) [225 45 17]",
+      "cost": 1285.0,
+      "price": 1478,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70018C",
+      "size": "225/50R17",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (98W) [225 50 17]",
+      "cost": 1210.0,
+      "price": 1392,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2232303",
+      "size": "225/50R17",
+      "brand": "KUMHO",
+      "pattern": "ES31",
+      "description": "ES31 Ecowing (98W) XL [225 50 17]",
+      "cost": 1665.0,
+      "price": 1915,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2264423",
+      "size": "225/50R17",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (98Y) XL [225 50 17]",
+      "cost": 1665.0,
+      "price": 1915,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2264433",
+      "size": "225/55R17",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 (101W) XL [225 55 17]",
+      "cost": 1725.0,
+      "price": 1984,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70059C",
+      "size": "235/45R17",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (97W) XL [235 45 17]",
+      "cost": 1175.0,
+      "price": 1351,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70067C",
+      "size": "235/55R17",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (103W) XL [235 55 17]",
+      "cost": 1380.0,
+      "price": 1587,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2304583",
+      "size": "235/55R17",
+      "brand": "KUMHO",
+      "pattern": "HS52",
+      "description": "HS52 Ecsta (103W) XL [235 55 17]",
+      "cost": 1865.0,
+      "price": 2145,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2206433",
+      "size": "245/45R17",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (99Y) XL [245 45 17]",
+      "cost": 1895.0,
+      "price": 2179,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM1768213",
+      "size": "215/55R18",
+      "brand": "KUMHO",
+      "pattern": "KH11",
+      "description": "KH11 ECSTA (95H) [215 55 18]",
+      "cost": 2125.0,
+      "price": 2444,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2263253",
+      "size": "215/55R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta SUV (99V) XL [215 55 18]",
+      "cost": 2125.0,
+      "price": 2444,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70079C",
+      "size": "225/40R18",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (92W) XL [225 40 18]",
+      "cost": 1095.0,
+      "price": 1259,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2206443",
+      "size": "225/40R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (92Y) XL [225 40 18]",
+      "cost": 1460.0,
+      "price": 1679,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70071C",
+      "size": "225/45R18",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (95W) XL [225 45 18]",
+      "cost": 1200.0,
+      "price": 1380,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2206453",
+      "size": "225/45R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "Ecsta PS71 (95Y) XL [225 45 18]",
+      "cost": 1695.0,
+      "price": 1949,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70064C",
+      "size": "225/55R18",
+      "brand": "GOODRIDE",
+      "pattern": "G-118",
+      "description": "G-118 (98V) [225 55 18]",
+      "cost": 1750.0,
+      "price": 2013,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2206463",
+      "size": "235/40R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (95Y) XL [235 40 18]",
+      "cost": 2045.0,
+      "price": 2352,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2206473",
+      "size": "235/45R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (98Y) XL [235 45 18]",
+      "cost": 1995.0,
+      "price": 2294,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2230803",
+      "size": "235/50R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (101Y) XL [235 50 18]",
+      "cost": 2125.0,
+      "price": 2444,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2206493",
+      "size": "245/40R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (97Y) XL [245 40 18]",
+      "cost": 2145.0,
+      "price": 2467,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2206503",
+      "size": "245/45R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (100Y) XL [245 45 18]",
+      "cost": 2360.0,
+      "price": 2714,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2364833",
+      "size": "255/35R18",
+      "brand": "KUMHO",
+      "pattern": "PS72",
+      "description": "PS72 [255 35 18]",
+      "cost": 2315.0,
+      "price": 2662,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2206533",
+      "size": "255/45R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta 103Y XL [255 45 18]",
+      "cost": 2315.0,
+      "price": 2662,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2364773",
+      "size": "235/35R19",
+      "brand": "KUMHO",
+      "pattern": "PS72",
+      "description": "PS72 (91Y) [235 35 19]",
+      "cost": 2740.0,
+      "price": 3151,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2206573",
+      "size": "255/35R19",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (96Y) XL [255 35 19]",
+      "cost": 2740.0,
+      "price": 3151,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20047C",
+      "size": "155R12C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (6ply) (83/81Q) [155 12]",
+      "cost": 670.0,
+      "price": 771,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2176453",
+      "size": "500R12",
+      "brand": "KUMHO",
+      "pattern": "KC55",
+      "description": "KC55 (8PLY) [500 R12]",
+      "cost": 1020.0,
+      "price": 1173,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID40001C",
+      "size": "165R13C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (6ply)(91/89S) [165 13]",
+      "cost": 865.0,
+      "price": 995,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2234023",
+      "size": "175R14C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 (8PLY) [175 14]",
+      "cost": 1390.0,
+      "price": 1599,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20045C",
+      "size": "185R14C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8PLY) (102/100R) [185 14]",
+      "cost": 1065.0,
+      "price": 1225,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20049C",
+      "size": "195R14C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8ply)(106/104Q) [195 14]",
+      "cost": 1130.0,
+      "price": 1300,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20044C",
+      "size": "195R14C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 WSW 8Ply (106/104Q) [195 14]",
+      "cost": 1185.0,
+      "price": 1363,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20056C",
+      "size": "195/70R15C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8ply)(104/102R) [195 70 15]",
+      "cost": 1085.0,
+      "price": 1248,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2144113",
+      "size": "195/70R15C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 (8ply) (104/102R) [195 70 15]",
+      "cost": 1350.0,
+      "price": 1553,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20048C",
+      "size": "195R15C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8ply)(106/104R) [195 15]",
+      "cost": 1195.0,
+      "price": 1374,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20046C",
+      "size": "195R15C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8ply) WSW [195 15]",
+      "cost": 1290.0,
+      "price": 1484,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2210803",
+      "size": "195R15C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 Portran (8 PLY) (106/104R) [195 15]",
+      "cost": 1405.0,
+      "price": 1616,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70069C",
+      "size": "205/70R15C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (106/104R) (8ply) [205 70 15]",
+      "cost": 1200.0,
+      "price": 1380,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2210773",
+      "size": "205/70R15C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 (8PLY) [205 70 15]",
+      "cost": 1415.0,
+      "price": 1627,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70060C",
+      "size": "215/70R15C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8ply) (109/107R) [215 70 15]",
+      "cost": 1365.0,
+      "price": 1570,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20061C",
+      "size": "225/70R15C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8ply) (112/110R) [225 70 15]",
+      "cost": 1335.0,
+      "price": 1535,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID40009C",
+      "size": "195/75R16C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8PLY) (107/105R) [195 75 16]",
+      "cost": 1665.0,
+      "price": 1915,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2387733",
+      "size": "195/75R16C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 (8PLY) [195 75 16]",
+      "cost": 1665.0,
+      "price": 1915,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70023C",
+      "size": "205/65R16C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8ply)(107/105T) [205 65 16]",
+      "cost": 1435.0,
+      "price": 1650,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2245403",
+      "size": "205/65R16C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 (8PLY) [205 65 16]",
+      "cost": 1665.0,
+      "price": 1915,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70022C",
+      "size": "205/75R16C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8ply) (110/108Q) [205 75 16]",
+      "cost": 1435.0,
+      "price": 1650,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2210663",
+      "size": "205/75R16C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 8ply [205 75 16]",
+      "cost": 1825.0,
+      "price": 2099,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70020C",
+      "size": "215/65R16C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8ply) (109/107T) [215 65 16]",
+      "cost": 1405.0,
+      "price": 1616,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20043C",
+      "size": "215/70R16C",
+      "brand": "GOODRIDE",
+      "pattern": "SC328",
+      "description": "SC328 (6ply) (108/106T) [215 70 16]",
+      "cost": 1395.0,
+      "price": 1604,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70118C",
+      "size": "215/70R16C",
+      "brand": "GOODRIDE",
+      "pattern": "SC328",
+      "description": "SC328 (10ply) (113/11Q) [215 70 16]",
+      "cost": 1495.0,
+      "price": 1719,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2153263",
+      "size": "215/70R16C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 (6ply) (108/106T) [215 70 16]",
+      "cost": 1650.0,
+      "price": 1898,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2203563",
+      "size": "215/70R16C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 (8PLY) [215 70 16]",
+      "cost": 1650.0,
+      "price": 1898,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2246453",
+      "size": "225/75R16C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 Portran (8ply) (118/116R) [225 75 16]",
+      "cost": 2255.0,
+      "price": 2593,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20030C",
+      "size": "235/65R16C",
+      "brand": "GOODRIDE",
+      "pattern": "SC328",
+      "description": "SC328 (8ply) [235 65 16]",
+      "cost": 1720.0,
+      "price": 1978,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70117C",
+      "size": "235/65R16C",
+      "brand": "GOODRIDE",
+      "pattern": "H188",
+      "description": "H188 (8ply) [235 65 16]",
+      "cost": 1720.0,
+      "price": 1978,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2210643",
+      "size": "235/65R16C",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 (8PLY) [235 65 16]",
+      "cost": 2040.0,
+      "price": 2346,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2298643",
+      "size": "215/65R17",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 XL [215 65 17]",
+      "cost": 2470.0,
+      "price": 2841,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2270423",
+      "size": "235/55R18",
+      "brand": "KUMHO",
+      "pattern": "KC53",
+      "description": "KC53 (104H) XL [235 55 18]",
+      "cost": 2735.0,
+      "price": 3145,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID10037C",
+      "size": "215/75R15",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (100S) [215 75 15]",
+      "cost": 1395.0,
+      "price": 1604,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2304123",
+      "size": "215R15",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 Road Venture (105T) XL [215 15]",
+      "cost": 1500.0,
+      "price": 1725,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20042C",
+      "size": "235/75R15",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (109S) [235 75 15]",
+      "cost": 1695.0,
+      "price": 1949,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70108C",
+      "size": "30X9.5R15",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (6ply)(104Q) [30 950 15]",
+      "cost": 1695.0,
+      "price": 1949,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2415423",
+      "size": "30X9.5R15",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture AT (104S) [30 X 9.50 15]",
+      "cost": 2100.0,
+      "price": 2415,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20023C",
+      "size": "31X10.5R15",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (6ply)(109Q) [31 X 10.50 15]",
+      "cost": 2125.0,
+      "price": 2444,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20023",
+      "size": "31X10.5R15",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (6PLY) (109Q) [31 X 10.5]",
+      "cost": 2125.0,
+      "price": 2444,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70089C",
+      "size": "31X10.5R15",
+      "brand": "GOODRIDE",
+      "pattern": "SL339",
+      "description": "Rugged Legend SL339 R/T OWL (6ply)(109Q) [31 10.50 15]",
+      "cost": 2225.0,
+      "price": 2559,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2415433",
+      "size": "31X10.5R15",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture AT (6ply) (109S) [31 X 10.5]",
+      "cost": 2495.0,
+      "price": 2869,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70107C",
+      "size": "205/80R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (104S) [205 80 16]",
+      "cost": 1500.0,
+      "price": 1725,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2416853",
+      "size": "205R16",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture (110/108S) (8PLY) [205 16]",
+      "cost": 1750.0,
+      "price": 2013,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70070C",
+      "size": "215/70R16",
+      "brand": "GOODRIDE",
+      "pattern": "Z-203",
+      "description": "Z-203 (100H) [215 70 16]",
+      "cost": 1345.0,
+      "price": 1547,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2365593",
+      "size": "215/70R16",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 Crugen SUV (100H) [215 70 16]",
+      "cost": 1855.0,
+      "price": 2133,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID10044C",
+      "size": "235/70R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (106S) [235 70 16]",
+      "cost": 1500.0,
+      "price": 1725,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID70110C",
+      "size": "235/70R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL399",
+      "description": "Terra Legend SL399 OWL (106S) [235 70 16]",
+      "cost": 1595.0,
+      "price": 1834,
+      "sourcePage": 2
+    },
+    {
+      "sku": "KUM2412013",
+      "size": "235/70R16",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 [235 70 16]",
+      "cost": 1975.0,
+      "price": 2271,
+      "sourcePage": 2
+    },
+    {
+      "sku": "RID20020C",
+      "size": "235/85R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (10ply) (120/116Q) [235 85 16]",
+      "cost": 2525.0,
+      "price": 2904,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70090C",
+      "size": "235/85R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL339",
+      "description": "Rugged Legend SL339 R/T OWL (120/116Q) [235 85 16]",
+      "cost": 2595.0,
+      "price": 2984,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70015C",
+      "size": "245/70R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (111S) XL [245 70 16]",
+      "cost": 1665.0,
+      "price": 1915,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70115C",
+      "size": "245/70R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL339",
+      "description": "Rugged Legend SL339 R/T OWL (111S) XL [245 70 16]",
+      "cost": 1695.0,
+      "price": 1949,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2304203",
+      "size": "245/70R16",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 Road Venture AT (111T) XL [245 70 16]",
+      "cost": 1775.0,
+      "price": 2041,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2412023",
+      "size": "245/70R16",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture AT (111T) XL [245 70 16]",
+      "cost": 1850.0,
+      "price": 2128,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID20021C",
+      "size": "245/75R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (111S) [245 75 16]",
+      "cost": 1995.0,
+      "price": 2294,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2415323",
+      "size": "245/75R16",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture 111T [245 75 16]",
+      "cost": 2405.0,
+      "price": 2766,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70057C",
+      "size": "255/70R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (111T) [255 70 16]",
+      "cost": 1795.0,
+      "price": 2064,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2169373",
+      "size": "255/70R16",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 Road Venture AT [255 70 16]",
+      "cost": 1900.0,
+      "price": 2185,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2412033",
+      "size": "255/70R16",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture AT [255 70 16]",
+      "cost": 2030.0,
+      "price": 2335,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID20051C",
+      "size": "265/70R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (112S) [265 70 16]",
+      "cost": 1775.0,
+      "price": 2041,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70096C",
+      "size": "265/70R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL399",
+      "description": "Terra Legend SL399 OWL (112S) [265 70 16]",
+      "cost": 1950.0,
+      "price": 2243,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2205453",
+      "size": "265/70R16",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 Road Venture (112T) [265 70 16]",
+      "cost": 1930.0,
+      "price": 2220,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2412043",
+      "size": "265/70R16",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture (112T) [265 70 16]",
+      "cost": 2100.0,
+      "price": 2415,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70084C",
+      "size": "265/75R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (116S) [265 75 16]",
+      "cost": 1950.0,
+      "price": 2243,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70013C",
+      "size": "265/75R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (10ply) (123/120Q) [265 75 16]",
+      "cost": 2050.0,
+      "price": 2358,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2178123",
+      "size": "265/75R16",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 Road Venture AT (114T) [265 75 16]",
+      "cost": 2215.0,
+      "price": 2547,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2412053",
+      "size": "265/75R16",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture AT (116T) [265 75 16]",
+      "cost": 2255.0,
+      "price": 2593,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2177903",
+      "size": "285/75R16",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 Road Venture 10 PLY [285 75 16]",
+      "cost": 3330.0,
+      "price": 3830,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2289883",
+      "size": "285/75R16",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture (126/123R)(10PLY) [285 75 16]",
+      "cost": 3330.0,
+      "price": 3830,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70021C",
+      "size": "215/60R17",
+      "brand": "GOODRIDE",
+      "pattern": "Z-107",
+      "description": "Z-107 (96H) [215 60 17]",
+      "cost": 1325.0,
+      "price": 1524,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70038C",
+      "size": "215/60R17",
+      "brand": "GOODRIDE",
+      "pattern": "Solmax 1 SUV",
+      "description": "Solmax 1 SUV (96V) [215 60 17]",
+      "cost": 1475.0,
+      "price": 1696,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70043C",
+      "size": "225/60R17",
+      "brand": "GOODRIDE",
+      "pattern": "Z-203",
+      "description": "Z-203 (99H) [225 60 17]",
+      "cost": 1345.0,
+      "price": 1547,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70065C",
+      "size": "225/60R17",
+      "brand": "GOODRIDE",
+      "pattern": "Solmax 1 SUV",
+      "description": "Solmax 1 SUV (103V) XL [225 60 17]",
+      "cost": 1495.0,
+      "price": 1719,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2230253",
+      "size": "225/60R17",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 Crugen SUV (99V) [225 60 17]",
+      "cost": 1930.0,
+      "price": 2220,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70044C",
+      "size": "225/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "Z-203",
+      "description": "Z-203 (102H) [225 65 17]",
+      "cost": 1515.0,
+      "price": 1742,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70066C",
+      "size": "225/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "Solmax 1 SUV",
+      "description": "Solmax 1 SUV (106V) XL [225 65 17]",
+      "cost": 1650.0,
+      "price": 1898,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2230233",
+      "size": "225/65R17",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 Crugen SUV (102V) [225 65 17]",
+      "cost": 2095.0,
+      "price": 2409,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70016C",
+      "size": "235/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "Z-203",
+      "description": "Z-203 (108H) XL [235 65 17]",
+      "cost": 1665.0,
+      "price": 1915,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70100C",
+      "size": "235/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "Solmax 1 SUV",
+      "description": "Solmax1 SUV TL (104H)",
+      "cost": 1625.0,
+      "price": 1869,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70112C",
+      "size": "235/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "Solmax 1 SUV",
+      "description": "Solmax 1 SUV (108V) [235 65 17]",
+      "cost": 1625.0,
+      "price": 1869,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2266183",
+      "size": "235/65R17",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 Crugen (104H) [235 65 17]",
+      "cost": 1980.0,
+      "price": 2277,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2230143",
+      "size": "235/65R17",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 Crugen SUV (104V) [235 65 17]",
+      "cost": 1980.0,
+      "price": 2277,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2169453",
+      "size": "245/65R17",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 Road Venture 105T [245 65 17]",
+      "cost": 2365.0,
+      "price": 2720,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70111C",
+      "size": "255/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (110T) [255 65 17",
+      "cost": 1895.0,
+      "price": 2179,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2329083",
+      "size": "255/65R17",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture (110T) [255 65 17]",
+      "cost": 2095.0,
+      "price": 2409,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID20040C",
+      "size": "265/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (112S) [265 65 17]",
+      "cost": 1720.0,
+      "price": 1978,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70088C",
+      "size": "265/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "SL399",
+      "description": "Terra Legend SL399 OWL (112S) [265 65 17]",
+      "cost": 1895.0,
+      "price": 2179,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70105C",
+      "size": "265/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "SL339",
+      "description": "Rugged Legend SL339 R/T OWL (10ply)(120/117Q) [265 65 17]",
+      "cost": 2395.0,
+      "price": 2754,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2314013",
+      "size": "265/65R17",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 Road Venture (112T) [265 65 17]",
+      "cost": 1865.0,
+      "price": 2145,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2415293",
+      "size": "265/65R17",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture (112T) [265 65 17]",
+      "cost": 2025.0,
+      "price": 2329,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70083C",
+      "size": "265/70R17",
+      "brand": "GOODRIDE",
+      "pattern": "SL399",
+      "description": "Terra Legend SL399 OWL (115T) [265 70 17]",
+      "cost": 2250.0,
+      "price": 2588,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70106C",
+      "size": "265/70R17",
+      "brand": "GOODRIDE",
+      "pattern": "SL339",
+      "description": "Rugged Legend SL339 R/T OWL (10ply)(121/118Q) [265 70 17]",
+      "cost": 2470.0,
+      "price": 2841,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2178103",
+      "size": "265/70R17",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 (113T) Road Venture AT [265 70 17]",
+      "cost": 2470.0,
+      "price": 2841,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2177723",
+      "size": "265/70R17",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 (10PLY) Road Venture AT(121/118R) [265 70 17]",
+      "cost": 2900.0,
+      "price": 3335,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2311543",
+      "size": "285/65R17",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta SUV (116H)",
+      "cost": 3110.0,
+      "price": 3577,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2230263",
+      "size": "225/55R18",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 Crugen SUV (98V) [225 55 18]",
+      "cost": 1915.0,
+      "price": 2202,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70085C",
+      "size": "225/60R18",
+      "brand": "GOODRIDE",
+      "pattern": "Solmax 1 SUV",
+      "description": "Solmax 1 SUV (100H) XL [225 60 18]",
+      "cost": 1950.0,
+      "price": 2243,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2230243",
+      "size": "225/60R18",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 (104V) XL [225 60 18]",
+      "cost": 2250.0,
+      "price": 2588,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70086C",
+      "size": "235/50R18",
+      "brand": "GOODRIDE",
+      "pattern": "Z-203",
+      "description": "Z-203 (101V) [235 50 18]",
+      "cost": 1500.0,
+      "price": 1725,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2309933",
+      "size": "235/50R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta SUV (97W) [235 50 18]",
+      "cost": 2250.0,
+      "price": 2588,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70103C",
+      "size": "235/55R18",
+      "brand": "GOODRIDE",
+      "pattern": "Z-203",
+      "description": "Z-203 (100H) [235 55 18]",
+      "cost": 1500.0,
+      "price": 1725,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2327423",
+      "size": "235/55R18",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 Crugen SUV (104V) XL [235 55 18]",
+      "cost": 2215.0,
+      "price": 2547,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70053C",
+      "size": "235/60R18",
+      "brand": "GOODRIDE",
+      "pattern": "Z-203",
+      "description": "Z-203 (103H) [235 60 18]",
+      "cost": 1620.0,
+      "price": 1863,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70080C",
+      "size": "235/60R18",
+      "brand": "GOODRIDE",
+      "pattern": "Solmax 1 SUV",
+      "description": "Solmax 1 SUV (107V) [235 60 18]",
+      "cost": 1750.0,
+      "price": 2013,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2227843",
+      "size": "235/60R18",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 Crugen SUV (107V) XL [235 60 18]",
+      "cost": 2365.0,
+      "price": 2720,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID10067",
+      "size": "255/55R18",
+      "brand": "GOODRIDE",
+      "pattern": "SU318",
+      "description": "SU318 109V XL [255 55 18]",
+      "cost": 2195.0,
+      "price": 2524,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2263303",
+      "size": "255/55R18",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta (109Y) SUV XL [255 55 18]",
+      "cost": 2475.0,
+      "price": 2846,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID20053C",
+      "size": "265/60R18",
+      "brand": "GOODRIDE",
+      "pattern": "SL369",
+      "description": "SL369 (110T) [265 60 18]",
+      "cost": 1955.0,
+      "price": 2248,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70045C",
+      "size": "265/60R18",
+      "brand": "GOODRIDE",
+      "pattern": "SL399",
+      "description": "Terra Legend SL399 OWL (110T) [265 60 18]",
+      "cost": 2050.0,
+      "price": 2358,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2230733",
+      "size": "265/60R18",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 Road Venture AT (110T) [265 60 18]",
+      "cost": 2255.0,
+      "price": 2593,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2326263",
+      "size": "265/60R18",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture AT (110T) [265 60 18]",
+      "cost": 2255.0,
+      "price": 2593,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70097C",
+      "size": "265/65R18",
+      "brand": "GOODRIDE",
+      "pattern": "SL399",
+      "description": "Terra Legend SL399 OWL (114T) [265 65 18]",
+      "cost": 2250.0,
+      "price": 2588,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2347213",
+      "size": "265/65R18",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture (114T) [265 65 18]",
+      "cost": 3010.0,
+      "price": 3462,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70062C",
+      "size": "225/55R19",
+      "brand": "GOODRIDE",
+      "pattern": "SU318",
+      "description": "SU318 H/T (99V) [225 55 19]",
+      "cost": 1995.0,
+      "price": 2294,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2325293",
+      "size": "225/55R19",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 Crugen SUV (99V) [225 55 19]",
+      "cost": 2685.0,
+      "price": 3088,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2310003",
+      "size": "235/50R19",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta SUV (103W) XL [235 50 19]",
+      "cost": 2745.0,
+      "price": 3157,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70116C",
+      "size": "235/55R19",
+      "brand": "GOODRIDE",
+      "pattern": "Solmax 1 SUV",
+      "description": "Solmax 1 SUV (105W) XL [235 55 19",
+      "cost": 1995.0,
+      "price": 2294,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2263293",
+      "size": "255/50R19",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta SUV (107Y) XL [255 50 19]",
+      "cost": 2920.0,
+      "price": 3358,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2207213",
+      "size": "255/55R19",
+      "brand": "KUMHO",
+      "pattern": "AT51",
+      "description": "AT51 Road Venture XL [255 55 19]",
+      "cost": 3040.0,
+      "price": 3496,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2412003",
+      "size": "255/55R19",
+      "brand": "KUMHO",
+      "pattern": "AT52",
+      "description": "AT52 Road Venture XL [255 55 19]",
+      "cost": 3040.0,
+      "price": 3496,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2310023",
+      "size": "285/45R19",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta SUV (111Y)",
+      "cost": 3195.0,
+      "price": 3674,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2310093",
+      "size": "275/45R20",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta SUV (110Y) XL [275 45 20]",
+      "cost": 3250.0,
+      "price": 3738,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70039C",
+      "size": "265/50R20",
+      "brand": "GOODRIDE",
+      "pattern": "Z-203",
+      "description": "Z-203 (111V) XL [265 50 20]",
+      "cost": 2150.0,
+      "price": 2473,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2344073",
+      "size": "265/50R20",
+      "brand": "KUMHO",
+      "pattern": "HP71",
+      "description": "HP71 Crugen SUV (111V) [265 50 20]",
+      "cost": 2995.0,
+      "price": 3444,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2271383",
+      "size": "275/40R20",
+      "brand": "KUMHO",
+      "pattern": "PS71",
+      "description": "PS71 Ecsta SUV (106Y) XL",
+      "cost": 3250.0,
+      "price": 3738,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70099C",
+      "size": "215/75R15",
+      "brand": "GOODRIDE",
+      "pattern": "SL366",
+      "description": "OWL TL [215 75 15]",
+      "cost": 1500.0,
+      "price": 1725,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID20041C",
+      "size": "30X9.5R15",
+      "brand": "GOODRIDE",
+      "pattern": "SL366",
+      "description": "SL366 (6PLY) MT OWL [30 X 9.5]",
+      "cost": 1950.0,
+      "price": 2243,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM1891713",
+      "size": "30X9.5R15",
+      "brand": "KUMHO",
+      "pattern": "KL71",
+      "description": "KL71 MT (6PLY) (104Q) [30 X 9.5]",
+      "cost": 2555.0,
+      "price": 2938,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID20019C",
+      "size": "31X10.5R15",
+      "brand": "GOODRIDE",
+      "pattern": "SL366",
+      "description": "SL366 OWL (6ply)(109Q) MT [31 X 10.5 15]",
+      "cost": 2250.0,
+      "price": 2588,
+      "sourcePage": 3
+    },
+    {
+      "sku": "RID70077C",
+      "size": "31X10.5R15",
+      "brand": "GOODRIDE",
+      "pattern": "SL378",
+      "description": "SL378 Mud Legend OWL (6ply)(109Q) MT [31 X 10.5 15]",
+      "cost": 2350.0,
+      "price": 2703,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2270733",
+      "size": "31X10.5R15",
+      "brand": "KUMHO",
+      "pattern": "MT71",
+      "description": "MT71 (109Q) (6ply) [31 X 10.5]",
+      "cost": 3115.0,
+      "price": 3582,
+      "sourcePage": 3
+    },
+    {
+      "sku": "KUM2168613",
+      "size": "31X10.5R15",
+      "brand": "KUMHO",
+      "pattern": "MT51",
+      "description": "MT51 Road Venture (6PLY) (109Q) - MT [31 X 10.5]",
+      "cost": 2980.0,
+      "price": 3427,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2168573",
+      "size": "33X12.5R15",
+      "brand": "KUMHO",
+      "pattern": "MT51",
+      "description": "MT51 Road Venture (6PLY) - MT [33 X 12.5 15]",
+      "cost": 3440.0,
+      "price": 3956,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM602160K",
+      "size": "205R16",
+      "brand": "KUMHO",
+      "pattern": "KL71",
+      "description": "KL71 104Q XL [205 16]",
+      "cost": 2725.0,
+      "price": 3134,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID20050C",
+      "size": "235/85R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL366",
+      "description": "SL366 (10ply) (120/116Q) OWL [235 85 16]",
+      "cost": 2750.0,
+      "price": 3163,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70073C",
+      "size": "235/85R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL378",
+      "description": "SL378 Mud Legend OWL (10ply) (120/116Q) MT [235 85 16]",
+      "cost": 2750.0,
+      "price": 3163,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2208373",
+      "size": "235/85R16",
+      "brand": "KUMHO",
+      "pattern": "MT51",
+      "description": "MT51 Road Venture (10PLY) (120/116Q) - MT [235 85 16]",
+      "cost": 3030.0,
+      "price": 3485,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2270743",
+      "size": "235/85R16",
+      "brand": "KUMHO",
+      "pattern": "MT71",
+      "description": "MT71 Road Venture (10PLY) (120/116Q) - MT [235 85 16]",
+      "cost": 3150.0,
+      "price": 3623,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70081C",
+      "size": "245/70R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL378",
+      "description": "SL378 Mud Legend OWL (10ply)(118/115Q) MT [245 70 16]",
+      "cost": 2650.0,
+      "price": 3048,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2168633",
+      "size": "245/70R16",
+      "brand": "KUMHO",
+      "pattern": "MT51",
+      "description": "MT51 Road Venture 10PLY - MT [245 70 16]",
+      "cost": 2995.0,
+      "price": 3444,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID20017C",
+      "size": "245/75R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL366",
+      "description": "SL366 OWL (10ply) (120/116Q) MT [245 75 16]",
+      "cost": 2525.0,
+      "price": 2904,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70042C",
+      "size": "245/75R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL378",
+      "description": "SL378 Mud Legend (10ply)(120/116Q) MT [245 75 16]",
+      "cost": 2525.0,
+      "price": 2904,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2168533",
+      "size": "245/75R16",
+      "brand": "KUMHO",
+      "pattern": "MT51",
+      "description": "MT51 Road Venture 10ply - MT [245 75 16]",
+      "cost": 3285.0,
+      "price": 3778,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM602371K",
+      "size": "255/70R16",
+      "brand": "KUMHO",
+      "pattern": "MT51",
+      "description": "Road Venture MT51 (8PLY) - MT [255 70 16]",
+      "cost": 2915.0,
+      "price": 3352,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70055C",
+      "size": "265/70R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL378",
+      "description": "SL378 Mud Legend OWL (10ply)(121/118Q) MT [265 70 16]",
+      "cost": 2595.0,
+      "price": 2984,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID20018C",
+      "size": "265/75R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL366",
+      "description": "SL366 OWL (10ply) (123/120Q) MT [265 75 16]",
+      "cost": 2550.0,
+      "price": 2933,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70054C",
+      "size": "265/75R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL378",
+      "description": "SL378 Mud Legend OWL (10ply)(123/120Q) MT [265 75 16]",
+      "cost": 2750.0,
+      "price": 3163,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70047C",
+      "size": "285/75R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL366",
+      "description": "SL366 OWL (10ply) (126/123Q) MT [285 75 16]",
+      "cost": 2750.0,
+      "price": 3163,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70091C",
+      "size": "285/75R16",
+      "brand": "GOODRIDE",
+      "pattern": "SL378",
+      "description": "OWL TL [285 75 16]",
+      "cost": 2895.0,
+      "price": 3329,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2168433",
+      "size": "285/75R16",
+      "brand": "KUMHO",
+      "pattern": "MT51",
+      "description": "Road Venture MT51 (10ply) (126/123Q) - MT [285 75 16]",
+      "cost": 3760.0,
+      "price": 4324,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2262663",
+      "size": "285/75R16",
+      "brand": "KUMHO",
+      "pattern": "MT71",
+      "description": "Road Venture MT71 (10ply) - MT [285 75 16]",
+      "cost": 3975.0,
+      "price": 4571,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70040C",
+      "size": "265/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "SL366",
+      "description": "SL366 OWL (10ply)(120/117Q) MT [265 65 17]",
+      "cost": 2995.0,
+      "price": 3444,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70074C",
+      "size": "265/65R17",
+      "brand": "GOODRIDE",
+      "pattern": "SL378",
+      "description": "SL378 Mud Legend OWL (10ply)(120/117Q) MT [265 65 17]",
+      "cost": 2995.0,
+      "price": 3444,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70046C",
+      "size": "265/70R17",
+      "brand": "GOODRIDE",
+      "pattern": "SL366",
+      "description": "SL366 OWL (10ply) (121/118Q) [265 70 17]",
+      "cost": 3100.0,
+      "price": 3565,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2168473",
+      "size": "265/70R17",
+      "brand": "KUMHO",
+      "pattern": "MT51",
+      "description": "MT51 Road Venture (10PLY) (121/118Q) - MT [265 70 17]",
+      "cost": 3545.0,
+      "price": 4077,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2262613",
+      "size": "265/70R17",
+      "brand": "KUMHO",
+      "pattern": "MT71",
+      "description": "MT71 Road Venture (10ply) - MT [265 70 17]",
+      "cost": 3630.0,
+      "price": 4175,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2262653",
+      "size": "285/70R17",
+      "brand": "KUMHO",
+      "pattern": "MT71",
+      "description": "MT71 Road Venture - MT [285 70 17]",
+      "cost": 3975.0,
+      "price": 4571,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70087C",
+      "size": "265/60R18",
+      "brand": "GOODRIDE",
+      "pattern": "SL366",
+      "description": "SL366 MT (110T) [265 60 18]",
+      "cost": 1895.0,
+      "price": 2179,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70056C",
+      "size": "265/60R18",
+      "brand": "GOODRIDE",
+      "pattern": "SL378",
+      "description": "SL378 Mud Legend OWL (10ply)(119/116Q) MT [265 60 18)",
+      "cost": 2895.0,
+      "price": 3329,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2207123",
+      "size": "265/60R18",
+      "brand": "KUMHO",
+      "pattern": "MT51",
+      "description": "MT51 Road Venture (10ply) - MT [265 60 18]",
+      "cost": 3710.0,
+      "price": 4267,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2262643",
+      "size": "275/70R18",
+      "brand": "KUMHO",
+      "pattern": "MT71",
+      "description": "MT71 Road Venture (10ply) - MT [275 70 18]",
+      "cost": 4295.0,
+      "price": 4939,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2262513",
+      "size": "33X12.5R18",
+      "brand": "KUMHO",
+      "pattern": "MT71",
+      "description": "MT71 Road Venture (12PLY) (122Q) - MT [33 125 18]",
+      "cost": 4570.0,
+      "price": 5256,
+      "sourcePage": 4
+    },
+    {
+      "sku": "KUM2157203",
+      "size": "750R16",
+      "brand": "KUMHO",
+      "pattern": "KRS02",
+      "description": "KRS02 12 PLY 121/120M [750R 16]",
+      "cost": 2145.0,
+      "price": 2467,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID70052C",
+      "size": "215/75R17.5",
+      "brand": "GOODRIDE",
+      "pattern": "CR960A",
+      "description": "CR960A W (16PLY) (135/133J) [215 75 17.5]",
+      "cost": 2335.0,
+      "price": 2685,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID21003",
+      "size": "225/70R19.5",
+      "brand": "GOODRIDE",
+      "pattern": "CR960A",
+      "description": "CR960A W (12PLY) (125/123M) [225 70 19.5]",
+      "cost": 2915.0,
+      "price": 3352,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID22022",
+      "size": "235/75R17.5",
+      "brand": "GOODRIDE",
+      "pattern": "CR960A",
+      "description": "CR960A W (16PLY) (143/141J) [235 75 17.5]",
+      "cost": 2660.0,
+      "price": 3059,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID21004",
+      "size": "265/70R19.5",
+      "brand": "GOODRIDE",
+      "pattern": "CR976A",
+      "description": "CR976A W (16PLY) (140/138M) - Steer / AP [265 70 19.5]",
+      "cost": 3500.0,
+      "price": 4025,
+      "sourcePage": 4
+    },
+    {
+      "sku": "RID22023",
+      "size": "285/70R19.5",
+      "brand": "GOODRIDE",
+      "pattern": "CR960A",
+      "description": "CR960A W (16PLY) TL [285 70 19.5]",
+      "cost": 4090.0,
+      "price": 4704,
+      "sourcePage": 4
+    }
+  ],
+  "rejected": [
+    {
+      "sku": "KUM2284953",
+      "page": 1,
+      "reason": "conflicting patterns",
+      "source": [
+        "KUM2284953",
+        "185 60 15",
+        "15",
+        "KH27",
+        "18560HR15 Kumho TA21 Solus (84H) [185 60 15]",
+        "835.00"
+      ]
+    },
+    {
+      "sku": "KUM2284923",
+      "page": 1,
+      "reason": "conflicting sizes",
+      "source": [
+        "KUM2284923",
+        "185 60 15",
+        "15",
+        "TA21",
+        "19560HR15 Kumho TA21 Solus (88H) [195 60 15]",
+        "905.00"
+      ]
+    },
+    {
+      "sku": "RID70061C",
+      "page": 2,
+      "reason": "conflicting patterns",
+      "source": [
+        "RID70061C",
+        "245 45 17",
+        "17",
+        "G-118",
+        "24545R17 Goodride Z-107 (99W) XL [245 45 17]",
+        "1,480.00"
+      ]
+    },
+    {
+      "sku": "RID70082C",
+      "page": 3,
+      "reason": "conflicting bracketed size",
+      "source": [
+        "RID70082C",
+        "255 70 16",
+        "16",
+        "SL399",
+        "25570R16 Goodride Terra Legend SL399 OWL (111T) [265 60 18]",
+        "1,895.00"
+      ]
+    },
+    {
+      "sku": "KUM2363403",
+      "page": 3,
+      "reason": "conflicting sizes",
+      "source": [
+        "KUM2363403",
+        "246 45 19",
+        "19",
+        "PS72",
+        "24545ZR19 Kumho PS72 Ecsta Sport (102Y) XL [245 45 19]",
+        "2,685.00"
+      ]
+    }
+  ]
+}
