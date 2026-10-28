@@ -15,6 +15,7 @@ import {
 } from '../supplierStockImages';
 import { supabase } from '../supabaseClient';
 import {
+  getLocationStockTotal,
   normalizeStockByLocation,
   parseStockLocationSummary,
   sortStockLocationEntries
@@ -332,7 +333,7 @@ const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
   const structuredEntries = getStockEntries(item);
   const availableEntries = structuredEntries.filter(([, quantity]) => quantity > 0);
   const fallbackLocation = getItemLocation(item);
-  const totalStock = availableEntries.reduce((total, [, quantity]) => total + quantity, 0);
+  const totalStock = getLocationStockTotal(structuredEntries);
 
   return (
     <div className="col-span-full mt-2 border-t border-gp-border/70 pt-3">
@@ -340,9 +341,11 @@ const StockLocationPanel: React.FC<{ item: InventoryItem }> = ({ item }) => {
         <span className="block text-[9px] leading-none text-gp-text-muted uppercase font-bold tracking-wider">
           Available locations
         </span>
-        <span className="shrink-0 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">
-          Total stock <span className="ml-1 font-mono text-xs tabular-nums text-green-500">{formatStockQuantity(totalStock, item.stockQuantityIsMinimum)}</span>
-        </span>
+        {totalStock !== null ? (
+          <span className="shrink-0 text-[9px] font-black uppercase tracking-wider text-gp-text-muted">
+            Location total <span className="ml-1 font-mono text-xs tabular-nums text-green-500">{formatStockQuantity(totalStock, item.stockQuantityIsMinimum)}</span>
+          </span>
+        ) : null}
       </div>
       {availableEntries.length > 0 ? (
         <div className="mt-2 grid grid-cols-[repeat(auto-fit,minmax(4rem,1fr))] gap-2">

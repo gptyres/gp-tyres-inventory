@@ -23,6 +23,9 @@ const LOCATION_ALIASES: Record<string, string> = {
 const locationKey = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '');
 const NON_AVAILABLE_LOCATIONS = new Set(['inboundtocapetown', 'nostocklisted']);
 
+export const getLocationStockTotal = (entries: Array<[string, number]>): number | null =>
+  entries.length ? entries.reduce((sum, [, quantity]) => sum + Math.max(0, quantity), 0) : null;
+
 export const normalizeStockLocationName = (value: string): string => {
   const cleaned = value
     .replace(/^tread\s*zone\s+/i, '')

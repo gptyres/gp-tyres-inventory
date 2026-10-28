@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import {
+  getLocationStockTotal,
   normalizeStockByLocation,
   parseStockLocationSummary,
   sortStockLocationEntries
 } from './stockLocation';
 
 describe('supplier stock locations', () => {
+  it('does not invent a zero location total when no warehouse quantities were supplied', () => {
+    expect(getLocationStockTotal([])).toBeNull();
+    expect(getLocationStockTotal([['CPT', 0]])).toBe(0);
+    expect(getLocationStockTotal([['CPT', 3], ['JHB', 4]])).toBe(7);
+  });
   it('parses numeric location summaries used by supplier fallback catalogues', () => {
     expect(parseStockLocationSummary('JHB: 7 | CPT: 0 | DBN: 2 | GLK: 1')).toEqual({
       JHB: 7,
