@@ -423,6 +423,9 @@ const loadConcreteSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pr
     }
   } catch (error) {
     console.warn('Live supplier catalogue unavailable; using bundled fallback.', error);
+    const bundled = normalizeBundledSupplierTyres(catalog, await loadBundledSupplierCatalog(catalog));
+    if (bundled.length === 0) throw new Error(`Could not load ${supplierDisplayNames[catalog]}.`);
+    return bundled;
   }
 
   return normalizeBundledSupplierTyres(catalog, await loadBundledSupplierCatalog(catalog));
@@ -441,25 +444,60 @@ export const loadSupplierCatalogItems = async (catalog: SupplierCatalog): Promis
   }
 
   if (!supplierItemCache.has(catalog)) {
-    supplierItemCache.set(catalog, loadConcreteSupplierCatalog(catalog));
+    const request = loadConcreteSupplierCatalog(catalog);
+    supplierItemCache.set(catalog, request);
+    void request.catch(() => {
+      if (supplierItemCache.get(catalog) === request) supplierItemCache.delete(catalog);
+    });
   }
 
   return cloneInventoryItems(await supplierItemCache.get(catalog)!);
 };
 
+export interface SupplierCatalogProgress {
+  items: InventoryItem[];
+  completed: number;
+  total: number;
+  failed: string[];
+}
+
+export const loadSupplierCatalogBatches = async (
+  catalogs: ConcreteSupplierCatalog[],
+  load: (catalog: ConcreteSupplierCatalog) => Promise<InventoryItem[]>,
+  onProgress?: (progress: SupplierCatalogProgress) => void,
+  signal?: AbortSignal
+): Promise<InventoryItem[]> => {
+  const results = new Map<ConcreteSupplierCatalog, InventoryItem[]>();
+  const failed: ConcreteSupplierCatalog[] = [];
+  let completed = 0;
+  const orderedItems = () => catalogs.flatMap((catalog) => results.get(catalog) || []);
+  await Promise.all(catalogs.map(async (catalog) => {
+    try {
+      results.set(catalog, await load(catalog));
+    } catch {
+      failed.push(catalog);
+    } finally {
+      completed += 1;
+      if (!signal?.aborted) onProgress?.({ items: orderedItems(), completed, total: catalogs.length, failed: [...failed] });
+    }
+  }));
+  if (failed.length) throw new Error(`Could not load supplier catalogues: ${failed.join(', ')}`);
+  return orderedItems();
+};
+
 export const loadSelectedSupplierCatalogItems = async (
-  catalogs: ConcreteSupplierCatalog[]
+  catalogs: ConcreteSupplierCatalog[],
+  onProgress?: (progress: SupplierCatalogProgress) => void,
+  signal?: AbortSignal
 ): Promise<InventoryItem[]> => {
   const selected = new Set(catalogs);
   const orderedCatalogs = supplierCatalogOrder.filter((catalog) => selected.has(catalog));
-  const loadedCatalogs = await Promise.all(orderedCatalogs.map(async (catalog) => ({
-    catalog,
-    items: await loadSupplierCatalogItems(catalog)
-  })));
-
-  return loadedCatalogs.flatMap(({ catalog, items }) => (
-    tagSupplierItems(supplierDisplayNames[catalog], items)
-  ));
+  return loadSupplierCatalogBatches(
+    orderedCatalogs,
+    async (catalog) => tagSupplierItems(supplierDisplayNames[catalog], await loadSupplierCatalogItems(catalog)),
+    onProgress,
+    signal
+  );
 };
 
 export const loadAllSupplierPOSItems = async (): Promise<InventoryItem[]> => {

@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
+import * as supplierLoader from './supplierCatalogLoader';
 import {
   loadSupplierCatalogItems,
   normalizeBundledSupplierTyres,
   restoreAttStockFromBundledCatalog,
-  restoreSupplierWheelSpecsFromBundledCatalog
+  restoreSupplierWheelSpecsFromBundledCatalog,
+  type SupplierCatalogProgress
 } from './supplierCatalogLoader';
 import { ProductType, type BatteryProduct, type TyreProduct, type WheelProduct } from './types';
 
@@ -20,6 +22,51 @@ const bundledTyre: TyreProduct = {
   loadSpeedIndex: '18PR',
   location: 'Supplier'
 };
+
+describe('progressive supplier catalogue loading', () => {
+  type BatchProgress = SupplierCatalogProgress;
+  const loadBatches = () => supplierLoader.loadSupplierCatalogBatches;
+
+  it('exposes completed suppliers immediately and returns all results in selection order', async () => {
+    const load = loadBatches();
+    expect(load).toBeTypeOf('function');
+    if (!load) return;
+    let resolveA!: (items: TyreProduct[]) => void;
+    let resolveB!: (items: TyreProduct[]) => void;
+    const a = new Promise<TyreProduct[]>(resolve => { resolveA = resolve; });
+    const b = new Promise<TyreProduct[]>(resolve => { resolveB = resolve; });
+    const progress: BatchProgress[] = [];
+    const result = load(['APEX', 'ATT'], key => key === 'APEX' ? a : b, value => progress.push(value));
+    resolveB([{ ...bundledTyre, id: 'att' }]);
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(progress).toHaveLength(1);
+    expect(progress[0]).toMatchObject({ completed: 1, total: 2, failed: [], items: [{ id: 'att' }] });
+    resolveA([{ ...bundledTyre, id: 'apex' }]);
+    expect((await result).map(item => item.id)).toEqual(['apex', 'att']);
+  });
+
+  it('reports failed suppliers and prevents aborted progress callbacks', async () => {
+    const load = loadBatches();
+    expect(load).toBeTypeOf('function');
+    if (!load) return;
+    const progress: BatchProgress[] = [];
+    await expect(load(['APEX', 'ATT'], async key => {
+      if (key === 'ATT') throw new Error('unavailable');
+      return [bundledTyre];
+    }, value => progress.push(value))).rejects.toThrow('ATT');
+    expect(progress.at(-1)).toMatchObject({ completed: 2, total: 2, failed: ['ATT'], items: [{ id: 'bundled-1' }] });
+    const controller = new AbortController();
+    let resolve!: (items: TyreProduct[]) => void;
+    const pending = new Promise<TyreProduct[]>(done => { resolve = done; });
+    const afterAbort: BatchProgress[] = [];
+    const result = load(['APEX'], () => pending, value => afterAbort.push(value), controller.signal);
+    controller.abort();
+    resolve([bundledTyre]);
+    await result;
+    expect(afterAbort).toEqual([]);
+  });
+});
 
 describe('site-wide supplier catalogue formatting', () => {
   it('normalizes bundled fallback catalogues with the same fields as live catalogues', () => {

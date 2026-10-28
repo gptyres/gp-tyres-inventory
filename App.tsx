@@ -194,6 +194,7 @@ const App: React.FC = () => {
   const [isCompletingPOS, setIsCompletingPOS] = useState(false);
   const [supplierItems, setSupplierItems] = useState<InventoryItem[]>([]);
   const [isSupplierCatalogLoading, setIsSupplierCatalogLoading] = useState(false);
+  const [supplierLoadProgress, setSupplierLoadProgress] = useState<{ completed: number; total: number } | null>(null);
   const [supplierCatalogError, setSupplierCatalogError] = useState('');
   const [supplierCatalogRefreshVersion, setSupplierCatalogRefreshVersion] = useState(0);
   const [allSupplierPOSItems, setAllSupplierPOSItems] = useState<InventoryItem[]>([]);
@@ -330,30 +331,46 @@ const App: React.FC = () => {
   // --- SUPPLIER DATA: lazy loaded and cached by supplierCatalogLoader ---
   useEffect(() => {
     let cancelled = false;
+    const controller = new AbortController();
 
     const loadSupplierItems = async () => {
-      if (currentView !== 'SUPPLIER_INVENTORY') return;
+      if (currentView !== 'SUPPLIER_INVENTORY') {
+        setIsSupplierCatalogLoading(false);
+        setSupplierLoadProgress(null);
+        return;
+      }
 
       if (!shouldLoadSupplierCatalog) {
         setSupplierItems([]);
         setIsSupplierCatalogLoading(false);
         setSupplierCatalogError('');
+        setSupplierLoadProgress(null);
         return;
       }
 
       setIsSupplierCatalogLoading(true);
       setSupplierCatalogError('');
+      setSupplierItems([]);
+      setSupplierLoadProgress(activeSupplierCatalog === 'ALL_SUPPLIERS'
+        ? { completed: 0, total: selectedSupplierCatalogs.length } : null);
 
       try {
         const loadedItems = activeSupplierCatalog === 'ALL_SUPPLIERS'
-          ? await loadSelectedSupplierCatalogItems(selectedSupplierCatalogs)
+          ? await loadSelectedSupplierCatalogItems(selectedSupplierCatalogs, (progress) => {
+            if (!cancelled) {
+              setSupplierItems(progress.items);
+              setSupplierLoadProgress({ completed: progress.completed, total: progress.total });
+            }
+          }, controller.signal)
           : await loadSupplierCatalogItems(activeSupplierCatalog);
         if (!cancelled) setSupplierItems(loadedItems);
       } catch (error) {
         console.error('Supplier catalogue load failed', error);
         if (!cancelled) {
-          setSupplierItems([]);
-          setSupplierCatalogError('Could not load this supplier catalogue. Please try again.');
+          if (activeSupplierCatalog !== 'ALL_SUPPLIERS') setSupplierItems([]);
+          setSupplierCatalogError(activeSupplierCatalog === 'ALL_SUPPLIERS'
+            ? 'Some supplier catalogues could not be loaded. Any results shown are incomplete; please retry.'
+            : 'Could not load this supplier catalogue. Please try again.');
         }
       } finally {
         if (!cancelled) setIsSupplierCatalogLoading(false);
@@ -363,6 +380,7 @@ const App: React.FC = () => {
     void loadSupplierItems();
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, [currentView, activeSupplierCatalog, shouldLoadSupplierCatalog, supplierCatalogRefreshVersion, selectedSupplierCatalogKey]);
 
@@ -2084,13 +2102,22 @@ const App: React.FC = () => {
                     <span className="basis-full text-[11px] text-gp-text-muted sm:ml-auto sm:basis-auto">Requested brand matches appear first; alternatives stay visible.</span>
                   </div>
                 )}
+                {currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALL_SUPPLIERS' && isSupplierCatalogLoading && (
+                  <div role="status" className="mb-4 rounded-lg border border-blue-800/50 bg-gp-panel px-4 py-3 text-xs text-blue-300">
+                    Loading suppliers: {supplierLoadProgress?.completed ?? 0} of {supplierLoadProgress?.total ?? selectedSupplierCatalogs.length}.
+                    Results shown are incomplete until all suppliers finish.
+                  </div>
+                )}
+                {supplierCatalogError && supplierItems.length > 0 && currentView === 'SUPPLIER_INVENTORY' && (
+                  <div role="alert" className="m-4 rounded-lg border border-gp-red/40 bg-gp-red/10 p-4 text-sm font-bold text-gp-red">{supplierCatalogError}</div>
+                )}
                 {currentView === 'WHEEL_CATALOG' ? (
                   <Suspense fallback={<LoadingPanel label="Loading wheel catalogue..." />}>
                     <WheelCatalogView searchQuery={debouncedSearchQuery} isAdmin={isAdmin} />
                   </Suspense>
-                ) : isSupplierCatalogLoading ? (
+                ) : isSupplierCatalogLoading && (currentView !== 'SUPPLIER_INVENTORY' || displayedInventoryItems.length === 0) ? (
                   <LoadingPanel label={`Loading ${supplierCatalogLabel} stock...`} />
-                ) : supplierCatalogError ? (
+                ) : currentView === 'SUPPLIER_INVENTORY' && supplierCatalogError && supplierItems.length === 0 ? (
                   <div className="m-4 rounded-lg border border-gp-red/40 bg-gp-red/10 p-4 text-sm font-bold text-gp-red">
                     {supplierCatalogError}
                   </div>
