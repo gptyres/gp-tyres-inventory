@@ -770,6 +770,14 @@ export const runGpBusinessAgent = async (apiKey: string, context: AgentContext, 
   if (context.mode === 'CUSTOMER_READY' && customerStockLines.length) {
     answer = Array.from(new Set(customerStockLines)).join('\n');
   }
+  const needsLiveInventory = /\b(stock|inventory|availability|available|supplier|suppliers)\b/i.test(context.latestUserMessage)
+    || (/\b(tyres?|tires?|wheels?|rims?)\b/i.test(context.latestUserMessage) && /\b(have|sell|offer|prices?|pricing|quote)\b/i.test(context.latestUserMessage))
+    || (/\b(prices?|pricing)\b/i.test(context.latestUserMessage) && !/\b(calculate|calculation|markup|margin)\b/i.test(context.latestUserMessage));
+  const hasInventoryEvidence = sources.some((source) => source.kind === 'STORE_INVENTORY' || source.kind === 'SUPPLIER_CATALOG');
+  if (needsLiveInventory && !hasInventoryEvidence) {
+    answer = 'I could not verify current stock or prices. Please provide the product size or brand, or check the supplier catalogue.';
+    verificationStatus = 'UNVERIFIED';
+  }
   if (!answer) answer = 'I could not complete that request safely. Please narrow the product or vehicle details, or ask a staff member to verify it manually.';
   const finalSources = dedupeSources(sources);
   const confidence = verificationStatus === 'VERIFIED' && finalSources.length ? 0.93 : verificationStatus === 'PARTIAL' ? 0.7 : 0.45;

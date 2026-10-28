@@ -100,4 +100,34 @@ describe('OpenAI provider boundary', () => {
     expect(toolResult.content).toContain('restricted to admin');
     expect(toolResult.content).not.toContain('grossProfit');
   });
+
+  it('does not present invented stock or price when the model skipped live tools', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      choices: [{ message: { role: 'assistant', content: 'We have 10 tyres for R100.' } }]
+    }), { status: 200 })));
+    const supabase = { from: () => ({ insert: async () => ({ error: null }) }) } as any;
+    const result = await runGpBusinessAgent('test-secret', {
+      supabase, terminalId: 'test', isAdmin: false, mode: 'INTERNAL',
+      conversationId: 'test-conversation', latestUserMessage: 'What tyre stock and prices are available?',
+      staffMemories: []
+    }, [{ role: 'user', content: 'What tyre stock and prices are available?' }]);
+    expect(result.verificationStatus).toBe('UNVERIFIED');
+    expect(result.answer).not.toContain('R100');
+    expect(result.answer).toMatch(/could not verify/i);
+  });
+
+  it('does not treat a verified calculator as evidence of supplier stock', async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ choices: [{ message: { role: 'assistant', content: null, tool_calls: [{ id: 'call_3', type: 'function', function: { name: 'calculate_margin', arguments: '{"costPrice":100,"sellingPrice":150}' } }] } }] }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ choices: [{ message: { role: 'assistant', content: 'The supplier has 10 in stock.' } }] }), { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+    const supabase = { from: () => ({ insert: async () => ({ error: null }) }) } as any;
+    const result = await runGpBusinessAgent('test-secret', {
+      supabase, terminalId: 'test', isAdmin: true, mode: 'INTERNAL',
+      conversationId: 'test-conversation', latestUserMessage: 'Compare supplier stock and calculate margin',
+      staffMemories: []
+    }, [{ role: 'user', content: 'Compare supplier stock and calculate margin' }]);
+    expect(result.answer).not.toContain('10 in stock');
+    expect(result.answer).toMatch(/could not verify/i);
+  });
 });
