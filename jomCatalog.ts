@@ -4,8 +4,8 @@ import { ProductType, type CoiloverProduct } from './types';
 export interface JomSupplierRow {
   supplierSku: string;
   description: string;
-  stockUnits: number;
-  priceIncludingVat: number;
+  stockUnits: number | null;
+  priceIncludingVat: number | null;
   warehouse: string;
   sourcePage: number;
 }
@@ -30,8 +30,8 @@ export const parseJomCatalog = (rows: readonly JomSupplierRow[], importedAt: str
   const codes = new Set<string>();
   return rows.map((row) => {
     if (!row.supplierSku || codes.has(row.supplierSku) || !row.description
-      || !Number.isInteger(row.stockUnits) || row.stockUnits < 0
-      || !Number.isFinite(row.priceIncludingVat) || row.priceIncludingVat <= 0) {
+      || (row.stockUnits !== null && (!Number.isInteger(row.stockUnits) || row.stockUnits < 0))
+      || (row.priceIncludingVat !== null && (!Number.isFinite(row.priceIncludingVat) || row.priceIncludingVat <= 0))) {
       throw new Error(`Invalid JOM stock row: ${row.supplierSku}`);
     }
     codes.add(row.supplierSku);
@@ -44,17 +44,18 @@ export const parseJomCatalog = (rows: readonly JomSupplierRow[], importedAt: str
       series: label,
       vehicleCompatibility: row.description,
       vehicleBrand: vehicleBrand(row.description),
-      details: `${row.description} | Stock code: ${row.supplierSku}`,
-      quantity: row.stockUnits,
-      costPrice: row.priceIncludingVat,
-      sellingPrice: row.priceIncludingVat,
+      details: `${row.description} | Stock code: ${row.supplierSku}${row.priceIncludingVat === null ? ' | Price on request' : ''}`,
+      quantity: row.stockUnits ?? 0,
+      stockQuantityUnknown: row.stockUnits === null || undefined,
+      costPrice: row.priceIncludingVat ?? 0,
+      sellingPrice: row.priceIncludingVat ?? 0,
       supplierName: 'JOM',
       supplierStockCode: row.supplierSku,
-      location: row.warehouse,
-      stockByLocation: { [row.warehouse]: row.stockUnits },
+      location: row.stockUnits === null ? 'Stock not in latest report - confirm availability' : row.warehouse,
+      stockByLocation: row.stockUnits === null ? undefined : { [row.warehouse]: row.stockUnits },
       lastUpdated: importedAt,
     };
   });
 };
 
-export const loadJomCatalog = (): CoiloverProduct[] => parseJomCatalog(data.rows, data.importedAt);
+export const loadJomCatalog = (): CoiloverProduct[] => parseJomCatalog(data.rows, data.sourceReportedAt);

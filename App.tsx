@@ -498,7 +498,7 @@ const App: React.FC = () => {
     },
     JOM: {
       label: 'JOM',
-      note: 'JOM stock report dated 18 September 2026. Prices already include 15% VAT; no additional VAT is added. Quantities are from Main Warehouse. Vehicle descriptions are supplied applications, not a fitment guarantee.'
+      note: 'JOM Main Warehouse stock report dated 26 October 2026. Existing prices are from the 18 September price list and already include VAT; confirm current pricing. Items absent from the report require availability confirmation; unpriced items are price on request. Vehicle descriptions are not a fitment guarantee.'
     },
     LOMBARD_TYRES: {
       label: 'LOMBARD TYRES',

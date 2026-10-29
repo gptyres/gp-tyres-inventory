@@ -11,16 +11,26 @@ import { searchSupplierInventory } from './supplierInventorySearch';
 
 describe('JOM supplier report import', () => {
   const items = loadJomCatalog();
+  it('retains a new stock item without inventing a price', () => {
+    const [item] = parseJomCatalog([{ supplierSku: '741006', description: 'VW GOLF 1 - 1974 - 2008', stockUnits: 60, priceIncludingVat: null, warehouse: 'Main Warehouse', sourcePage: 1 }], '2026-10-26T07:52:31+02:00');
+    expect(item).toMatchObject({ quantity: 60, costPrice: 0, sellingPrice: 0 });
+  });
+  it('marks items absent from the latest stock report as unverified, not sold out', () => {
+    const [item] = parseJomCatalog([{ supplierSku: '741053', description: 'Previous product', stockUnits: null, priceIncludingVat: 4500, warehouse: 'Main Warehouse', sourcePage: 1 }], '2026-10-26T07:52:31+02:00');
+    expect(item).toMatchObject({ quantity: 0, stockQuantityUnknown: true, sellingPrice: 4500 });
+    expect(item.stockByLocation).toBeUndefined();
+  });
   it('reconciles every stock code and the printed warehouse total', () => {
-    expect(items).toHaveLength(98);
-    expect(new Set(items.map(item => item.supplierStockCode)).size).toBe(98);
-    expect(items.reduce((sum,item) => sum + item.quantity, 0)).toBe(2581);
-    expect(items.every(item => item.stockByLocation?.['Main Warehouse'] === item.quantity)).toBe(true);
-    expect(items.every(item => item.lastUpdated === data.importedAt)).toBe(true);
+    expect(items).toHaveLength(99);
+    expect(new Set(items.map(item => item.supplierStockCode)).size).toBe(99);
+    expect(items.reduce((sum,item) => sum + item.quantity, 0)).toBe(2196);
+    expect(items.filter(item => !item.stockQuantityUnknown).every(item => item.stockByLocation?.['Main Warehouse'] === item.quantity)).toBe(true);
+    expect(items.filter(item => item.stockQuantityUnknown)).toHaveLength(4);
+    expect(items.every(item => item.lastUpdated === data.sourceReportedAt)).toBe(true);
   });
   it('retains VAT-inclusive prices, including with an explicit markup', () => {
     const kit = items.find(item => item.supplierStockCode === '741000')!;
-    expect(kit.quantity).toBe(29);
+    expect(kit.quantity).toBe(11);
     expect(kit.costPrice).toBe(4500);
     expect(kit.sellingPrice).toBe(4500);
     expect(getSupplierCostTaxBasis(kit,'JOM')).toBe('INCLUDES_VAT');
@@ -28,14 +38,14 @@ describe('JOM supplier report import', () => {
     expect(calculateSupplierSellingPrice(kit,{mode:'BASE',value:0},'JOM')).toBe(4500);
     expect(calculateSupplierSellingPrice(kit,{mode:'PERCENT',value:10},'JOM')).toBe(4950);
     expect(calculateSupplierSellingPrice(kit,{mode:'FIXED',value:100},'JOM')).toBe(4615);
-    items.forEach((item,index) => expect(item.sellingPrice).toBe(data.rows[index].priceIncludingVat));
+    items.forEach((item,index) => expect(item.sellingPrice).toBe(data.rows[index].priceIncludingVat ?? 0));
   });
   it('preserves long descriptions without including quantity digits', () => {
     const row = data.rows.find(row => row.supplierSku === '741254')!;
     expect(row.stockUnits).toBe(1);
     expect(row.priceIncludingVat).toBe(4800);
     expect(row.description).toBe('VW Golf 7 R 4Motion,Clubsport,GTI TCR, 2.0 R,GTD 2012-2019 m');
-    expect(data.rows.find(row => row.supplierSku === 'GF 200226')?.stockUnits).toBe(9);
+    expect(data.rows.find(row => row.supplierSku === 'GF 200226')?.stockUnits).toBe(8);
   });
   it('keeps accessories accurately labelled and searchable', () => {
     expect(getItemTypeLabel(items.find(item => item.supplierStockCode === '127095')!)).toBe('Plastic dip');
@@ -50,7 +60,7 @@ describe('JOM supplier report import', () => {
     expect(SUPPLIER_CATALOG_OPTIONS.some(item=>item.catalog==='JOM')).toBe(true);
     expect(isRegistryBackedSupplierCatalog('JOM')).toBe(false);
     expect(isLiveSupplierCatalog('JOM')).toBe(false);
-    expect(await loadSupplierCatalogItems('JOM')).toHaveLength(98);
+    expect(await loadSupplierCatalogItems('JOM')).toHaveLength(99);
   });
   it('rejects invalid amounts, counts and duplicate SKUs', () => {
     expect(()=>parseJomCatalog([{...data.rows[0],stockUnits:-1}],data.importedAt)).toThrow();
