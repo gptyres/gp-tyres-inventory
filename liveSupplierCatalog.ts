@@ -252,7 +252,11 @@ export const liveSupplierRowToInventoryItem = (
     ...common,
     type: ProductType.TYRE,
     brand: parsedTyre.brand,
-    pattern: parsedTyre.pattern,
+    // StockFinder currently spells this iLink pattern with a lowercase L.
+    // Normalize only its display/search value; keep the source record intact.
+    pattern: row.catalog_key === 'APEX' && parsedTyre.brand.trim().toUpperCase() === 'ILINK'
+      ? parsedTyre.pattern.replace(/\blronclad\b/i, 'IronClad')
+      : parsedTyre.pattern,
     size: parsedTyre.size,
     loadSpeedIndex: buildTyreIndexDisplay(parsedTyre.rating, parsedTyre.index),
     tyreRating: parsedTyre.rating,

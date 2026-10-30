@@ -10,6 +10,7 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { InventoryView, formatItemStockQuantity } from './components/InventoryView';
 import { matchesStockFilter, stockCounts } from './stockWorkspace';
+import { searchSupplierInventory } from './supplierInventorySearch';
 
 const baseRow: LiveSupplierCatalogRow = {
   id: 1,
@@ -35,6 +36,13 @@ const baseRow: LiveSupplierCatalogRow = {
 };
 
 describe('live supplier catalogue conversion', () => {
+  it('makes APEX iLink IronClad searchable despite the source spelling while preserving stock and price', () => {
+    const item = liveSupplierRowToInventoryItem({ ...baseRow, catalog_key: 'APEX', brand: 'ILINK',
+      size: '265/65R17', product_name: 'lronClad A/T RWL /', tyre_pattern: 'lronClad A/T',
+      stock_units: 20, cost_price: '1632.00', selling_price: '1877.00' });
+    expect(item).toMatchObject({ pattern: 'IronClad A/T', quantity: 20, costPrice: 1632, sellingPrice: 1877 });
+    expect(searchSupplierInventory([item], 'IronClad').map(result => result.id)).toEqual([item.id]);
+  });
   it('shows the current Exclusive catalogue under its new display name without changing its data', () => {
     const item = liveSupplierRowToInventoryItem({ ...baseRow, catalog_key: 'EXCLUSIVE_TYRES_NEW', supplier: 'EXCLUSIVE TYRES NEW' });
     expect(item).toMatchObject({ supplierName: 'EXCLUSIVE TYRES', quantity: 8, costPrice: 1100, sellingPrice: 1265 });
