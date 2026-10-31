@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const supabaseMockState = vi.hoisted(() => ({
   pages: [] as unknown[][],
   rangeCalls: [] as Array<{ from: number; to: number }>,
-  eqCalls: [] as Array<{ column: string; value: unknown }>
+  eqCalls: [] as Array<{ column: string; value: unknown }>,
+  rangeHook: null as null | ((from: number, to: number) => Promise<{ data: unknown[] | null; error: { message: string } | null }>)
 }));
 
 vi.mock('./supabaseClient', () => ({
@@ -18,6 +19,7 @@ vi.mock('./supabaseClient', () => ({
         order: vi.fn(() => builder),
         range: vi.fn(async (from: number, to: number) => {
           supabaseMockState.rangeCalls.push({ from, to });
+          if (supabaseMockState.rangeHook) return supabaseMockState.rangeHook(from, to);
           return {
             data: supabaseMockState.pages.shift() ?? [],
             error: null
@@ -55,10 +57,59 @@ beforeEach(() => {
   supabaseMockState.pages = [];
   supabaseMockState.rangeCalls = [];
   supabaseMockState.eqCalls = [];
+  supabaseMockState.rangeHook = null;
   clearSupplierStockImageCache();
 });
 
 describe('ALINE supplier image parsing', () => {
+  it('loads later image pages concurrently, preserving their order', async () => {
+    const pending: Record<number, (value: { data: unknown[]; error: null }) => void> = {};
+    supabaseMockState.rangeHook = async from => {
+      if (from === 0) return { data: Array.from({ length: 1000 }, (_, i) => ({ id: `first-${i}` })), error: null };
+      return new Promise(resolve => { pending[from] = resolve; });
+    };
+    const result = fetchSupplierStockImages();
+    await vi.waitFor(() => expect(Object.keys(pending).map(Number).sort()).toEqual([1000, 2000]));
+    pending[2000]({ data: [{ id: 'third' }], error: null });
+    pending[1000]({ data: Array.from({ length: 1000 }, (_, i) => ({ id: `second-${i}` })), error: null });
+    const images = await result;
+    expect(images).toHaveLength(2001);
+    expect(images[1000].id).toBe('second-0');
+    expect(images[2000].id).toBe('third');
+  });
+
+  it('retries image loading after a temporary database error', async () => {
+    let attempts = 0;
+    supabaseMockState.rangeHook = async () => ++attempts === 1
+      ? { data: null, error: { message: 'temporary error' } }
+      : { data: [{ id: 'recovered' }], error: null };
+    await expect(fetchSupplierStockImages()).rejects.toThrow('temporary error');
+    await expect(fetchSupplierStockImages()).resolves.toEqual([{ id: 'recovered' }]);
+  });
+  it('matches direct wheel images without repeatedly scanning every image row', () => {
+    let sourceReads = 0;
+    const rows = Array.from({ length: 300 }, (_, index) => new Proxy({
+      id: `image-${index}`, supplier: 'ALINE', source_file_id: `stock-${index}::front`,
+      design_key: 'SPY', finish_key: 'BLACK', tags: [], file_name: `${index}.jpg`,
+      storage_bucket: 'supplier-stock-images', storage_path: `wheels/${index}.jpg`,
+      public_image_url: `https://example.test/${index}.jpg`, mime_type: 'image/jpeg',
+      active: true, imported_at: '2026-10-01T00:00:00Z'
+    }, { get(target, key, receiver) {
+      if (key === 'source_file_id') sourceReads += 1;
+      return Reflect.get(target, key, receiver);
+    } }));
+    const items = Array.from({ length: 80 }, (_, index) => ({
+      id: `wheel-${index}`, type: ProductType.WHEEL as const, quantity: 4,
+      sellingPrice: 1000, costPrice: 800, lastUpdated: '2026-10-01',
+      supplierName: 'ALINE', imageSourceKey: `stock-${index}`,
+      code: 'SPY', size: '18x8', pcd: '5/100', offset: '35', centerBore: '',
+      colour: 'BLACK', setQuantity: 4
+    }));
+    const images = buildSupplierImageMap(items, rows);
+    expect(images['wheel-0']).toBe('https://example.test/0.jpg');
+    expect(images['wheel-79']).toBe('https://example.test/79.jpg');
+    expect(sourceReads).toBeLessThan(1500);
+  });
   it('extracts design and finish keys from compact ALINE stock descriptions', () => {
     expect(parseAlineStockImageKeys('410014X6/108CLASSIC ET34 BKMF')).toEqual({
       designKey: 'CLASSIC',

@@ -27,6 +27,27 @@ describe('progressive supplier catalogue loading', () => {
   type BatchProgress = SupplierCatalogProgress;
   const loadBatches = () => supplierLoader.loadSupplierCatalogBatches;
 
+  it('limits simultaneous supplier loads while returning all catalogues in selection order', async () => {
+    const catalogs = ['APEX', 'ATT', 'ALINE', 'EXOTIC', 'STAMFORD', 'TUBESTONE'] as const;
+    let active = 0;
+    let peak = 0;
+    const releases: Array<() => void> = [];
+    const result = loadBatches()([...catalogs], async catalog => {
+      active += 1;
+      peak = Math.max(peak, active);
+      await new Promise<void>(resolve => releases.push(resolve));
+      active -= 1;
+      return [{ ...bundledTyre, id: catalog }];
+    });
+    expect(peak).toBeLessThanOrEqual(4);
+    while (releases.length) {
+      releases.shift()!();
+      await Promise.resolve();
+      await Promise.resolve();
+    }
+    expect((await result).map(item => item.id)).toEqual(catalogs);
+  });
+
   it('exposes completed suppliers immediately and returns all results in selection order', async () => {
     const load = loadBatches();
     expect(load).toBeTypeOf('function');

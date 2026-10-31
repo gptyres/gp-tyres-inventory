@@ -630,11 +630,9 @@ export const fetchSupplierStockImages = async (supplier?: string): Promise<Suppl
   const cacheKey = supplier ? normalizeSupplierImageToken(supplier) : 'ALL_SUPPLIERS';
 
   if (!supplierImageCache.has(cacheKey)) {
-    supplierImageCache.set(cacheKey, (async () => {
+    const request = (async () => {
       const rows: SupplierStockImageRow[] = [];
-      let from = 0;
-
-      while (true) {
+      const loadPage = async (from: number): Promise<SupplierStockImageRow[]> => {
         let query = (supabase as any)
           .from('supplier_stock_images')
           .select('id,supplier,source,source_file_id,design_key,finish_key,rim_size,pcd,tags,file_name,storage_bucket,storage_path,public_image_url,mime_type,active,imported_at,updated_at')
@@ -647,19 +645,40 @@ export const fetchSupplierStockImages = async (supplier?: string): Promise<Suppl
         const { data, error } = await query
           .order('design_key', { ascending: true })
           .order('file_name', { ascending: true })
+          .order('id', { ascending: true })
           .range(from, from + SUPPLIER_STOCK_IMAGE_PAGE_SIZE - 1);
 
         if (error) throw error;
+        return data ?? [];
+      };
 
-        const page = data ?? [];
-        rows.push(...page);
-
-        if (page.length < SUPPLIER_STOCK_IMAGE_PAGE_SIZE) break;
-        from += SUPPLIER_STOCK_IMAGE_PAGE_SIZE;
+      const firstPage = await loadPage(0);
+      rows.push(...firstPage);
+      let from = SUPPLIER_STOCK_IMAGE_PAGE_SIZE;
+      if (firstPage.length === SUPPLIER_STOCK_IMAGE_PAGE_SIZE) {
+        while (true) {
+          // The global index spans several pages; overlap two reads while
+          // keeping results ordered. Small supplier-specific reads stay serial.
+          const pages = await Promise.all(Array.from({ length: supplier ? 1 : 2 }, (_, index) => (
+            loadPage(from + index * SUPPLIER_STOCK_IMAGE_PAGE_SIZE)
+          )));
+          let finished = false;
+          for (const page of pages) {
+            if (finished) break;
+            rows.push(...page);
+            finished = page.length < SUPPLIER_STOCK_IMAGE_PAGE_SIZE;
+          }
+          if (finished) break;
+          from += pages.length * SUPPLIER_STOCK_IMAGE_PAGE_SIZE;
+        }
       }
 
       return rows;
-    })());
+    })();
+    supplierImageCache.set(cacheKey, request);
+    void request.catch(() => {
+      if (supplierImageCache.get(cacheKey) === request) supplierImageCache.delete(cacheKey);
+    });
   }
 
   return supplierImageCache.get(cacheKey)!;
@@ -685,6 +704,20 @@ export const buildSupplierImageMap = (
   items: InventoryItem[],
   imageRows: SupplierStockImageRow[]
 ): Record<string, string> => {
+  const directImages = new Map<string, Map<string, SupplierStockImageRow>>();
+  for (const row of imageRows) {
+    const sourceFileId = row.source_file_id || '';
+    if (!sourceFileId.includes('::')) continue;
+    const supplier = normalizeSupplierImageToken(row.supplier);
+    let sources = directImages.get(supplier);
+    if (!sources) directImages.set(supplier, sources = new Map());
+    // A source key can itself contain separators, so index each valid prefix.
+    for (let index = sourceFileId.indexOf('::'); index >= 0; index = sourceFileId.indexOf('::', index + 2)) {
+      const prefix = sourceFileId.slice(0, index);
+      const previous = sources.get(prefix);
+      if (!previous || sourceFileId.localeCompare(previous.source_file_id || '') < 0) sources.set(prefix, row);
+    }
+  }
   const candidatesBySupplierAndDesign = imageRows.reduce<Record<string, SupplierImageMatchCandidate[]>>((groups, row) => {
     const groupKey = supplierDesignGroupKey(row.supplier, row.design_key);
     groups[groupKey] = groups[groupKey] ?? [];
@@ -716,15 +749,9 @@ export const buildSupplierImageMap = (
 
     const sourceKey = lookupItem.imageSourceKey?.trim();
     if (sourceKey) {
-      const sourcePrefix = `${sourceKey}::`;
-      const directMatches = imageRows
-        .filter((row) => (
-          normalizeSupplierImageToken(row.supplier) === normalizeSupplierImageToken(lookupItem.supplierName)
-          && row.source_file_id.startsWith(sourcePrefix)
-        ))
-        .sort((first, second) => first.source_file_id.localeCompare(second.source_file_id));
-      if (directMatches.length) {
-        imageMap[item.id] = directMatches[0].public_image_url;
+      const directMatch = directImages.get(normalizeSupplierImageToken(lookupItem.supplierName))?.get(sourceKey);
+      if (directMatch) {
+        imageMap[item.id] = directMatch.public_image_url;
         return imageMap;
       }
     }

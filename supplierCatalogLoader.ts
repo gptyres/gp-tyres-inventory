@@ -477,17 +477,24 @@ export const loadSupplierCatalogBatches = async (
   const results = new Map<ConcreteSupplierCatalog, InventoryItem[]>();
   const failed: ConcreteSupplierCatalog[] = [];
   let completed = 0;
+  let nextIndex = 0;
   const orderedItems = () => catalogs.flatMap((catalog) => results.get(catalog) || []);
-  await Promise.all(catalogs.map(async (catalog) => {
-    try {
-      results.set(catalog, await load(catalog));
-    } catch {
-      failed.push(catalog);
-    } finally {
-      completed += 1;
-      if (!signal?.aborted) onProgress?.({ items: orderedItems(), completed, total: catalogs.length, failed: [...failed] });
+  // A separate request per catalogue can overwhelm the shared database when
+  // all suppliers are selected. Keep a small pool and show completed results.
+  const worker = async () => {
+    while (!signal?.aborted && nextIndex < catalogs.length) {
+      const catalog = catalogs[nextIndex++];
+      try {
+        results.set(catalog, await load(catalog));
+      } catch {
+        failed.push(catalog);
+      } finally {
+        completed += 1;
+        if (!signal?.aborted) onProgress?.({ items: orderedItems(), completed, total: catalogs.length, failed: [...failed] });
+      }
     }
-  }));
+  };
+  await Promise.all(Array.from({ length: Math.min(4, catalogs.length) }, worker));
   if (failed.length) throw new Error(`Could not load supplier catalogues: ${failed.join(', ')}`);
   return orderedItems();
 };
