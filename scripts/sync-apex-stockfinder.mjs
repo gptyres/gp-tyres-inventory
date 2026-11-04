@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { selectCompleteApexTyres } from './apex-stockfinder-catalog.mjs';
+import { apexSellingPrice, apexTyreSpecs } from './apex-stockfinder-normalize.mjs';
 
 const argument = (name, fallback = '') => {
   const index = process.argv.indexOf(name);
@@ -71,7 +72,7 @@ const parseMoney = (value) => {
   const number = Number.parseFloat(String(value ?? '').replace(/[^0-9.-]/g, ''));
   return Number.isFinite(number) ? Math.max(0, number) : 0;
 };
-const sellingPrice = (cost) => Math.round((cost * 1.15) + 1e-9);
+const sellingPrice = apexSellingPrice;
 const stableSourceKey = (...parts) => `apex-${parts.map((part) => clean(part).toLowerCase())
   .join('-')
   .replace(/[^a-z0-9]+/g, '-')
@@ -244,10 +245,10 @@ const normalizedRows = liveRows.map((row) => {
     sku,
     size,
     brand,
-    pattern: previous.TYRE_PATTERN || '',
+    pattern: '',
     rating: previous.TYRE_RATING || '',
     index: previous.TYRE_INDEX || [clean(row.load_rating), clean(row.speed_rating)].filter(Boolean).join(''),
-    specs: previous.OTHER_SPECS || [clean(row.extra_load), clean(row.runflat), clean(row.ply_rating)].filter(Boolean).join(' '),
+    specs: apexTyreSpecs(row),
     category: previous.Category || 'Tyres',
     description,
     leadTime: clean(row.sla || row.sla_original),

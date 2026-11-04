@@ -4,7 +4,8 @@ export const isApexSeller = (row, configuredSeller = '') => {
   const actualSeller = clean(row?.seller_name);
   const requestedSeller = clean(configuredSeller);
   if (requestedSeller) return actualSeller.toUpperCase() === requestedSeller.toUpperCase();
-  return /\bAPEX\b/i.test(actualSeller);
+  return /\bAPEX\b/i.test(actualSeller)
+    || /^(?:NATIONAL REMOTE STOCK|WC REGIONAL STOCK|REIVILO TYRES CPT)$/i.test(actualSeller);
 };
 
 export const selectCompleteApexTyres = (rows, configuredSeller = '') => rows

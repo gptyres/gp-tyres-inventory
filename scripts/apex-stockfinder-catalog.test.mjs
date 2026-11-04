@@ -6,11 +6,14 @@ describe('Apex StockFinder catalogue selection', () => {
     const rows = selectCompleteApexTyres([
       { seller_name: 'APEX TYRES WC', stock_type: 'TYRE', brand: 'VREDESTEIN' },
       { seller_name: 'Apex National', stock_type: 'TYRE', brand: 'SUMITOMO' },
+      { seller_name: 'NATIONAL REMOTE STOCK', stock_type: 'TYRE', brand: 'ILINK' },
+      { seller_name: 'WC REGIONAL STOCK', stock_type: 'TYRE', brand: 'DUNLOP' },
+      { seller_name: 'REIVILO TYRES CPT', stock_type: 'TYRE', brand: 'MICHELIN' },
       { seller_name: 'APEX TYRES WC', stock_type: 'WHEEL', brand: 'WHEEL BRAND' },
       { seller_name: 'Another Supplier', stock_type: 'TYRE', brand: 'DUNLOP' },
     ]);
 
-    expect(rows.map(({ brand }) => brand)).toEqual(['VREDESTEIN', 'SUMITOMO']);
+    expect(rows.map(({ brand }) => brand)).toEqual(['VREDESTEIN', 'SUMITOMO', 'ILINK', 'DUNLOP', 'MICHELIN']);
   });
 
   it('supports an exact configured Apex seller location', () => {
