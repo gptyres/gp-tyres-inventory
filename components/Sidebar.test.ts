@@ -7,7 +7,9 @@ describe('supplier catalogue sidebar order', () => {
   it('lists every supplier alphabetically by its displayed label', () => {
     const labels = SIDEBAR_SUPPLIER_CATALOGS.map(({ label }) => label);
 
-    expect(labels).toHaveLength(28);
+    expect(labels).toHaveLength(30);
+    expect(labels).toContain('E-TRACTION TYRES');
+    expect(labels).toContain('E-TRACTION WHEELS');
     expect(labels).toContain('VITOUR');
     expect(labels).toContain('JOM');
     expect(labels).toContain('EIBACH');
@@ -32,3 +34,4 @@ describe('supplier catalogue sidebar order', () => {
     expect(markup).toContain('BRIDGESTONE');
   });
 });
+

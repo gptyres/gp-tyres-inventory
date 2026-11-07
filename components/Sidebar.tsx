@@ -32,6 +32,8 @@ export const SIDEBAR_SUPPLIER_CATALOGS: Array<{
   { catalog: 'ATT', label: 'ATT' },
   { catalog: 'BRIDGESTONE', label: 'BRIDGESTONE' },
   { catalog: 'DIXON_BATTERIES', label: 'DIXON BATTERIES' },
+  { catalog: 'E_TRACTION_TYRES', label: 'E-TRACTION TYRES' },
+  { catalog: 'E_TRACTION_WHEELS', label: 'E-TRACTION WHEELS' },
   { catalog: 'EIBACH', label: 'EIBACH' },
   { catalog: 'EXCLUSIVE_TYRES_NEW', label: 'EXCLUSIVE TYRES' },
   { catalog: 'EXOTIC', label: 'EXOTIC' },
@@ -611,3 +613,4 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </>
   );
 };
+

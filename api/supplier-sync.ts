@@ -17,6 +17,8 @@ const CREATE_RATE_LIMIT_MS = 10_000;
 type SupplierSyncCatalog = RegistryBackedSupplierCatalog | 'ALL_SUPPLIERS';
 
 const safeServerError = () => 'Supplier synchronization could not be completed.';
+const PRIVATE_CATALOGS = new Set(['E_TRACTION_TYRES', 'E_TRACTION_WHEELS']);
+const PRIVATE_CATALOG_FIELDS = 'id,snapshot_id,catalog_key,source_key,product_type,supplier,supplier_sku,brand,product_name,tyre_pattern,tyre_rating,tyre_index,tyre_specs,wheel_pcd,wheel_offset,wheel_center_bore,stock_by_location,category,size,stock_location,stock_units_availability,supplier_lead_time,stock_units,cost_price,selling_price,product_url,source_stock_detail,source_file,imported_at';
 
 const JOB_SELECT = [
   'id',
@@ -249,6 +251,33 @@ export default async function handler(request: any, response: any) {
         return response.status(401).json({ error: 'A secure staff session is required.' });
       }
       const supabase = createSupabaseAdmin();
+      const query = readApiQuery(request);
+      if (query.resource === 'private-catalog') {
+        if (typeof query.catalog !== 'string' || !PRIVATE_CATALOGS.has(query.catalog)) {
+          return response.status(400).json({ error: 'Unsupported private catalogue.' });
+        }
+        const catalog = query.catalog;
+        const { data: source, error: sourceError } = await supabase
+          .from('supplier_catalog_sources').select('active_snapshot_id')
+          .eq('catalog_key', catalog).maybeSingle();
+        if (sourceError) throw sourceError;
+        if (!source?.active_snapshot_id) return response.status(200).json({ rows: [] });
+        const rows: any[] = [];
+        let lastId = 0;
+        while (rows.length < 10000) {
+          const { data: page, error } = await supabase.from('supplier_catalog_items')
+            .select(PRIVATE_CATALOG_FIELDS)
+            .eq('snapshot_id', source.active_snapshot_id).eq('catalog_key', catalog)
+            .gt('id', lastId).order('id', { ascending: true }).limit(1000);
+          if (error) throw error;
+          if (!page?.length) return response.status(200).json({ rows });
+          const nextId = Number(page[page.length - 1].id);
+          if (!(nextId > lastId)) throw new Error('Private catalogue pagination did not advance.');
+          rows.push(...page);
+          lastId = nextId;
+        }
+        throw new Error('Private catalogue exceeds the safe row limit.');
+      }
       return response.status(200).json(await getSyncStatus(supabase, queryCatalog));
     }
 
@@ -347,3 +376,4 @@ export default async function handler(request: any, response: any) {
     return response.status(500).json({ error: safeServerError() });
   }
 }
+

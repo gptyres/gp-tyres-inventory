@@ -28,6 +28,8 @@ import {
 export type ConcreteSupplierCatalog = Exclude<SupplierCatalog, 'ALL_SUPPLIERS'>;
 
 const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
+  'E_TRACTION_TYRES',
+  'E_TRACTION_WHEELS',
   'SAILUN',
   'MAXXIS',
   'EXCLUSIVE_TYRES',
@@ -60,6 +62,8 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
 ];
 
 const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
+  E_TRACTION_TYRES: 'E-TRACTION TYRES',
+  E_TRACTION_WHEELS: 'E-TRACTION WHEELS',
   SAILUN: 'SAILUN',
   MAXXIS: 'MAXXIS',
   EXCLUSIVE_TYRES: 'EXCLUSIVE TYRES — LEGACY',
@@ -97,6 +101,8 @@ export const SUPPLIER_CATALOG_OPTIONS = supplierCatalogOrder.map((catalog) => ({
 }));
 
 const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
+  E_TRACTION_TYRES: 'e-traction-tyres',
+  E_TRACTION_WHEELS: 'e-traction-wheels',
   SAILUN: 'sailun',
   MAXXIS: 'maxxis',
   EXCLUSIVE_TYRES: 'exclusive',
@@ -406,6 +412,8 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
       return parseTyreLifeWheelsData(TYRE_LIFE_WHEELS_RAW_DATA);
     }
     case 'NDT':
+    case 'E_TRACTION_TYRES':
+    case 'E_TRACTION_WHEELS':
       // NDT is published from the verified catalogue snapshot in Supabase.
       return [];
     case 'WHEEL_TECH':
@@ -532,3 +540,4 @@ export const invalidateSupplierCatalogCache = (catalog?: SupplierCatalog) => {
   }
   allSupplierPOSItemsCache = null;
 };
+

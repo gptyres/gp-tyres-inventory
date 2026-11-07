@@ -408,6 +408,16 @@ const App: React.FC = () => {
   }, [isPOSOpen, allSupplierPOSItems.length]);
 
   const supplierCatalogMeta: Record<SupplierCatalog, { label: string; note: string; portalUrl?: string }> = {
+    E_TRACTION_TYRES: {
+      label: 'E-TRACTION TYRES',
+      note: 'Supplier catalogue captured 6 November 2026. Cost excludes VAT; VAT-inclusive prices add 15% once. 100+ means at least 100 units. Verify current availability before quoting.',
+      portalUrl: 'https://econnect.etraction.co.za/catalog/tyres'
+    },
+    E_TRACTION_WHEELS: {
+      label: 'E-TRACTION WHEELS',
+      note: 'Supplier catalogue captured 6 November 2026. Prices are per wheel and exclude VAT at cost; VAT-inclusive prices add 15% once. Verify current availability and fitment before quoting.',
+      portalUrl: 'https://econnect.etraction.co.za/catalog/wheels'
+    },
     ALL_SUPPLIERS: {
       label: 'All Supplier Stock',
       note: 'Choose the suppliers to include, then search. A size search shows every available brand for that size, with any requested brand listed first.'
@@ -2346,3 +2356,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+

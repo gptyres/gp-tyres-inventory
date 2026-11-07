@@ -40,6 +40,8 @@ const NO_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
 ]);
 
 const SUPPLIER_NAME_CATALOGS: Record<string, SupplierCatalog> = {
+  ETRACTIONTYRES: 'E_TRACTION_TYRES',
+  ETRACTIONWHEELS: 'E_TRACTION_WHEELS',
   SAILUN: 'SAILUN',
   VITOUR: 'VITOUR',
   LOMBARDTYRES: 'LOMBARD_TYRES',
@@ -174,3 +176,4 @@ export const getSupplierMarkupPriceLabel = (
     ? `VAT Inclusive Price (+${adjustment.value}%)`
     : `VAT Inclusive Price (+R${adjustment.value})`;
 };
+

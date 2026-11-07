@@ -263,6 +263,8 @@ export const normalizeManualSupplierGrid = (
           ? explicitSize.replace(/\s+/g, '').toUpperCase()
           : '');
     const suppliedStockUnits = parseStock(get(row, 'quantity'));
+    const hasCappedStock = /\d\s*\+/.test(cleanCell(get(row, 'quantity')))
+      || branchStockColumns.some(({ columnIndex }) => /\d\s*\+/.test(cleanCell(row[columnIndex])));
     const stockByLocation = Object.fromEntries(branchStockColumns.map(({ columnIndex, label }) => {
       const parsed = parseStock(row[columnIndex]);
       return [label, Number.isFinite(parsed) ? parsed : 0];
@@ -340,7 +342,9 @@ export const normalizeManualSupplierGrid = (
       category: cleanCell(get(row, 'category')) || (supplierMeta.productType === 'WHEEL' ? 'Wheels' : 'Tyres'),
       size,
       stockLocation,
-      stockAvailability: stockUnits > 0 ? 'In stock' : 'Out of stock',
+      stockAvailability: hasCappedStock
+        ? `At least ${stockUnits}; portal stock counts are capped`
+        : stockUnits > 0 ? 'In stock' : 'Out of stock',
       stockUnits,
       costPrice: normalizedCost,
       sellingPrice: normalizedSelling,
@@ -505,3 +509,4 @@ export const publishManualSupplierRows = async (
   if (!response.ok) throw new Error(data.error || 'The supplier document could not be imported.');
   return data;
 };
+

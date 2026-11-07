@@ -272,6 +272,18 @@ export const loadLiveSupplierCatalogItems = async (
   catalog: SupplierCatalog
 ): Promise<InventoryItem[] | null> => {
   if (!isLiveSupplierCatalog(catalog)) return null;
+  if (catalog === 'E_TRACTION_TYRES' || catalog === 'E_TRACTION_WHEELS') {
+    const response = await fetch(`/api/supplier-sync?resource=private-catalog&catalog=${encodeURIComponent(catalog)}`, {
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
+    if (!response.ok) throw new Error('Private supplier catalogue is unavailable.');
+    const payload = await response.json();
+    if (!Array.isArray(payload.rows)) throw new Error('Private supplier catalogue returned invalid data.');
+    return payload.rows.length
+      ? groupLiveSupplierCatalogRows(payload.rows as LiveSupplierCatalogRow[]).map(liveSupplierRowToInventoryItem)
+      : null;
+  }
 
   const { data: source, error: sourceError } = await (supabase
     .from('supplier_catalog_sources') as any)
@@ -310,3 +322,4 @@ export const loadLiveSupplierCatalogItems = async (
     ? groupLiveSupplierCatalogRows(rows).map(liveSupplierRowToInventoryItem)
     : null;
 };
+

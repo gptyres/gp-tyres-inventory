@@ -19,10 +19,12 @@ export type RegistryBackedSupplierCatalog = Exclude<
   | 'EXCLUSIVE_TYRES_NEW'
   | 'NDT'
   | 'WHEEL_TECH'
+  | 'E_TRACTION_TYRES'
+  | 'E_TRACTION_WHEELS'
 >;
 
 export type ManualSupplierCatalog = Extract<SupplierCatalog, 'SAILUN' | 'MAXXIS' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'BRIDGESTONE'>;
-export type AdditionalLiveSupplierCatalog = Extract<SupplierCatalog, 'EXCLUSIVE_TYRES' | 'EXCLUSIVE_TYRES_NEW' | 'NDT' | 'WHEEL_TECH'>;
+export type AdditionalLiveSupplierCatalog = Extract<SupplierCatalog, 'EXCLUSIVE_TYRES' | 'EXCLUSIVE_TYRES_NEW' | 'NDT' | 'WHEEL_TECH' | 'E_TRACTION_TYRES' | 'E_TRACTION_WHEELS'>;
 export type LiveSupplierCatalog = RegistryBackedSupplierCatalog | ManualSupplierCatalog | AdditionalLiveSupplierCatalog;
 export type SupplierImportCatalog = LiveSupplierCatalog;
 
@@ -65,6 +67,8 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
   sheetName: string;
   productType: 'TYRE' | 'WHEEL';
 }> = {
+  E_TRACTION_TYRES: { supplier: 'E-TRACTION TYRES', sheetName: 'SUPPLIER_E_TRACTION_TYRES', productType: 'TYRE' },
+  E_TRACTION_WHEELS: { supplier: 'E-TRACTION WHEELS', sheetName: 'SUPPLIER_E_TRACTION_WHEELS', productType: 'WHEEL' },
   SAILUN: { supplier: 'SAILUN', sheetName: 'SUPPLIER_SAILUN', productType: 'TYRE' },
   MAXXIS: { supplier: 'MAXXIS', sheetName: 'SUPPLIER_MAXXIS', productType: 'TYRE' },
   SAFETY_GRIP: { supplier: 'Safety Grip', sheetName: 'SUPPLIER_SAFETY_GRIP', productType: 'TYRE' },
@@ -106,3 +110,4 @@ export const isLiveSupplierCatalog = (
 ): catalog is LiveSupplierCatalog => (
   Object.prototype.hasOwnProperty.call(SUPPLIER_IMPORT_BY_CATALOG, catalog)
 );
+
