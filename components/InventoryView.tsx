@@ -257,7 +257,10 @@ const getTyreClipboardText = (item: InventoryItem): string => {
 };
 
 const formatWheelPcd = (value: string | undefined): string => (
-  String(value || '').trim().replace(/\//g, 'X').replace(/\s+/g, '').toUpperCase()
+  String(value || '').trim()
+    .split(/\s*\/\s*(?=[3-8]\s*(?:x|×|\/)\s*\d)/i)
+    .map((pattern) => pattern.replace(/[\/×]/g, 'X').replace(/\s+/g, '').toUpperCase())
+    .join(' / ')
 );
 
 const formatWheelOffset = (value: string | undefined): string => {
@@ -2706,3 +2709,4 @@ export const InventoryView: React.FC<InventoryViewProps> = (incomingProps) => {
     </div>
   );
 };
+

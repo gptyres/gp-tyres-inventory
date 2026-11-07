@@ -256,4 +256,12 @@ describe('supplier wheel card formatting', () => {
     expect(getItemDisplayName(dirtyLifeWheel)).toBe('A8306 MAYHEM RIDGELINE');
     expect(getItemSecondaryLine(dirtyLifeWheel)).toBe('Dirty Life / SATIN BLACK / 20X9 / 139.7 / ET18 / CB 106');
   });
+
+  it('keeps two bolt patterns separate while normalizing single slash notation', () => {
+    expect(getItemSecondaryLine({ ...dirtyLifeWheel, pcd: '4x100 / 4x114.3' }))
+      .toBe('Dirty Life / SATIN BLACK / 20X9 / 4X100 / 4X114.3 / ET18 / CB 106');
+    expect(getItemSecondaryLine({ ...dirtyLifeWheel, pcd: '5/112' }))
+      .toBe('Dirty Life / SATIN BLACK / 20X9 / 5X112 / ET18 / CB 106');
+  });
 });
+
