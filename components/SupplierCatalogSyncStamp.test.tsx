@@ -1,6 +1,31 @@
 import { describe, expect, it } from 'vitest';
 import { ProductType, type InventoryItem } from '../types';
-import { formatCatalogSyncTime, latestCatalogItemDate } from './SupplierCatalogSyncStamp';
+import { formatCatalogSyncTime, latestCatalogItemDate, resolveCatalogSyncStamp } from './SupplierCatalogSyncStamp';
+
+describe('resolveCatalogSyncStamp', () => {
+  const snapshot = '2026-10-27T09:12:00Z';
+  const update = '2026-11-10T11:25:00Z';
+
+  it('shows later catalogue additions without changing the snapshot date', () => {
+    expect(resolveCatalogSyncStamp(snapshot, update)).toEqual({
+      at: update, label: 'Last updated', snapshotAt: snapshot
+    });
+  });
+
+  it('keeps the existing sync label for unchanged, earlier, or invalid dates', () => {
+    for (const date of [null, snapshot, '2026-10-26T09:12:00Z', 'invalid']) {
+      expect(resolveCatalogSyncStamp(snapshot, date)).toEqual({
+        at: snapshot, label: 'Last synced', snapshotAt: null
+      });
+    }
+  });
+
+  it('keeps the existing fallback for catalogues without live sync status', () => {
+    expect(resolveCatalogSyncStamp(null, null, '2026-11-05')).toEqual({
+      at: '2026-11-05', label: 'Last synced', snapshotAt: null
+    });
+  });
+});
 
 describe('supplier catalogue sync stamp', () => {
   it('formats live snapshot timestamps in South African time', () => {

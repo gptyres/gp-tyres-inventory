@@ -193,16 +193,27 @@ const getSyncStatus = async (
   const globalActiveJob = safeJob(activeJobData);
   const safeLatestJob = safeJob(latestJob);
 
-  let sourceJob: { scope?: string; artifact_name?: string | null } | null = null;
-  if (activeSnapshot?.job_id) {
-    const { data, error } = await supabase
-      .from('supplier_sync_jobs')
-      .select('scope,artifact_name')
-      .eq('id', activeSnapshot.job_id)
-      .maybeSingle();
-    if (error) throw error;
-    sourceJob = data;
-  }
+  const [
+    { data: sourceJob, error: sourceJobError },
+    { data: latestAddedItem, error: latestAddedItemError }
+  ] = await Promise.all([
+    activeSnapshot?.job_id
+      ? supabase.from('supplier_sync_jobs')
+          .select('scope,artifact_name')
+          .eq('id', activeSnapshot.job_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null, error: null }),
+    activeSnapshot?.activated_at
+      ? supabase.from('supplier_catalog_items')
+          .select('imported_at')
+          .eq('snapshot_id', activeSnapshot.id)
+          .gt('imported_at', activeSnapshot.activated_at)
+          .order('imported_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+      : Promise.resolve({ data: null, error: null })
+  ]);
+  if (sourceJobError) throw sourceJobError;
 
   const heartbeatTime = worker?.last_heartbeat_at ? new Date(worker.last_heartbeat_at).getTime() : 0;
   const online = heartbeatTime > Date.now() - 45_000;
@@ -217,6 +228,7 @@ const getSyncStatus = async (
     activeJob,
     blockingJob,
     latestJob: safeLatestJob,
+    lastCatalogueUpdateAt: latestAddedItemError ? null : latestAddedItem?.imported_at ?? null,
     lastSuccessfulSync: activeSnapshot?.activated_at
       ? {
           at: activeSnapshot.activated_at,

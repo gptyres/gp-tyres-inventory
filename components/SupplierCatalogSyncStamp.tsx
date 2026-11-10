@@ -34,6 +34,17 @@ export const latestCatalogItemDate = (items: InventoryItem[]) => (
   }, null)
 );
 
+export const resolveCatalogSyncStamp = (
+  snapshotAt?: string | null,
+  updateAt?: string | null,
+  fallbackAt?: string | null
+) => {
+  if (snapshotAt && updateAt && Date.parse(updateAt) > Date.parse(snapshotAt)) {
+    return { at: updateAt, label: 'Last updated', snapshotAt };
+  }
+  return { at: snapshotAt || fallbackAt || null, label: 'Last synced', snapshotAt: null };
+};
+
 export function SupplierCatalogSyncStamp({
   catalog,
   fallbackSyncedAt,
@@ -81,7 +92,8 @@ export function SupplierCatalogSyncStamp({
   }, [catalog, hasLiveStatus, refreshKey]);
 
   const liveSync = status?.lastSuccessfulSync;
-  const syncedAt = liveSync?.at || fallbackSyncedAt || null;
+  const stamp = resolveCatalogSyncStamp(liveSync?.at, status?.lastCatalogueUpdateAt, fallbackSyncedAt);
+  const syncedAt = stamp.at;
   const label = loading && !syncedAt
     ? 'Checking sync date...'
     : failed && !syncedAt ? 'Sync date unavailable' : formatCatalogSyncTime(syncedAt);
@@ -93,7 +105,7 @@ export function SupplierCatalogSyncStamp({
       title={failed && !syncedAt ? 'The live sync date could not be loaded.' : undefined}
     >
       <span className="text-[10px] font-black uppercase tracking-wider text-gp-text-muted">
-        Last synced
+        {stamp.label}
       </span>
       {syncedAt ? (
         <time className="text-xs font-bold text-gp-text-main" dateTime={syncedAt}>{label}</time>
@@ -103,6 +115,11 @@ export function SupplierCatalogSyncStamp({
       {liveSync && (
         <span className="text-[10px] font-bold text-blue-300">
           {formatRowCount(liveSync.rowCount)} rows
+        </span>
+      )}
+      {stamp.snapshotAt && (
+        <span className="basis-full text-[10px] text-gp-text-muted">
+          Snapshot published <time dateTime={stamp.snapshotAt}>{formatCatalogSyncTime(stamp.snapshotAt)}</time>
         </span>
       )}
       {failed && syncedAt && <span className="text-xs text-gp-text-muted">Last known sync · status refresh unavailable</span>}

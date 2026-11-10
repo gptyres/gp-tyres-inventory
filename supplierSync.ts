@@ -64,6 +64,7 @@ export interface SupplierSyncStatusResponse {
   blockingJob: SupplierSyncJob | null;
   latestJob: SupplierSyncJob | null;
   worker: SupplierSyncWorker;
+  lastCatalogueUpdateAt?: string | null;
   lastSuccessfulSync: {
     at: string;
     rowCount: number;
