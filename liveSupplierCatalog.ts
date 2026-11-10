@@ -10,6 +10,7 @@ import {
   getLiveSupplierCostTaxBasis
 } from './supplierPricing';
 import { getAlineVehicleFitments } from './alineFitment';
+import { getActiveSupplierSpecial } from './supplierSpecialPrice';
 import {
   normalizeStockByLocation,
   normalizeStockLocationName,
@@ -110,6 +111,7 @@ export const groupLiveSupplierCatalogRows = (
   rows: LiveSupplierCatalogRow[]
 ): LiveSupplierCatalogRow[] => {
   const grouped = new Map<string, LiveSupplierCatalogRow>();
+  const now = Date.now();
 
   rows.forEach((sourceRow) => {
     const row = sourceRow.product_type === 'TYRE' && !sourceRow.tyre_index
@@ -132,7 +134,8 @@ export const groupLiveSupplierCatalogRows = (
       row.category || '',
       row.size || '',
       String(row.cost_price),
-      String(row.selling_price)
+      String(row.selling_price),
+      String(getActiveSupplierSpecial(row.source_stock_detail, now)?.costExVat ?? '')
     ].map((value) => String(value).trim().toLowerCase()).join('\u001f');
     const existing = grouped.get(key);
     const quantityUnknown = Boolean(existing?.stock_quantity_unknown || isUnverifiedWheelTechQuantity(row));
@@ -177,9 +180,16 @@ export const liveSupplierRowToInventoryItem = (
   const hasAlineSetTotal = /Pricing basis:\s*set of 4\b/i.test(row.source_stock_detail || '');
   const listingPriceMultiplier = isAlineFourRimListing && !hasAlineSetTotal ? ALINE_RIM_SET_QUANTITY : 1;
   const suppliedSellingPrice = Math.max(0, Number(row.selling_price) || 0);
-  const supplierCostPrice = Math.max(0, Number(row.cost_price) || 0);
+  const regularCost = Math.max(0, Number(row.cost_price) || 0);
+  const special = getActiveSupplierSpecial(row.source_stock_detail);
+  const supplierCostPrice = special?.costExVat ?? regularCost;
   const costPrice = (supplierCostPrice || suppliedSellingPrice) * listingPriceMultiplier;
-  const normalSellingPrice = parseNormalSellingPrice(row.source_stock_detail);
+  const regularSellingPrice = calculateLiveSupplierSellingPrice(
+    row.catalog_key as SupplierCatalog, regularCost, suppliedSellingPrice
+  );
+  const normalSellingPrice = special
+    ? (regularCost > special.costExVat ? regularSellingPrice : undefined)
+    : parseNormalSellingPrice(row.source_stock_detail);
   const stockMinimumLocations = minimumStockLocations(row.source_stock_detail);
   const common = {
     id: 'live-' + row.catalog_key.toLowerCase() + '-' + row.source_key,
@@ -194,7 +204,7 @@ export const liveSupplierRowToInventoryItem = (
     normalSellingPrice: normalSellingPrice === undefined
       ? undefined
       : normalSellingPrice * listingPriceMultiplier,
-    promotionLabel: /\bSPECIAL\b/i.test(row.tyre_specs || '') ? 'SPECIAL' : undefined,
+    promotionLabel: special || /\bSPECIAL\b/i.test(row.tyre_specs || '') ? 'SPECIAL' : undefined,
     lastUpdated: row.imported_at.slice(0, 10),
     supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS'
       : row.catalog_key === 'EXCLUSIVE_TYRES_NEW' ? 'EXCLUSIVE TYRES' : row.supplier,

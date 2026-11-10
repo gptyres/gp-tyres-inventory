@@ -2,6 +2,8 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { calculateDeterministicMargin, calculateDeterministicPrice } from './gpBusinessMath.js';
 import { saveStaffMemory, type StaffMemory } from './gpBusinessAgentMemory.js';
 import { requestOpenAICompletion, selectAgentModel } from './gpBusinessAgentRouting.js';
+import { getActiveSupplierSpecial } from '../supplierSpecialPrice.js';
+import { calculateVatInclusiveSellingPrice } from '../supplierPricing.js';
 
 const MAX_TOOL_ROUNDS = 4;
 const MAX_SEARCH_RESULTS = 20;
@@ -256,7 +258,7 @@ const searchSupplierCatalog = async (context: AgentContext, args: any): Promise<
 
   let request = context.supabase
     .from('supplier_catalog_items')
-    .select('id,snapshot_id,catalog_key,product_type,supplier,supplier_sku,brand,product_name,category,size,stock_location,stock_units_availability,stock_units,selling_price,cost_price,product_url,source_file,imported_at,tyre_pattern,tyre_rating,tyre_index,tyre_specs,wheel_pcd,wheel_offset,wheel_center_bore,stock_by_location')
+    .select('id,snapshot_id,catalog_key,product_type,supplier,supplier_sku,brand,product_name,category,size,stock_location,stock_units_availability,stock_units,selling_price,cost_price,product_url,source_file,imported_at,tyre_pattern,tyre_rating,tyre_index,tyre_specs,wheel_pcd,wheel_offset,wheel_center_bore,stock_by_location,source_stock_detail')
     .in('snapshot_id', snapshotIds)
     .limit(800);
   if (context.mode === 'CUSTOMER_READY') request = request.gte('stock_units', 2);
@@ -273,9 +275,16 @@ const searchSupplierCatalog = async (context: AgentContext, args: any): Promise<
   const { data, error } = await request;
   if (error) throw error;
   const activeSourceMap = new Map(sources.map((source: any) => [source.active_snapshot_id, source]));
+  const now = Date.now();
   const rows = (data || [])
     .filter((row: any) => containsAllTerms(supplierSearchText(row), terms))
     .filter((row: any) => context.mode !== 'CUSTOMER_READY' || Number(row.stock_units) >= 2)
+    .map((row: any) => {
+      const special = getActiveSupplierSpecial(row.source_stock_detail, now);
+      return special
+        ? { ...row, cost_price: special.costExVat, selling_price: calculateVatInclusiveSellingPrice(special.costExVat) }
+        : row;
+    })
     .sort((left: any, right: any) => {
       const stockDifference = Number(right.stock_units) - Number(left.stock_units);
       if (stockDifference) return stockDifference;
