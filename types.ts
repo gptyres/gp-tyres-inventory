@@ -28,6 +28,7 @@ export interface BaseProduct {
   normalSellingPrice?: number;
   promotionLabel?: string;
   supplierSpecialEndsAt?: number;
+  supplierPriceOnRequest?: boolean;
   lastUpdated: string;
   supplierName?: string;
   supplierStockCode?: string;

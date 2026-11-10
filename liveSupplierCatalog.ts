@@ -207,6 +207,7 @@ export const liveSupplierRowToInventoryItem = (
       : normalSellingPrice * listingPriceMultiplier,
     promotionLabel: special || (!hasDatedSpecial && /\bSPECIAL\b/i.test(row.tyre_specs || '')) ? 'SPECIAL' : undefined,
     supplierSpecialEndsAt: special ? Date.parse(special.endsAt) : undefined,
+    supplierPriceOnRequest: Boolean(hasDatedSpecial && !special && regularCost <= 0 && suppliedSellingPrice <= 0),
     lastUpdated: row.imported_at.slice(0, 10),
     supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS'
       : row.catalog_key === 'EXCLUSIVE_TYRES_NEW' ? 'EXCLUSIVE TYRES' : row.supplier,
@@ -260,7 +261,7 @@ export const liveSupplierRowToInventoryItem = (
     explicitRating: row.tyre_rating,
     explicitIndex: row.tyre_index,
     explicitSpecs: hasDatedSpecial && !special
-      ? row.tyre_specs?.split(/\s*\|\s*/).filter(spec => !/^SPECIAL\s*-\s*NOVEMBER 2026 QUOTATION$/i.test(spec.trim())).join(' | ')
+      ? row.tyre_specs?.split(/\s*\|\s*/).filter(spec => !/^SPECIAL\s*(?:-\s*)?NOVEMBER 2026(?: QUOTATION)?$/i.test(spec.trim())).join(' | ')
       : row.tyre_specs,
     sourceDetail: row.source_stock_detail
   });

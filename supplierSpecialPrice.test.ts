@@ -72,4 +72,27 @@ describe('dated supplier specials', () => {
       vi.useRealTimers();
     }
   });
+
+  it('expires a Royal Tyres offer without quoting a missing regular price or applying a markup to zero', () => {
+    vi.useFakeTimers();
+    try {
+      const row = {
+        ...regular, catalog_key: 'ROYAL_TYRES', supplier: 'ROYAL TYRES', source_stock_detail,
+        tyre_specs: 'SPECIAL NOVEMBER 2026', cost_price: 0, selling_price: 0
+      };
+      vi.setSystemTime(new Date(Date.parse(endsAt) - 1));
+      expect(liveSupplierRowToInventoryItem(row)).toMatchObject({ sellingPrice: 627, supplierPriceOnRequest: false });
+      vi.setSystemTime(new Date(endsAt));
+      const expired = liveSupplierRowToInventoryItem(row);
+      expect(expired).toMatchObject({ quantity: 4, sellingPrice: 0, supplierPriceOnRequest: true });
+      expect(expired.promotionLabel).toBeUndefined();
+      expect(expired).not.toMatchObject({ tyreSpecs: expect.stringContaining('NOVEMBER 2026') });
+      expect(formatBulkClipboardText([expired])).toMatch(/PRICE ON REQUEST$/);
+      expect(calculateSupplierSellingPrice(expired, { mode: 'FIXED', value: 100 }, 'ALL_SUPPLIERS')).toBe(0);
+      expect(liveSupplierRowToInventoryItem({ ...row, cost_price: 600, selling_price: 690 }))
+        .toMatchObject({ sellingPrice: 690, supplierPriceOnRequest: false });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

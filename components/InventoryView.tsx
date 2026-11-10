@@ -1522,7 +1522,7 @@ const SpreadsheetView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit,
                     </div>
                   )}
                   <div className={hasNormalSpecialPrice(item) ? 'text-gp-red' : ''}>
-                    {formatDisplayedPrice(item.sellingPrice)}
+                    {item.supplierPriceOnRequest ? 'Price on request' : formatDisplayedPrice(item.sellingPrice)}
                   </div>
                 </td>
               )}
@@ -1681,7 +1681,7 @@ const GridView: React.FC<ViewComponentProps> = ({ items, isAdmin, onEdit, onDele
                           </span>
                         )}
                         <span className="text-[9px] text-gp-red uppercase font-bold tracking-wider">{hasNormalSpecialPrice(item) && isReadOnly ? 'Special VAT Inclusive Price' : (hasNormalSpecialPrice(item) ? 'Special Price' : (isReadOnly ? priceLabel : "Selling Price"))}</span>
-                        <span className="text-xl font-bold text-gp-text-main font-mono">{formatDisplayedPrice(item.sellingPrice)}</span>
+                        <span className="text-xl font-bold text-gp-text-main font-mono">{item.supplierPriceOnRequest ? 'Price on request' : formatDisplayedPrice(item.sellingPrice)}</span>
                     </div>
 
                     <div className="flex justify-end gap-1">
@@ -1822,7 +1822,7 @@ const ListView: React.FC<ViewComponentProps> = ({ items, onEdit, onSell, onReser
                     </span>
                   )}
                   <span className="text-[9px] font-bold uppercase tracking-wider text-gp-red">{hasNormalSpecialPrice(item) && isReadOnly ? 'Special VAT Inclusive Price' : (hasNormalSpecialPrice(item) ? 'Special Price' : (isReadOnly ? priceLabel : 'Selling Price'))}</span>
-                  <span className="text-base font-bold text-gp-text-main font-mono">{formatDisplayedPrice(item.sellingPrice)}</span>
+                  <span className="text-base font-bold text-gp-text-main font-mono">{item.supplierPriceOnRequest ? 'Price on request' : formatDisplayedPrice(item.sellingPrice)}</span>
                 </div>
               )}
               
