@@ -1,5 +1,6 @@
 import { BatteryProduct, InventoryItem, ProductType, SupplierCatalog, TyreProduct, WheelProduct } from './types';
 import { liveSupplierRowToInventoryItem, loadLiveSupplierCatalogItems } from './liveSupplierCatalog';
+import { nextSupplierSpecialExpiry } from './supplierSpecialPrice';
 import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyreParsing';
 import { roundSupplierSellingPrice } from './supplierPricing';
 import {
@@ -466,7 +467,13 @@ export const loadSupplierCatalogItems = async (catalog: SupplierCatalog): Promis
     });
   }
 
-  return cloneInventoryItems(await supplierItemCache.get(catalog)!);
+  const request = supplierItemCache.get(catalog)!;
+  const items = await request;
+  if (nextSupplierSpecialExpiry(items) <= Date.now()) {
+    if (supplierItemCache.get(catalog) === request) supplierItemCache.delete(catalog);
+    return loadSupplierCatalogItems(catalog);
+  }
+  return cloneInventoryItems(items);
 };
 
 export interface SupplierCatalogProgress {

@@ -182,6 +182,7 @@ export const liveSupplierRowToInventoryItem = (
   const suppliedSellingPrice = Math.max(0, Number(row.selling_price) || 0);
   const regularCost = Math.max(0, Number(row.cost_price) || 0);
   const special = getActiveSupplierSpecial(row.source_stock_detail);
+  const hasDatedSpecial = row.source_stock_detail?.includes('"gp_supplier_special_v1"');
   const supplierCostPrice = special?.costExVat ?? regularCost;
   const costPrice = (supplierCostPrice || suppliedSellingPrice) * listingPriceMultiplier;
   const regularSellingPrice = calculateLiveSupplierSellingPrice(
@@ -189,7 +190,7 @@ export const liveSupplierRowToInventoryItem = (
   );
   const normalSellingPrice = special
     ? (regularCost > special.costExVat ? regularSellingPrice : undefined)
-    : parseNormalSellingPrice(row.source_stock_detail);
+    : hasDatedSpecial ? undefined : parseNormalSellingPrice(row.source_stock_detail);
   const stockMinimumLocations = minimumStockLocations(row.source_stock_detail);
   const common = {
     id: 'live-' + row.catalog_key.toLowerCase() + '-' + row.source_key,
@@ -204,7 +205,8 @@ export const liveSupplierRowToInventoryItem = (
     normalSellingPrice: normalSellingPrice === undefined
       ? undefined
       : normalSellingPrice * listingPriceMultiplier,
-    promotionLabel: special || /\bSPECIAL\b/i.test(row.tyre_specs || '') ? 'SPECIAL' : undefined,
+    promotionLabel: special || (!hasDatedSpecial && /\bSPECIAL\b/i.test(row.tyre_specs || '')) ? 'SPECIAL' : undefined,
+    supplierSpecialEndsAt: special ? Date.parse(special.endsAt) : undefined,
     lastUpdated: row.imported_at.slice(0, 10),
     supplierName: row.catalog_key === 'TYRE_LIFE_WHEELS' ? 'TYRE LIFE WHEELS'
       : row.catalog_key === 'EXCLUSIVE_TYRES_NEW' ? 'EXCLUSIVE TYRES' : row.supplier,
@@ -257,7 +259,9 @@ export const liveSupplierRowToInventoryItem = (
     explicitPattern: row.tyre_pattern,
     explicitRating: row.tyre_rating,
     explicitIndex: row.tyre_index,
-    explicitSpecs: row.tyre_specs,
+    explicitSpecs: hasDatedSpecial && !special
+      ? row.tyre_specs?.split(/\s*\|\s*/).filter(spec => !/^SPECIAL\s*-\s*NOVEMBER 2026 QUOTATION$/i.test(spec.trim())).join(' | ')
+      : row.tyre_specs,
     sourceDetail: row.source_stock_detail
   });
   const tyre: TyreProduct = {

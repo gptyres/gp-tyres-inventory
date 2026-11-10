@@ -65,6 +65,7 @@ import {
   type ConcreteSupplierCatalog
 } from './supplierCatalogLoader';
 import { authenticateAdminSession, clearAdminSession } from './supplierSync';
+import { nextSupplierSpecialExpiry, scheduleSupplierSpecialExpiry } from './supplierSpecialPrice';
 import { isRegistryBackedSupplierCatalog, isLiveSupplierCatalog } from './supplierCatalogMapping';
 import { restoreSupplierSearchSelection, serializeSupplierSearchSelection } from './supplierSearchSelection';
 import { syncPortalInventoryItemsToSheet } from './sheetInventoryStatus';
@@ -1051,6 +1052,14 @@ const App: React.FC = () => {
     setAllSupplierPOSItems([]);
     setSupplierCatalogRefreshVersion((version) => version + 1);
   }, []);
+
+  useEffect(() => {
+    const deadline = nextSupplierSpecialExpiry(supplierItems, allSupplierPOSItems);
+    return scheduleSupplierSpecialExpiry(deadline, () => {
+      setSupplierItems([]);
+      handleSupplierSyncCompleted();
+    });
+  }, [supplierItems, allSupplierPOSItems, handleSupplierSyncCompleted]);
 
   // POS HELPERS
   const getInventoryCartTitle = (item: InventoryItem): string => {

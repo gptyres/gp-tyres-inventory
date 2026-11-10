@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { groupLiveSupplierCatalogRows, liveSupplierRowToInventoryItem, type LiveSupplierCatalogRow } from './liveSupplierCatalog';
 import { formatBulkClipboardText } from './components/InventoryView';
 import { calculateSupplierSellingPrice } from './supplierMarkup';
-import { getActiveSupplierSpecial } from './supplierSpecialPrice';
+import { getActiveSupplierSpecial, nextSupplierSpecialExpiry, scheduleSupplierSpecialExpiry } from './supplierSpecialPrice';
 
 const startsAt = '2026-11-01T00:00:00+02:00';
 const endsAt = '2026-12-01T00:00:00+02:00';
@@ -32,9 +32,13 @@ describe('dated supplier specials', () => {
       ])).toHaveLength(2);
 
       vi.setSystemTime(new Date(endsAt));
-      const expired = liveSupplierRowToInventoryItem({ ...regular, source_stock_detail });
+      const expired = liveSupplierRowToInventoryItem({
+        ...regular, source_stock_detail, tyre_specs: 'SPECIAL - NOVEMBER 2026 QUOTATION'
+      });
       expect(expired).toMatchObject({ costPrice: 1609.5, sellingPrice: 1851 });
       expect(expired.promotionLabel).toBeUndefined();
+      expect(expired.supplierSpecialEndsAt).toBeUndefined();
+      expect(expired).not.toMatchObject({ tyreSpecs: expect.stringContaining('NOVEMBER 2026') });
       expect(formatBulkClipboardText([expired])).toMatch(/@ R1851$/);
     } finally {
       vi.useRealTimers();
@@ -45,5 +49,27 @@ describe('dated supplier specials', () => {
     expect(getActiveSupplierSpecial(source_stock_detail, Date.parse(startsAt) - 1)).toBeUndefined();
     expect(getActiveSupplierSpecial('"gp_supplier_special_v1":{oops}', Date.parse(startsAt))).toBeUndefined();
     expect(getActiveSupplierSpecial('Historical note | ' + source_stock_detail, Date.parse(startsAt))?.costExVat).toBe(545);
+  });
+
+  it('expires at South African midnight and refreshes an already-open catalogue once', () => {
+    vi.useFakeTimers();
+    try {
+      const cutoff = Date.parse('2026-11-30T22:00:00Z');
+      vi.setSystemTime(cutoff - 1);
+      const item = liveSupplierRowToInventoryItem({ ...regular, source_stock_detail });
+      expect(item.sellingPrice).toBe(627);
+      const deadline = nextSupplierSpecialExpiry([], [item]);
+      expect(deadline).toBe(cutoff);
+      const refresh = vi.fn(() => liveSupplierRowToInventoryItem({ ...regular, source_stock_detail }).sellingPrice);
+      const cancel = scheduleSupplierSpecialExpiry(deadline, refresh);
+      expect(refresh).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(1);
+      expect(refresh).toHaveReturnedWith(1851);
+      vi.advanceTimersByTime(60_000);
+      expect(refresh).toHaveBeenCalledTimes(1);
+      cancel();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
