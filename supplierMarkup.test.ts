@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { formatBulkClipboardText } from './components/InventoryView';
+import { liveSupplierRowToInventoryItem } from './liveSupplierCatalog';
 import {
   applySupplierMarkup,
   calculateSupplierSellingPrice,
@@ -25,6 +27,33 @@ const tyre = (overrides: Partial<TyreProduct> = {}): TyreProduct => ({
 });
 
 describe('supplier markup pricing', () => {
+  it.each([
+    { catalog: 'ATT', supplier: 'ATT', cost: 437.42, base: 503, percent: 578, fixed: 618 },
+    { catalog: 'TREADS_UNLIMITED', supplier: 'Threads Unlimited', cost: 4390, base: 5049, percent: 5806, fixed: 5164 }
+  ] as const)('uses the same displayed and copied prices for $catalog in both views', ({
+    catalog, supplier, cost, base, percent, fixed
+  }) => {
+    const live = liveSupplierRowToInventoryItem({
+      id: 1, snapshot_id: 'test', catalog_key: catalog, source_key: 'test-item',
+      product_type: 'TYRE', supplier, brand: 'AUTOGRIP', product_name: '175/65R14 AUTOGRIP P308 PLUS 82H',
+      size: '175/65R14', stock_units: 4, cost_price: cost, selling_price: base,
+      source_file: 'test', imported_at: '2026-11-10'
+    });
+    const combined = { ...live, id: `${supplier}-${live.id}`, supplierName: supplier };
+    for (const [adjustment, expected] of [
+      [{ mode: 'BASE', value: 0 }, base],
+      [{ mode: 'PERCENT', value: 15 }, percent],
+      [{ mode: 'FIXED', value: 100 }, fixed]
+    ] as const) {
+      const [individual] = applySupplierMarkup([live], adjustment, catalog);
+      const [all] = applySupplierMarkup([combined], adjustment, 'ALL_SUPPLIERS');
+      expect(individual.sellingPrice).toBe(expected);
+      expect(all.sellingPrice).toBe(expected);
+      expect(formatBulkClipboardText([all])).toBe(formatBulkClipboardText([individual]));
+      expect(formatBulkClipboardText([all])).toMatch(new RegExp(`@ R${expected}$`));
+    }
+  });
+
   it('keeps current Exclusive Tyres costs VAT-exclusive in all-supplier search after its display rename', () => {
     const item = tyre({ id: 'EXCLUSIVE TYRES-live-exclusive_tyres_new-123', supplierName: 'EXCLUSIVE TYRES' });
     expect(calculateSupplierSellingPrice(item, { mode: 'FIXED', value: 300 }, 'ALL_SUPPLIERS')).toBe(1495);

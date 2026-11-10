@@ -6,7 +6,8 @@ import { buildTyreIndexDisplay, parseSupplierTyreFields } from './supplierTyrePa
 import { parseAlineWheelDescription, parseSupplierWheelImageKeys } from './supplierStockImages';
 import {
   ALINE_RIM_SET_QUANTITY,
-  calculateLiveSupplierSellingPrice
+  calculateLiveSupplierSellingPrice,
+  getLiveSupplierCostTaxBasis
 } from './supplierPricing';
 import { getAlineVehicleFitments } from './alineFitment';
 import {
@@ -189,6 +190,7 @@ export const liveSupplierRowToInventoryItem = (
       suppliedSellingPrice * listingPriceMultiplier
     ),
     costPrice,
+    supplierCostTaxBasis: getLiveSupplierCostTaxBasis(row.catalog_key as SupplierCatalog),
     normalSellingPrice: normalSellingPrice === undefined
       ? undefined
       : normalSellingPrice * listingPriceMultiplier,

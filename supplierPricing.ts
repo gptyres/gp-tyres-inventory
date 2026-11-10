@@ -1,4 +1,4 @@
-import type { SupplierCatalog } from './types';
+import type { BaseProduct, SupplierCatalog } from './types';
 
 export const SUPPLIER_VAT_RATE = 0.15;
 export const ALINE_RIM_SET_QUANTITY = 4;
@@ -23,12 +23,16 @@ const VAT_INCLUSIVE_LIVE_PRICE_CATALOGS = new Set<SupplierCatalog>([
   'WHEEL_TECH'
 ]);
 
+export const getLiveSupplierCostTaxBasis = (catalog: SupplierCatalog): NonNullable<BaseProduct['supplierCostTaxBasis']> => (
+  VAT_INCLUSIVE_LIVE_PRICE_CATALOGS.has(catalog) ? 'INCLUDES_VAT' : 'EXCLUDES_VAT'
+);
+
 export const calculateLiveSupplierSellingPrice = (
   catalog: SupplierCatalog,
   costPrice: number,
   suppliedSellingPrice: number
 ): number => (
-  VAT_INCLUSIVE_LIVE_PRICE_CATALOGS.has(catalog) || costPrice <= 0
+  getLiveSupplierCostTaxBasis(catalog) === 'INCLUDES_VAT' || costPrice <= 0
     ? roundSupplierSellingPrice(suppliedSellingPrice)
     : calculateVatInclusiveSellingPrice(costPrice)
 );

@@ -1,4 +1,5 @@
 import { type InventoryItem, type SupplierCatalog } from './types';
+import { getLiveSupplierCostTaxBasis } from './supplierPricing';
 
 export type SupplierMarkupAdjustment =
   | { mode: 'BASE'; value: 0 }
@@ -27,12 +28,6 @@ const BUNDLED_EX_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
   'EXOTIC',
   'TREAD_ZONE',
   'SUMITOMO_DUNLOP'
-]);
-
-const LIVE_VAT_INCLUDED_COST_CATALOGS = new Set<SupplierCatalog>([
-  'ALINE',
-  'NDT',
-  'WHEEL_TECH'
 ]);
 
 const NO_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
@@ -96,6 +91,7 @@ export const getSupplierCostTaxBasis = (
   item: InventoryItem,
   activeCatalog: SupplierCatalog
 ): SupplierCostTaxBasis => {
+  if (item.supplierCostTaxBasis) return item.supplierCostTaxBasis;
   const catalog = resolveItemCatalog(item, activeCatalog);
   if (!catalog) return 'INCLUDES_VAT';
   if (NO_VAT_COST_CATALOGS.has(catalog)) return 'NO_VAT';
@@ -103,9 +99,7 @@ export const getSupplierCostTaxBasis = (
   // Live snapshots normalize supplier costs to ex-VAT, except catalogues whose
   // source prices are explicitly retained as VAT-inclusive/listed amounts.
   if (item.id.toLowerCase().startsWith('live-')) {
-    return LIVE_VAT_INCLUDED_COST_CATALOGS.has(catalog)
-      ? 'INCLUDES_VAT'
-      : 'EXCLUDES_VAT';
+    return getLiveSupplierCostTaxBasis(catalog);
   }
 
   return BUNDLED_EX_VAT_COST_CATALOGS.has(catalog)
