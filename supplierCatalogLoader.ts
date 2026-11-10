@@ -9,7 +9,6 @@ import {
   parseArcData,
   parseBridgestoneData,
   parseEibachData,
-  parseExclusiveTyresData,
   parseExoticData,
   parseHoosierData,
   parseMaxxisData,
@@ -33,7 +32,6 @@ const supplierCatalogOrder: ConcreteSupplierCatalog[] = [
   'E_TRACTION_WHEELS',
   'SAILUN',
   'MAXXIS',
-  'EXCLUSIVE_TYRES',
   'EXCLUSIVE_TYRES_NEW',
   'TYREWAREHOUSE',
   'ATT',
@@ -67,7 +65,6 @@ const supplierDisplayNames: Record<ConcreteSupplierCatalog, string> = {
   E_TRACTION_WHEELS: 'E-TRACTION WHEELS',
   SAILUN: 'SAILUN',
   MAXXIS: 'MAXXIS',
-  EXCLUSIVE_TYRES: 'EXCLUSIVE TYRES — LEGACY',
   EXCLUSIVE_TYRES_NEW: 'EXCLUSIVE TYRES',
   TYREWAREHOUSE: 'TYREWAREHOUSE',
   ATT: 'ATT',
@@ -106,7 +103,6 @@ const supplierPOSKeys: Record<ConcreteSupplierCatalog, string> = {
   E_TRACTION_WHEELS: 'e-traction-wheels',
   SAILUN: 'sailun',
   MAXXIS: 'maxxis',
-  EXCLUSIVE_TYRES: 'exclusive',
   EXCLUSIVE_TYRES_NEW: 'exclusive-tyres-new',
   TYREWAREHOUSE: 'tyrewarehouse',
   ATT: 'att',
@@ -296,10 +292,6 @@ const loadBundledSupplierCatalog = async (catalog: ConcreteSupplierCatalog): Pro
       const { MAXXIS_RAW_DATA } = await import('./supplier_data/maxxisData');
       return parseMaxxisData(MAXXIS_RAW_DATA);
     }
-    case 'EXCLUSIVE_TYRES': {
-      const { EXCLUSIVE_TYRES_RAW_DATA } = await import('./supplier_data/exclusiveTyresData');
-      return parseExclusiveTyresData(EXCLUSIVE_TYRES_RAW_DATA);
-    }
     case 'EXCLUSIVE_TYRES_NEW':
       // The new authenticated Exclusive Tyres catalogue is served from its live Supabase snapshot.
       return [];
@@ -458,6 +450,8 @@ export const loadSupplierCatalogItems = async (catalog: SupplierCatalog): Promis
       tagSupplierItems(supplierDisplayNames[supplierCatalog], items)
     ));
   }
+
+  if (!Object.prototype.hasOwnProperty.call(supplierDisplayNames, catalog)) return [];
 
   if (!supplierItemCache.has(catalog)) {
     const request = loadConcreteSupplierCatalog(catalog);

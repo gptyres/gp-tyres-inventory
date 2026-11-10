@@ -15,7 +15,6 @@ export type RegistryBackedSupplierCatalog = Exclude<
   | 'JOM'
   | 'LOMBARD_TYRES'
   | 'VITOUR'
-  | 'EXCLUSIVE_TYRES'
   | 'EXCLUSIVE_TYRES_NEW'
   | 'NDT'
   | 'WHEEL_TECH'
@@ -24,7 +23,7 @@ export type RegistryBackedSupplierCatalog = Exclude<
 >;
 
 export type ManualSupplierCatalog = Extract<SupplierCatalog, 'SAILUN' | 'MAXXIS' | 'SAFETY_GRIP' | 'ROYAL_TYRES' | 'BRIDGESTONE'>;
-export type AdditionalLiveSupplierCatalog = Extract<SupplierCatalog, 'EXCLUSIVE_TYRES' | 'EXCLUSIVE_TYRES_NEW' | 'NDT' | 'WHEEL_TECH' | 'E_TRACTION_TYRES' | 'E_TRACTION_WHEELS'>;
+export type AdditionalLiveSupplierCatalog = Extract<SupplierCatalog, 'EXCLUSIVE_TYRES_NEW' | 'NDT' | 'WHEEL_TECH' | 'E_TRACTION_TYRES' | 'E_TRACTION_WHEELS'>;
 export type LiveSupplierCatalog = RegistryBackedSupplierCatalog | ManualSupplierCatalog | AdditionalLiveSupplierCatalog;
 export type SupplierImportCatalog = LiveSupplierCatalog;
 
@@ -74,7 +73,6 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
   SAFETY_GRIP: { supplier: 'Safety Grip', sheetName: 'SUPPLIER_SAFETY_GRIP', productType: 'TYRE' },
   ROYAL_TYRES: { supplier: 'ROYAL TYRES', sheetName: 'SUPPLIER_ROYAL_TYRES', productType: 'TYRE' },
   BRIDGESTONE: { supplier: 'Bridgestone', sheetName: 'SUPPLIER_BRIDGESTONE', productType: 'TYRE' },
-  EXCLUSIVE_TYRES: { supplier: 'Exclusive Tyres', sheetName: 'SUPPLIER_EXCLUSIVE_TYRES', productType: 'TYRE' },
   EXCLUSIVE_TYRES_NEW: { supplier: 'EXCLUSIVE TYRES NEW', sheetName: 'SUPPLIER_EXCLUSIVE_TYRES_NEW', productType: 'TYRE' },
   TYREWAREHOUSE: { supplier: 'Tyrewarehouse', sheetName: 'SUPPLIER_TYREWAREHOUSE', productType: 'TYRE' },
   ATT: { supplier: 'ATT', sheetName: 'SUPPLIER_ATT', productType: 'TYRE' },
@@ -94,7 +92,7 @@ export const SUPPLIER_IMPORT_BY_CATALOG: Record<SupplierImportCatalog, {
 };
 
 export const isSupplierImportCatalog = (
-  catalog: SupplierCatalog
+  catalog: string
 ): catalog is SupplierImportCatalog => (
   Object.prototype.hasOwnProperty.call(SUPPLIER_IMPORT_BY_CATALOG, catalog)
 );
@@ -106,7 +104,7 @@ export const isManualSupplierCatalog = (
 );
 
 export const isLiveSupplierCatalog = (
-  catalog: SupplierCatalog
+  catalog: string
 ): catalog is LiveSupplierCatalog => (
   Object.prototype.hasOwnProperty.call(SUPPLIER_IMPORT_BY_CATALOG, catalog)
 );

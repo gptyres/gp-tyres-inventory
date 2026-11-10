@@ -431,10 +431,6 @@ const App: React.FC = () => {
       label: 'MAXXIS',
       note: 'Viewing MAXXIS 4x4/SUV, ATV and motorcycle dealer pricing. Cost uses the normal nett price; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1. Specials are excluded and stock quantities were not supplied.'
     },
-    EXCLUSIVE_TYRES: {
-      label: 'EXCLUSIVE TYRES — LEGACY CATALOGUE',
-      note: 'RETIRED PORTAL / LEGACY DATA. Use Exclusive Tyres for the current catalogue; this historical catalogue remains available for reference.'
-    },
     EXCLUSIVE_TYRES_NEW: {
       label: 'EXCLUSIVE TYRES',
       note: 'CURRENT PORTAL DATA. Listings use only tyre size, brand, cleaned pattern, stock on hand, SLA and cost excluding VAT. List price and GP are excluded; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1.',

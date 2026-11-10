@@ -129,11 +129,7 @@ describe('SupplierSyncButton', () => {
 
   it('does not offer the retired Exclusive Tyres portal as a live action', () => {
     const appSource = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
-    const legacyStart = appSource.indexOf('EXCLUSIVE_TYRES: {');
-    const currentStart = appSource.indexOf('EXCLUSIVE_TYRES_NEW: {', legacyStart);
-    const legacyMetadata = appSource.slice(legacyStart, currentStart);
-
-    expect(legacyMetadata).toContain('RETIRED PORTAL / LEGACY DATA');
-    expect(legacyMetadata).not.toContain('portalUrl:');
+    expect(appSource).not.toContain('EXCLUSIVE_TYRES: {');
+    expect(appSource).toMatch(/EXCLUSIVE_TYRES_NEW: \{[^}]*portalUrl: 'https:\/\/www\.exclusivetyres\.co\.za\/'/);
   });
 });

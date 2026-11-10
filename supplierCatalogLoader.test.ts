@@ -7,7 +7,7 @@ import {
   restoreSupplierWheelSpecsFromBundledCatalog,
   type SupplierCatalogProgress
 } from './supplierCatalogLoader';
-import { ProductType, type BatteryProduct, type TyreProduct, type WheelProduct } from './types';
+import { ProductType, type BatteryProduct, type SupplierCatalog, type TyreProduct, type WheelProduct } from './types';
 
 const bundledTyre: TyreProduct = {
   id: 'bundled-1',
@@ -90,6 +90,15 @@ describe('progressive supplier catalogue loading', () => {
 });
 
 describe('site-wide supplier catalogue formatting', () => {
+  it('offers only current Exclusive Tyres and ignores stale requests for the retired catalogue', async () => {
+    const legacy = 'EXCLUSIVE_TYRES' as SupplierCatalog;
+    expect(supplierLoader.SUPPLIER_CATALOG_OPTIONS.filter(({ catalog }) => catalog.startsWith('EXCLUSIVE_TYRES')))
+      .toEqual([{ catalog: 'EXCLUSIVE_TYRES_NEW', label: 'EXCLUSIVE TYRES' }]);
+    await expect(loadSupplierCatalogItems(legacy)).resolves.toEqual([]);
+    await expect(supplierLoader.loadSelectedSupplierCatalogItems([legacy as supplierLoader.ConcreteSupplierCatalog]))
+      .resolves.toEqual([]);
+  });
+
   it('normalizes bundled fallback catalogues with the same fields as live catalogues', () => {
     const [item] = normalizeBundledSupplierTyres('APEX', [bundledTyre]);
     if (item.type !== ProductType.TYRE) throw new Error('Expected tyre item');

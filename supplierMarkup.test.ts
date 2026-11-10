@@ -100,7 +100,6 @@ describe('supplier markup pricing', () => {
   const liveExVatCatalogs: SupplierCatalog[] = [
     'SAILUN',
     'MAXXIS',
-    'EXCLUSIVE_TYRES',
     'EXCLUSIVE_TYRES_NEW',
     'TYREWAREHOUSE',
     'ATT',
