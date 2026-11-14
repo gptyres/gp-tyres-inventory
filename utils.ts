@@ -8,7 +8,6 @@ import { royalWorkbookItem } from './royalTyresWorkbook.mjs';
 import { applyRoyalCapeTownUpdate } from './royalTyresCapeTownUpdate.mjs';
 import {
   ALINE_RIM_SET_QUANTITY,
-  calculateEibachSellingPrice,
   calculateVatInclusiveSellingPrice,
   roundSupplierSellingPrice
 } from './supplierPricing';
@@ -1805,7 +1804,8 @@ export const parseEibachData = (
       stockByLocation: { 'Eibach SA': quantity },
       quantity,
       costPrice,
-      sellingPrice: calculateEibachSellingPrice(costPrice),
+      sellingPrice: calculateVatInclusiveSellingPrice(costPrice),
+      supplierCostTaxBasis: 'EXCLUDES_VAT',
       lastUpdated,
       supplierName: 'EIBACH',
       supplierStockCode: row.supplierSku || String(row.websiteProductId),
@@ -1827,6 +1827,7 @@ export interface HoosierSupplierRow {
   stockUnits: number | null;
   orderStatus: 'AVAILABLE' | 'PREORDER' | 'UNKNOWN' | 'OUT_OF_STOCK';
   websiteStockDetail: string;
+  /** The captured website amount, before the tracker's VAT calculation. */
   sellingPrice: number;
   imageUrl: string;
   sourceUrl: string;
@@ -1872,8 +1873,8 @@ export const parseHoosierData = (
       stockByLocation: row.orderStatus === 'UNKNOWN' ? undefined : { 'Hoosier South Africa': quantity },
       quantity,
       costPrice: listedPrice,
-      sellingPrice: listedPrice,
-      supplierCostTaxBasis: 'INCLUDES_VAT',
+      sellingPrice: calculateVatInclusiveSellingPrice(listedPrice),
+      supplierCostTaxBasis: 'EXCLUDES_VAT',
       supplierOrderStatus: row.orderStatus,
       lastUpdated,
       sheetSyncedAt: syncedAt,

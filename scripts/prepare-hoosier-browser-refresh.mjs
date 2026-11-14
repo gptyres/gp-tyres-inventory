@@ -18,7 +18,7 @@ const rows=capture.rows.filter(r=>r.category!=='Tubes').map(r=>{
   pattern:parts[0].replace(/^Hoosier\s+/i,''),size:parts[1].replace(/\u00d7/g,'X').replace(/\s+/g,'').toUpperCase(),
   category:r.category,productName:r.name,stockUnits:stock?Number(stock[1]):0,
   orderStatus:stock?'AVAILABLE':'PREORDER',websiteStockDetail:r.stock,
-  sellingPrice:Math.round(price),imageUrl:r.image,sourceUrl:r.source,
+  sellingPrice:price,imageUrl:r.image,sourceUrl:r.source,
   sourceSpecifications:r.description?.match(/Specifications\n([\s\S]*?)(?:\n\n|$)/)?.[1]||'',
   sourceRestrictions:(r.description?.split('\n').filter(line=>line.startsWith('⚠'))||[]).join(' '),
   capturedAt:r.captured_at};
@@ -27,7 +27,7 @@ assert.equal(rows.length,64);
 const syncedAt=capture.rows.map(r=>r.captured_at).sort().at(-1);
 await writeFile(resolve('supplier_data/hoosierData.ts'),
  '// Generated from complete Codex browser catalogue and individual product-page captures.\n'
- +'// Website prices already include VAT; no VAT is added again.\n'
+ +'// Exact listed website amounts. The tracker applies VAT to these base prices in parseHoosierData.\n'
  +`export const HOOSIER_CATALOG_SOURCE_URL = ${JSON.stringify(capture.source)};\n`
  +`export const HOOSIER_CATALOG_SYNCED_AT = ${JSON.stringify(syncedAt)};\n`
  +`export const HOOSIER_ROWS = ${JSON.stringify(rows,null,2)} as const;\n`);

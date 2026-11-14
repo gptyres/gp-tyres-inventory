@@ -500,7 +500,7 @@ const App: React.FC = () => {
     },
     EIBACH: {
       label: 'EIBACH',
-      note: 'Viewing Eibach South Africa lowering-kit stock. Cost is the supplied website price with no VAT added; the VAT-inclusive price adds 25% and rounds to the nearest R50. Official stock units and fitment details are shown per product.',
+      note: 'Viewing Eibach South Africa lowering-kit stock. VAT-inclusive prices are based on cost excluding VAT, plus 15% VAT, rounded to the nearest R1. Stock and fitment details are shown per product.',
       portalUrl: 'https://www.eibachsa.co.za/index.php/product-category/eibach-products/'
     },
     JOM: {
@@ -513,7 +513,7 @@ const App: React.FC = () => {
     },
     HOOSIER_TYRES: {
       label: 'HOOSIER TYRES',
-      note: 'Official Hoosier South Africa catalogue: tyres, karting, motorcycle and tubes. Listed website prices are retained on the existing VAT-inclusive basis; no extra VAT added. Dealer costs are not published. Exact units, preorders and unconfirmed quantities are shown separately. Confirm tax and availability before ordering.',
+      note: 'Hoosier South Africa catalogue: tyres, karting, motorcycle and tubes. The tracker adds 15% VAT to the captured base prices and rounds to the nearest R1. Dealer costs are not supplied. Confirm supplier pricing and availability before ordering.',
       portalUrl: 'https://hoosiertyres.co.za/shop/'
     },
     VITOUR: {
@@ -2157,8 +2157,11 @@ const App: React.FC = () => {
                     priceLabel={currentView === 'SUPPLIER_INVENTORY'
                       ? activeSupplierCatalog === 'ALINE' ? 'VAT Inclusive Price (4 Rims)' : 'VAT Inclusive Price'
                       : undefined}
-                    costLabel={currentView === 'SUPPLIER_INVENTORY' && activeSupplierCatalog === 'ALINE'
-                      ? 'Cost incl. VAT (4 Rims)'
+                    costLabel={currentView === 'SUPPLIER_INVENTORY'
+                      ? activeSupplierCatalog === 'ALINE' ? 'Cost incl. VAT (4 Rims)'
+                        : activeSupplierCatalog === 'EIBACH' ? 'Cost excl. VAT'
+                        : activeSupplierCatalog === 'HOOSIER_TYRES' ? 'Base price'
+                        : undefined
                       : undefined}
                     reportCatalogueLabel={currentView === 'SUPPLIER_INVENTORY'
                       ? `${supplierCatalogLabel} Catalog`

@@ -63,11 +63,6 @@ describe('supplier markup pricing', () => {
     expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 20 }, 'APEX')).toBe(1380);
   });
 
-  it('keeps the HOOSIER TYRES website price VAT-inclusive before markup', () => {
-    expect(getSupplierCostTaxBasis(tyre(), 'HOOSIER_TYRES')).toBe('INCLUDES_VAT');
-    expect(calculateSupplierSellingPrice(tyre(), { mode: 'FIXED', value: 300 }, 'HOOSIER_TYRES')).toBe(1345);
-  });
-
   it('uses cost plus 15% VAT as the base for percentage and Rand markup', () => {
     expect(getSupplierCostIncludingVat(tyre(), 'REVOLUTION_TYRES')).toBeCloseTo(1150);
     expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 10 }, 'REVOLUTION_TYRES')).toBe(1265);
@@ -163,11 +158,17 @@ describe('supplier markup pricing', () => {
     )).toBe(1438);
   });
 
-  it('does not add VAT to EIBACH cost pricing', () => {
-    expect(getSupplierCostTaxBasis(tyre(), 'EIBACH')).toBe('NO_VAT');
-    expect(getSupplierCostIncludingVat(tyre(), 'EIBACH')).toBe(1000);
-    expect(calculateSupplierSellingPrice(tyre(), { mode: 'PERCENT', value: 25 }, 'EIBACH')).toBe(1250);
-    expect(calculateSupplierSellingPrice(tyre(), { mode: 'FIXED', value: 300 }, 'EIBACH')).toBe(1300);
+  it.each([
+    ['EIBACH', 'EIBACH'],
+    ['HOOSIER_TYRES', 'HOOSIER TYRES']
+  ] as const)('applies VAT once after markup for %s in individual and combined search', (catalog, supplierName) => {
+    const item = tyre({ supplierName, sellingPrice: 1150 });
+    for (const scope of [catalog, 'ALL_SUPPLIERS'] as const) {
+      expect(getSupplierCostTaxBasis(item, scope)).toBe('EXCLUDES_VAT');
+      expect(getSupplierCostIncludingVat(item, scope)).toBeCloseTo(1150);
+      expect(calculateSupplierSellingPrice(item, { mode: 'PERCENT', value: 25 }, scope)).toBe(1438);
+      expect(calculateSupplierSellingPrice(item, { mode: 'FIXED', value: 300 }, scope)).toBe(1495);
+    }
   });
 
   it('preserves source selling prices in base mode without cloning the list', () => {

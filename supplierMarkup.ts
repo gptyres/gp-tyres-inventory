@@ -1,5 +1,5 @@
 import { type InventoryItem, type SupplierCatalog } from './types';
-import { getLiveSupplierCostTaxBasis } from './supplierPricing';
+import { getLiveSupplierCostTaxBasis, SUPPLIER_VAT_RATE } from './supplierPricing';
 
 export type SupplierMarkupAdjustment =
   | { mode: 'BASE'; value: 0 }
@@ -9,7 +9,7 @@ export type SupplierMarkupAdjustment =
 export const SUPPLIER_MARKUP_PERCENTAGES = [10, 15, 20, 25, 35] as const;
 export const BASE_SUPPLIER_MARKUP: SupplierMarkupAdjustment = { mode: 'BASE', value: 0 };
 
-const VAT_MULTIPLIER = 1.15;
+const VAT_MULTIPLIER = 1 + SUPPLIER_VAT_RATE;
 export type SupplierCostTaxBasis = 'EXCLUDES_VAT' | 'INCLUDES_VAT' | 'NO_VAT';
 
 const BUNDLED_EX_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
@@ -24,14 +24,12 @@ const BUNDLED_EX_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
   'ROYAL_TYRES',
   'REVOLUTION_TYRES',
   'APEX',
+  'EIBACH',
+  'HOOSIER_TYRES',
   'TUBESTONE',
   'EXOTIC',
   'TREAD_ZONE',
   'SUMITOMO_DUNLOP'
-]);
-
-const NO_VAT_COST_CATALOGS = new Set<SupplierCatalog>([
-  'EIBACH'
 ]);
 
 const SUPPLIER_NAME_CATALOGS: Record<string, SupplierCatalog> = {
@@ -93,7 +91,6 @@ export const getSupplierCostTaxBasis = (
   if (item.supplierCostTaxBasis) return item.supplierCostTaxBasis;
   const catalog = resolveItemCatalog(item, activeCatalog);
   if (!catalog) return 'INCLUDES_VAT';
-  if (NO_VAT_COST_CATALOGS.has(catalog)) return 'NO_VAT';
 
   // Live snapshots normalize supplier costs to ex-VAT, except catalogues whose
   // source prices are explicitly retained as VAT-inclusive/listed amounts.

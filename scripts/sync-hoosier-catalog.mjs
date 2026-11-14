@@ -100,7 +100,7 @@ async function main() {
   const { rows, syncedAt } = normalizeHoosierCapture(capture);
   const outputPath = path.resolve('supplier_data/hoosierData.ts');
   const source = '// Generated from the complete official Hoosier South Africa Store API capture.\n'
-    + '// Exact listed website prices. Existing VAT-inclusive basis retained; no additional VAT.\n'
+    + '// Exact listed website amounts. The tracker applies VAT to these base prices in parseHoosierData.\n'
     + '// Dealer costs and undisclosed stock quantities must not be inferred.\n'
     + `export const HOOSIER_CATALOG_SOURCE_URL = ${JSON.stringify(SOURCE_URL)};\n`
     + `export const HOOSIER_CATALOG_SYNCED_AT = ${JSON.stringify(syncedAt)};\n`
