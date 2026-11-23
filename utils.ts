@@ -804,13 +804,8 @@ export const parseMaxxisData = (rawText: string): InventoryItem[] => {
     const pattern = readColumn(cols, 'TYRE_PATTERN').toUpperCase();
     const tyreRating = readColumn(cols, 'TYRE_RATING').toUpperCase();
     const tyreIndex = readColumn(cols, 'TYRE_INDEX').toUpperCase();
-    const baseTyreSpecs = readColumn(cols, 'TYRE_SPECS').toUpperCase();
+    const tyreSpecs = readColumn(cols, 'TYRE_SPECS').toUpperCase();
     const costPrice = parseCurrencyString(readColumn(cols, 'Cost Price'));
-    const normalCostPrice = parseCurrencyString(readColumn(cols, 'Normal Cost Price'));
-    const promotionLabel = readColumn(cols, 'Promotion Label');
-    const tyreSpecs = promotionLabel
-      ? [...new Set([...baseTyreSpecs.split('/'), 'SPECIAL'].map((value) => value.trim()).filter(Boolean))].join(' / ')
-      : baseTyreSpecs;
     if (!sku || !size || !brand || !pattern || costPrice <= 0) return [];
 
     return [{
@@ -828,13 +823,8 @@ export const parseMaxxisData = (rawText: string): InventoryItem[] => {
       quantity: 0,
       costPrice,
       sellingPrice: calculateVatInclusiveSellingPrice(costPrice),
-      normalSellingPrice: normalCostPrice > costPrice
-        ? calculateVatInclusiveSellingPrice(normalCostPrice)
-        : undefined,
-      promotionLabel: promotionLabel || undefined,
-      supplierStockCode: sku,
       supplierLeadTime: readColumn(cols, 'Lead Time') || 'Stock not supplied',
-      lastUpdated: '2026-11-23'
+      lastUpdated: '2026-08-13'
     }];
   });
 };

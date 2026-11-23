@@ -386,7 +386,7 @@ const App: React.FC = () => {
     },
     MAXXIS: {
       label: 'MAXXIS',
-      note: 'Viewing MAXXIS November 2026 4x4/SUV pricing plus the existing ATV and motorcycle catalogue. Black Friday lines use the 4+ unit special cost, retain the normal VAT-inclusive comparison price, and keep the 20+ mix tier in promotion metadata. Prices add 15% VAT once and round to the nearest R1; stock quantities were not supplied.'
+      note: 'Viewing MAXXIS 4x4/SUV, ATV and motorcycle dealer pricing. Cost uses the normal nett price; the VAT-inclusive price adds 15% VAT once and rounds to the nearest R1. Specials are excluded and stock quantities were not supplied.'
     },
     EXCLUSIVE_TYRES: {
       label: 'EXCLUSIVE TYRES — LEGACY CATALOGUE',
